@@ -60,7 +60,7 @@ group :development do
   gem "web-console"
   gem "listen"
   gem "actioncable"
-  gem "lookbook", '>= 2.0.4'
+  gem "lookbook", '>= 2.3.2'
 end
 
 group :test do
