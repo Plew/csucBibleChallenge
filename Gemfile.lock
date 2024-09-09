@@ -134,6 +134,9 @@ GEM
       actionpack (>= 6.0.0)
       activesupport (>= 6.0.0)
       railties (>= 6.0.0)
+    inline_svg (1.10.0)
+      activesupport (>= 3.0)
+      nokogiri (>= 1.6)
     io-console (0.7.2)
     irb (1.14.0)
       rdoc (>= 4.0.0)
@@ -322,6 +325,10 @@ GEM
     slim (5.2.1)
       temple (~> 0.10.0)
       tilt (>= 2.1.0)
+    slim-rails (3.6.3)
+      actionpack (>= 3.1)
+      railties (>= 3.1)
+      slim (>= 3.0, < 6.0, != 5.0.0)
     sqlite3 (2.0.4-aarch64-linux-gnu)
     sqlite3 (2.0.4-aarch64-linux-musl)
     sqlite3 (2.0.4-arm-linux-gnu)
@@ -406,6 +413,7 @@ DEPENDENCIES
   faker
   hotwire-livereload (~> 1.2)
   importmap-rails
+  inline_svg
   jbuilder
   listen
   lookbook (>= 2.3.2)
@@ -417,6 +425,7 @@ DEPENDENCIES
   rubocop-rails-omakase
   selenium-webdriver
   slim (~> 5.2)
+  slim-rails
   sqlite3 (>= 1.4)
   stimulus-rails
   swearjar

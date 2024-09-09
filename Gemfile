@@ -39,6 +39,7 @@ gem "slim", "~> 5.2"
 gem "view_component"
 gem "faker"
 gem "slim-rails"
+gem "inline_svg"
 
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
