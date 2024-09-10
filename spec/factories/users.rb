@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :user do
-    device_id { "MyString" }
-    name { "MyString" }
+    name { Faker::Name.name }
+    # no key here, it should be generated upon create
   end
 end

@@ -10,12 +10,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_09_10_100632) do
-  create_table "users", force: :cascade do |t|
+ActiveRecord::Schema[7.2].define(version: 2024_09_10_103320) do
+  create_table "devices", force: :cascade do |t|
     t.string "device_id"
-    t.string "name"
+    t.string "key"
+    t.integer "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["device_id"], name: "index_users_on_device_id"
+    t.index ["device_id"], name: "index_devices_on_device_id"
+    t.index ["key"], name: "index_devices_on_key"
+    t.index ["user_id"], name: "index_devices_on_user_id"
   end
+
+  create_table "users", force: :cascade do |t|
+    t.string "name"
+    t.string "key"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["key"], name: "index_users_on_key"
+  end
+
+  add_foreign_key "devices", "users"
 end
