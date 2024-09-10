@@ -1,0 +1,8 @@
+
+This project uses Rails Hotwire and View Components.
+
+Any reference to a component is a reference to View Components, not react.
+
+Any time a component should be made, it should be a view component in the app/components directory
+
+

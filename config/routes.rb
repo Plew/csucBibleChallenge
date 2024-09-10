@@ -12,12 +12,14 @@ Rails.application.routes.draw do
   get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
 
+  resources :check_ins, only: [:create, :destroy]
+
   if Rails.env.development?
     mount Lookbook::Engine, at: "/lookbook"
   end
 
   # Defines the root path route ("/")
-  root "pages#home"
+  root "dashboard#show"
 
-  get 'dashboard', to: 'dashboard#index'
+  get 'dashboard', to: 'dashboard#show'
 end

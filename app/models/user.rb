@@ -1,6 +1,7 @@
 class User < ApplicationRecord
-  validates :name, presence: true
+#   validates :name, presence: true
   has_many :devices
+  has_many :check_ins
   before_create :generate_key
 
   private

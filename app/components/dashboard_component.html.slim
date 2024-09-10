@@ -1,0 +1,32 @@
+main.flex-1.overflow-hidden
+  section.h-1/2.flex.items-center.justify-center.relative
+    .flex.flex-col.items-center
+      #displayed-date.mb-2.text-sm.text-gray-600
+      #checkbox-container.flex.items-center.justify-center
+        = form_with url: check_ins_path, method: :post, local: true, id: 'checkbox-form' do |f|
+          = f.hidden_field :recorded_on, id: 'recorded-on-field'
+          = f.hidden_field :day_offset, id: 'day-offset-field'
+          = render(CheckboxComponent.new(checked: @checked))
+  section.h-1/2.flex.items-center.justify-center.relative.bg-muted
+
+
+javascript:
+  const checkboxForm = document.getElementById('checkbox-form');
+  const checkboxInput = document.getElementById('checkbox-input');
+  const dayOffset = #{@day_offset.to_i}
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var currentDate = new Date();
+    var offsetDate = new Date();
+    offsetDate.setDate(currentDate.getDate() + dayOffset);
+    var offsetDateString = offsetDate.toISOString().split('T')[0];
+
+    console.log(dayOffset);
+    document.getElementById('displayed-date').textContent = offsetDateString;
+    document.getElementById('recorded-on-field').value = offsetDateString;
+    document.getElementById('day-offset-field').value = dayOffset;
+
+    checkboxInput.addEventListener('change', function() {
+      checkboxForm.submit();
+    });
+  });
