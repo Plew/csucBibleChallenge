@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
 
   resources :check_ins, only: [:create, :destroy]
+  resources :date_view_changes, only: [:create]
 
   if Rails.env.development?
     mount Lookbook::Engine, at: "/lookbook"
