@@ -1,6 +1,5 @@
 class DashboardComponent < ViewComponent::Base
-  def initialize(checked: false, day_offset: 0)
-    @checked = checked
-    @day_offset = day_offset
+  def initialize(shown_date: Date.today.strftime('%Y-%m-%d'))
+    @shown_date = shown_date
   end
 end

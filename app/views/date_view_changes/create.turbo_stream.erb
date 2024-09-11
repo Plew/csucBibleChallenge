@@ -1,0 +1,9 @@
+<%= turbo_stream.replace "checkbox-component" do %>
+  <%= render CheckboxComponent.new(shown_date: @shown_date) %>
+<% end %>
+
+<%= turbo_stream.append "body" do %>
+  <script>
+    console.log("Turbo Stream received for date: <%= @shown_date %>");
+  </script>
+<% end %>

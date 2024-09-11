@@ -1,12 +1,13 @@
-.flex.items-center
-  input[
-    type="checkbox"
-    class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-    checked=@checked
-    name="check-in-checkbox"
-    value=@checked
-    id="checkbox-input"
-  ]
-  - if @label
-    label.ml-2.text-sm.text-gray-700
-      = @label
+#checkbox-component
+  .flex.flex-col
+    .text-lg 
+      = @shown_date
+    .flex.items-center
+      input[
+        type="checkbox"
+        class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+        checked=@checked
+      ]
+    .mt-4.flex.justify-between
+      = button_to 'Previous', date_view_changes_path, method: :post, params: { shown_date: previous_date }, class: 'px-4 py-2 bg-blue-500 text-black rounded'
+      = button_to 'Next', date_view_changes_path, method: :post, params: { shown_date: next_date }, class: 'px-4 py-2 bg-blue-500 text-black rounded'

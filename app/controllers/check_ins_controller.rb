@@ -2,8 +2,9 @@ class CheckInsController < ApplicationController
   def create
     toggle
     redirect_to dashboard_path(
-      recorded_on: params[:recorded_on]
-      day_offset: params[:day_offset])
+      day_offset: params[:day_offset]),
+      recorded_on: params[:recorded_on],
+      foo: 'bar'
   end
 
   def toggle
