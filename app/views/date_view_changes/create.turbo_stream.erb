@@ -1,5 +1,5 @@
 <%= turbo_stream.replace "checkbox-component" do %>
-  <%= render CheckboxComponent.new(shown_date: @shown_date) %>
+  <%= render CheckboxComponent.new(shown_date: @shown_date, current_date: @current_date) %>
 <% end %>
 
 <%= turbo_stream.append "body" do %>

@@ -6,4 +6,4 @@ main.flex-1.overflow-hidden
         / = form_with url: check_ins_path, method: :post, local: true, id: 'checkbox-form' do |f|
         /   = f.hidden_field :recorded_on, id: 'recorded-on-field'
         /   = f.hidden_field :day_offset, id: 'day-offset-field'
-        = render(CheckboxComponent.new(shown_date: @shown_date))
+        = render(CheckboxComponent.new(shown_date: @shown_date, current_date: @current_date))

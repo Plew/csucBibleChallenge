@@ -10,4 +10,5 @@
       ]
     .mt-4.flex.justify-between
       = button_to 'Previous', date_view_changes_path, method: :post, params: { shown_date: previous_date }, class: 'px-4 py-2 bg-blue-500 text-black rounded'
-      = button_to 'Next', date_view_changes_path, method: :post, params: { shown_date: next_date }, class: 'px-4 py-2 bg-blue-500 text-black rounded'
+      - unless hide_next?
+        = button_to 'Next', date_view_changes_path, method: :post, params: { shown_date: next_date }, class: 'px-4 py-2 bg-blue-500 text-black rounded'
