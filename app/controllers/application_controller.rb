@@ -13,4 +13,9 @@ class ApplicationController < ActionController::Base
   def current_user
     @current_user ||= current_device.user || User.create!.tap { |user| user.devices << current_device }
   end
+
+  def current_date
+    @current_date ||= Date.parse(cookies[:current_date])
+  end
+
 end
