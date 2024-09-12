@@ -2,8 +2,5 @@ main.flex-1.overflow-hidden
   section.h-1/2.flex.items-center.justify-center.relative
     .flex.flex-col.items-center
       #displayed-date.mb-2.text-sm.text-gray-600
-      #checkbox-container.flex.items-center.justify-center
-        / = form_with url: check_ins_path, method: :post, local: true, id: 'checkbox-form' do |f|
-        /   = f.hidden_field :recorded_on, id: 'recorded-on-field'
-        /   = f.hidden_field :day_offset, id: 'day-offset-field'
+      .flex.items-center.justify-center
         = render(CheckboxComponent.new(shown_date: @shown_date, current_date: @current_date))

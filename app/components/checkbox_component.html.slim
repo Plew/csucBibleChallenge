@@ -1,14 +1,10 @@
-#checkbox-component
-  .flex.flex-col
-    .text-lg 
-      = @shown_date
-    .flex.items-center
-      input[
-        type="checkbox"
-        class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-        checked=@checked
-      ]
-    .mt-4.flex.justify-between
-      = button_to 'Previous', date_view_changes_path, method: :post, params: { shown_date: previous_date }, class: 'px-4 py-2 bg-blue-500 text-black rounded'
-      - unless hide_next?
-        = button_to 'Next', date_view_changes_path, method: :post, params: { shown_date: next_date }, class: 'px-4 py-2 bg-blue-500 text-black rounded'
+#checkbox-component.flex.flex-col.w-full
+  .text-lg.font-bold 
+    = @shown_date
+  .w-16.h-16.bg-red-500
+    = button_to 'Wazzup',check_ins_path
+        // Empty content, the button itself will act as the checkbox
+  .mt-4.flex.justify-between
+    = button_to 'Previous', date_view_changes_path, method: :post, params: { shown_date: previous_date }, class: 'px-4 py-2 bg-blue-500 text-black rounded'
+    - unless hide_next?
+      = button_to 'Next', date_view_changes_path, method: :post, params: { shown_date: next_date }, class: 'px-4 py-2 bg-blue-500 text-black rounded'

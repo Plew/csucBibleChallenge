@@ -12,7 +12,6 @@ class CheckboxComponent < ViewComponent::Base
   end
 
   def previous_date
-    puts "Previous date: #{@shown_date}"
     date = Date.parse(@shown_date)
     (date - 1).strftime('%Y-%m-%d')
   end

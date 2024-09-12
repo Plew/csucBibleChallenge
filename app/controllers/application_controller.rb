@@ -18,4 +18,8 @@ class ApplicationController < ActionController::Base
     @current_date ||= Date.parse(cookies[:current_date])
   end
 
+  def current_date_string
+    @current_date_string ||= current_date.strftime('%Y-%m-%d')
+  end
+
 end

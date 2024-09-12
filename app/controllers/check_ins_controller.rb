@@ -1,19 +1,17 @@
 class CheckInsController < ApplicationController
   def create
-    toggle
-    redirect_to dashboard_path(
-      day_offset: params[:day_offset]),
-      recorded_on: params[:recorded_on],
-      foo: 'bar'
+    toggle!
+    @shown_date = current_date_string
+    @current_date = current_date_string
   end
 
-  def toggle
-    check_in = CheckIn.find_by(user: current_user, recorded_on: params[:recorded_on])
+  def toggle!
+    check_in = CheckIn.find_by(user: current_user, recorded_on: current_date)
 
     if check_in
       check_in.destroy
     else
-      CheckIn.create(user: current_user, recorded_on: params[:recorded_on])
+      CheckIn.create(user: current_user, recorded_on: current_date)
     end
   end
 end
