@@ -1,6 +1,2 @@
 main.flex-1.overflow-hidden
-  section.h-1/2.flex.items-center.justify-center.relative
-    .flex.flex-col.items-center
-      #displayed-date.mb-2.text-sm.text-gray-600
-      .flex.items-center.justify-center
-        = render(CheckboxComponent.new(shown_date: @shown_date, current_date: @current_date))
+  = render(CheckboxComponent.new(shown_date: @shown_date))

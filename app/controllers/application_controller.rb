@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::Base
+  before_action :set_current_date
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
 
@@ -15,11 +16,24 @@ class ApplicationController < ActionController::Base
   end
 
   def current_date
-    @current_date ||= Date.parse(cookies[:current_date])
+    @current_date ||= begin
+      if cookies[:current_date].present?
+        Date.parse(cookies[:current_date])
+      else
+        Date.today
+      end
+    end
   end
 
   def current_date_string
     @current_date_string ||= current_date.strftime('%Y-%m-%d')
+  end
+
+  private
+
+  def set_current_date
+    Current.date = current_date
+    Current.date_string = current_date_string
   end
 
 end

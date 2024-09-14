@@ -22,12 +22,10 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_10_120014) do
 
   create_table "devices", force: :cascade do |t|
     t.string "device_id"
-    t.string "key"
     t.integer "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["device_id"], name: "index_devices_on_device_id"
-    t.index ["key"], name: "index_devices_on_key"
     t.index ["user_id"], name: "index_devices_on_user_id"
   end
 

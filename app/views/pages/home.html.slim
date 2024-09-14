@@ -1,2 +1,7 @@
 .flex.flex-col.h-screen.bg-background.text-foreground
-  = render DashboardComponent.new
+  / = render DashboardComponent.new
+  .flex.justify-center
+    .w-32.h-32
+      = button_to check_ins_path do 
+        = image_tag 'checkbox_empty.png', class: 'max-w-full max-h-full object-contain'
+      // Empty content, the button itself will act as the checkbox
