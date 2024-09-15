@@ -26,4 +26,8 @@ class CheckInComponent < ViewComponent::Base
   def disabled?
     @shown_date != Current.date_string
   end
+
+  def display_date
+    parsed_date.strftime('%A, %b %-d')
+  end
 end

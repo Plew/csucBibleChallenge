@@ -1,6 +1,6 @@
-#checkbox-component.flex.flex-col.w-full.border.border-black.border-2
+#checkbox-component.flex.flex-col.w-full
   .flex.justify-center.text-3xl.font-bold 
-    = @shown_date
+    = display_date
   .flex.justify-between.items-center
     = button_to date_view_changes_path, method: :post, params: { shown_date: previous_date } do
       = image_tag 'previous.png'
@@ -18,5 +18,3 @@
             =image_tag 'checkbox_empty.png'
     = button_to date_view_changes_path, method: :post, params: { shown_date: next_date } do
       = image_tag 'next.png'
-
-  .mt-4.flex.justify-between.w-full.border.border-black.border-1.w-full
