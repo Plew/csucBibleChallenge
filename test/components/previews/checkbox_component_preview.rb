@@ -7,7 +7,7 @@ class CheckboxComponentPreview < ViewComponent::Preview
   end
 
   def checked
-    render(CheckboxComponent.new(checked: true))
+    render(CheckboxComponent.new(shown_date: '2024-01-01', checked: true))
   end
 
   def with_name_and_value

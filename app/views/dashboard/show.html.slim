@@ -1,2 +1,3 @@
 .flex.flex-col.h-screen.bg-background.text-foreground
-  = render DashboardComponent.new(shown_date: @shown_date, current_date: @current_date)
+  .main.flex-1.overflow-hidden
+    = render(CheckboxComponent.new(shown_date: @shown_date, checked: @checked))

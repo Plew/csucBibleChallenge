@@ -2,7 +2,6 @@ class CheckInsController < ApplicationController
   def create
     toggle!
     @shown_date = current_date_string
-    @current_date = current_date_string
   end
 
   def toggle!
@@ -10,8 +9,10 @@ class CheckInsController < ApplicationController
 
     if check_in
       check_in.destroy
+      @checked = false
     else
       CheckIn.create(user: current_user, recorded_on: current_date)
+      @checked = true
     end
   end
 end
