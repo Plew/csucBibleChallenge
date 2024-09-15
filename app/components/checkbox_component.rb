@@ -1,31 +1,21 @@
 class CheckboxComponent < ViewComponent::Base
   def initialize(
-    shown_date:,
-    checked: false
+    checked: false,
+    disabled: false
     )
     @checked = checked
-    @shown_date = shown_date
+    @disabled = disabled
   end
 
-  def previous_date
-    (parsed_date - 1).strftime('%Y-%m-%d')
-  end
-
-  def parsed_date
-    @shown_date.blank? ? Date.today : Date.parse(@shown_date)
-  end
-
-  def next_date
-    (parsed_date + 1).strftime('%Y-%m-%d')
-  end
-
-  def hide_next?
-    @shown_date == Current.date_string
+  def displayed_image
+    if @checked
+      'checkbox_checked.png'
+    else
+      'checkbox_empty.png'
+    end
   end
 
   def disabled?
-    @shown_date != Current.date_string
+    @disabled
   end
-
-
 end

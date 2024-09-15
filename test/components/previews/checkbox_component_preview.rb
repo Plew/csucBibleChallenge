@@ -2,12 +2,20 @@
 
 class CheckboxComponentPreview < ViewComponent::Preview
 
-  def unchecked
-    render(CheckboxComponent.new()
+  def unchecked_enabled
+    render(CheckboxComponent.new(checked: false, disabled: false))
   end
 
-  def checked
-    render(CheckboxComponent.new(shown_date: '2024-01-01', checked: true))
+  def checked_enabled
+    render(CheckboxComponent.new(checked: true, disabled: false))
+  end
+
+  def unchecked_disabled
+    render(CheckboxComponent.new(checked: false, disabled: true))
+  end
+
+  def checked_disabled
+    render(CheckboxComponent.new(checked: true, disabled: true))
   end
 
 end

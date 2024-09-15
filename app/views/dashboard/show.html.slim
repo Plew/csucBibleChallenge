@@ -1,3 +1,5 @@
 .flex.flex-col.h-screen.bg-background.text-foreground
   .main.flex-1.overflow-hidden
     = render(CheckInComponent.new(shown_date: @shown_date, checked: @checked))
+    = render(UserLastSevenComponent.new(check_ins: [true, true, true, true, true, true, true]))
+    = "hoo"

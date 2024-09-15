@@ -1,23 +1,6 @@
-#checkbox-component.flex.flex-col.w-full.border.border-black.border-2
-  .flex.justify-center.text-3xl.font-bold 
-    = @shown_date
-  .flex.justify-center.text-3xl.font-bold 
-    = @checked
-  .flex.justify-center
-    .w-32.h-32
-      - if disabled?
-        - if @checked
-          = image_tag 'checkbox_checked.png'
-        - else 
-          =image_tag 'checkbox_empty.png'
-      - else
-        = button_to check_ins_path do 
-          - if @checked
-            = image_tag 'checkbox_checked.png'
-          - else 
-            =image_tag 'checkbox_empty.png'
-
-  .mt-4.flex.justify-between.w-full.border.border-black.border-1.w-full
-    = button_to 'Previous', date_view_changes_path, method: :post, params: { shown_date: previous_date }, class: 'px-4 py-2 bg-blue-500 text-black rounded'
-    - unless hide_next?
-      = button_to 'Next', date_view_changes_path, method: :post, params: { shown_date: next_date }, class: 'px-4 py-2 bg-blue-500 text-black rounded'
+.w-32.h-32
+  - if disabled?
+    = image_tag displayed_image
+  - else
+    = button_to check_ins_path do 
+      = image_tag displayed_image

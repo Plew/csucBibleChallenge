@@ -1,7 +1,8 @@
-.flex.flex-col.h-screen.bg-background.text-foreground
-  / = render DashboardComponent.new
-  .flex.justify-center
-    .w-32.h-32
-      = button_to check_ins_path do 
-        = image_tag 'checkbox_empty.png', class: 'max-w-full max-h-full object-contain'
-      // Empty content, the button itself will act as the checkbox
+#user-last-seven.flex.w-full.gap-1.h-4.bg-red-500
+  .flex-grow.h-full.bg-blue-500
+  .flex-grow.h-full.bg-blue-500
+  .flex-grow.h-full.bg-blue-500
+  .flex-grow.h-full.bg-blue-500
+  .flex-grow.h-full.bg-blue-500
+/   - check_ins.each do |checked_in|
+/     .flex-grow.aspect-square.bg-red-500
