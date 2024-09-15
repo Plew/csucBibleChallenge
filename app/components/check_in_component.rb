@@ -1,4 +1,4 @@
-class CheckboxComponent < ViewComponent::Base
+class CheckInComponent < ViewComponent::Base
   def initialize(
     shown_date:,
     checked: false
@@ -26,6 +26,4 @@ class CheckboxComponent < ViewComponent::Base
   def disabled?
     @shown_date != Current.date_string
   end
-
-
 end

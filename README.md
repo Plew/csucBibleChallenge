@@ -13,3 +13,10 @@ So set up a working codespace and then once it is running, connect to it from Cu
 
 `gh cs ssh --config` will spit out config that you can put into .ssh/config as a kind of ssh alias to use from within Cursor.
 
+
+https://thenounproject.com/icon/checkbox-2578273/
+https://thenounproject.com/icon/checkbox-2578274/
+checkboxes above.  SO HARD to find two matching with the same width!
+
+next prev
+https://thenounproject.com/icon/back-arrow-7210852/
