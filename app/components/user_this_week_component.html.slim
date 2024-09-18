@@ -1,10 +1,5 @@
 #user-this-week.flex.w-full.h-8.divide-x.divide-black
   - this_weeks_days.each do |date|
-    - if @check_in_dates.include?(date)
-      .flex-grow.h-full.bg-red-500
-        .flex.items-center.justify-center.h-full
-          span.text-lg.font-bold = date.strftime('%A').first.upcase
-    - else
-      .flex-grow.h-full.bg-blue-500
-        .flex.items-center.justify-center.h-full
-          span.text-lg.font-bold = date.strftime('%A').first.upcase
+    .flex-grow.h-full.bg-blue-500
+      .flex.items-center.justify-center.h-full
+        span.text-lg.font-bold = date.strftime('%A').first.upcase
