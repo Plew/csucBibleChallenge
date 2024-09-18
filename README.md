@@ -20,3 +20,21 @@ checkboxes above.  SO HARD to find two matching with the same width!
 
 next prev
 https://thenounproject.com/icon/back-arrow-7210852/
+
+
+
+
+
+IDE Pain
+
+Find it faster terminal window alongside the others? none of the vim bindings work in it
+
+Find it faster but only open tabs?
+Going to history in find it faster or vim commands easily
+adding a new file alongside another
+
+can I do pure neovim and still have cursor help?
+dismissing cursor windows more easily
+faster key repeat hack
+when on a file in explorer, select and jump to it not neeeding command 1
+
