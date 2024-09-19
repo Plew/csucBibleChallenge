@@ -1,5 +1,5 @@
 #user-this-week.flex.w-full.h-8.divide-x.divide-black
   - this_weeks_days.each do |date|
-    .flex-grow.h-full.bg-blue-500
+    .flex-grow.h-full class="#{@check_in_dates.include?(date) ? 'bg-green-500' : 'bg-gray-300'}"
       .flex.items-center.justify-center.h-full
         span.text-lg.font-bold = date.strftime('%A').first.upcase

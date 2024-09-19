@@ -1,3 +1,3 @@
-#user-last-x.flex.w-full.h-8
-  - last_x_days.each do |date|
+#user-last-x.flex.w-full.h-3
+  - last_x_days.reverse.each do |date|
     .flex-grow.h-full class="#{check_in_dates.include?(date) ? 'bg-green-500' : 'bg-gray-300'}"

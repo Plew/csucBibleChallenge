@@ -12,7 +12,7 @@ class CheckInComponent < ViewComponent::Base
   end
 
   def parsed_date
-    @shown_date.blank? ? Date.today : Date.parse(@shown_date)
+    @shown_date.blank? ? Current.date : Date.parse(@shown_date)
   end
 
   def next_date
@@ -24,7 +24,7 @@ class CheckInComponent < ViewComponent::Base
   end
 
   def disabled?
-    @shown_date != Current.date_string
+    Current.date != parsed_date
   end
 
   def display_date
