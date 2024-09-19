@@ -1,7 +1,7 @@
 class CheckInsController < ApplicationController
   def create
     toggle!
-    @shown_date = current_date_string
+    redirect_to dashboard_path
   end
 
   def toggle!
