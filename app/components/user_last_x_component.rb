@@ -7,7 +7,7 @@ class UserLastXComponent < ViewComponent::Base
   end
 
   def last_x_days
-    (0..@days_back).map { |i| todays_date - i }
+    (0..@days_back - 1).map { |i| todays_date - i }
   end
 
   def todays_date
