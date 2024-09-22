@@ -98,6 +98,9 @@ GEM
     crass (1.0.6)
     css_parser (1.19.0)
       addressable
+    cuprite (0.15.1)
+      capybara (~> 3.0)
+      ferrum (~> 0.15.0)
     date (3.3.4)
     debug (1.9.2)
       irb (~> 1.10)
@@ -112,6 +115,11 @@ GEM
       railties (>= 5.0.0)
     faker (3.4.2)
       i18n (>= 1.8.11, < 2)
+    ferrum (0.15)
+      addressable (~> 2.5)
+      concurrent-ruby (~> 1.1)
+      webrick (~> 1.7)
+      websocket-driver (~> 0.7)
     ffi (1.17.0-aarch64-linux-gnu)
     ffi (1.17.0-aarch64-linux-musl)
     ffi (1.17.0-arm-linux-gnu)
@@ -412,6 +420,7 @@ DEPENDENCIES
   brakeman
   capybara
   chartkick
+  cuprite
   debug
   factory_bot_rails
   faker

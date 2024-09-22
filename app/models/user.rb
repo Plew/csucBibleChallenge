@@ -14,3 +14,14 @@ class User < ApplicationRecord
     self.key = KeyGenerator.generate
   end
 end
+
+# == Schema Information
+#
+# Table name: users
+#
+#  id         :integer          not null, primary key
+#  name       :string
+#  key        :string
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
