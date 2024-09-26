@@ -24,5 +24,7 @@ Rails.application.routes.draw do
 
   get 'dashboard', to: 'dashboard#show'
 
-  resource :user, only: [:edit, :update]
+  resource :user, only: [:edit, :update] do
+    post 'reset_key', on: :member
+  end
 end

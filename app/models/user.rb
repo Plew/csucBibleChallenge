@@ -8,10 +8,18 @@ class User < ApplicationRecord
     check_ins.order(recorded_on: :desc).limit(x).pluck(:recorded_on)
   end
 
+  def reset_key
+    generate_key
+    save!
+  end
+
   private
 
   def generate_key
-    self.key = KeyGenerator.generate
+    loop do
+      self.key = KeyGenerator.generate
+      break unless User.exists?(key: self.key)
+    end
   end
 end
 

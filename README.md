@@ -38,3 +38,12 @@ dismissing cursor windows more easily
 faster key repeat hack
 when on a file in explorer, select and jump to it not neeeding command 1
 
+
+menu ideas:
+
+One person (checkbox, personal sparklines)
+Group (groups showing create / join a group)
+Globe (ticker)
+Statistics
+
+
