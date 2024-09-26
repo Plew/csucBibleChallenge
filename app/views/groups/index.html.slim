@@ -1,0 +1,17 @@
+h1 Groups
+
+table
+  thead
+    tr
+      th Name
+      th Actions
+  tbody
+    - @groups.each do |group|
+      tr
+        td = group.name
+        td
+          = link_to 'Show', group
+          = link_to 'Edit', edit_group_path(group)
+          = link_to 'Destroy', group, data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' }
+
+= link_to 'New Group', new_group_path

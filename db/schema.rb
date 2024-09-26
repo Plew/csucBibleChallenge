@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_09_10_120014) do
+ActiveRecord::Schema[7.2].define(version: 2024_09_26_152527) do
   create_table "check_ins", force: :cascade do |t|
     t.date "recorded_on"
     t.integer "user_id", null: false
@@ -27,6 +27,13 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_10_120014) do
     t.datetime "updated_at", null: false
     t.index ["device_id"], name: "index_devices_on_device_id"
     t.index ["user_id"], name: "index_devices_on_user_id"
+  end
+
+  create_table "groups", force: :cascade do |t|
+    t.integer "creator_id"
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|
