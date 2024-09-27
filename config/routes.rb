@@ -14,7 +14,9 @@ Rails.application.routes.draw do
 
   resources :check_ins, only: [:create, :destroy]
   resources :date_view_changes, only: [:create]
-  resources :groups
+  resources :groups do
+    resources :group_memberships, only: [:create, :destroy]
+  end
 
   if Rails.env.development?
     mount Lookbook::Engine, at: "/lookbook"

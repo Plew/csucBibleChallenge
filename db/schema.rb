@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_09_26_152527) do
+ActiveRecord::Schema[7.2].define(version: 2024_09_27_103902) do
   create_table "check_ins", force: :cascade do |t|
     t.date "recorded_on"
     t.integer "user_id", null: false
@@ -29,11 +29,22 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_26_152527) do
     t.index ["user_id"], name: "index_devices_on_user_id"
   end
 
+  create_table "group_memberships", force: :cascade do |t|
+    t.integer "group_id", null: false
+    t.integer "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["group_id"], name: "index_group_memberships_on_group_id"
+    t.index ["user_id"], name: "index_group_memberships_on_user_id"
+  end
+
   create_table "groups", force: :cascade do |t|
     t.integer "creator_id"
     t.string "name"
+    t.string "key"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["key"], name: "index_groups_on_key"
   end
 
   create_table "users", force: :cascade do |t|
@@ -46,4 +57,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_26_152527) do
 
   add_foreign_key "check_ins", "users"
   add_foreign_key "devices", "users"
+  add_foreign_key "group_memberships", "groups"
+  add_foreign_key "group_memberships", "users"
 end

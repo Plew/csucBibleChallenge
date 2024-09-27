@@ -4,6 +4,11 @@ p
   strong Name:
   = @group.name
 
+- if @group.users.include?(current_user)
+  = button_to 'Leave Group', group_group_membership_path(@group, current_user.group_memberships.find_by(group: @group)), method: :delete
+- else
+  = button_to 'Join Group', group_group_memberships_path(@group), method: :post
+
 = link_to 'Edit', edit_group_path(@group)
 '  |
 = link_to 'Back', groups_path

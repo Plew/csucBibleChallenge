@@ -1,6 +1,14 @@
-h1 Groups
+h1.text-2xl.font-bold.mb-4 Groups
 
-= link_to 'New Group', new_group_path
+= link_to 'New Group', new_group_path, class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 inline-block"
 
-- @groups.each do |group|
-  = link_to group.name, group
+.grid.gap-4.grid-cols-1.md:grid-cols-2.lg:grid-cols-3
+  - @groups.each do |group|
+    .border.rounded.p-4.shadow
+      h2.text-xl.font-semibold.mb-2 = group.name
+      .flex.justify-between.items-center
+        = link_to 'View', group, class: "text-blue-500 hover:text-blue-700"
+        - if current_user.groups.include?(group)
+          span.text-green-500 Joined
+        - else
+          = button_to 'Join Group', group_group_memberships_path(group), method: :post, class: "bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded text-sm"
