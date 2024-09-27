@@ -1,0 +1,10 @@
+h1 Join Group
+
+= link_to 'Back', @group, class: 'btn btn-secondary mb-3'
+
+= form_with(model: [@group, @group_membership], local: true) do |f|
+  .form-group
+    = label_tag :key, 'Enter Group Key'
+    = text_field_tag :key, nil, class: 'form-control', required: true
+
+  = f.submit 'Join Group', class: 'btn btn-primary mt-3'

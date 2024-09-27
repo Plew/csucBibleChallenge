@@ -9,6 +9,9 @@ p
 - else
   = button_to 'Join Group', group_group_memberships_path(@group), method: :post
 
+- if current_user && !@group.users.include?(current_user)
+  = link_to 'Join Group', new_group_group_membership_path(@group), class: 'btn btn-primary'
+
 = link_to 'Edit', edit_group_path(@group)
 '  |
 = link_to 'Back', groups_path
