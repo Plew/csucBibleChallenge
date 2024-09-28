@@ -1,6 +1,8 @@
 class GroupPieChartComponent < ViewComponent::Base
-  def initialize(names_and_check_ins = [])
-    @names_and_check_ins = names_and_check_ins
+  def initialize(group:, day:)
+    @group = group
+    @day = day
+    @pie_data = PieDataFromGroupDay.new(group, day).pie_data
   end
 
   def call
@@ -12,17 +14,17 @@ class GroupPieChartComponent < ViewComponent::Base
   private
 
   def total_check_ins
-    @names_and_check_ins.sum { |name_and_check_in| name_and_check_in[:check_in] ? 1 : 0 }
+    @pie_data.count { |data| data[:check_in] }
   end
 
   def pie_chart_data
-    @names_and_check_ins.map do |name_and_check_in|
-      [name_and_check_in[:name], name_and_check_in[:check_in].present? ? 1 : 0]
+    @pie_data.map do |data|
+      [data[:name], data[:check_in] ? 1 : 0]
     end
   end
 
   def render_chart
-    pie_chart pie_chart_data, donut: true, legend: "right", title: "User Check-ins"
+    pie_chart pie_chart_data, donut: true, legend: "right", title: "User Check-ins for #{@day}"
   end
 end
 

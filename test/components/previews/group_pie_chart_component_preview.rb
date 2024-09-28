@@ -28,4 +28,25 @@ class GroupPieChartComponentPreview < ViewComponent::Preview
       { name: "Alice", check_in: [true,false].sample },
     ]
   end
+
+  def default
+    group = Group.new(name: "Sample Group")
+    user1 = User.new(name: "Alice")
+    user2 = User.new(name: "Bob")
+    day = Date.today
+    
+    allow(user1).to receive_message_chain(:check_ins, :exists?).and_return(true)
+    allow(user2).to receive_message_chain(:check_ins, :exists?).and_return(false)
+    allow(group).to receive(:users).and_return([user1, user2])
+
+    render(GroupPieChartComponent.new(group: group, day: day))
+  end
+
+  def empty_group
+    group = Group.new(name: "Empty Group")
+    day = Date.today
+    allow(group).to receive(:users).and_return([])
+
+    render(GroupPieChartComponent.new(group: group, day: day))
+  end
 end
