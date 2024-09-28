@@ -12,23 +12,20 @@ Rails.application.routes.draw do
   get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
 
+  resource :user, only: [:edit, :update] do
+    post 'reset_key', on: :member
+  end
   resources :check_ins, only: [:create, :destroy]
   resources :date_view_changes, only: [:create]
-  resources :groups do
-    get 'join_or_create', on: :member
-    resources :group_memberships, only: [:new, :create, :destroy]
-  end
+  resources :groups
+  resources :group_memberships, only: [:new, :create, :destroy]
+
+  # Defines the root path route ("/")
+  root "dashboard#show"
+  get 'dashboard', to: 'dashboard#show'
 
   if Rails.env.development?
     mount Lookbook::Engine, at: "/lookbook"
   end
 
-  # Defines the root path route ("/")
-  root "dashboard#show"
-
-  get 'dashboard', to: 'dashboard#show'
-
-  resource :user, only: [:edit, :update] do
-    post 'reset_key', on: :member
-  end
 end
