@@ -1,7 +1,9 @@
-h1 = @group.name
+h1.text-2xl.font-bold.mb-4 = @group.name
 
-p
+p.mb-4
   strong Name:
   = @group.name
 
-= link_to 'Back', groups_path
+= render(GroupPieChartComponent.new(group: @group))
+
+= link_to 'Back', groups_path, class: "text-blue-500 hover:text-blue-700"

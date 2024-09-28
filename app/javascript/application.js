@@ -12,6 +12,8 @@ function setDateCookie() {
   
   // Call this function when the page loads
   document.addEventListener('turbo:load', setDateCookie);
+  document.addEventListener('turbo:load', () => {
+  });
 
 
   document.addEventListener("turbo:before-stream-render", function(event) {
