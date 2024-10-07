@@ -23,6 +23,7 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root "dashboard#show"
   get 'dashboard', to: 'dashboard#show'
+  get 'home', to: 'dashboard#home', as: :home
 
   if Rails.env.development?
     mount Lookbook::Engine, at: "/lookbook"
