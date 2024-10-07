@@ -6,6 +6,7 @@ class GroupsController < ApplicationController
   end
 
   def show
+    @pie_chart_data = PieDataFromGroupDay.new(@group, current_date).pie_chart_data
   end
 
   def new

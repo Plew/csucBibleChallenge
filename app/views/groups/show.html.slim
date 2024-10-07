@@ -4,6 +4,4 @@ p.mb-4
   strong Name:
   = @group.name
 
-= render(GroupPieChartComponent.new(group: @group, day: Date.today))
-
-= link_to 'Back', groups_path, class: "text-blue-500 hover:text-blue-700"
+= render(GroupPieChartComponent.new(@pie_chart_data))

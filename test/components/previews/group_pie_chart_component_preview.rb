@@ -3,6 +3,10 @@ class GroupPieChartComponentPreview < ViewComponent::Preview
     render(GroupPieChartComponent.new(one_user))
   end
 
+  def many
+    render(GroupPieChartComponent.new(many_users))
+  end
+
   # def default
   #   group = Group.new(name: "Sample Group")
   #   user1 = User.new(name: "Alice")
@@ -23,9 +27,15 @@ class GroupPieChartComponentPreview < ViewComponent::Preview
 
   private
 
+  def many_users
+    7.times.map do |i|
+      [ "User #{i}", [0, 1].sample  ]
+    end
+  end
+
   def one_user
     [ 
-      { name: "Alice", check_in: [true,false].sample },
+      [ "Alice", 1 ],
     ]
   end
 

@@ -5,9 +5,21 @@ class PieDataFromGroupDay
   end
 
   def pie_chart_data
+    pie_chart_rows.map do |data|
+      {
+        name: data[:name].present? ? data[:name] : 'Anonymous', 
+        check_in: data[:check_in]
+      }
+    end
+  end
+
+  private
+
+  def pie_chart_rows
     Group.find_by_sql([
       "SELECT 
-        u.name AS user_name,
+        u.name AS name,
+        c.recorded_on AS recorded_on,
         CASE 
           WHEN c.id IS NOT NULL THEN 1
           ELSE 0
@@ -20,14 +32,4 @@ class PieDataFromGroupDay
       @day, @group.id
     ])
   end
-
-  def pie_chart_data_to_json
-    pie_chart_data.map do |data|
-      {
-        name: data[:user_name],
-        value: data[:check_in]
-      }
-    end
-  end
-
 end
