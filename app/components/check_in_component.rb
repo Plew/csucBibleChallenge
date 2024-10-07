@@ -20,7 +20,7 @@ class CheckInComponent < ViewComponent::Base
   end
 
   def hide_next?
-    @shown_date == Current.date_string
+    parsed_date >= Current.date
   end
 
   def disabled?
