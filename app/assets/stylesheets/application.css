@@ -1,1 +1,3 @@
 /* Application styles */
+
+[x-cloak] { display: none !important; }
