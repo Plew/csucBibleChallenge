@@ -1,7 +1,7 @@
 .flex.flex-col.h-screen.bg-background.text-foreground data-controller="hello"
   .main.flex-1.overflow-hidden
     .mt-2
-      = render(CheckInComponent.new(shown_date: @shown_date, checked: @checked))
+      = render(CheckInComponent.new(active_date: @active_date, checked: @checked))
     = render(UserThisWeekComponent.new(check_in_dates: current_user.last_x_check_in_dates(7)))
     / = render(UserLastXComponent.new(check_in_dates: current_user.last_x_check_in_dates(30), days_back: 30))
     / = render(UserLastXComponent.new(check_in_dates: current_user.last_x_check_in_dates(90), days_back: 90))

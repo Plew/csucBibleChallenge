@@ -6,6 +6,10 @@ class CheckboxComponentPreview < ViewComponent::Preview
     render(CheckboxComponent.new(checked: false, disabled: false))
   end
 
+  def natnael
+    render(CheckboxComponent.new(checked: false, disabled: false))
+  end
+
   def checked_enabled
     render(CheckboxComponent.new(checked: true, disabled: false))
   end

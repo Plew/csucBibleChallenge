@@ -2,9 +2,9 @@
   .flex.justify-center.text-3xl.font-bold 
     = display_date
   .flex.justify-between.items-center
-    = button_to date_view_changes_path, method: :post, params: { shown_date: previous_date } do
+    = button_to date_view_changes_path, method: :post, params: { active_date: previous_date } do
       = image_tag 'previous.png'
     = render(CheckboxComponent.new(checked: @checked, disabled: disabled?))
     span class="#{' invisible' if hide_next?}"
-      = button_to date_view_changes_path, method: :post, params: { shown_date: next_date } do
+      = button_to date_view_changes_path, method: :post, params: { active_date: next_date } do
         = image_tag 'next.png'

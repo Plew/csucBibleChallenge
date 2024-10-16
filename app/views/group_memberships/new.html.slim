@@ -1,9 +1,13 @@
-= form_with(url: group_memberships_path, method: :post) do |f|
-  .form-group
-    = f.label :key, 'Enter Group Key'
-    = f.text_field :key, class: 'form-control', required: true, pattern: '^[A-Za-z]{4}-[0-9]{4}$', title: 'Please enter 4 letters, a hyphen, followed by 4 numbers', maxlength: 9
+= link_to groups_path do
+  .w-10.h-10
+    = image_tag 'previous.png'
 
-  = f.submit 'Join Group', class: 'btn btn-primary mt-3'
+= form_with(url: group_memberships_path, method: :post) do |f|
+  .form-group.flex.flex-col.gap-2.items-center
+    div
+      = f.text_field :key, placeholder: "ABCD-1234", required: true, pattern: '^[A-Za-z]{4}-[0-9]{4}$', title: 'Please enter 4 letters, a hyphen, followed by 4 numbers', maxlength: 9, size: 10
+    div
+      = f.submit "Join", class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
 
 javascript:
   document.addEventListener('DOMContentLoaded', function() {

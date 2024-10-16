@@ -1,12 +1,10 @@
 class ApplicationController < ActionController::Base
+  before_action :set_active_date
   before_action :set_current_date
+
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   # allow_browser versions: :modern
   helper_method :current_user
-
-  def current_device_id
-    session[:device_id] ||= SecureRandom.uuid
-  end
 
   def current_device
     @current_device ||= Device.find_or_create_by(device_id: current_device_id)
@@ -17,25 +15,27 @@ class ApplicationController < ActionController::Base
   end
 
   def current_date
-    @current_date ||= begin
-      if cookies[:current_date].present?
-        Date.parse(cookies[:current_date])
-      else
-        Date.today
-      end
-    end
+    # this cookie is set by application.js when the page is loaded
+    Date.parse(cookies[:current_date]) || Date.today
   end
 
-  def current_date_string
-    @current_date_string ||= current_date.strftime('%Y-%m-%d')
+  def active_date
+    # set to today if no cookie
+    Date.parse(cookies[:active_date]) || Date.today
   end
 
   private
 
+  def current_device_id
+    session[:device_id] ||= SecureRandom.uuid
+  end
+
+  def set_active_date
+    Current.active_date = active_date
+  end
+
   def set_current_date
-    Current.date = current_date
-    Current.date_string = current_date_string
-    Current.system_date = Date.today
+    Current.current_date = current_date
   end
 
 end

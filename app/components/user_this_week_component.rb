@@ -2,9 +2,9 @@
 
 class UserThisWeekComponent < ViewComponent::Base
 
-  def initialize(check_in_dates: [], todays_date: Current.date || Current.system_date)
+  def initialize(check_in_dates: [], active_date: Current.active_date)
     @check_in_dates = check_in_dates
-    @todays_date = todays_date
+    @active_date = active_date
   end
 
   private
@@ -12,7 +12,7 @@ class UserThisWeekComponent < ViewComponent::Base
   def this_weeks_start_date
     # this method will look at todays_date and return the date for the start of the week
     # and the start of the week must be a sunday
-    @todays_date.beginning_of_week(:sunday)
+    @active_date.beginning_of_week(:sunday)
   end
 
   def this_weeks_days

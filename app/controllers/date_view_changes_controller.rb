@@ -1,7 +1,7 @@
 class DateViewChangesController < ApplicationController
 
   def create
-    cookies[:shown_date] = params[:shown_date]
+    cookies[:active_date] = Date.parse params[:active_date]
     redirect_to dashboard_path
   end
 
