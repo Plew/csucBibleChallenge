@@ -16,12 +16,14 @@ class ApplicationController < ActionController::Base
 
   def current_date
     # this cookie is set by application.js when the page is loaded
-    Date.parse(cookies[:current_date]) || Date.today
+    cookies[:current_date] ||= Date.today
+    cookies[:current_date].is_a?(Date) ? cookies[:current_date] : Date.parse(cookies[:current_date])
   end
 
   def active_date
     # set to today if no cookie
-    Date.parse(cookies[:active_date]) || Date.today
+    cookies[:active_date] ||= Date.today
+    cookies[:active_date].is_a?(Date) ? cookies[:active_date] : Date.parse(cookies[:active_date])
   end
 
   private
