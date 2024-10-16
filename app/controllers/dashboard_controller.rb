@@ -6,6 +6,7 @@ class DashboardController < ApplicationController
   end
 
   def home
+    cookies[:active_date] = Current.current_date
     redirect_to dashboard_path
   end
 
