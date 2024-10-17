@@ -1,2 +1,41 @@
-// Content of your Piechart component
-= pie_chart ({phil: 2, kasia: 4})
+canvas#donut-chart data-donut-data=donut_chart_data.to_json
+
+
+javascript:
+
+  const toolTipTitle = (tooltipItems) => {
+    return '';
+  }
+
+  document.addEventListener("turbo:load", function() {
+    var ctx = document.getElementById('donut-chart');
+    //console.log('ctx', ctx);
+    var donutChartData = JSON.parse(ctx.dataset.donutData);
+    // console.log('foo', foo);
+    // var donutChartData= JSON.parse(document.getElementById('donut-chart').dataset.donutData);
+    var chartConfig = {
+      type: 'doughnut',
+      data: donutChartData,
+      options: {
+        responsive: true,
+        plugins: {
+          tooltip: {
+            callbacks: {
+              // label should be assigned a function returns an empty string so it doesn't show '1'
+              label: () => '',
+            }
+          },
+          title: {
+            display: true,
+            text: 'booya'
+          }
+        }
+      }
+    }
+
+    // console.log('donut data', chartConfig);
+
+    new Chart(ctx, chartConfig);
+
+  })
+

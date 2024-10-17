@@ -2,7 +2,7 @@
 
 class PiechartComponentPreview < ViewComponent::Preview
   def default
-    render(PiechartComponent.new)
+    render(PiechartComponent.new(title: 'foo'))
   end
 
   # You can add more preview methods here to showcase different states or variations
