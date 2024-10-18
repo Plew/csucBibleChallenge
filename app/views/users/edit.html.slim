@@ -1,11 +1,4 @@
 = form_with(model: @user, local: true, class: "max-w-md mx-auto") do |form|
-  - if @user.errors.any?
-    #error_explanation.bg-red-100.border.border-red-400.text-red-700.px-4.py-3.rounded.relative.mb-4
-      h2.font-bold.mb-2 = "#{pluralize(@user.errors.count, "error")} prohibited this user from being saved:"
-      ul.list-disc.list-inside
-        - @user.errors.full_messages.each do |message|
-          li = message
-
   .mb-4
     = form.label :name, class: "block text-gray-700 text-sm font-bold mb-2"
     = form.text_field :name, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -13,6 +6,15 @@
   .flex.items-center.justify-between#change-name-button
     = form.submit "Change Name", class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
 
+  .flex.flex-col.items-center.mt-8.space-y-4
+    div=  "Your user key is "
+    div= @user.key
+  .text-sm.mx-8
+    | You can use this key to log yourself into another device if you need to switch. If keeping your record is important to you, take a screenshot or write it down, because this key is the only way you can access your history and groups if you switch devices or lose your phone.
+
+
+
+    .
     / .mt-4
     /     .mb-4
     /     = form.label :key, class: "block text-gray-700 text-sm font-bold mb-2"
