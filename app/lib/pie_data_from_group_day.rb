@@ -8,7 +8,7 @@ class PieDataFromGroupDay
     pie_chart_rows.map do |data|
       {
         name: data[:name].present? ? data[:name] : 'Anonymous', 
-        check_in: data[:check_in]
+        checked_in_value: data[:checked_in_value]
       }
     end
   end
@@ -23,12 +23,12 @@ class PieDataFromGroupDay
         CASE 
           WHEN c.id IS NOT NULL THEN 1
           ELSE 0
-        END AS check_in
+        END AS checked_in_value
       FROM users u
       JOIN group_memberships gm ON u.id = gm.user_id
       LEFT JOIN check_ins c ON u.id = c.user_id AND c.recorded_on = ?
       WHERE gm.group_id = ?
-      ORDER BY check_in DESC, u.name",
+      ORDER BY checked_in_value DESC, u.name",
       @day, @group.id
     ])
   end

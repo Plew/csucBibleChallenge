@@ -1,16 +1,37 @@
 # frozen_string_literal: true
 
 class PiechartComponentPreview < ViewComponent::Preview
-  def default
-    render(PiechartComponent.new(group_id: 1, title: 'foo'))
+  def two
+    render(PiechartComponent.new(group_id: 1, title: 'Group X', user_checkin_data: user_checkin_data))
   end
 
-  # You can add more preview methods here to showcase different states or variations
-  # def with_data
-  #   render(PiechartComponent.new(data: [30, 50, 20]))
-  # end
+  def nine
+    render(PiechartComponent.new(group_id: 1, title: 'Group X', user_checkin_data: user_checkin_data_with_nine_users))
+  end
 
-  # def with_custom_colors
-  #   render(PiechartComponent.new(colors: ['#FF5733', '#33FF57', '#3357FF']))
-  # end
+  private
+
+  def user_checkin_data
+    [
+      { name: 'John Doe', checked_in_value: 1 },
+      { name: 'Jane Doe', checked_in_value: 0 }
+    ]
+  end
+
+  def user_checkin_data_with_nine_users
+    [
+      { name: 'John Doe', checked_in_value: 1 },
+      { name: 'Jane Doe', checked_in_value: 1 },
+      { name: 'John Smith', checked_in_value: 0 },
+      { name: 'Jane Smith', checked_in_value: 0 },
+      { name: 'John Doe', checked_in_value: 1 },
+      { name: 'Jane Doe', checked_in_value: 1 },
+      { name: 'John Smith', checked_in_value: 0 },
+      { name: 'Jane Smith', checked_in_value: 0 },
+      { name: 'John Doe', checked_in_value: 1 },
+      { name: 'Jane Doe', checked_in_value: 1 },
+      { name: 'John Smith', checked_in_value: 0 },
+      { name: 'Jane Smith', checked_in_value: 0 },
+    ]
+  end
 end

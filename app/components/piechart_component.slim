@@ -15,6 +15,9 @@ javascript:
       options: {
         responsive: true,
         plugins: {
+          legend: {
+            display: false
+          },
           tooltip: {
             callbacks: {
               // label should be assigned a function returns an empty string so it doesn't show '1'
@@ -22,8 +25,8 @@ javascript:
             }
           },
           title: {
-            display: true,
-            text: 'booya'
+            display: false,
+            text: '#{@title}'
           }
         }
       }
