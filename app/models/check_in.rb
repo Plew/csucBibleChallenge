@@ -7,6 +7,20 @@ class CheckIn < ApplicationRecord
     CheckIn.find_by(user: user, recorded_on: date) ? true : false
   end
 
+  def self.recent_with_usernames(limit = 10)
+    CheckIn.includes(:user)
+           .joins(:user)
+           .where.not(users: { name: [nil, ''] })
+           .order(recorded_on: :desc)
+           .limit(limit)
+           .map do |check_in| 
+            OpenStruct.new(
+              date: check_in.recorded_on, 
+              username: check_in.user.name,
+              timestamp: check_in.created_at
+              ) 
+           end 
+  end
 end
 
 # == Schema Information

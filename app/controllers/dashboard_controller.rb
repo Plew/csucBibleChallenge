@@ -1,8 +1,8 @@
 class DashboardController < ApplicationController
   def show
-    # this feels wrong.  initial load, shown date and current date are the same.
     @active_date = Current.active_date
     @checked = CheckIn.for_user_and_date?(current_user, @active_date)
+    @recent_user_checkins = CheckIn.recent_with_usernames
   end
 
   def home
