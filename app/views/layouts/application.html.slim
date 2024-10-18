@@ -3,7 +3,7 @@ doctype html
 html
   = render partial: 'layouts/head'
   body.bg-back1
-    container.h-dvh.flex.flex-col.max-w-md.mx-auto.border.border-1.border-black
+    container.h-dvh.flex.flex-col.max-w-md.mx-auto
       = render 'layouts/nav'
       = render(NavBarComponent.new)
       = yield

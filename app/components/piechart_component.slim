@@ -5,10 +5,8 @@ javascript:
 
   document.addEventListener("turbo:load", function() {
     var ctx = document.getElementById('group_#{@group_id}_donut_chart');
-    //console.log('ctx', ctx);
     var donutChartData = JSON.parse(ctx.dataset.donutData);
-    // console.log('foo', foo);
-    // var donutChartData= JSON.parse(document.getElementById('donut-chart').dataset.donutData);
+
     var chartConfig = {
       type: 'doughnut',
       data: donutChartData,
@@ -31,8 +29,6 @@ javascript:
         }
       }
     }
-
-    // console.log('donut data', chartConfig);
 
     new Chart(ctx, chartConfig);
 

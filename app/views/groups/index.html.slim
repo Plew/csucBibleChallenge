@@ -1,14 +1,11 @@
 
 .grid.gap-4.grid-cols-1
-  - current_user.groups.each do |group|
-    .border.rounded.p-4.shadow
-      h2.text-xl.font-semibold.mb-2 = group.name
-      .flex.justify-between.items-center
-        = link_to 'View', group, class: "text-blue-500 hover:text-blue-700"
-        - if current_user.groups.include?(group)
-          span.text-green-500 Joined
-        - else
-          = button_to 'Join Group', group_group_memberships_path(group), method: :post, class: "bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded text-sm"
+  - @group_data.each do |group|
+    .flex.justify-between.items-center.mx-8.my-4
+      = render(PiechartComponent.new(group_id: group.group_id, title: group.title, user_checkin_data: group.user_checkin_data))
+    .text-center
+      = link_to 'View', group_path(group.group_id), class: "text-blue-500 hover:text-blue-700"
+    
 
 / i want space between the two buttons that is the same as the space between the buttons and the edge of the page 
 .mt-4.flex.justify-evenly class="*:text-center"

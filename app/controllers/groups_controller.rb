@@ -2,7 +2,14 @@ class GroupsController < ApplicationController
   before_action :set_group, only: [:show, :edit, :update, :destroy]
 
   def index
-    @groups = Group.all
+    # @groups = Group.all
+    @group_data = current_user.groups.map do |group|
+      OpenStruct.new(
+        group_id: group.id,
+        title: group.name,
+        user_checkin_data: PieDataFromGroupDay.new(group, current_date).pie_chart_data
+      )
+    end
   end
 
   def show

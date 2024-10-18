@@ -1,7 +1,3 @@
-h1.text-2xl.font-bold.mb-4 = @group.name
+h1.text-center.text-2xl.font-bold.mb-4 = @group.name
 
-p.mb-4
-  strong Name:
-  = @group.name
-
-= render(GroupPieChartComponent.new(@pie_chart_data))
+= render(PiechartComponent.new(group_id: @group.id, title: @group.name, user_checkin_data: @pie_chart_data))
