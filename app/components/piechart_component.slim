@@ -1,14 +1,10 @@
-canvas#donut-chart data-donut-data=donut_chart_data.to_json
+canvas data-donut-data=donut_chart_data.to_json id="group_#{@group_id}_donut_chart"
 
 
 javascript:
 
-  const toolTipTitle = (tooltipItems) => {
-    return '';
-  }
-
   document.addEventListener("turbo:load", function() {
-    var ctx = document.getElementById('donut-chart');
+    var ctx = document.getElementById('group_#{@group_id}_donut_chart');
     //console.log('ctx', ctx);
     var donutChartData = JSON.parse(ctx.dataset.donutData);
     // console.log('foo', foo);
