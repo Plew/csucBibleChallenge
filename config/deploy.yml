@@ -60,9 +60,11 @@ env:
 #   user: app
 
 # Use a persistent storage volume.
-#
-# volumes:
-#   - "app_storage:/app/storage"
+
+volumes:
+  # host path:container path
+  - "/db:/rails/sqlite"
+  - "/storage:/rails/storage"
 
 # Bridge fingerprinted assets, like JS and CSS, between versions to avoid
 # hitting 404 on in-flight requests. Combines all files from new and old
