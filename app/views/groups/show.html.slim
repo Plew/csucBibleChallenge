@@ -19,6 +19,7 @@
       .w-full.h-full.flex.justify-center.items-center
         = render(PiechartComponent.new(group_id: @group.id, title: @group.name, user_checkin_data: @pie_chart_data))
 
+
     div.flex-shrink-0
       - if @next_group_id
         = link_to group_path(@next_group_id) do
