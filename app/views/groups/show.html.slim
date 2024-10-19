@@ -9,13 +9,15 @@
       = @group.name
   .flex.justify-between.items-center.h-64.max-w-full.px-2
     div.flex-shrink-0
-      = link_to group_path(@previous_group_id) do
-        = image_tag 'previous.png', class: 'w-16 h-16'
+      - if @previous_group_id
+        = link_to group_path(@previous_group_id) do
+          = image_tag 'previous.png', class: 'w-16 h-16'
 
     .flex-grow.flex.justify-center.items-center.h-64.w-full.overflow-hidden
       .w-full.h-full.flex.justify-center.items-center
         = render(PiechartComponent.new(group_id: @group.id, title: @group.name, user_checkin_data: @pie_chart_data))
 
     div.flex-shrink-0
-      = link_to group_path(@next_group_id) do
-        = image_tag 'next.png', class: 'w-16 h-16'
+      - if @next_group_id
+        = link_to group_path(@next_group_id) do
+          = image_tag 'next.png', class: 'w-16 h-16'
