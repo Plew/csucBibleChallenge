@@ -1,6 +1,12 @@
 #group-component.flex.flex-col.w-full
-  .flex.justify-center.text-3xl.font-bold 
-    = @group.name
+  .flex.justify-between.items-center.mx-2.mt-4
+    .w-6.h-6
+      = image_tag 'infowhite100.png'
+    .w-6.h-6
+      = image_tag 'pluswhite100.png'
+  .flex.justify-center.items-center.mx-2.mt-2
+    .text-2xl.font-bold 
+      = @group.name
   .flex.justify-between.items-center.h-64.max-w-full.px-2
     div.flex-shrink-0
       = link_to group_path(@previous_group_id) do
