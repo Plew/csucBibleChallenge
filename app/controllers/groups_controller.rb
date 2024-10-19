@@ -1,5 +1,5 @@
 class GroupsController < ApplicationController
-  before_action :set_group, only: [:show, :edit, :update, :destroy]
+  before_action :set_group, except: [:index, :new, :create]
 
   def index
     # @groups = Group.all
@@ -14,6 +14,8 @@ class GroupsController < ApplicationController
 
   def show
     @pie_chart_data = PieDataFromGroupDay.new(@group, current_date).pie_chart_data
+    @next_group_id = CircularIntegerCollection.new(current_user.groups.pluck(:id), @group.id).next
+    @previous_group_id = CircularIntegerCollection.new(current_user.groups.pluck(:id), @group.id).previous
   end
 
   def new
