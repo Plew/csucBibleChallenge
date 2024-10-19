@@ -6,15 +6,15 @@
   .flex.items-center.justify-between#change-name-button
     = form.submit "Change Name", class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
 
-  .flex.flex-col.items-center.mt-8.space-y-4
-    div=  "Your user key is "
-    div= @user.key
-  .text-sm.mx-8
-    | You can use this key to log yourself into another device if you need to switch. If keeping your record is important to you, take a screenshot or write it down, because this key is the only way you can access your history and groups if you switch devices or lose your phone.
+  / .flex.flex-col.items-center.mt-8.space-y-4
+  /   div=  "Your user key is "
+  /   div= @user.key
+  / .text-sm.mx-8
+  /   | You can use this key to log yourself into another device if you need to switch. If keeping your record is important to you, take a screenshot or write it down, because this key is the only way you can access your history and groups if you switch devices or lose your phone.
 
 
 
-    .
+  /   .
     / .mt-4
     /     .mb-4
     /     = form.label :key, class: "block text-gray-700 text-sm font-bold mb-2"
