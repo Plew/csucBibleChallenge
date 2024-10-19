@@ -17,13 +17,19 @@ Rails.application.routes.draw do
   end
   resources :check_ins, only: [:create, :destroy]
   resources :date_view_changes, only: [:create]
-  resources :groups
+
+  resources :groups do
+    get 'group_key', on: :member
+  end
+
   resources :group_memberships, only: [:new, :create, :destroy]
 
   # Defines the root path route ("/")
   root "dashboard#show"
   get 'dashboard', to: 'dashboard#show'
   get 'home', to: 'dashboard#home', as: :home
+
+  get 'create_or_join', to: 'groups#create_or_join', as: :create_or_join
 
   if Rails.env.development?
     mount Lookbook::Engine, at: "/lookbook"

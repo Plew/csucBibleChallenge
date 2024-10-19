@@ -1,14 +1,13 @@
 class GroupsController < ApplicationController
-  before_action :set_group, except: [:index, :new, :create]
+  before_action :set_group, except: [:index, :new, :create, :create_or_join]
 
   def index
-    # @groups = Group.all
-    @group_data = current_user.groups.map do |group|
-      OpenStruct.new(
-        group_id: group.id,
-        title: group.name,
-        user_checkin_data: PieDataFromGroupDay.new(group, current_date).pie_chart_data
-      )
+    @groups = current_user.groups
+
+    if @groups.any?
+      redirect_to @groups.first
+    else
+      render :create_or_join
     end
   end
 
@@ -31,6 +30,14 @@ class GroupsController < ApplicationController
     else
       render :new
     end
+  end
+
+  # get for this
+  def create_or_join
+  end
+
+  #get for this
+  def group_key
   end
 
   def edit

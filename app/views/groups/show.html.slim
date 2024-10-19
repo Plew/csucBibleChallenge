@@ -1,9 +1,11 @@
 #group-component.flex.flex-col.w-full
   .flex.justify-between.items-center.mx-2.mt-4
     .w-6.h-6
-      = image_tag 'infowhite100.png'
+      = link_to group_key_group_path(@group) do
+        = image_tag 'infowhite100.png'
     .w-6.h-6
-      = image_tag 'pluswhite100.png'
+      = link_to create_or_join_path do
+        = image_tag 'pluswhite100.png'
   .flex.justify-center.items-center.mx-2.mt-2
     .text-2xl.font-bold 
       = @group.name
