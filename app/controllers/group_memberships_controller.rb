@@ -4,7 +4,7 @@ class GroupMembershipsController < ApplicationController
   end
 
   def create
-    group = Group.find_by(key: params[:key])
+    group = Group.find_by(key: params[:key].upcase)
     group_membership = group.group_memberships.build(user: current_user)
     group_membership.save
     # redirect_to @group
