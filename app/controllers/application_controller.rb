@@ -29,7 +29,7 @@ class ApplicationController < ActionController::Base
   private
 
   def current_device_id
-    session[:device_id] ||= SecureRandom.uuid
+    cookies.permanent[:device_id] ||= SecureRandom.uuid
   end
 
   def set_active_date
