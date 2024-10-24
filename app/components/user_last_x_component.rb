@@ -11,7 +11,7 @@ class UserLastXComponent < ViewComponent::Base
   end
 
   def todays_date
-    Current.current_date || Date.today
+    Current.browser_date
   end
 
 end

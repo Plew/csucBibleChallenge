@@ -16,11 +16,11 @@ class CheckInComponent < ViewComponent::Base
   end
 
   def hide_next?
-    @active_date >= current_date
+    @active_date >= browser_date
   end
 
   def disabled?
-    @active_date != current_date
+    @active_date != browser_date
   end
 
   def display_date
@@ -29,7 +29,7 @@ class CheckInComponent < ViewComponent::Base
 
   private
 
-  def current_date
-    Current.current_date || Date.today
+  def browser_date
+    Current.browser_date
   end
 end

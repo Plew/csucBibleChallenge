@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   before_action :set_active_date
-  before_action :set_current_date
+  before_action :set_browser_date
 
   if Rails.env.development?
     skip_before_action :verify_authenticity_token
@@ -18,16 +18,23 @@ class ApplicationController < ActionController::Base
     @current_user ||= current_device.user || User.create!.tap { |user| user.devices << current_device }
   end
 
-  def current_date
+  def browser_date
     # this cookie is set by application.js when the page is loaded
-    cookies[:current_date] ||= Date.today
-    cookies[:current_date].is_a?(Date) ? cookies[:current_date] : Date.parse(cookies[:current_date])
+    # it is only set in application.js
+    if cookies[:browser_date].present?
+      Date.parse(cookies[:browser_date])
+    else
+      Date.today
+    end
   end
 
   def active_date
     # set to today if no cookie
-    cookies[:active_date] ||= Date.today
-    cookies[:active_date].is_a?(Date) ? cookies[:active_date] : Date.parse(cookies[:active_date])
+    if cookies[:active_date].present?
+      Date.parse(cookies[:active_date])
+    else
+      Date.today
+    end
   end
 
   private
@@ -40,8 +47,8 @@ class ApplicationController < ActionController::Base
     Current.active_date = active_date
   end
 
-  def set_current_date
-    Current.current_date = current_date
+  def set_browser_date
+    Current.browser_date= browser_date
   end
 
 end
