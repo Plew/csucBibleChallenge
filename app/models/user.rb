@@ -5,7 +5,7 @@ class User < ApplicationRecord
   has_many :group_memberships
   has_many :groups, through: :group_memberships
   has_many :created_groups, class_name: 'Group', foreign_key: 'creator_id'
-  before_create :generate_key
+  before_create :generate_key, :generate_name
 
   def last_x_check_in_dates(x)
     check_ins.order(recorded_on: :desc).limit(x).pluck(:recorded_on)
@@ -17,6 +17,10 @@ class User < ApplicationRecord
   end
 
   private
+
+  def generate_name
+    self.name = "Anonymous Reader"
+  end
 
   def generate_key
     loop do
