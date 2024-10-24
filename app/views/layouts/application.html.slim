@@ -1,4 +1,3 @@
-
 doctype html
 html
   = render partial: 'layouts/head'
@@ -6,4 +5,8 @@ html
     container.h-dvh.flex.flex-col.max-w-md.mx-auto
       = render 'layouts/nav'
       = render(NavBarComponent.new)
+      div data-controller="flash"
+        - flash.each do |key, value|
+          div class="alert #{flash_class(key)}" role="alert"
+            = value
       = yield
