@@ -1,12 +1,4 @@
-= link_to groups_path do
-  .w-10.h-10
-    = image_tag 'previous.png'
-
-.mx-4.mt-6.flex.flex-col.gap-2
-  .text-lg When you form a group, anyone in the group can see your reading check-ins, and you can see theirs. This helps with accountability.
-  .text-lg All you need to do is name your group. You can change the name later if you need to.
-
-.mt-8
+.mt-4.flex-col.flex.items-center.gap-4 class="*:text-center"
   == render 'form', group: @group
 
 

@@ -1,7 +1,7 @@
 = form_with(model: group, local: true) do |form|
-  .flex.flex-col.gap-6.items-center
+  .flex.flex-col.gap-4.items-center
     div
       = form.text_field :name, placeholder: "Group name", label: false, class: "input input-bordered w-full max-w-xs"
     div
-      = form.submit class: "btn btn-primary"
+      = form.submit class: "btn btn-primary btn-wide btn-lg mb-4"
 
