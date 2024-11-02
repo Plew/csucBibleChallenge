@@ -9,5 +9,9 @@
 
 / i want space between the two buttons that is the same as the space between the buttons and the edge of the page 
 .mt-4.flex.justify-evenly class="*:text-center"
+  .text-xl.font-bold
+    | When you create or join a group, the others in the group can see your checkins.
+    | This helps with accountability.
+
   = link_to 'Create a group', new_group_path, class: "w-2/5 16 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 inline-block"
   = link_to 'Join a group', new_group_membership_path, class: "w-2/5 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 inline-block"
