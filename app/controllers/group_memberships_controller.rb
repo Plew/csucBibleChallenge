@@ -5,10 +5,14 @@ class GroupMembershipsController < ApplicationController
 
   def create
     group = Group.find_by(key: params[:key].upcase)
-    group_membership = group.group_memberships.build(user: current_user)
-    group_membership.save
-    # redirect_to @group
-    redirect_to groups_path
+
+    if group
+      group_membership = group.group_memberships.build(user: current_user)
+      group_membership.save
+      redirect_to groups_path, notice: 'You have joined this group.'
+    else
+      redirect_to new_group_membership_path, notice: 'No group exists with that key.'
+    end
   end
 
   def destroy

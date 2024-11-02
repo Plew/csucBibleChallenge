@@ -1,10 +1,11 @@
 .mt-4.flex-col.flex.items-center.gap-4 class="*:text-center"
-  = form_with(url: group_memberships_path, method: :post) do |f|
+  = form_tag group_memberships_path do
     .form-group.flex.flex-col.gap-2.items-center
       div
-        = f.text_field :key, placeholder: "ABCD-1234", required: true, pattern: '^[A-Za-z]{4}-[0-9]{4}$', title: 'Please enter 4 letters, a hyphen, followed by 4 numbers', maxlength: 9, size: 10
+        = text_field_tag :key, nil, placeholder: "ABCD-1234", required: true, pattern: '^[A-Za-z]{4}-[0-9]{4}$', class: "input input-bordered w-full"
       div
-        = f.submit "Join", class: "btn btn-primary btn-wide btn-lg"
+        = submit_tag "Join", class: "btn btn-primary btn-wide btn-lg"
+
 
 javascript:
   document.addEventListener('DOMContentLoaded', function() {
