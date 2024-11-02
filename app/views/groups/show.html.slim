@@ -24,3 +24,10 @@
       - if @next_group_id
         = link_to group_path(@next_group_id) do
           = image_tag 'next.png', class: 'w-16 h-16'
+
+.flex.flex-col.items-center.gap-4.mx-8.mt-8
+  .text-xl
+    | Group members
+  .flex.flex-col.gap-4.w-full
+    - @group_members.each do |member|
+      = member.name
