@@ -6,12 +6,12 @@ class UsersController < ApplicationController
 
   def update
     @user.update(user_params)
-    redirect_to edit_user_path, notice: 'User was successfully updated.'
+    redirect_to edit_user_path, notice: 'User successfully updated.'
   end
 
   def reset_key
     @user.reset_key
-    redirect_to edit_user_path, notice: 'User key was successfully reset.'
+    redirect_to edit_user_path, notice: 'User key successfully reset.'
   end
 
   private
