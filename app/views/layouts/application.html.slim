@@ -3,9 +3,9 @@ html
   = render partial: 'layouts/head'
   body.bg-back1
     container.h-dvh.flex.flex-col.max-w-md.mx-auto.relative
-      div data-controller="flash" class="absolute top-0 left-0 right-0 z-50"
+      div.max-w-full.px-8.my-8 data-controller="flash" class="absolute top-0 left-0 right-0 z-50"
         - flash.each do |key, value|
-          div class="#{flash_class(key)}" role="alert"
+          .z-50.p-4.text-center.w-full.mt-8 class="#{flash_class(key)}" role="alert"
             = value
       
       = render 'layouts/nav'
