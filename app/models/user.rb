@@ -19,7 +19,11 @@ class User < ApplicationRecord
   private
 
   def generate_name
-    self.name = "Anonymous Reader"
+    self.name = "Anonymous Reader #{one_to_hundred}"
+  end
+
+  def one_to_hundred
+    (1..100).to_a.sample
   end
 
   def generate_key

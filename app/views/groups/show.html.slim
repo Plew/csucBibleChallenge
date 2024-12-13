@@ -28,6 +28,7 @@
 .flex.flex-col.items-center.gap-4.mx-8.mt-8
   .text-xl
     | Group members
-  .flex.flex-col.gap-4.w-full
+  .flex.flex-col.w-full
     - @group_members.each do |member|
-      = member.name
+      .text-sm
+        = member.name
