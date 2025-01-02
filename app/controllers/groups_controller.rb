@@ -43,6 +43,7 @@ class GroupsController < ApplicationController
   end
 
   def edit
+    @group = current_user.groups.includes(:users).find(params[:id])
   end
 
   def update
@@ -65,6 +66,6 @@ class GroupsController < ApplicationController
   end
 
   def group_params
-    params.permit(:name) # Add other permitted attributes as needed
+    params.require(:group).permit(:name) # Add other permitted attributes as needed
   end
 end

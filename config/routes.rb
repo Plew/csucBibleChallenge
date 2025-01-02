@@ -19,7 +19,6 @@ Rails.application.routes.draw do
   resources :date_view_changes, only: [:create]
 
   resources :groups do
-    get 'group_key', on: :member
   end
 
   resources :group_memberships, only: [:new, :create, :destroy]
