@@ -14,6 +14,8 @@ Rails.application.routes.draw do
 
   resource :user, only: [:edit, :update] do
     post 'reset_key', on: :member
+    get 'recover', on: :collection
+    post 'recover', on: :collection
   end
   resources :check_ins, only: [:create, :destroy]
   resources :date_view_changes, only: [:create]
