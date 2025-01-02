@@ -21,6 +21,7 @@ Rails.application.routes.draw do
   resources :date_view_changes, only: [:create]
 
   resources :groups do
+    delete 'members/:user_id', to: 'group_members#destroy', as: :member
   end
 
   resources :group_memberships, only: [:new, :create, :destroy]
