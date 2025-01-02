@@ -6,20 +6,8 @@
   .flex.items-center.justify-center#change-name-button
     = form.submit "Change Name", class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
 
-  / .flex.flex-col.items-center.mt-8.space-y-4
-  /   div=  "Your user key is "
-  /   div= @user.key
-  / .text-sm.mx-8
-  /   | You can use this key to log yourself into another device if you need to switch. If keeping your record is important to you, take a screenshot or write it down, because this key is the only way you can access your history and groups if you switch devices or lose your phone.
-
-
-
-  /   .
-    / .mt-4
-    /     .mb-4
-    /     = form.label :key, class: "block text-gray-700 text-sm font-bold mb-2"
-    /     .flex.items-center
-    /         = form.text_field :key, readonly: true, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mr-2"
-
-/ h3.text-xl.font-bold.mb-6= @user.key
-/ = button_to "Reset Key", reset_key_user_path, method: :post, form: { data: { turbo_confirm: "Are you sure you want to reset the key?" } }, class: "bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+  .flex.flex-col.items-center.mt-8.space-y-4
+    .text-gray-700.text-sm.font-bold Your user key is:
+    code.bg-gray-100.p-2.rounded.text-gray-700= @user.key
+    .text-sm.text-gray-600.mx-8.text-center
+      | You can use this key to log yourself into another device. If keeping your record is important to you, take a screenshot or write it down.
