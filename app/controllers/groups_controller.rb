@@ -39,6 +39,7 @@ class GroupsController < ApplicationController
 
   #get for this
   def group_key
+    @group = current_user.groups.includes(:users).find(params[:id])
   end
 
   def edit
