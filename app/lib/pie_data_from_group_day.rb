@@ -7,7 +7,7 @@ class PieDataFromGroupDay
   def pie_chart_data
     pie_chart_rows.map do |data|
       {
-        name: data[:name].present? ? data[:name] : 'Anonymous', 
+        name: data[:name],
         checked_in_value: data[:checked_in_value]
       }
     end
@@ -18,7 +18,7 @@ class PieDataFromGroupDay
   def pie_chart_rows
     Group.find_by_sql([
       "SELECT 
-        u.name AS name,
+        COALESCE(NULLIF(u.name, ''), 'Anonymous') AS name,
         c.recorded_on AS recorded_on,
         CASE 
           WHEN c.id IS NOT NULL THEN 1
