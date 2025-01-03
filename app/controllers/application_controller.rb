@@ -1,5 +1,4 @@
 class ApplicationController < ActionController::Base
-  before_action :set_active_date
   before_action :set_browser_date
 
   if Rails.env.development?
@@ -28,27 +27,13 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def active_date
-    # set to today if no cookie
-    if cookies[:active_date].present?
-      Date.parse(cookies[:active_date])
-    else
-      Date.today
-    end
-  end
-
   private
 
   def current_device_id
     cookies.permanent[:device_id] ||= SecureRandom.uuid
   end
 
-  def set_active_date
-    Current.active_date = active_date
-  end
-
   def set_browser_date
-    Current.browser_date= browser_date
+    Current.browser_date = browser_date
   end
-
 end

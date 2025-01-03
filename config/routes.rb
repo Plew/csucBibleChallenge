@@ -18,7 +18,6 @@ Rails.application.routes.draw do
     post 'recover', on: :collection
   end
   resources :check_ins, only: [:create, :destroy]
-  resources :date_view_changes, only: [:create]
 
   resources :groups do
     delete 'members/:user_id', to: 'group_members#destroy', as: :member

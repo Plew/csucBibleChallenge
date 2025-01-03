@@ -1,6 +1,6 @@
 class CheckInComponent < ViewComponent::Base
   def initialize(
-    active_date: Current.active_date,
+    active_date: Current.browser_date,
     checked: false
     )
     @checked = checked

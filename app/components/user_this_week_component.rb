@@ -2,7 +2,7 @@
 
 class UserThisWeekComponent < ViewComponent::Base
 
-  def initialize(check_in_dates: [], active_date: Current.active_date)
+  def initialize(check_in_dates: [], active_date: Current.browser_date)
     @check_in_dates = check_in_dates
     @active_date = active_date
   end
