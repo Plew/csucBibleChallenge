@@ -27,8 +27,7 @@ class ApplicationController < ActionController::Base
     if cookies[:browser_date].present?
       Current.browser_date = Date.parse(cookies[:browser_date])
     else
-      # Current.browser_date = Date.today
-      raise "browser_date cookie not set"
+      redirect_to device_setup_path unless controller_name == 'device_setup'
     end
   end
 end

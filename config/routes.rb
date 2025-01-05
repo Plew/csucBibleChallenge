@@ -42,4 +42,6 @@ Rails.application.routes.draw do
     end
   end
 
+  get 'device_setup', to: 'device_setup#show'
+
 end

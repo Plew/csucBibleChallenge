@@ -3,7 +3,15 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   connect() {
     console.log("DeviceSetup controller connected")
-    this.setDateCookie()
+    
+    // Only redirect if we're on the device setup page
+    if (window.location.pathname === '/device_setup') {
+      this.setDateCookie() // Set cookie first
+      console.log("Redirecting after setting cookie")
+      Turbo.visit('/') // Then redirect
+    } else {
+      this.setDateCookie() // Still set cookie for other pages
+    }
   }
 
   setDateCookie() {
