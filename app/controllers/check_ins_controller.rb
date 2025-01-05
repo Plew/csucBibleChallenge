@@ -5,13 +5,13 @@ class CheckInsController < ApplicationController
   end
 
   def toggle!
-    check_in = CheckIn.find_by(user: current_user, recorded_on: browser_date)
+    check_in = CheckIn.find_by(user: current_user, recorded_on: Current.browser_date)
 
     if check_in
       check_in.destroy
       @checked = false
     else
-      CheckIn.create(user: current_user, recorded_on: browser_date)
+      CheckIn.create(user: current_user, recorded_on: Current.browser_date)
       @checked = true
     end
   end

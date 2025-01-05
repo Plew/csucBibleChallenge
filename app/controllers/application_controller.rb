@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::Base
-  before_action :set_current_browser_date
+  before_action :set_global_browser_date
 
   if Rails.env.development?
     skip_before_action :verify_authenticity_token
@@ -23,10 +23,11 @@ class ApplicationController < ActionController::Base
     cookies.permanent[:device_id] ||= SecureRandom.uuid
   end
 
-  def set_current_browser_date
+  def set_global_browser_date
     if cookies[:browser_date].present?
       Current.browser_date = Date.parse(cookies[:browser_date])
     else
+      # Current.browser_date = Date.today
       raise "browser_date cookie not set"
     end
   end

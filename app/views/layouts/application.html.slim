@@ -1,7 +1,7 @@
 doctype html
 html
   = render partial: 'layouts/head'
-  body.bg-back1
+  body data-controller="device-setup"
     container.h-dvh.flex.flex-col.max-w-md.mx-auto.relative
       div.max-w-full.px-8.my-8 data-controller="flash" class="absolute top-0 left-0 right-0 z-50"
         - flash.each do |key, value|
