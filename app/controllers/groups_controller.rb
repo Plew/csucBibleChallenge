@@ -12,7 +12,7 @@ class GroupsController < ApplicationController
   end
 
   def show
-    @pie_chart_data = PieDataFromGroupDay.new(@group, browser_date).pie_chart_data
+    @pie_chart_data = PieDataFromGroupDay.new(@group, Current.browser_date).pie_chart_data
     @next_group_id = CircularIntegerCollection.new(current_user.groups.pluck(:id), @group.id).next
     @previous_group_id = CircularIntegerCollection.new(current_user.groups.pluck(:id), @group.id).previous
     @group_members = @group.users
