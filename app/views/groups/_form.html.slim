@@ -1,7 +1,7 @@
-= form_tag groups_path do
+= form_with(model: @group, local: true) do |f|
   .flex.flex-col.gap-4.items-center
     div
-      = text_field_tag :name, nil, placeholder: "Group name", class: "input input-bordered w-full max-w-xs", autofocus: true
+      = f.text_field :name, placeholder: "Group name", class: "input input-bordered w-full max-w-xs", autofocus: true
     div
-      = submit_tag "Create Group", class: "btn btn-primary btn-wide btn-lg mb-4"
+      = f.submit @group.new_record? ? "Create Group" : "Update Group", class: "btn btn-primary btn-wide btn-lg mb-4"
 
