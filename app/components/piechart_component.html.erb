@@ -1,0 +1,45 @@
+<div class="relative inline-block w-48 h-48">
+  <canvas data-donut-data="<%= donut_chart_data.to_json %>" 
+          id="group_<%= @group_id %>_donut_chart" 
+          class="absolute inset-0">
+  </canvas>
+
+  <div class="absolute inset-0 flex items-center justify-center">
+    <input type="checkbox" class="w-10 h-10 cursor-pointer p-2 rounded-lg">
+  </div>
+</div>
+
+<script>
+  document.addEventListener("turbo:load", function() {
+    var ctx = document.getElementById('group_<%= @group_id %>_donut_chart');
+    
+    if (ctx) {
+      var donutChartData = JSON.parse(ctx.dataset.donutData);
+
+      var chartConfig = {
+        type: 'doughnut',
+        data: donutChartData,
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: {
+              display: false
+            },
+            tooltip: {
+              callbacks: {
+                label: () => ''
+              }
+            },
+            title: {
+              display: false,
+              text: '<%= @title %>'
+            }
+          }
+        }
+      };
+
+      new Chart(ctx, chartConfig);
+    }
+  });
+</script> 
