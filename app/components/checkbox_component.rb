@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CheckboxComponent < ViewComponent::Base
   def initialize(
     checked: false,
@@ -5,6 +7,7 @@ class CheckboxComponent < ViewComponent::Base
     )
     @checked = checked
     @disabled = disabled
+    super()
   end
 
   def displayed_image
@@ -17,5 +20,9 @@ class CheckboxComponent < ViewComponent::Base
 
   def disabled?
     @disabled
+  end
+
+  def checked?
+    @checked
   end
 end

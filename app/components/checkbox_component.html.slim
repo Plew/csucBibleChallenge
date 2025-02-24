@@ -1,6 +1,10 @@
 .w-32.h-32
   - if disabled?
-    = image_tag displayed_image
+    svg.w-full.h-full[viewBox="0 0 24 24" fill="none" stroke-width="2" class="#{checked? ? 'stroke-secondary' : 'stroke-primary'}"]
+      rect[x="3" y="3" width="18" height="18" rx="2" stroke="inherit"]
+      = "<path d='M7 13l3 3 7-7' stroke='inherit'/>" if checked?
   - else
-    = button_to check_ins_path do 
-      = image_tag displayed_image
+    = button_to check_ins_path, class: "w-full h-full" do
+      svg.w-full.h-full[viewBox="0 0 24 24" fill="none" stroke-width="2" class="#{checked? ? 'stroke-secondary' : 'stroke-primary'}"]
+        rect[x="3" y="3" width="18" height="18" rx="2" stroke="inherit"]
+        = "<path d='M7 13l3 3 7-7' stroke='inherit'/>" if checked?
