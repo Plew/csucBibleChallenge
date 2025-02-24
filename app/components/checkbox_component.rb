@@ -10,14 +10,6 @@ class CheckboxComponent < ViewComponent::Base
     super()
   end
 
-  def displayed_image
-    if @checked
-      'checkbox_checked.png'
-    else
-      'checkbox_empty.png'
-    end
-  end
-
   def disabled?
     @disabled
   end

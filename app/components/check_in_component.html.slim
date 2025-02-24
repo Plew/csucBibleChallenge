@@ -1,6 +1,6 @@
 #checkbox-component.flex.flex-col.w-full
-  .flex.justify-center.text-3xl.font-bold 
-    = display_date
+  / .flex.justify-center.text-3xl.font-bold 
+  /   = display_date
   .flex.justify-between.items-center
     span class="invisible"
       = button_to '#', method: :post, params: { active_date: previous_date } do
