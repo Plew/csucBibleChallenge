@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :group do
-    creator_id { 1 }
-    name { "MyString" }
+    creator_id { create(:user).id }
+    sequence(:name) { |n| "Group #{n}" }
   end
 end

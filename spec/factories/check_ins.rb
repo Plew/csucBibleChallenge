@@ -1,7 +1,8 @@
 FactoryBot.define do
   factory :check_in do
-    recorded_on { "2024-09-10" }
-    user { nil }
+    association :user
+    recorded_on { Date.current }
+    # Add any other attributes that the CheckIn model requires
   end
 end
 

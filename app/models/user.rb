@@ -19,7 +19,7 @@ class User < ApplicationRecord
   private
 
   def generate_name
-    self.name = "Anonymous Reader #{one_to_hundred}"
+    self.name = "Anonymous Reader #{one_to_hundred}" if self.name.blank?
   end
 
   def one_to_hundred
