@@ -3,12 +3,6 @@ class GroupsController < ApplicationController
 
   def index
     @groups = current_user.groups
-
-    if @groups.any?
-      redirect_to @groups.first
-    else
-      render :create_or_join
-    end
   end
 
   def show
@@ -61,7 +55,7 @@ class GroupsController < ApplicationController
   private
 
   def set_group
-    @group = current_user.groups.find(params[:id])
+    @group = Group.find(params[:id])
   end
 
   def group_params
