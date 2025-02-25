@@ -4,7 +4,7 @@ nav.px-4 x-data="{ mobileMenuIsOpen: false }" data-turbo-permanent="true"
       .text-3xl.font-bold.font-sans.italic IRMBI
     
     .relative
-      button.bg-gray-100.inline-flex.items-center.justify-center.p-2.rounded-md.text-gray-600.hover:text-gray-900.hover:bg-gray-200.focus:outline-none.focus:ring-2.focus:ring-offset-2.focus:ring-offset-gray-800.focus:ring-white[
+      button.btn.btn-ghost.btn-circle[
         aria-controls="mobile-menu"
         aria-expanded="false"
         type="button"
@@ -51,12 +51,11 @@ nav.px-4 x-data="{ mobileMenuIsOpen: false }" data-turbo-permanent="true"
         x-transition:leave="transition ease-in duration-75"
         x-transition:leave-start="transform opacity-100 scale-100"
         x-transition:leave-end="transform opacity-0 scale-95"
-        class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 py-1"
+        class="absolute right-0 mt-2 w-48 rounded-lg shadow-lg bg-base-100 border border-base-300"
         role="menu"
         aria-orientation="vertical"
         aria-labelledby="user-menu"
       ]
-        = link_to "Link One", "#", class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100", role: "menuitem"
-        = link_to "Link Two", "#", class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100", role: "menuitem"
-        = link_to "Link Three", "#", class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100", role: "menuitem"
+        = link_to "Profile", edit_user_path, class: "block px-4 py-3 text-sm hover:bg-base-200 rounded-t-lg", role: "menuitem"
+        = link_to "Groups", "/groups", class: "block px-4 py-3 text-sm hover:bg-base-200 rounded-b-lg", role: "menuitem"
 
