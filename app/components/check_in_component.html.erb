@@ -1,0 +1,15 @@
+<div id="checkbox-component" class="flex flex-col w-full">
+  <div class="flex justify-between items-center">
+    <span class="invisible">
+      <%= button_to '#', method: :post, params: { active_date: previous_date } do %>
+        <%= image_tag 'previous.png' %>
+      <% end %>
+    </span>
+    <%= render(CheckboxComponent.new(checked: @checked, disabled: disabled?)) %>
+    <span class="<%= ' invisible' if hide_next? %>">
+      <%= button_to '#', method: :post, params: { active_date: next_date } do %>
+        <%= image_tag 'next.png' %>
+      <% end %>
+    </span>
+  </div>
+</div> 

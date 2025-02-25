@@ -1,0 +1,9 @@
+<div id="user-last-seven" class="flex w-full h-8 divide-x divide-black">
+  <% last_seven_days.each do |date| %>
+    <div class="flex-grow h-full bg-blue-500">
+      <div class="flex items-center justify-center h-full">
+        <span class="text-lg font-bold"><%= date.strftime('%A').first.upcase %></span>
+      </div>
+    </div>
+  <% end %>
+</div> 

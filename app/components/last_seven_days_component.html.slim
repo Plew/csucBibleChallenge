@@ -1,7 +1,0 @@
-.flex.justify-between.items-center.px-8.py-2.rounded-lg.shadow-sm
-  - dates.each do |date|
-    .flex.flex-col.items-center.gap-1
-      .text-sm
-        = date[:day_name]
-      .text-lg.font-medium class=("" if date[:active])
-        = date[:day_number] 

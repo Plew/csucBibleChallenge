@@ -1,9 +1,8 @@
-canvas#pie-chart
+<canvas id="pie-chart"></canvas>
 
-#pie-data data-pie-data=pie_chart_data_object.to_json
+<div id="pie-data" data-pie-data="<%= pie_chart_data_object.to_json %>"></div>
 
-
-javascript:
+<script>
   document.addEventListener("turbo:load", function() {
     var ctx = document.getElementById('pie-chart');
     var pieData = JSON.parse(document.getElementById('pie-data').dataset.pieData);
@@ -27,4 +26,4 @@ javascript:
       }
     });
   })
-
+</script> 

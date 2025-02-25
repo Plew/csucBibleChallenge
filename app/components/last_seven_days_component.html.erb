@@ -1,0 +1,12 @@
+<div class="flex justify-between items-center px-8 py-2 rounded-lg shadow-sm">
+  <% dates.each do |date| %>
+    <div class="flex flex-col items-center gap-1">
+      <div class="text-sm">
+        <%= date[:day_name] %>
+      </div>
+      <div class="text-lg font-medium <%= '' if date[:active] %>">
+        <%= date[:day_number] %>
+      </div>
+    </div>
+  <% end %>
+</div> 
