@@ -1,0 +1,18 @@
+<head>
+  <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+  <title>I Read My BIble</title>
+  <meta content="width=device-width,initial-scale=1" name="viewport">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+  <meta name="turbo-refresh-method" content="morph">
+  <meta name="turbo-refresh-scroll" content="preserve">
+  <meta name="turbo-prefetch" content="false">
+
+  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+  <script defer="defer" src="//unpkg.com/alpinejs"></script>
+
+  <% if Rails.env.development? %>
+    <%= javascript_include_tag "hotwire-livereload", defer: true %>
+  <% end %>
+  <%= javascript_importmap_tags %>
+</head> 
