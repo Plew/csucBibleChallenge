@@ -1,5 +1,7 @@
 <div class="relative inline-block w-48 h-48">
-  <canvas data-donut-data="<%= donut_chart_data.to_json %>" 
+  <canvas data-controller="piechart" 
+          data-piechart-url-value="/api/v1/group_statistics/<%= @group_id %>/pie_data"
+          data-piechart-group-id-value="<%= @group_id %>"
           id="group_<%= @group_id %>_donut_chart" 
           class="absolute inset-0">
   </canvas>
@@ -10,36 +12,5 @@
 </div>
 
 <script>
-  document.addEventListener("turbo:load", function() {
-    var ctx = document.getElementById('group_<%= @group_id %>_donut_chart');
-    
-    if (ctx) {
-      var donutChartData = JSON.parse(ctx.dataset.donutData);
-
-      var chartConfig = {
-        type: 'doughnut',
-        data: donutChartData,
-        options: {
-          responsive: true,
-          maintainAspectRatio: true,
-          plugins: {
-            legend: {
-              display: false
-            },
-            tooltip: {
-              callbacks: {
-                label: () => ''
-              }
-            },
-            title: {
-              display: false,
-              text: '<%= @title %>'
-            }
-          }
-        }
-      };
-
-      new Chart(ctx, chartConfig);
-    }
-  });
+  // Remove the existing script and replace with a Stimulus controller
 </script> 
