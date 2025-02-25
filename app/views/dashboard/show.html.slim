@@ -7,12 +7,12 @@
     / = render(UserLastXComponent.new(check_in_dates: current_user.last_x_check_in_dates(30), days_back: 30))
     / = render(UserLastXComponent.new(check_in_dates: current_user.last_x_check_in_dates(90), days_back: 90))
 
-    .text-2xl.font-bold.mx-8.mt-4.text-center
-      | Recent Check-ins
-    .mx-8.mt-4
+    .text-xl.font-bold.mx-8.mt-4.text-center
+      | Today's Check-ins
+    .mx-4.mt-4
       ul
         - @recent_user_checkins.each do |checkin|
-          li.flex.justify-between.mb-4
+          li.flex.justify-between.mb-1
             .text-sm
               = checkin.username
             .text-sm
