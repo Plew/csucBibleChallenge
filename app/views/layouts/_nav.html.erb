@@ -41,6 +41,7 @@
 
       <%# Mobile menu dropdown %>
       <div x-show="mobileMenuIsOpen"
+           @click.away="mobileMenuIsOpen = false"
            x-transition:enter="transition ease-out duration-100"
            x-transition:enter-start="transform opacity-0 scale-95"
            x-transition:enter-end="transform opacity-100 scale-100"
@@ -51,8 +52,8 @@
            role="menu"
            aria-orientation="vertical"
            aria-labelledby="user-menu">
-        <%= link_to "Profile", edit_user_path, class: "block px-4 py-3 text-sm hover:bg-base-200 rounded-t-lg", role: "menuitem" %>
-        <%= link_to "Groups", groups_path, class: "block px-4 py-3 text-sm hover:bg-base-200 rounded-b-lg", role: "menuitem" %>
+        <%= link_to "Profile", edit_user_path, class: "block px-4 py-3 text-sm hover:bg-base-200", role: "menuitem" %>
+        <%= link_to "Groups", groups_path, class: "block px-4 py-3 text-sm hover:bg-base-200", role: "menuitem" %>
       </div>
     </div>
   </div>
