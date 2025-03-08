@@ -1,0 +1,25 @@
+<div class="max-w-md mx-auto mt-8">
+  <h1 class="text-2xl font-bold mb-6 text-center">Switch User (Login)</h1>
+
+  <div class="mt-8 text-sm text-gray-600 text-center">
+    Enter a valid user key to log into a different existing account.
+  </div>
+  <div class="mt-8 text-sm text-gray-600 text-center">
+    The current user on this device will be 
+    <span class="font-bold">logged out</span>,
+    and the only way to log into that user's account again is with that user's key.
+  </div>
+  <div class="mt-8 text-sm text-gray-600 text-center">
+    Be careful!
+  </div>
+  <%= form_with(url: recover_user_path, method: :post, class: "space-y-6") do |f| %>
+    <div class="field">
+      <%= f.label :key, "Enter user key:", class: "block text-gray-700 text-sm font-bold mb-2" %>
+      <%= f.text_field :key, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+    </div>
+      
+    <div class="flex items-center justify-center">
+      <%= f.submit "Switch User", class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" %>
+    </div>
+  <% end %>
+</div> 

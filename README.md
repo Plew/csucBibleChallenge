@@ -47,3 +47,14 @@ Globe (ticker)
 Statistics
 
 
+
+Docker headache
+
+kamal can break running the Dockerfile.  To reproduce locally:
+$ docker build -t foo .    
+
+$ docker run -it --user root foo /bin/bash
+
+REMEMBER kamal builds the image locally.  You can reproduce deployment headache by doing kamal deploy and cutting and pasting the docker build command locally
+
+

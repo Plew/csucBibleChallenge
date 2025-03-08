@@ -1,13 +1,17 @@
-.mt-4.flex-col.flex.items-center.gap-4 class="*:text-center"
-  = form_tag group_memberships_path do
-    .form-group.flex.flex-col.gap-2.items-center
-      div
-        = text_field_tag :key, nil, placeholder: "ABCD-1234", required: true, pattern: '^[A-Za-z]{4}-[0-9]{4}$', class: "input input-bordered w-full"
-      div
-        = submit_tag "Join", class: "btn btn-primary btn-wide btn-lg"
+<div class="mt-4 flex-col flex items-center gap-4 *:text-center">
+  <%= form_tag group_memberships_path do %>
+    <div class="form-group flex flex-col gap-2 items-center">
+      <div>
+        <%= text_field_tag :key, nil, placeholder: "ABCD-1234", required: true, pattern: '^[A-Za-z]{4}-[0-9]{4}$', class: "input input-bordered w-full" %>
+      </div>
+      <div>
+        <%= submit_tag "Join", class: "btn btn-primary btn-wide btn-lg" %>
+      </div>
+    </div>
+  <% end %>
+</div>
 
-
-javascript:
+<script>
   document.addEventListener('DOMContentLoaded', function() {
     var keyInput = document.querySelector('input[name="key"]');
     keyInput.addEventListener('input', function(e) {
@@ -33,4 +37,4 @@ javascript:
       this.submit();
     });
   });
-
+</script> 

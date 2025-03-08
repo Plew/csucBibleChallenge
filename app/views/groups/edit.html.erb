@@ -1,0 +1,65 @@
+<div class="group-container p-4">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-xl font-bold"><%= "Edit #{@group.name}" %></h2>
+    <%= link_to "Back to Group", group_path(@group), class: "text-blue-500 hover:text-blue-700" %>
+  </div>
+  
+  <div class="edit-form mb-8">
+    <%= form_with(model: @group, local: true) do |f| %>
+      <div class="field mb-4">
+        <%= f.label :name, class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= f.text_field :name, class: "w-full rounded-md border-gray-300" %>
+      </div>
+      
+      <div class="actions">
+        <%= f.submit "Update Group", class: "bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="key-section mb-8">
+    <h3 class="text-xl font-semibold mb-4">Group Key</h3>
+    <div class="key-info mb-4">
+      <div class="flex items-center justify-center gap-2">
+        <p class="text-3xl text-center font-bold">
+          <%= @group.key %>
+        </p>
+        <%= render CopyButtonComponent.new(text: @group.key) %>
+      </div>
+    </div>
+
+    <div class="instructions mb-4">
+      <h4 class="text-lg font-semibold mb-2">How to invite others to join:</h4>
+      <ol class="list-decimal list-inside">
+        <li>Copy the group key above</li>
+        <li>Send the key to the person you want to invite</li>
+        <li>They can use the key to join this group</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="members-list">
+    <h3 class="text-xl font-semibold mb-4">Group Members</h3>
+    <div class="grid gap-2">
+      <% @group.users.each do |user| %>
+        <div class="member-item flex items-center justify-between p-2 bg-gray-50 rounded">
+          <div class="flex items-center gap-2">
+            <div class="member-name">
+              <%= user.name %>
+            </div>
+            <% if user == @group.creator %>
+              <span class="text-sm text-gray-600 bg-gray-200 px-2 py-1 rounded-full">Creator</span>
+            <% end %>
+          </div>
+          <% if @group.creator != user %>
+            <%= button_to "Remove", 
+                group_member_path(@group, user_id: user.id), 
+                method: :delete,
+                class: "px-3 py-1.5 text-sm text-red-600 hover:text-white border border-red-600 hover:bg-red-600 rounded transition-colors duration-200",
+                data: { turbo_confirm: "Are you sure you want to remove #{user.name} from the group?" } %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div> 

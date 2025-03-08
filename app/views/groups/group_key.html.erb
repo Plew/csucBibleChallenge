@@ -1,0 +1,40 @@
+<div class="group-key-container p-4">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-xl font-bold"><%= "Group Key for #{@group.name}:" %></h2>
+    <%= link_to "Back to Group", group_path(@group), class: "text-blue-500 hover:text-blue-700" %>
+  </div>
+  
+  <div class="key-info mb-4">
+    <div class="flex items-center justify-center gap-2">
+      <p class="text-3xl text-center font-bold">
+        <%= @group.key %>
+      </p>
+      <%= render CopyButtonComponent.new(text: @group.key) %>
+    </div>
+  </div>
+
+  <div class="instructions mb-8">
+    <h3 class="text-xl font-semibold mb-2">How to invite others to join:</h3>
+    <ol class="list-decimal list-inside">
+      <li>Copy the group key above</li>
+      <li>Send the key to the person you want to invite</li>
+      <li>They can use the key to join this group</li>
+    </ol>
+  </div>
+
+  <div class="members-list">
+    <h3 class="text-xl font-semibold mb-4">Group Members</h3>
+    <div class="grid gap-2">
+      <% @group.users.each do |user| %>
+        <div class="member-item flex items-center gap-2 p-2 bg-gray-50 rounded">
+          <div class="member-name">
+            <%= user.name %>
+          </div>
+          <% if user == @group.creator %>
+            <span class="text-sm text-gray-600 bg-gray-200 px-2 py-1 rounded-full">Creator</span>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div> 
