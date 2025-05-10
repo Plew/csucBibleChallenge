@@ -38,14 +38,14 @@ This document outlines the requirements for a Reading Challenge API. The API wil
 
 ### 4.3. Participation
 - [x] Users can join Challenges (or be enrolled)
-- [ ] Users can optionally join Groups within a Challenge
-- [ ] A Challenge can have multiple Groups
-- [ ] A User can be part of a Group within a Challenge
+- [x] Users can optionally join Groups within a Challenge (Implemented via UserChallengeEnrollment group_id & API)
+- [x] A Challenge can have multiple Groups (Implemented via Group model & API)
+- [x] A User can be part of a Group within a Challenge (Implemented via UserChallengeEnrollment group_id & API)
 
 ### 4.4. Progress Tracking
-- [ ] Track User's progress on Readings (e.g., `user_readings` table)
-- [ ] Users can "check" (mark as read) a Reading
-- [ ] Users can "uncheck" a Reading
+- [x] Track User's progress on Readings (e.g., `user_readings` table)
+- [x] Users can "check" (mark as read) a Reading (Implemented via UserReadings create API)
+- [x] Users can "uncheck" a Reading (Implemented via UserReadings destroy API)
 
 ## 5. Data Model (Initial Thoughts)
 
@@ -66,29 +66,31 @@ This document outlines the requirements for a Reading Challenge API. The API wil
     - [x] `title`
     - [x] `scheduled_date`
 *   **Groups**:
-    - [ ] `id`
+    - [x] `id`
+    - [x] `challenge_id` (belongs to one challenge)
+    - [x] `name`
 *   **UserChallengeEnrollments** (for users joining challenges):
     - [x] `id`
     - [x] `user_id`
     - [x] `challenge_id`
-    - [ ] `group_id` (optional, if user joins a group in this challenge)
+    - [x] `group_id` (optional, if user joins a group in this challenge)
 *   **UserReadings** (for tracking progress):
-    - [ ] `id`
-    - [ ] `user_id`
-    - [ ] `reading_id`
-    - [ ] `completed_on` (date when checked)
+    - [x] `id`
+    - [x] `user_id`
+    - [x] `reading_id`
+    - [x] `completed_on` (date when checked)
 
 ---
 
 ## 6. Non-Functional Requirements
 
 ### 6.1. Testing
-- [x] Unit tests will be written using RSpec. (User, Challenge, UserChallengeEnrollment, Reading models covered)
-- [x] Model tests should cover: (User, Challenge, UserChallengeEnrollment, Reading models covered for these where applicable)
+- [x] Unit tests will be written using RSpec. (User, Challenge, UserChallengeEnrollment, Reading, Group, UserReading models covered)
+- [x] Model tests should cover: (All current models covered for these where applicable)
     - [x] Validations (e.g., presence, uniqueness, format).
-    - [x] Associations (e.g., `has_many`, `belongs_to`). (User-Challenge enrollment, Challenge-Reading associations covered)
+    - [x] Associations (e.g., `has_many`, `belongs_to`). (All current associations covered)
     - [x] Core model logic and methods.
-- [x] Request tests will be written using RSpec for API endpoints. (User registration; Challenge index/show/create; Challenge enrollment create; Reading index/create for a challenge covered)
+- [x] Request tests will be written using RSpec for API endpoints. (All current API endpoints covered)
 
 ---
 
