@@ -76,6 +76,7 @@ GEM
       public_suffix (>= 2.0.2, < 7.0)
     ast (2.4.2)
     base64 (0.2.0)
+    bcrypt (3.1.20)
     benchmark (0.4.0)
     bigdecimal (3.1.8)
     bindex (0.8.1)
@@ -338,6 +339,8 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
+    shoulda-matchers (6.5.0)
+      activesupport (>= 5.2.0)
     slim (5.2.1)
       temple (~> 0.10.0)
       tilt (>= 2.1.0)
@@ -409,6 +412,7 @@ PLATFORMS
 
 DEPENDENCIES
   actioncable
+  bcrypt (~> 3.1.7)
   bootsnap
   brakeman
   capybara
@@ -432,6 +436,7 @@ DEPENDENCIES
   rspec-rails
   rubocop-rails-omakase
   selenium-webdriver
+  shoulda-matchers (~> 6.1)
   slim (~> 5.2)
   slim-rails
   sqlite3 (~> 2.1)

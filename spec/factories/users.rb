@@ -1,17 +1,7 @@
 FactoryBot.define do
   factory :user do
-    name { Faker::Name.name }
-    # no key here, it should be generated upon create
+    sequence(:username) { |n| "user#{n}" }
+    sequence(:email) { |n| "user#{n}@example.com" }
+    password { "password123" } # has_secure_password will handle the digest
   end
 end
-
-# == Schema Information
-#
-# Table name: users
-#
-#  id         :integer          not null, primary key
-#  name       :string
-#  key        :string
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#
