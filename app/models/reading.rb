@@ -5,4 +5,6 @@ class Reading < ApplicationRecord
 
   validates :title, presence: true
   validates :scheduled_date, presence: true
+  validates :book_number, presence: true, numericality: { only_integer: true, greater_than: 0 }
+  validates :chapter_number, presence: true, numericality: { only_integer: true, greater_than: 0 }
 end

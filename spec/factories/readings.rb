@@ -3,5 +3,7 @@ FactoryBot.define do
     challenge # Assumes a :challenge factory exists
     sequence(:title) { |n| "Reading Title #{n}" }
     scheduled_date { Date.today }
+    book_number { 1 } # Default book_number
+    chapter_number { 1 } # Default chapter_number
   end
 end

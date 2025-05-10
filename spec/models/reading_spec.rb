@@ -12,6 +12,10 @@ RSpec.describe Reading, type: :model do
 
     it { should validate_presence_of(:title) }
     it { should validate_presence_of(:scheduled_date) }
+    it { should validate_presence_of(:book_number) }
+    it { should validate_numericality_of(:book_number).only_integer.is_greater_than(0) }
+    it { should validate_presence_of(:chapter_number) }
+    it { should validate_numericality_of(:chapter_number).only_integer.is_greater_than(0) }
     # Presence of challenge is implicitly tested by `belong_to` matcher
   end
 

@@ -10,13 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_10_115105) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_10_171011) do
   create_table "challenges", force: :cascade do |t|
     t.string "name"
     t.date "start_date"
     t.date "end_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "timezone"
   end
 
   create_table "groups", force: :cascade do |t|
@@ -33,6 +34,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_10_115105) do
     t.date "scheduled_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "book_number"
+    t.integer "chapter_number"
     t.index ["challenge_id"], name: "index_readings_on_challenge_id"
   end
 
@@ -67,6 +70,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_10_115105) do
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
+  end
+
+  create_table "verses", force: :cascade do |t|
+    t.string "version"
+    t.integer "book_number"
+    t.integer "chapter_number"
+    t.integer "verse_number"
+    t.text "verse_text"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["book_number"], name: "index_verses_on_book_number"
+    t.index ["chapter_number"], name: "index_verses_on_chapter_number"
+    t.index ["verse_number"], name: "index_verses_on_verse_number"
+    t.index ["version"], name: "index_verses_on_version"
   end
 
   add_foreign_key "groups", "challenges"

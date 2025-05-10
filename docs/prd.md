@@ -59,10 +59,13 @@ This document outlines the requirements for a Reading Challenge API. The API wil
     - [x] `name`
     - [x] `start_date`
     - [x] `end_date`
+    - [x] `timezone` (string, IANA timezone name, e.g., "America/New_York")
     - [ ] *(other attributes as needed, e.g., creator_user_id)*
 *   **Readings**:
     - [x] `id`
     - [x] `challenge_id` (belongs to one challenge)
+    - [x] `book_number` (integer, required)
+    - [x] `chapter_number` (integer, required)
     - [x] `title`
     - [x] `scheduled_date`
 *   **Groups**:
@@ -79,6 +82,13 @@ This document outlines the requirements for a Reading Challenge API. The API wil
     - [x] `user_id`
     - [x] `reading_id`
     - [x] `completed_on` (date when checked)
+*   **Verses**:
+    - [x] `id` (implicitly created by Rails)
+    - [x] `version` (string, e.g., "KJV", "ESV") - indexed
+    - [x] `book_number` (integer) - indexed
+    - [x] `chapter_number` (integer) - indexed
+    - [x] `verse_number` (integer) - indexed
+    - [x] `verse_text` (text or string)
 
 ---
 
