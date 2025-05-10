@@ -4,6 +4,7 @@ RSpec.describe UserChallengeEnrollment, type: :model do
   describe 'associations' do
     it { should belong_to(:user) }
     it { should belong_to(:challenge) }
+    it { should belong_to(:group).optional }
   end
 
   describe 'validations' do

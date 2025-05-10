@@ -33,8 +33,8 @@ This document outlines the requirements for a Reading Challenge API. The API wil
 ### 4.2. Challenge Management
 - [x] Create Challenges
 - [x] Add users to a Challenge (Invite aspect not implemented)
-- [ ] Challenges are a collection of scheduled readings
-- [ ] Define Readings for a Challenge (date, title)
+- [x] Challenges are a collection of scheduled readings (Implemented via Readings model)
+- [x] Define Readings for a Challenge (date, title) (Implemented via Readings model & API)
 
 ### 4.3. Participation
 - [x] Users can join Challenges (or be enrolled)
@@ -61,14 +61,12 @@ This document outlines the requirements for a Reading Challenge API. The API wil
     - [x] `end_date`
     - [ ] *(other attributes as needed, e.g., creator_user_id)*
 *   **Readings**:
-    - [ ] `id`
-    - [ ] `challenge_id` (belongs to one challenge)
-    - [ ] `title`
-    - [ ] `scheduled_date`
+    - [x] `id`
+    - [x] `challenge_id` (belongs to one challenge)
+    - [x] `title`
+    - [x] `scheduled_date`
 *   **Groups**:
     - [ ] `id`
-    - [ ] `challenge_id` (belongs to one challenge)
-    - [ ] `name`
 *   **UserChallengeEnrollments** (for users joining challenges):
     - [x] `id`
     - [x] `user_id`
@@ -85,12 +83,12 @@ This document outlines the requirements for a Reading Challenge API. The API wil
 ## 6. Non-Functional Requirements
 
 ### 6.1. Testing
-- [x] Unit tests will be written using RSpec. (User, Challenge, UserChallengeEnrollment models covered)
-- [x] Model tests should cover: (User, Challenge, UserChallengeEnrollment models covered for these where applicable)
+- [x] Unit tests will be written using RSpec. (User, Challenge, UserChallengeEnrollment, Reading models covered)
+- [x] Model tests should cover: (User, Challenge, UserChallengeEnrollment, Reading models covered for these where applicable)
     - [x] Validations (e.g., presence, uniqueness, format).
-    - [x] Associations (e.g., `has_many`, `belongs_to`). (User-Challenge enrollment associations covered)
+    - [x] Associations (e.g., `has_many`, `belongs_to`). (User-Challenge enrollment, Challenge-Reading associations covered)
     - [x] Core model logic and methods.
-- [x] Request tests will be written using RSpec for API endpoints. (User registration; Challenge index, show, create; Challenge enrollment create covered)
+- [x] Request tests will be written using RSpec for API endpoints. (User registration; Challenge index/show/create; Challenge enrollment create; Reading index/create for a challenge covered)
 
 ---
 

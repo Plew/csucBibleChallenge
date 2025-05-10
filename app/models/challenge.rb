@@ -2,6 +2,7 @@ class Challenge < ApplicationRecord
   has_many :user_challenge_enrollments, dependent: :destroy
   has_many :users, through: :user_challenge_enrollments
   has_many :readings, dependent: :destroy
+  has_many :groups, dependent: :destroy
 
   validates :name, presence: true
   validates :start_date, presence: true

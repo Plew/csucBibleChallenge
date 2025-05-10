@@ -10,13 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_10_113949) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_10_114505) do
   create_table "challenges", force: :cascade do |t|
     t.string "name"
     t.date "start_date"
     t.date "end_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "groups", force: :cascade do |t|
+    t.string "name"
+    t.integer "challenge_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["challenge_id"], name: "index_groups_on_challenge_id"
   end
 
   create_table "readings", force: :cascade do |t|
@@ -33,7 +41,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_10_113949) do
     t.integer "challenge_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "group_id"
     t.index ["challenge_id"], name: "index_user_challenge_enrollments_on_challenge_id"
+    t.index ["group_id"], name: "index_user_challenge_enrollments_on_group_id"
     t.index ["user_id", "challenge_id"], name: "index_user_challenge_enrollments_on_user_and_challenge", unique: true
     t.index ["user_id"], name: "index_user_challenge_enrollments_on_user_id"
   end
@@ -48,7 +58,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_10_113949) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
+  add_foreign_key "groups", "challenges"
   add_foreign_key "readings", "challenges"
   add_foreign_key "user_challenge_enrollments", "challenges"
+  add_foreign_key "user_challenge_enrollments", "groups"
   add_foreign_key "user_challenge_enrollments", "users"
 end
