@@ -26,6 +26,7 @@ Rails.application.routes.draw do
         resources :groups, only: [:index, :create]
       end
       resources :user_readings, only: [:index, :create, :destroy]
+      get 'chapter_verses', to: 'chapter_verses#show'
     end
   end
 

@@ -22,6 +22,7 @@ This document outlines the requirements for a Reading Challenge API. The API wil
 *   As a **User**, I want to see the scheduled readings for a challenge, including their date and title.
 *   As a **User**, I want to mark a reading as "read" to track my progress.
 *   As a **User**, I want to unmark a reading if I made a mistake or want to re-read it.
+*   As an **API client**, I want to retrieve all verses for a specific chapter (identified by version, book number, and chapter number) so that I can display the chapter content.
 
 ## 4. Proposed Features
 
@@ -46,6 +47,17 @@ This document outlines the requirements for a Reading Challenge API. The API wil
 - [x] Track User's progress on Readings (e.g., `user_readings` table)
 - [x] Users can "check" (mark as read) a Reading (Implemented via UserReadings create API)
 - [x] Users can "uncheck" a Reading (Implemented via UserReadings destroy API)
+
+### 5.1. Functional Requirements
+
+*(Detail the specific API functionalities. What should the system do?)*
+
+*   **FR-1:** The system must provide an API endpoint for an authenticated user to mark a specific reading (e.g., a chapter or a predefined section) as "read" or "complete".
+*   **FR-2:** The system must persist this check-in status for the user (a UserReading)
+*   **FR-3:** The system must provide an API endpoint for an authenticated user to un-check a reading if marked by mistake.
+*   **FR-4:** The system must provide an API endpoint to retrieve the check-in status of readings for an authenticated user.
+*   **FR-5:** The API must enforce that users can only check or uncheck a reading on the date of the reading, as indicated by the timezone of the challenge the reading is part of.
+*   **FR-6:** The system must provide an API endpoint that accepts `version` (string), `book_number` (integer), and `chapter_number` (integer) as parameters, and returns a JSON collection of all matching `Verse` records, sorted by `verse_number`.
 
 ## 5. Data Model (Initial Thoughts)
 
@@ -101,6 +113,19 @@ This document outlines the requirements for a Reading Challenge API. The API wil
     - [x] Associations (e.g., `has_many`, `belongs_to`). (All current associations covered)
     - [x] Core model logic and methods.
 - [x] Request tests will be written using RSpec for API endpoints. (All current API endpoints covered)
+
+## 6. Implementation To-Do List (API Focused)
+
+- [ ] **Data Model:**
+// ... existing code ...
+- [ ] **API Endpoints & Business Logic:**
+    - [x] Design and implement an API endpoint to mark a reading as complete (creates or updates a `UserReading` record).
+    - [x] Design and implement an API endpoint to un-mark a reading (updates or destroys a `UserReading` record).
+    - [x] Design and implement an API endpoint to retrieve a user's check-in status for one or more readings.
+    - [ ] Design and implement an API endpoint to retrieve all verses for a given version, book, and chapter, sorted by verse number.
+    - [x] Implement core logic: users can only check/uncheck readings via the API on the date of the reading (respecting challenge timezone, acting on `UserReading`).
+- [ ] **Testing:**
+// ... existing code ...
 
 ---
 
