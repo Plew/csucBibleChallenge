@@ -12,40 +12,10 @@ Rails.application.routes.draw do
   get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
 
-  resource :user, only: [:edit, :update] do
-    post 'reset_key', on: :member
-    get 'recover', on: :collection
-    post 'recover', on: :collection
-  end
-  resources :check_ins, only: [:create, :destroy]
-
-  resources :groups do
-    delete 'members/:user_id', to: 'group_members#destroy', as: :member
-  end
-
-  resources :group_memberships, only: [:new, :create, :destroy]
-
   # Defines the root path route ("/")
-  root "dashboard#show"
-  get 'dashboard', to: 'dashboard#show'
-  get 'home', to: 'dashboard#home', as: :home
-
-  get 'create_or_join', to: 'groups#create_or_join', as: :create_or_join
+  # root "posts#index"
 
   if Rails.env.development?
     mount Lookbook::Engine, at: "/lookbook"
   end
-
-  namespace :api do
-    namespace :v1 do
-      resources :group_statistics, only: [:index, :show] do
-        member do
-          get :pie_data
-        end
-      end
-    end
-  end
-
-  get 'device_setup', to: 'device_setup#show'
-
 end
