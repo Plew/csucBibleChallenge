@@ -76,7 +76,7 @@ This document outlines the requirements for a Reading Challenge API. The API wil
     - [ ] `id`
     - [ ] `user_id`
     - [ ] `reading_id`
-    - [ ] `completed_at` (timestamp when checked)
+    - [ ] `completed_on` (date when checked)
 
 ---
 

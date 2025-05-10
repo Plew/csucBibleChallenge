@@ -23,6 +23,7 @@ Rails.application.routes.draw do
         resources :readings, only: [:index, :create]
         resources :groups, only: [:index, :create]
       end
+      resources :user_readings, only: [:create, :destroy]
     end
   end
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_10_114505) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_10_115105) do
   create_table "challenges", force: :cascade do |t|
     t.string "name"
     t.date "start_date"
@@ -48,6 +48,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_10_114505) do
     t.index ["user_id"], name: "index_user_challenge_enrollments_on_user_id"
   end
 
+  create_table "user_readings", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "reading_id", null: false
+    t.date "completed_on"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["reading_id"], name: "index_user_readings_on_reading_id"
+    t.index ["user_id", "reading_id"], name: "index_user_readings_on_user_id_and_reading_id", unique: true
+    t.index ["user_id"], name: "index_user_readings_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "username"
     t.string "email"
@@ -63,4 +74,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_10_114505) do
   add_foreign_key "user_challenge_enrollments", "challenges"
   add_foreign_key "user_challenge_enrollments", "groups"
   add_foreign_key "user_challenge_enrollments", "users"
+  add_foreign_key "user_readings", "readings"
+  add_foreign_key "user_readings", "users"
 end

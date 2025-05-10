@@ -3,6 +3,8 @@ require 'rails_helper'
 RSpec.describe Reading, type: :model do
   describe 'associations' do
     it { should belong_to(:challenge) }
+    it { should have_many(:user_readings).dependent(:destroy) }
+    it { should have_many(:completed_by_users).through(:user_readings).source(:user) }
   end
 
   describe 'validations' do
