@@ -20,6 +20,7 @@ Rails.application.routes.draw do
       resources :users, only: [:create]
       resources :challenges, only: [:index, :show, :create] do
         resources :enrollments, only: [:create], controller: 'challenge_enrollments'
+        resources :readings, only: [:index, :create]
       end
     end
   end

@@ -32,12 +32,12 @@ This document outlines the requirements for a Reading Challenge API. The API wil
 
 ### 4.2. Challenge Management
 - [x] Create Challenges
-- [ ] Invite/add users to a Challenge
+- [x] Add users to a Challenge (Invite aspect not implemented)
 - [ ] Challenges are a collection of scheduled readings
 - [ ] Define Readings for a Challenge (date, title)
 
 ### 4.3. Participation
-- [ ] Users can join Challenges (or be enrolled)
+- [x] Users can join Challenges (or be enrolled)
 - [ ] Users can optionally join Groups within a Challenge
 - [ ] A Challenge can have multiple Groups
 - [ ] A User can be part of a Group within a Challenge
@@ -70,9 +70,9 @@ This document outlines the requirements for a Reading Challenge API. The API wil
     - [ ] `challenge_id` (belongs to one challenge)
     - [ ] `name`
 *   **UserChallengeEnrollments** (for users joining challenges):
-    - [ ] `id`
-    - [ ] `user_id`
-    - [ ] `challenge_id`
+    - [x] `id`
+    - [x] `user_id`
+    - [x] `challenge_id`
     - [ ] `group_id` (optional, if user joins a group in this challenge)
 *   **UserReadings** (for tracking progress):
     - [ ] `id`
@@ -85,12 +85,12 @@ This document outlines the requirements for a Reading Challenge API. The API wil
 ## 6. Non-Functional Requirements
 
 ### 6.1. Testing
-- [x] Unit tests will be written using RSpec. (User model covered, Challenge model covered)
-- [x] Model tests should cover: (User model covered for these, Challenge model covered for these)
+- [x] Unit tests will be written using RSpec. (User, Challenge, UserChallengeEnrollment models covered)
+- [x] Model tests should cover: (User, Challenge, UserChallengeEnrollment models covered for these where applicable)
     - [x] Validations (e.g., presence, uniqueness, format).
-    - [ ] Associations (e.g., `has_many`, `belongs_to`). (No associations for User/Challenge models yet)
+    - [x] Associations (e.g., `has_many`, `belongs_to`). (User-Challenge enrollment associations covered)
     - [x] Core model logic and methods.
-- [x] Request tests will be written using RSpec for API endpoints. (User registration covered, Challenge index/show/create covered)
+- [x] Request tests will be written using RSpec for API endpoints. (User registration; Challenge index, show, create; Challenge enrollment create covered)
 
 ---
 

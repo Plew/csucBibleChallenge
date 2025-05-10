@@ -4,6 +4,7 @@ RSpec.describe Challenge, type: :model do
   describe 'associations' do
     it { should have_many(:user_challenge_enrollments).dependent(:destroy) }
     it { should have_many(:users).through(:user_challenge_enrollments) }
+    it { should have_many(:readings).dependent(:destroy) }
   end
 
   describe 'validations' do
