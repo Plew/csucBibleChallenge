@@ -26,70 +26,71 @@ This document outlines the requirements for a Reading Challenge API. The API wil
 ## 4. Proposed Features
 
 ### 4.1. User Management
-*   User registration with a unique email and unique username.
-*   Password management will utilize Rails' `has_secure_password`.
+- [x] User registration with a unique email and unique username.
+- [x] Password management will utilize Rails' `has_secure_password`.
 *   Password reset functionality is out of scope for the initial version.
 
 ### 4.2. Challenge Management
-*   Create Challenges
-*   Invite/add users to a Challenge
-*   Challenges are a collection of scheduled readings
-*   Define Readings for a Challenge (date, title)
+- [ ] Create Challenges
+- [ ] Invite/add users to a Challenge
+- [ ] Challenges are a collection of scheduled readings
+- [ ] Define Readings for a Challenge (date, title)
 
 ### 4.3. Participation
-*   Users can join Challenges (or be enrolled)
-*   Users can optionally join Groups within a Challenge
-*   A Challenge can have multiple Groups
-*   A User can be part of a Group within a Challenge
+- [ ] Users can join Challenges (or be enrolled)
+- [ ] Users can optionally join Groups within a Challenge
+- [ ] A Challenge can have multiple Groups
+- [ ] A User can be part of a Group within a Challenge
 
 ### 4.4. Progress Tracking
-*   Track User's progress on Readings (e.g., `user_readings` table)
-*   Users can "check" (mark as read) a Reading
-*   Users can "uncheck" a Reading
+- [ ] Track User's progress on Readings (e.g., `user_readings` table)
+- [ ] Users can "check" (mark as read) a Reading
+- [ ] Users can "uncheck" a Reading
 
 ## 5. Data Model (Initial Thoughts)
 
 *   **Users**:
-    *   `id`
-    *   `username` (must be unique)
-    *   `email` (must be unique)
-    *   `password_digest` (for use with `has_secure_password`)
+    - [x] `id`
+    - [x] `username` (must be unique)
+    - [x] `email` (must be unique)
+    - [x] `password_digest` (for use with `has_secure_password`)
 *   **Challenges**:
-    *   `id`
-    *   `name`
-    *   `start_date`
-    *   `end_date`
-    *   *(other attributes as needed)*
+    - [ ] `id`
+    - [ ] `name`
+    - [ ] `start_date`
+    - [ ] `end_date`
+    - [ ] *(other attributes as needed, e.g., creator_user_id)*
 *   **Readings**:
-    *   `id`
-    *   `challenge_id` (belongs to one challenge)
-    *   `title`
-    *   `scheduled_date`
+    - [ ] `id`
+    - [ ] `challenge_id` (belongs to one challenge)
+    - [ ] `title`
+    - [ ] `scheduled_date`
 *   **Groups**:
-    *   `id`
-    *   `challenge_id` (belongs to one challenge)
-    *   `name`
-*   **UserChallenges** (for users joining challenges):
-    *   `id`
-    *   `user_id`
-    *   `challenge_id`
-    *   `group_id` (optional, if user joins a group in this challenge)
+    - [ ] `id`
+    - [ ] `challenge_id` (belongs to one challenge)
+    - [ ] `name`
+*   **UserChallengeEnrollments** (for users joining challenges):
+    - [ ] `id`
+    - [ ] `user_id`
+    - [ ] `challenge_id`
+    - [ ] `group_id` (optional, if user joins a group in this challenge)
 *   **UserReadings** (for tracking progress):
-    *   `id`
-    *   `user_id`
-    *   `reading_id`
-    *   `completed_at` (timestamp when checked)
+    - [ ] `id`
+    - [ ] `user_id`
+    - [ ] `reading_id`
+    - [ ] `completed_at` (timestamp when checked)
 
 ---
 
 ## 6. Non-Functional Requirements
 
 ### 6.1. Testing
-*   Unit tests will be written using RSpec.
-*   Model tests should cover: 
-    *   Validations (e.g., presence, uniqueness, format).
-    *   Associations (e.g., `has_many`, `belongs_to`).
-    *   Core model logic and methods.
+- [x] Unit tests will be written using RSpec. (User model covered)
+- [x] Model tests should cover: (User model covered for these)
+    - [x] Validations (e.g., presence, uniqueness, format).
+    - [ ] Associations (e.g., `has_many`, `belongs_to`). (No associations for User model yet)
+    - [x] Core model logic and methods.
+- [ ] Request tests will be written using RSpec for API endpoints. (User registration covered)
 
 ---
 
