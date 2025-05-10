@@ -18,7 +18,9 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :users, only: [:create]
-      resources :challenges, only: [:index, :show, :create]
+      resources :challenges, only: [:index, :show, :create] do
+        resources :enrollments, only: [:create], controller: 'challenge_enrollments'
+      end
     end
   end
 

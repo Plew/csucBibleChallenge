@@ -1,6 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe Challenge, type: :model do
+  describe 'associations' do
+    it { should have_many(:user_challenge_enrollments).dependent(:destroy) }
+    it { should have_many(:users).through(:user_challenge_enrollments) }
+  end
+
   describe 'validations' do
     subject { FactoryBot.build(:challenge) }
 

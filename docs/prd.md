@@ -31,7 +31,7 @@ This document outlines the requirements for a Reading Challenge API. The API wil
 *   Password reset functionality is out of scope for the initial version.
 
 ### 4.2. Challenge Management
-- [ ] Create Challenges
+- [x] Create Challenges
 - [ ] Invite/add users to a Challenge
 - [ ] Challenges are a collection of scheduled readings
 - [ ] Define Readings for a Challenge (date, title)
@@ -55,10 +55,10 @@ This document outlines the requirements for a Reading Challenge API. The API wil
     - [x] `email` (must be unique)
     - [x] `password_digest` (for use with `has_secure_password`)
 *   **Challenges**:
-    - [ ] `id`
-    - [ ] `name`
-    - [ ] `start_date`
-    - [ ] `end_date`
+    - [x] `id`
+    - [x] `name`
+    - [x] `start_date`
+    - [x] `end_date`
     - [ ] *(other attributes as needed, e.g., creator_user_id)*
 *   **Readings**:
     - [ ] `id`
@@ -85,12 +85,12 @@ This document outlines the requirements for a Reading Challenge API. The API wil
 ## 6. Non-Functional Requirements
 
 ### 6.1. Testing
-- [x] Unit tests will be written using RSpec. (User model covered)
-- [x] Model tests should cover: (User model covered for these)
+- [x] Unit tests will be written using RSpec. (User model covered, Challenge model covered)
+- [x] Model tests should cover: (User model covered for these, Challenge model covered for these)
     - [x] Validations (e.g., presence, uniqueness, format).
-    - [ ] Associations (e.g., `has_many`, `belongs_to`). (No associations for User model yet)
+    - [ ] Associations (e.g., `has_many`, `belongs_to`). (No associations for User/Challenge models yet)
     - [x] Core model logic and methods.
-- [ ] Request tests will be written using RSpec for API endpoints. (User registration covered)
+- [x] Request tests will be written using RSpec for API endpoints. (User registration covered, Challenge index/show/create covered)
 
 ---
 
