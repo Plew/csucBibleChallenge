@@ -33,4 +33,6 @@ Rails.application.routes.draw do
   if Rails.env.development?
     mount Lookbook::Engine, at: "/lookbook"
   end
+
+  get 'about', to: 'pages#about'
 end

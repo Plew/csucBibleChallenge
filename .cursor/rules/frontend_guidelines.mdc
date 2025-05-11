@@ -1,0 +1,11 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Frontend Development Guidelines
+
+When doing any frontend work, please adhere to the following:
+
+1.  **Styling and Components**: Utilize [DaisyUI](mdc:https:/daisyui.com) for all styling and UI components.
+2.  **Design Approach**: Always adopt a mobile-first design methodology. Ensure designs are responsive and look great on mobile devices before considering larger screens.

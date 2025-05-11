@@ -1,22 +1,23 @@
 <!DOCTYPE html>
-<%# <html data-theme="cyberpunk"> %>
-<%# <html data-theme="forest"> %>
 <html>
-  <%= render partial: 'layouts/head' %>
-  
-  <body data-controller="device-setup">
-    <container class="h-dvh flex flex-col max-w-md mx-auto relative bg-base-100 text-base-content">
-      <div class="max-w-full px-8 my-8 absolute top-0 left-0 right-0 z-50" data-controller="flash">
-        <% flash.each do |key, value| %>
-          <div class="alert <%= flash_class(key) %> z-50 p-4 text-center w-full mt-8" role="alert">
-            <%= value %>
-          </div>
-        <% end %>
-      </div>
-      
-      <%= render 'layouts/nav' %>
-      <%= render(NavBarComponent.new) %>
-      <%= yield %>
-    </container>
-  </body>
+<head>
+  <title>ReVerse</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+
+  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+  <%= javascript_importmap_tags %>
+</head>
+<body>
+  <div class="navbar bg-base-100 shadow-lg">
+    <div class="flex-1">
+      <a class="btn btn-ghost normal-case text-xl">ReVerse</a>
+    </div>
+  </div>
+
+  <main class="container mx-auto mt-4 p-4">
+    <%= yield %>
+  </main>
+</body>
 </html> 
