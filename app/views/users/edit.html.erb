@@ -1,24 +1,87 @@
-<%= form_with(model: @user, local: true, class: "max-w-md mx-auto") do |form| %>
-  <div class="mb-4">
-    <%= form.label :name, class: "block text-gray-700 text-sm font-bold mb-2" %>
-    <%= form.text_field :name, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
-  </div>
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold mb-6 text-center text-base-content">Account Settings</h1>
 
-  <div class="flex items-center justify-center" id="change-name-button">
-    <%= form.submit "Change Name", class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" %>
-  </div>
+  <%# Flash messages for updates %>
+  <% if flash[:notice] %>
+    <div class="alert alert-success shadow-lg mb-4">
+      <div>
+        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        <span><%= flash[:notice] %></span>
+      </div>
+    </div>
+  <% end %>
+  <% if flash[:alert] %>
+    <div class="alert alert-error shadow-lg mb-4">
+      <div>
+        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2 2m2-2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        <span><%= flash[:alert] %></span>
+      </div>
+    </div>
+  <% end %>
 
-  <div class="flex flex-col items-center mt-8 space-y-4">
-    <div class="text-gray-700 text-sm font-bold">Your user key is:</div>
-    <code class="bg-gray-100 p-2 rounded text-gray-700"><%= @user.key %></code>
-    <div class="text-sm text-gray-600 mx-8 text-center">
-      Take a screenshot of this key or write it down if you want to log into your account on another device.
-      This key is the ONLY WAY you can log into your account if you switch devices or lose your phone. 
-      For privacy reasons we do not store email addresses or phone numbers.
+  <div class="grid md:grid-cols-2 gap-6">
+    <%# Update Username Card %>
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title">Update Profile</h2>
+        <%= form_with(model: @user, url: user_profile_path, method: :patch, local: true) do |f| %>
+          <div class="form-control">
+            <%= f.label :username, class: "label" do %>
+              <span class="label-text">Username</span>
+            <% end %>
+            <%= f.text_field :username, class: "input input-bordered w-full" %>
+          </div>
+
+          <div class="form-control mt-2">
+            <label class="label">
+              <span class="label-text">Email (cannot be changed here)</span>
+            </label>
+            <input type="email" value="<%= @user.email %>" class="input input-bordered w-full" disabled />
+          </div>
+          
+          <div class="form-control mt-6">
+            <%= f.submit "Save Username", class: "btn btn-primary" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <%# Change Password Card %>
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title">Change Password</h2>
+        <%= form_with(model: @user, url: user_profile_path, method: :patch, local: true) do |f| %> <%# Adjust URL if separate endpoint for password %>
+          <div class="form-control">
+            <%= f.label :current_password, class: "label" do %>
+              <span class="label-text">Current Password</span>
+            <% end %>
+            <%= f.password_field :current_password, class: "input input-bordered w-full", autocomplete: "current-password" %>
+          </div>
+
+          <div class="form-control mt-2">
+            <%= f.label :password, "New Password", class: "label" do %>
+              <span class="label-text">New Password</span>
+            <% end %>
+            <%= f.password_field :password, class: "input input-bordered w-full", autocomplete: "new-password" %>
+          </div>
+
+          <div class="form-control mt-2">
+            <%= f.label :password_confirmation, "Confirm New Password", class: "label" do %>
+              <span class="label-text">Confirm New Password</span>
+            <% end %>
+            <%= f.password_field :password_confirmation, class: "input input-bordered w-full", autocomplete: "new-password" %>
+          </div>
+
+          <div class="form-control mt-6">
+            <%= f.submit "Change Password", class: "btn btn-primary" %>
+          </div>
+        <% end %>
+      </div>
     </div>
   </div>
 
-  <div class="mt-12 border-t pt-8 text-center">
-    <%= link_to "Switch to a different account", recover_user_path, class: "text-blue-600 hover:text-blue-800" %>
+  <div class="text-center mt-8">
+    <%= link_to "Log out", destroy_user_session_path, data: { turbo_method: :delete }, class: "link link-error" %>
   </div>
-<% end %> 
+
+</div> 

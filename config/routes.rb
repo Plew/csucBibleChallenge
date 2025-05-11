@@ -13,7 +13,21 @@ Rails.application.routes.draw do
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
 
   # Defines the root path route ("/")
-  # root "posts#index"
+  root "home#index"
+
+  # User Authentication UI routes
+  get 'users/sign_up', to: 'users#new', as: :new_user_registration
+  resources :users, only: [:create] # For handling registration form submission
+  get 'users/sign_in', to: 'sessions#new', as: :new_user_session
+  post 'users/sign_in', to: 'sessions#create', as: :user_session
+  delete 'users/sign_out', to: 'sessions#destroy', as: :destroy_user_session
+
+  # Challenges UI
+  resources :challenges, only: [:index] # Add :show, :new, :create, etc. as needed for UI
+
+  # User Profile UI
+  get 'profile/edit', to: 'users#edit', as: :edit_user_profile
+  patch 'profile', to: 'users#update', as: :user_profile
 
   namespace :api do
     namespace :v1 do
