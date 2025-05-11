@@ -26,3 +26,17 @@ puts 'Creating groups for Munich Fall Reading Challenge...'
   puts "Group '#{food_name}' created."
 end
 puts 'Finished creating groups.'
+
+puts "Creating readings for '#{challenge.name}'..."
+(1..21).each do |chapter_num|
+  scheduled_reading_date = challenge.start_date + (chapter_num - 1).days
+  reading_title = "John Chapter #{chapter_num}"
+
+  challenge.readings.find_or_create_by!(book_number: 43, chapter_number: chapter_num) do |reading|
+    reading.title = reading_title
+    reading.scheduled_date = scheduled_reading_date
+    # Ensure other necessary attributes for Reading are set if any
+  end
+  puts "Created reading: #{reading_title} for #{scheduled_reading_date.strftime('%Y-%m-%d')}"
+end
+puts "Finished creating readings for '#{challenge.name}'."

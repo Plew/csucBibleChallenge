@@ -52,4 +52,6 @@ Rails.application.routes.draw do
   end
 
   get 'about', to: 'pages#about'
+
+  resources :user_readings, only: [:create]
 end
