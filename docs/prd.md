@@ -122,9 +122,13 @@ This document outlines the requirements for a Reading Challenge API. The API wil
     - [x] Design and implement an API endpoint to mark a reading as complete (creates or updates a `UserReading` record).
     - [x] Design and implement an API endpoint to un-mark a reading (updates or destroys a `UserReading` record).
     - [x] Design and implement an API endpoint to retrieve a user's check-in status for one or more readings.
-    - [ ] Design and implement an API endpoint to retrieve all verses for a given version, book, and chapter, sorted by verse number.
+    - [x] Design and implement an API endpoint to retrieve all verses for a given version, book, and chapter, sorted by verse number.
     - [x] Implement core logic: users can only check/uncheck readings via the API on the date of the reading (respecting challenge timezone, acting on `UserReading`).
 - [ ] **Testing:**
+    - [x] Write model tests for `UserReading` (focus on check-in related attributes/logic).
+    - [x] Write request/controller tests for the API endpoints (marking complete, un-marking, retrieving status).
+    - [x] Write request/controller tests for the API endpoint to retrieve chapter verses.
+    - [x] Write tests for the timezone-based restriction logic within the API.
 // ... existing code ...
 
 ---
