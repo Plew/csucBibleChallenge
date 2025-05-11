@@ -8,6 +8,21 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
-puts 'Starting KJV Bible import for seeds...'
-ImportKjv.call
-puts 'Finished KJV Bible import.'
+# puts 'Starting KJV Bible import for seeds...'
+# ImportKjv.call
+# puts 'Finished KJV Bible import.'
+
+puts 'Creating Munich Fall Reading Challenge...'
+challenge = Challenge.find_or_create_by!(name: 'Munich Fall Reading Challenge') do |c|
+  c.start_date = Date.today
+  c.end_date = Date.today + 3.months
+  c.timezone = 'Berlin'
+end
+puts 'Challenge created.'
+
+puts 'Creating groups for Munich Fall Reading Challenge...'
+['Sauerkraut', 'Bratwurst', 'Pretzel', 'Schnitzel'].each do |food_name|
+  challenge.groups.find_or_create_by!(name: food_name)
+  puts "Group '#{food_name}' created."
+end
+puts 'Finished creating groups.'

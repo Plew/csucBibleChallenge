@@ -80,6 +80,24 @@
     </div>
   </div>
 
+  <%# Challenge Enrollment Section %>
+  <div class="mt-6">
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title">Challenge Enrollment</h2>
+        <% if @user_enrollment %>
+          <p class="mb-2">You are currently enrolled in: <strong class="font-semibold"><%= @user_enrollment.challenge.name %></strong></p>
+          <div class="card-actions justify-start">
+            <%= button_to "Leave Challenge", user_challenge_enrollment_path(@user_enrollment), method: :delete, data: { confirm: "Are you sure you want to leave this challenge? Your progress will be saved." }, class: "btn btn-error btn-outline" %>
+          </div>
+        <% else %>
+          <p>You are not currently enrolled in any challenge.</p>
+          <%= link_to "Browse Available Challenges", root_path, class: "btn btn-primary mt-2" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
   <div class="text-center mt-8">
     <%= link_to "Log out", destroy_user_session_path, data: { turbo_method: :delete }, class: "link link-error" %>
   </div>

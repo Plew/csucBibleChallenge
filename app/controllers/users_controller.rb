@@ -21,6 +21,7 @@ class UsersController < ApplicationController
   # GET /profile/edit
   def edit
     @user = current_user # Use current_user from ApplicationController
+    @user_enrollment = current_user.user_challenge_enrollments.first # Fetch the current enrollment
     # Fallback if somehow current_user is nil (should not happen if require_login works)
     @user ||= User.new(username: "error_user", email: "error@example.com") 
   end

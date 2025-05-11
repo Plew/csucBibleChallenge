@@ -1,56 +1,85 @@
 <div class="container mx-auto px-4 py-8">
-  <h1 class="text-3xl font-bold mb-6 text-center text-base-content">Today's Reading</h1>
+  <% if @user_challenge %>
+    <h1 class="text-3xl font-bold mb-6 text-center text-base-content">
+      Today's Reading for <%= @user_challenge.name %>
+    </h1>
 
-  <% if @today_readings.blank? %>
-    <div class="card bg-base-100 shadow-xl">
-      <div class="card-body items-center text-center">
-        <h2 class="card-title">No Readings Scheduled</h2>
-        <p>There are no readings scheduled for you today.</p>
-        <p>Perhaps <%= link_to "explore some challenges?", '#' %><%# Placeholder link to challenges page %></p>
-      </div>
-    </div>
-  <% else %>
-    <% @today_readings.each_with_index do |reading, index| %>
-      <div class="card bg-base-100 shadow-xl <%= 'mt-6' if index > 0 %>">
+    <% if @todays_reading %>
+      <div class="card bg-base-100 shadow-xl">
         <div class="card-body">
-          <% if @today_readings.size > 1 && reading.try(:challenge_name).present? %>
-            <h3 class="text-sm font-semibold text-gray-500"><%= reading.challenge_name %></h3>
-          <% end %>
-          <h2 class="card-title"><%= reading.try(:reading_title) || "Untitled Reading" %></h2>
-          <p class="text-sm text-gray-600 mb-2"><%= reading.try(:reference) || "No reference" %></p>
+          <h2 class="card-title"><%= @todays_reading.title || "Untitled Reading" %></h2>
+          <%# Assuming Reading model has book_number and chapter_number for reference %>
+          <p class="text-sm text-gray-600 mb-2">
+            Reference: <%= "#{@todays_reading.book_number ? Book.find_by(book_number: @todays_reading.book_number)&.name : 'Book'} #{@todays_reading.chapter_number || 'N/A'}" %>
+          </p>
           
+          <%# Placeholder for actual reading content - this will need to be fetched if not part of the @todays_reading object directly %>
           <div class="prose max-w-none bg-base-200 p-4 rounded-md max-h-96 overflow-y-auto">
-            <% if reading.try(:verses).present? %>
-              <% reading.verses.each do |verse| %>
-                <p><%= verse %></p>
-              <% end %>
-            <% else %>
-              <p><em>Reading content will be displayed here.</em></p>
-            <% end %>
+            <p><em>Reading content will be displayed here. For example, verses from the chapter.</em></p>
+            <%# If @todays_reading had a :verses attribute or similar: %>
+            <%# if @todays_reading.try(:verses).present? %>
+            <%#   @todays_reading.verses.each do |verse| %>
+            <%#     <p><%= verse %></p> %>
+            <%#   end %>
+            <%# else %>
+            <%#   <p><em>Reading content not available.</em></p> %>
+            <%# end %>
           </div>
 
           <div class="card-actions justify-end mt-4">
-            <% if reading.try(:completed) %>
-              <button class="btn btn-outline btn-success" disabled>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                </svg>
-                Completed
-              </button>
-            <% else %>
-              <%# TODO: This button should eventually trigger a Turbo Stream or similar to mark as read %> 
-              <button class="btn btn-success">
-                Mark as Read
-              </button>
-            <% end %>
+            <%# TODO: Wire up this button to UserReadingsController to mark as complete %>
+            <%# We need to know if the user has already completed this reading %>
+            <%# user_reading_progress = current_user.user_readings.find_by(reading_id: @todays_reading.id) %>
+            <%# if user_reading_progress&.completed_on? %>
+            <!-- <button class="btn btn-outline btn-success" disabled> -->
+            <!--   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"> -->
+            <!--     <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /> -->
+            <!--   </svg> -->
+            <!--   Completed -->
+            <!-- </button> -->
+            <%# else %>
+            <button class="btn btn-success">
+              Mark as Read
+            </button>
+            <%# end %>
           </div>
+        </div>
+      </div>
+    <% else %>
+      <div class="card bg-base-100 shadow-xl">
+        <div class="card-body items-center text-center">
+          <h2 class="card-title">No Readings Scheduled</h2>
+          <p>There are no readings scheduled for you today in the <%= @user_challenge.name %>.</p>
+        </div>
+      </div>
+    <% end %>
+  <% else %>
+    <h1 class="text-3xl font-bold mb-6 text-center text-base-content">Join a Challenge</h1>
+    <% if @challenges.any? %>
+      <div class="grid grid-cols-1 gap-6">
+        <% @challenges.each do |challenge| %>
+          <div class="card bg-base-100 shadow-xl">
+            <div class="card-body flex flex-row items-center justify-between">
+              <div class="flex-grow">
+                <h2 class="card-title text-lg"><%= challenge.name %></h2>
+                <p class="text-sm text-base-content/70">
+                  <%= challenge.start_date.strftime('%Y-%m-%d') %> - <%= challenge.end_date.strftime('%Y-%m-%d') %>
+                </p>
+              </div>
+              <div class="card-actions flex-shrink-0 ml-4">
+                <%= button_to "Join", challenge_enrollments_path(challenge_id: challenge.id), method: :post, class: "btn btn-primary btn-sm" %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="card bg-base-100 shadow-xl">
+        <div class="card-body items-center text-center">
+          <h2 class="card-title">No Challenges Available</h2>
+          <p>There are currently no challenges available to join. Please check back later.</p>
         </div>
       </div>
     <% end %>
   <% end %>
-
-  <%# Navigation to view full challenge schedule or other challenges %>
-  <div class="mt-8 text-center">
-    <%= link_to "View All Challenges", '#', class: "link link-primary" %><%# Placeholder %>
-  </div>
 </div> 
