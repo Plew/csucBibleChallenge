@@ -13,7 +13,7 @@ class SessionsController < ApplicationController
     if user && user.authenticate(params[:session][:password])
       log_in user
       # TODO: Implement remember me functionality if params[:session][:remember_me] == '1'
-      redirect_to root_path, notice: 'Logged in successfully!'
+      redirect_to root_path
     else
       flash.now[:alert] = 'Invalid email/username or password combination'
       render :new, status: :unprocessable_entity

@@ -1,15 +1,15 @@
-<div class="min-h-screen flex items-center justify-center bg-base-200 py-12 px-4 sm:px-6 lg:px-8">
+<div class="min-h-screen flex justify-center bg-base-200 pt-6 px-4 sm:px-6 lg:px-8">
   <div class="max-w-md w-full space-y-8">
     <div>
-      <h2 class="mt-6 text-center text-3xl font-extrabold text-base-content">
+      <h2 class="mt-2 text-center text-3xl font-extrabold text-base-content">
         Log In to ReVerse
       </h2>
     </div>
     <%= form_with(url: user_session_path, scope: :session, local: true, html: { class: "mt-8 space-y-6" }) do |f| %>
       <div class="rounded-md shadow-sm -space-y-px">
         <div>
-          <%= f.label :email, "Email or Username", class: "label" %>
-          <%= f.text_field :email, class: "input input-bordered w-full", placeholder: "Email or Username", required: true %>
+          <%= f.label :email, "Email", class: "label" %>
+          <%= f.text_field :email, class: "input input-bordered w-full", placeholder: "Email", required: true %>
         </div>
         <div class="pt-2">
           <%= f.label :password, class: "label" %>

@@ -27,7 +27,7 @@
         <%= form_with(model: @user, url: user_profile_path, method: :patch, local: true) do |f| %>
           <div class="form-control">
             <%= f.label :username, class: "label" do %>
-              <span class="label-text">Username</span>
+              <span class="label-text">Name</span>
             <% end %>
             <%= f.text_field :username, class: "input input-bordered w-full" %>
           </div>
@@ -40,7 +40,7 @@
           </div>
           
           <div class="form-control mt-6">
-            <%= f.submit "Save Username", class: "btn btn-primary" %>
+            <%= f.submit "Save", class: "btn btn-primary" %>
           </div>
         <% end %>
       </div>
