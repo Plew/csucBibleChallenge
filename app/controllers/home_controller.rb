@@ -1,6 +1,9 @@
 class HomeController < ApplicationController
+  before_action :require_login, only: [:index] # Redirect to login if not logged in
+
   # GET /
   def index
+    # This will only be reached if the user is logged in due to before_action :require_login
     # In a real application, you would fetch the user's current challenge(s)
     # and their reading for today.
     # For now, we can use placeholders or assume no reading to show the basic page structure.

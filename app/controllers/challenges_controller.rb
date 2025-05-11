@@ -1,4 +1,6 @@
 class ChallengesController < ApplicationController
+  before_action :require_login, only: [:index]
+
   # GET /challenges
   def index
     # In a real app, you would fetch the user's challenges and available challenges.
