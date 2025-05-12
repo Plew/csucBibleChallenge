@@ -13,6 +13,31 @@ class HomeController < ApplicationController
         @todays_reading_title = @todays_reading.title
         @todays_reading_verses = @todays_reading.verses.map { |v| { verse_number: v.verse_number, verse_text: v.verse_text } }
       end
+
+      # Weekly Check-in Data
+      start_date = today_in_challenge_tz - 6.days
+      days = (0..6).map do |i|
+        date = start_date + i.days
+        reading = @user_challenge.readings.find_by(scheduled_date: date)
+        completed = reading && current_user.user_readings.exists?(reading_id: reading.id)
+        group_completion = 0
+        if reading
+          # Find user's group for this challenge
+          user_group = current_user.groups.find_by(challenge_id: @user_challenge.id)
+          if user_group
+            group_stats = GroupStatistics.new(user_group)
+            group_completion = group_stats.check_in_percentage(date).to_i
+          end
+        end
+        {
+          date: date,
+          day_of_week: date.strftime('%a'),
+          day_of_month: date.day.to_s,
+          completed: completed,
+          group_completion: group_completion
+        }
+      end
+      @weekly_check_in_days = days
     end
     # The placeholder @today_readings is removed.
   end

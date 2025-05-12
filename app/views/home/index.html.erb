@@ -1,34 +1,33 @@
-<div class="container mx-auto px-4">
+<div class="container mx-auto px-1">
   <% if @user_challenge %>
+    <div class="mb-4">
+      <%= render WeeklyCheckInComponent.new(days: @weekly_check_in_days) %>
+    </div>
     <h1 class="text-2xl font-bold text-center text-base-content">
       Today's Reading
     </h1>
 
     <% if @todays_reading %>
-      <div class="card bg-base-100 shadow-xl">
-        <div class="card-body">
-          <%= render ReadingDisplayComponent.new(title: @todays_reading_title, verses: @todays_reading_verses) %>
+      <div class="bg-base-100 shadow-sm rounded-lg p-4">
+        <%= render ReadingDisplayComponent.new(title: @todays_reading_title, verses: @todays_reading_verses) %>
 
-          <div class="card-actions justify-center mt-4">
-            <% if @todays_reading && current_user.user_readings.exists?(reading_id: @todays_reading.id) %>
-              <button class="btn btn-outline btn-success" disabled>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                </svg>
-                Marked as Read
-              </button>
-            <% elsif @todays_reading %>
-              <%= button_to "Mark as Read", user_readings_path(reading_id: @todays_reading.id), method: :post, class: "btn btn-success" %>
-            <% end %>
-          </div>
+        <div class="flex justify-center mt-4">
+          <% if @todays_reading && current_user.user_readings.exists?(reading_id: @todays_reading.id) %>
+            <button class="btn btn-outline btn-success" disabled>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+              Marked as Read
+            </button>
+          <% elsif @todays_reading %>
+            <%= button_to "Mark as Read", user_readings_path(reading_id: @todays_reading.id), method: :post, class: "btn btn-success" %>
+          <% end %>
         </div>
       </div>
     <% else %>
-      <div class="card bg-base-100 shadow-xl">
-        <div class="card-body items-center text-center">
-          <h2 class="card-title">No Readings Scheduled</h2>
-          <p>There are no readings scheduled for you today in the <%= @user_challenge.name %>.</p>
-        </div>
+      <div class="bg-base-100 shadow-sm rounded-lg p-4 flex flex-col items-center text-center">
+        <h2 class="text-lg font-semibold mb-2">No Readings Scheduled</h2>
+        <p>There are no readings scheduled for you today in the <%= @user_challenge.name %>.</p>
       </div>
     <% end %>
   <% else %>
@@ -36,27 +35,23 @@
     <% if @challenges.any? %>
       <div class="grid grid-cols-1 gap-6">
         <% @challenges.each do |challenge| %>
-          <div class="card bg-base-100 shadow-xl">
-            <div class="card-body flex flex-row items-center justify-between">
-              <div class="flex-grow">
-                <h2 class="card-title text-lg"><%= challenge.name %></h2>
-                <p class="text-sm text-base-content/70">
-                  <%= challenge.start_date.strftime('%Y-%m-%d') %> - <%= challenge.end_date.strftime('%Y-%m-%d') %>
-                </p>
-              </div>
-              <div class="card-actions flex-shrink-0 ml-4">
-                <%= button_to "Join", challenge_enrollments_path(challenge_id: challenge.id), method: :post, class: "btn btn-primary btn-sm" %>
-              </div>
+          <div class="bg-base-100 shadow-sm rounded-lg p-4 flex flex-row items-center justify-between">
+            <div class="flex-grow">
+              <h2 class="text-lg font-semibold"><%= challenge.name %></h2>
+              <p class="text-sm text-base-content/70">
+                <%= challenge.start_date.strftime('%Y-%m-%d') %> - <%= challenge.end_date.strftime('%Y-%m-%d') %>
+              </p>
+            </div>
+            <div class="flex-shrink-0 ml-4">
+              <%= button_to "Join", challenge_enrollments_path(challenge_id: challenge.id), method: :post, class: "btn btn-primary btn-sm" %>
             </div>
           </div>
         <% end %>
       </div>
     <% else %>
-      <div class="card bg-base-100 shadow-xl">
-        <div class="card-body items-center text-center">
-          <h2 class="card-title">No Challenges Available</h2>
-          <p>There are currently no challenges available to join. Please check back later.</p>
-        </div>
+      <div class="bg-base-100 shadow-sm rounded-lg p-4 flex flex-col items-center text-center">
+        <h2 class="text-lg font-semibold mb-2">No Challenges Available</h2>
+        <p>There are currently no challenges available to join. Please check back later.</p>
       </div>
     <% end %>
   <% end %>
