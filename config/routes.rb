@@ -55,8 +55,14 @@ Rails.application.routes.draw do
 
   resources :user_readings, only: [:create]
 
-  resources :groups, only: [:index] do
-    post :join, on: :member
-    post :leave, on: :collection
+  resources :groups, only: [:index, :new, :create] do
+    member do
+      post :join
+      get :confirm_destroy
+      post :destroy_and_leave
+    end
+    collection do
+      post :leave
+    end
   end
 end

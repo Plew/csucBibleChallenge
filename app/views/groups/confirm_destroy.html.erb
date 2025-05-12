@@ -1,0 +1,10 @@
+<div class="max-w-md mx-auto mt-8 p-6 bg-warning rounded-lg shadow">
+  <h2 class="text-xl font-bold mb-4 text-warning-content">Are you sure?</h2>
+  <p class="mb-4 text-warning-content">
+    If you leave this group, <strong>all <%= @other_members.count + 1 %> members</strong> (including you) will be removed and the group will be deleted. This action cannot be undone.
+  </p>
+  <div class="flex flex-col sm:flex-row gap-2 justify-end">
+    <%= button_to 'Yes, remove everyone and delete group', destroy_and_leave_group_path(@group), method: :post, class: 'btn btn-error w-full sm:w-auto', data: { turbo: true, turbo_confirm: 'Are you sure you want to delete this group and remove all members? This action cannot be undone.' } %>
+    <%= link_to 'No, keep group', groups_path, class: 'btn btn-ghost w-full sm:w-auto' %>
+  </div>
+</div> 
