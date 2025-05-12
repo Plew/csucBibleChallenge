@@ -7,20 +7,7 @@
     <% if @todays_reading %>
       <div class="card bg-base-100 shadow-xl">
         <div class="card-body">
-          <h2 class="card-title"><%= @todays_reading.title || "Untitled Reading" %></h2>
-          
-          <div class="prose max-w-none bg-base-200 p-4 rounded-md">
-            <% if @todays_reading.verses.any? %>
-              <% @todays_reading.verses.each do |verse| %>
-                <p>
-                  <span class="text-xs align-super mr-1 text-base-content/60"><%= verse.verse_number %></span>
-                  <%= verse.verse_text %>
-                </p>
-              <% end %>
-            <% else %>
-              <p><em>No verses found for this reading.</em></p>
-            <% end %>
-          </div>
+          <%= render ReadingDisplayComponent.new(title: @todays_reading_title, verses: @todays_reading_verses) %>
 
           <div class="card-actions justify-center mt-4">
             <% if @todays_reading && current_user.user_readings.exists?(reading_id: @todays_reading.id) %>
