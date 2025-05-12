@@ -58,14 +58,4 @@ class UsersController < ApplicationController
     params.require(:user).permit(:username, :current_password, :password, :password_confirmation)
   end
 
-  # def set_user
-  #   @user = current_user # Assuming a current_user helper
-  # end
-
-  # def require_login # Moved to ApplicationController
-  #   unless logged_in? # Assuming a logged_in? helper
-  #     flash[:error] = "You must be logged in to access this section"
-  #     redirect_to new_user_session_url # Or your login path
-  #   end
-  # end
 end 
