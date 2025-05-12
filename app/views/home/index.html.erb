@@ -22,7 +22,7 @@
             <% end %>
           </div>
 
-          <div class="card-actions justify-end mt-4">
+          <div class="card-actions justify-center mt-4">
             <% if @todays_reading && current_user.user_readings.exists?(reading_id: @todays_reading.id) %>
               <button class="btn btn-outline btn-success" disabled>
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">

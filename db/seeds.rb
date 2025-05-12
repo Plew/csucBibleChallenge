@@ -40,3 +40,35 @@ puts "Creating readings for '#{challenge.name}'..."
   puts "Created reading: #{reading_title} for #{scheduled_reading_date.strftime('%Y-%m-%d')}"
 end
 puts "Finished creating readings for '#{challenge.name}'."
+
+puts 'Creating sample users and enrolling them in groups...'
+german_names = [
+  ['Lukas', 'Müller'],
+  ['Anna', 'Schmidt'],
+  ['Max', 'Schneider'],
+  ['Sophie', 'Fischer'],
+  ['Leon', 'Weber'],
+  ['Mia', 'Meyer'],
+  ['Ben', 'Wagner'],
+  ['Emma', 'Becker'],
+  ['Paul', 'Hoffmann'],
+  ['Laura', 'Schäfer']
+]
+groups = challenge.groups.order(:name).to_a
+
+german_names.each_with_index do |(first, last), idx|
+  ascii_first = I18n.transliterate(first.downcase)
+  ascii_last = I18n.transliterate(last.downcase)
+  email = "#{ascii_first}.#{ascii_last}@example.com"
+  user = User.find_or_create_by!(email: email) do |u|
+    u.username = "#{ascii_first}#{ascii_last}"
+    u.password = 'password123'
+  end
+  group = groups[idx % groups.size]
+  enrollment = UserChallengeEnrollment.find_or_create_by!(user: user, challenge: challenge) do |e|
+    e.group = group
+  end
+  enrollment.update!(group: group) unless enrollment.group == group
+  puts "User #{user.username} enrolled in group #{group.name}."
+end
+puts 'Finished creating sample users and enrollments.'

@@ -54,4 +54,9 @@ Rails.application.routes.draw do
   get 'about', to: 'pages#about'
 
   resources :user_readings, only: [:create]
+
+  resources :groups, only: [:index] do
+    post :join, on: :member
+    post :leave, on: :collection
+  end
 end
