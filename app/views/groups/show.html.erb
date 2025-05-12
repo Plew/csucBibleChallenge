@@ -44,7 +44,7 @@
     Group members
   </div>
   <div class="flex flex-col w-full">
-    <% @group_members.each do |member| %>
+    <% @group.users.each do |member| %>
       <div class="text-sm">
         <%= member.name %>
       </div>

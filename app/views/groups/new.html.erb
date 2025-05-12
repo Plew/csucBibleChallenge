@@ -1,7 +1,24 @@
-<div class="mt-4 flex-col flex items-center gap-4 *:text-center">
-  <div class="text-lg">
-    After you create a group, others can can join it.
-  </div>
-  
-  <%= render 'form', group: @group %>
+<div class="max-w-md mx-auto mt-8 p-6 bg-base-100 rounded-lg shadow">
+  <h2 class="text-xl font-bold mb-4">Create a New Group</h2>
+
+  <%= form_with model: @group, url: groups_path, method: :post, data: { turbo: true }, class: 'space-y-4' do |f| %>
+    <% if @group.errors.any? %>
+      <div class="alert alert-error mb-4">
+        <ul class="list-disc list-inside text-sm">
+          <% @group.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div>
+      <%= f.label :name, 'Group Name', class: 'block font-semibold mb-1' %>
+      <%= f.text_field :name, class: 'input input-bordered w-full', autofocus: true, required: true %>
+    </div>
+
+    <div class="flex justify-end">
+      <%= f.submit 'Create Group', class: 'btn btn-primary' %>
+    </div>
+  <% end %>
 </div> 

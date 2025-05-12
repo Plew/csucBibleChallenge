@@ -31,9 +31,9 @@ class FakeMunich
     puts 'Resetting fake Munich challenge data...'
     delete_existing_data
     puts 'Creating challenge, groups, readings, users, and enrollments...'
-    create_challenge_and_groups
+    create_challenge_and_groups_and_users
     create_readings
-    create_users_and_enrollments
+    create_enrollments_and_group_memberships
     simulate_user_readings
     puts 'Fake Munich challenge data generated.'
   end
@@ -49,6 +49,9 @@ class FakeMunich
     UserReading.where(user_id: user_ids).delete_all
     # Delete enrollments
     UserChallengeEnrollment.where(challenge_id: challenge.id).delete_all
+    # Delete user_group_enrollments for groups in this challenge
+    group_ids = challenge.groups.pluck(:id)
+    UserGroupEnrollment.where(group_id: group_ids).delete_all
     # Delete readings
     challenge.readings.delete_all
     # Delete groups
@@ -59,15 +62,29 @@ class FakeMunich
     User.where(email: fake_user_emails).destroy_all
   end
 
-  def create_challenge_and_groups
+  # Create users first, then assign each group a unique creator from the users
+  def create_challenge_and_groups_and_users
     @challenge = Challenge.create!(
       name: CHALLENGE_NAME,
       start_date: Date.today - 7,
       end_date: Date.today - 7 + 3.months,
       timezone: 'Berlin'
     )
-    GROUP_NAMES.each { |name| @challenge.groups.create!(name: name) }
-    @groups = @challenge.groups.order(:name).to_a
+    # Create users
+    @users = GERMAN_NAMES.each_with_index.map do |(first, last), idx|
+      ascii_first = I18n.transliterate(first.downcase)
+      ascii_last = I18n.transliterate(last.downcase)
+      email = "#{ascii_first}.#{ascii_last}@example.com"
+      User.create!(
+        username: "#{ascii_first}#{ascii_last}",
+        email: email,
+        password: USER_PASSWORD
+      )
+    end
+    # Assign each group a unique creator from the users
+    @groups = GROUP_NAMES.each_with_index.map do |name, idx|
+      @challenge.groups.create!(name: name, creator: @users[idx])
+    end
   end
 
   def create_readings
@@ -83,19 +100,23 @@ class FakeMunich
     @readings = @challenge.readings.order(:scheduled_date).to_a
   end
 
-  def create_users_and_enrollments
-    @users = GERMAN_NAMES.each_with_index.map do |(first, last), idx|
-      ascii_first = I18n.transliterate(first.downcase)
-      ascii_last = I18n.transliterate(last.downcase)
-      email = "#{ascii_first}.#{ascii_last}@example.com"
-      user = User.create!(
-        username: "#{ascii_first}#{ascii_last}",
-        email: email,
-        password: USER_PASSWORD
-      )
-      group = @groups[idx % @groups.size]
-      UserChallengeEnrollment.create!(user: user, challenge: @challenge, group: group)
-      user
+  # Only assign each user to one group, and never assign a creator to another group
+  def create_enrollments_and_group_memberships
+    # The first N users are creators, each for one group
+    # The rest are distributed round-robin to groups, skipping creators
+    creator_users = @groups.map(&:creator)
+    member_users = @users - creator_users
+    group_count = @groups.size
+    # Assign creators to their own group
+    creator_users.each_with_index do |user, idx|
+      UserChallengeEnrollment.create!(user: user, challenge: @challenge)
+      UserGroupEnrollment.create!(user: user, group: @groups[idx])
+    end
+    # Assign remaining users to groups (round-robin, skipping creators)
+    member_users.each_with_index do |user, idx|
+      group = @groups[(idx) % group_count]
+      UserChallengeEnrollment.create!(user: user, challenge: @challenge)
+      UserGroupEnrollment.create!(user: user, group: group)
     end
   end
 

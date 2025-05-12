@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_10_171011) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_10_171100) do
   create_table "challenges", force: :cascade do |t|
     t.string "name"
     t.date "start_date"
@@ -25,7 +25,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_10_171011) do
     t.integer "challenge_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "creator_id", null: false
     t.index ["challenge_id"], name: "index_groups_on_challenge_id"
+    t.index ["creator_id"], name: "index_groups_on_creator_id"
   end
 
   create_table "readings", force: :cascade do |t|
@@ -44,11 +46,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_10_171011) do
     t.integer "challenge_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "group_id"
     t.index ["challenge_id"], name: "index_user_challenge_enrollments_on_challenge_id"
-    t.index ["group_id"], name: "index_user_challenge_enrollments_on_group_id"
     t.index ["user_id", "challenge_id"], name: "index_user_challenge_enrollments_on_user_and_challenge", unique: true
     t.index ["user_id"], name: "index_user_challenge_enrollments_on_user_id"
+  end
+
+  create_table "user_group_enrollments", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "group_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["group_id"], name: "index_user_group_enrollments_on_group_id"
+    t.index ["user_id", "group_id"], name: "index_user_group_enrollments_on_user_id_and_group_id", unique: true
+    t.index ["user_id"], name: "index_user_group_enrollments_on_user_id"
   end
 
   create_table "user_readings", force: :cascade do |t|
@@ -87,10 +97,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_10_171011) do
   end
 
   add_foreign_key "groups", "challenges"
+  add_foreign_key "groups", "users", column: "creator_id"
   add_foreign_key "readings", "challenges"
   add_foreign_key "user_challenge_enrollments", "challenges"
-  add_foreign_key "user_challenge_enrollments", "groups"
   add_foreign_key "user_challenge_enrollments", "users"
+  add_foreign_key "user_group_enrollments", "groups"
+  add_foreign_key "user_group_enrollments", "users"
   add_foreign_key "user_readings", "readings"
   add_foreign_key "user_readings", "users"
 end

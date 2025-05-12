@@ -5,6 +5,8 @@ class User < ApplicationRecord
   has_many :challenges, through: :user_challenge_enrollments
   has_many :user_readings, dependent: :destroy
   has_many :completed_readings, through: :user_readings, source: :reading
+  has_many :user_group_enrollments, dependent: :destroy
+  has_many :groups, through: :user_group_enrollments
 
   validates :username, presence: true, uniqueness: true
   validates :email, presence: true, uniqueness: { case_sensitive: false }, format: { with: URI::MailTo::EMAIL_REGEXP }

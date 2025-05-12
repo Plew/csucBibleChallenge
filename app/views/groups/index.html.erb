@@ -1,6 +1,12 @@
 <div class="container mx-auto px-4 py-8">
   <h1 class="text-2xl font-bold mb-6">Groups in <%= @challenge.name %></h1>
 
+  <% unless @user_group %>
+    <div class="mb-6 flex justify-center">
+      <%= link_to 'Create Group', new_group_path, class: 'btn btn-primary w-full sm:w-auto' %>
+    </div>
+  <% end %>
+
   <% if @user_group %>
     <div class="mb-6 p-4 rounded-lg bg-primary text-primary-content shadow-md">
       <div class="flex items-center justify-between">
@@ -9,7 +15,7 @@
           <span class="ml-2 text-lg"><%= @user_group.name %></span>
         </div>
         <div class="flex items-center gap-2">
-          <span class="badge badge-neutral"><%= @user_group.user_challenge_enrollments.count %> members</span>
+          <span class="badge badge-neutral"><%= @user_group.user_group_enrollments.count %> members</span>
           <%= button_to 'Leave Group', leave_groups_path, method: :post, data: { turbo: true, confirm: 'Are you sure you want to leave your group?' }, class: 'btn btn-sm btn-error ml-2' %>
         </div>
       </div>
@@ -21,7 +27,7 @@
       <% next if @user_group && idx == 0 %> <%# Skip the user's group if already shown above %>
       <div class="flex items-center justify-between py-2 px-2 hover:bg-base-200 transition-colors">
         <div class="flex items-center gap-3">
-          <div class="badge badge-neutral"><%= group.user_challenge_enrollments.count %> members</div>
+          <div class="badge badge-neutral"><%= group.user_group_enrollments.count %> members</div>
           <div class="text-lg"><%= group.name %></div>
         </div>
         <% unless @user_group %>
