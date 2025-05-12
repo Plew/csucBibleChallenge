@@ -5,10 +5,17 @@
 <body>
   <div class="navbar bg-base-100 shadow-lg" x-data="{ mobileMenuIsOpen: false }">
     <div class="navbar-start">
-      <%= link_to "ReVerse", root_path, class: "btn btn-ghost normal-case text-xl" %>
+      <% brand_text = 'ReVerse' %>
+      <% if logged_in? && current_challenge_for_navbar %>
+        <% brand_text += " : #{current_challenge_for_navbar.name}" %>
+      <% end %>
+      <%= link_to brand_text, root_path, class: "btn btn-ghost normal-case text-xl" %>
     </div>
 
-    <div class="navbar-end">
+    <div class="navbar-end flex items-center gap-2">
+      <% if logged_in? %>
+        <span class="text-base-content text-sm md:text-base font-semibold px-2">Hi <%= current_user.username %>!</span>
+      <% end %>
       <%# Mobile Menu Button %>
       <button @click="mobileMenuIsOpen = !mobileMenuIsOpen" class="btn btn-ghost btn-circle">
         <span class="sr-only">Open main menu</span>

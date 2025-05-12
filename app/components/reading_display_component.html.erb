@@ -1,0 +1,17 @@
+<div class="bg-base-100 shadow-xl w-full rounded-none">
+  <div class="p-4">
+    <h2 class="text-lg font-bold mb-2"><%= @title.presence || 'Untitled Reading' %></h2>
+    <div class="prose max-w-none bg-base-200 p-4 rounded-md">
+      <% if @verses.any? %>
+        <% @verses.each do |verse| %>
+          <p class="text-sm">
+            <span class="text-xs align-top mr-1 text-base-content/60"><%= verse[:verse_number] %></span>
+            <%= verse[:verse_text] %>
+          </p>
+        <% end %>
+      <% else %>
+        <p><em>No verses found for this reading.</em></p>
+      <% end %>
+    </div>
+  </div>
+</div> 
