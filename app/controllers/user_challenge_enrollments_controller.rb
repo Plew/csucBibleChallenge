@@ -16,7 +16,7 @@ class UserChallengeEnrollmentsController < ApplicationController
     # @enrollment.group_id = params[:group_id] # Ensure group_id is permitted and valid
 
     if @enrollment.save
-      redirect_to root_path, notice: "Successfully joined #{@challenge.name}!"
+      redirect_to root_path #, notice: "Successfully joined #{@challenge.name}!"
     else
       # If coming from a dedicated join page, render :new might be appropriate
       # For now, redirecting to root with an alert if there was a list of challenges
