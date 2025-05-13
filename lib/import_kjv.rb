@@ -11,15 +11,13 @@ class ImportKjv
   def call
     processed_books = {}
     current_book_id = 0
-
+    verses = []
     line_iterator = 0
-    CSV.foreach(FILE_PATH, headers: false, liberal_parsing: true) do |row|
-      line_iterator += 1
 
-      if line_iterator == 1
-        next
-      end
+    # Remove all existing KJV verses
+    Verse.where(version: VERSION_NAME).delete_all
 
+    CSV.foreach(FILE_PATH, headers: true, liberal_parsing: true) do |row|
       book_name = row[0]
       chapter_number = row[1].to_i
       verse_number = row[2].to_i
@@ -32,17 +30,20 @@ class ImportKjv
 
       book_id_for_verse = processed_books[book_name]
 
-      Verse.find_or_create_by!(
+      verses << {
         version: VERSION_NAME,
         book_number: book_id_for_verse,
         chapter_number: chapter_number,
-        verse_number: verse_number
-      ) do |verse|
-        verse.verse_text = verse_text
-      end
+        verse_number: verse_number,
+        verse_text: verse_text,
+        created_at: Time.current,
+        updated_at: Time.current
+      }
     end
 
-    Rails.logger.info "Successfully imported/verified #{Verse.where(version: VERSION_NAME).count} KJV verses."
+    Verse.insert_all(verses) if verses.any?
+
+    Rails.logger.info "Successfully imported #{verses.size} KJV verses."
     Rails.logger.info "A total of #{current_book_id} unique KJV books were processed."
   rescue StandardError => e
     Rails.logger.error "KJV Import Error: #{e.message}"
