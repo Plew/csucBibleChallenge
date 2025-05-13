@@ -12,7 +12,7 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
     if @user.save
       log_in @user # Log in the user after successful registration
-      redirect_to root_path, notice: 'Successfully registered! You are now logged in.'
+      redirect_to root_path
     else
       render :new, status: :unprocessable_entity
     end

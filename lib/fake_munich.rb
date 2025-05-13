@@ -93,7 +93,6 @@ class FakeMunich
       @challenge.readings.create!(
         book_number: BOOK_NUMBER,
         chapter_number: chapter_num,
-        title: "John Chapter #{chapter_num}",
         scheduled_date: scheduled_reading_date
       )
     end
