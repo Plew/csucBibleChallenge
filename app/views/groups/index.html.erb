@@ -4,34 +4,31 @@
       <%= link_to 'Create Group', new_group_path, class: 'btn btn-primary w-full sm:w-auto' %>
     </div>
   <% end %>
-
-  <% if @user_group %>
-    <div class="mb-6 p-4 rounded-lg bg-primary text-primary-content shadow-md">
-      <div class="flex items-center justify-between">
-        <div>
-          <span class="font-semibold">Your Group:</span>
-          <span class="ml-2 text-lg"><%= @user_group.name %></span>
-        </div>
-        <div class="flex items-center gap-2">
-          <span class="badge badge-neutral"><%= @user_group.user_group_enrollments.count %> members</span>
-          <%= button_to 'Leave Group', leave_groups_path, method: :post, data: { turbo: true, confirm: 'Are you sure you want to leave your group?' }, class: 'btn btn-sm btn-error ml-2' %>
-        </div>
-      </div>
-    </div>
-  <% end %>
-
   <div class="divide-y divide-base-300 mt-8">
-    <% @groups.each_with_index do |group, idx| %>
-      <% next if @user_group && idx == 0 %> <%# Skip the user's group if already shown above %>
-      <div class="flex items-center justify-between py-2 px-2 hover:bg-base-200 transition-colors">
-        <div class="flex items-center gap-3 min-w-0">
-          <div class="badge badge-neutral"><%= group.user_group_enrollments.count %> members</div>
-          <div class="text-lg truncate max-w-[10rem] sm:max-w-xs" title="<%= group.name %>"><%= group.name %></div>
+    <% @groups.each do |group| %>
+      <details class="group block">
+        <summary class="flex items-center justify-between py-2 px-2 hover:bg-base-200 transition-colors cursor-pointer">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="badge badge-neutral"><%= group.user_group_enrollments.count %></div>
+            <div class="text-lg truncate max-w-[10rem] sm:max-w-xs" title="<%= group.name %>"><%= group.name %></div>
+          </div>
+          <% if !@user_group %>
+            <%= button_to 'Join', join_group_path(group), method: :post, class: 'btn btn-primary btn-sm', data: { turbo: true } %>
+          <% end %>
+        </summary>
+        <div class="pl-10 py-2 bg-base-100 rounded-b-lg">
+          <ul class="list-disc list-inside text-sm">
+            <% group.user_group_enrollments.includes(:user).each do |enrollment| %>
+              <li><%= enrollment.user.username.presence || enrollment.user.email %></li>
+            <% end %>
+          </ul>
+          <% if @user_group && group == @user_group %>
+            <div class="mt-4 flex justify-end">
+              <%= button_to 'Leave Group', leave_groups_path, method: :post, data: { turbo: true, confirm: 'Are you sure you want to leave your group?' }, class: 'btn btn-error btn-sm' %>
+            </div>
+          <% end %>
         </div>
-        <% unless @user_group %>
-          <%= button_to 'Join', join_group_path(group), method: :post, class: 'btn btn-primary btn-sm', data: { turbo: true } %>
-        <% end %>
-      </div>
+      </details>
     <% end %>
   </div>
 </div>
