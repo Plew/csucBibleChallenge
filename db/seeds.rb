@@ -36,7 +36,6 @@ puts "Creating readings for '#{challenge.name}'..."
   reading_title = "John Chapter #{chapter_num}"
 
   challenge.readings.find_or_create_by!(book_number: 43, chapter_number: chapter_num) do |reading|
-    reading.title = reading_title
     reading.scheduled_date = scheduled_reading_date
     # Ensure other necessary attributes for Reading are set if any
   end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_10_171100) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_13_125143) do
   create_table "challenges", force: :cascade do |t|
     t.string "name"
     t.date "start_date"
@@ -32,7 +32,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_10_171100) do
 
   create_table "readings", force: :cascade do |t|
     t.integer "challenge_id", null: false
-    t.string "title"
     t.date "scheduled_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

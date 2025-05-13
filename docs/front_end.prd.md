@@ -60,7 +60,6 @@ This document describes the frontend user interface pages for the ReVerse Readin
             *   For each reading:
                 *   Challenge Name (if multiple challenges have readings today).
                 *   Reading Date (e.g., "Today, October 26").
-                *   Reading Title (e.g., `reading.title` or "Genesis Chapter 1").
                 *   Reference (e.g., Book Name, Chapter Number).
                 *   **Reading Content**:
                     *   Display the verses for the chapter/reading (fetched via API, e.g., FR-6 from `prd.md`). This could be a scrollable DaisyUI `card` or similar component.
