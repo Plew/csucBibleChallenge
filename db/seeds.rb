@@ -11,6 +11,6 @@
 # To generate fake Munich challenge data for local development, run:
 #   rake fake_munich:generate
 #
-puts 'Starting KJV Bible import for seeds...'
-ImportKjv.call
-puts 'Finished KJV Bible import.'
+# puts 'Starting KJV Bible import for seeds...'
+# ImportKjv.call
+# puts 'Finished KJV Bible import.'
