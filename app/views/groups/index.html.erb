@@ -1,6 +1,4 @@
 <div class="container mx-auto px-4 py-8">
-  <h1 class="text-2xl font-bold mb-6">Groups in <%= @challenge.name %></h1>
-
   <% unless @user_group %>
     <div class="mb-6 flex justify-center">
       <%= link_to 'Create Group', new_group_path, class: 'btn btn-primary w-full sm:w-auto' %>
@@ -26,9 +24,9 @@
     <% @groups.each_with_index do |group, idx| %>
       <% next if @user_group && idx == 0 %> <%# Skip the user's group if already shown above %>
       <div class="flex items-center justify-between py-2 px-2 hover:bg-base-200 transition-colors">
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-3 min-w-0">
           <div class="badge badge-neutral"><%= group.user_group_enrollments.count %> members</div>
-          <div class="text-lg"><%= group.name %></div>
+          <div class="text-lg truncate max-w-[10rem] sm:max-w-xs" title="<%= group.name %>"><%= group.name %></div>
         </div>
         <% unless @user_group %>
           <%= button_to 'Join', join_group_path(group), method: :post, class: 'btn btn-primary btn-sm', data: { turbo: true } %>

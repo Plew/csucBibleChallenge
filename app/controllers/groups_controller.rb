@@ -7,7 +7,10 @@ class GroupsController < ApplicationController
     @groups = @challenge.groups.order(:name)
     @user_group = current_user.groups.where(challenge_id: @challenge.id).first
     if @user_group
-      @groups = [@user_group] + @groups.where.not(id: @user_group.id)
+      @groups = @groups.where.not(id: @user_group.id).to_a
+      @groups.unshift(@user_group)
+    else
+      @groups = @groups.to_a
     end
   end
 
@@ -29,7 +32,7 @@ class GroupsController < ApplicationController
     @group = @challenge.groups.new(group_params.merge(creator: current_user))
     if @group.save
       UserGroupEnrollment.create!(user: current_user, group: @group)
-      redirect_to groups_path, notice: "Group '#{@group.name}' created and you have joined."
+      redirect_to groups_path
     else
       render :new, status: :unprocessable_entity
     end
@@ -80,7 +83,7 @@ class GroupsController < ApplicationController
       return
     end
     UserGroupEnrollment.create!(user: current_user, group: group)
-    redirect_to groups_path, notice: "You have joined the group '#{group.name}'."
+    redirect_to groups_path
   rescue ActiveRecord::RecordInvalid => e
     redirect_to groups_path, alert: e.record.errors.full_messages.to_sentence
   end
