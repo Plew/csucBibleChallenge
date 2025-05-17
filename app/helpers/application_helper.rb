@@ -22,4 +22,37 @@ module ApplicationHelper
     return nil unless key
     I18n.t("bible_books.#{key}")
   end
+
+  # Generates an image tag for a user's avatar using Avatarro.
+  #
+  # @param user [Object] The user object. Must respond to `username`.
+  # @param size_key [Symbol] The desired avatar size. Accepted values: `:tiny`, `:medium`, `:large`. Defaults to `:medium`.
+  # @param html_options [Hash] Additional HTML options for the `image_tag` helper.
+  # @return [String] An HTML image tag for the avatar, or an empty string if the user or username is blank.
+  #
+  # @example Basic usage with default medium size
+  #   avatar_image_tag(current_user)
+  #
+  # @example Specifying a tiny size
+  #   avatar_image_tag(@user, :tiny)
+  #
+  # @example Specifying a large size with additional CSS class
+  #   avatar_image_tag(@user, :large, class: 'rounded-full ring ring-primary')
+  def avatar_image_tag(user, size_key = :medium, html_options = {})
+    return '' unless user&.username.present?
+
+    sizes = {
+      tiny: '24x24',
+      medium: '36x36',
+      large: '48x48'
+    }
+
+    # Default to medium size if an invalid key is provided
+    dimension = sizes[size_key.to_sym] || sizes[:medium]
+
+    # Merge provided html_options with the size option
+    options = { size: dimension }.merge(html_options)
+
+    image_tag(Avatarro.image(user.username), options)
+  end
 end

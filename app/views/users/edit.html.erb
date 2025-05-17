@@ -27,6 +27,8 @@
             <%= f.label :avatar, class: "label" do %>
               <span class="label-text">Avatar</span>
             <% end %>
+              <%= avatar_image_tag(current_user, :tiny) %>
+
             <% if @user.avatar.attached? %>
               <div class="avatar mb-2">
                 <div class="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
