@@ -1,5 +1,9 @@
 class User < ApplicationRecord
   has_secure_password
+  has_one_attached :avatar do |attachable|
+    attachable.variant :thumb, resize_to_limit: [100, 100]
+    attachable.variant :medium, resize_to_limit: [300, 300]
+  end
 
   has_many :user_challenge_enrollments, dependent: :destroy
   has_many :challenges, through: :user_challenge_enrollments

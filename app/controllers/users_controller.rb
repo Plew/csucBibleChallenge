@@ -49,13 +49,13 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:username, :email, :password, :password_confirmation)
+    params.require(:user).permit(:username, :email, :password, :password_confirmation, :avatar)
   end
 
   def user_profile_update_params
     # Permit username. Password fields are optional.
     # If password is provided, current_password should also be required for validation (in model or here)
-    params.require(:user).permit(:username, :current_password, :password, :password_confirmation)
+    params.require(:user).permit(:username, :current_password, :password, :password_confirmation, :avatar)
   end
 
 end 

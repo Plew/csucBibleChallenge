@@ -12,7 +12,7 @@ class GroupStatistics
   end
 
   def last_membership_change_date
-    group.user_challenge_enrollments.maximum(:updated_at)&.to_date
+    group.user_group_enrollments.maximum(:updated_at)&.to_date
   end
 
   # For a given date, percentage of group members who completed the reading

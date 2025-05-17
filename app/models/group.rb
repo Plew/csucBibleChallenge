@@ -7,5 +7,5 @@ class Group < ApplicationRecord
 
   validates :name, presence: true,
                    uniqueness: { scope: :challenge_id, message: "name should be unique within the challenge" }
-  validates :creator_id, presence: true
+  validates :creator, presence: true
 end

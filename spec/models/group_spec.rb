@@ -3,7 +3,9 @@ require 'rails_helper'
 RSpec.describe Group, type: :model do
   describe 'associations' do
     it { should belong_to(:challenge) }
-    it { should have_many(:user_challenge_enrollments).dependent(:nullify) }
+    it { should belong_to(:creator).class_name('User') }
+    it { should have_many(:user_group_enrollments).dependent(:destroy) }
+    it { should have_many(:users).through(:user_group_enrollments) }
   end
 
   describe 'validations' do

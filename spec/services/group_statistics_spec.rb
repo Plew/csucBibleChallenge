@@ -6,8 +6,11 @@ describe GroupStatistics do
   let(:challenge) { create(:challenge, start_date: Date.current - 10, end_date: Date.current + 10) }
   let(:group) { create(:group, challenge: challenge) }
   let(:users) { create_list(:user, 3) }
-  let!(:enrollments) do
-    users.map { |user| create(:user_challenge_enrollment, user: user, challenge: challenge, group: group) }
+  let!(:setup_challenge_and_group_enrollments) do
+    users.each do |user|
+      create(:user_challenge_enrollment, user: user, challenge: challenge)
+      create(:user_group_enrollment, user: user, group: group)
+    end
   end
   let!(:readings) do
     dates = (Date.current - 4..Date.current).to_a
@@ -24,7 +27,7 @@ describe GroupStatistics do
 
   describe '#last_membership_change_date' do
     it 'returns the most recent updated_at of enrollments' do
-      expect(subject.last_membership_change_date).to eq(enrollments.map(&:updated_at).max.to_date)
+      expect(subject.last_membership_change_date.to_date).to eq(group.user_group_enrollments.map(&:updated_at).map(&:to_date).max)
     end
   end
 

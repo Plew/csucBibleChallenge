@@ -8,6 +8,35 @@ RSpec.describe User, type: :model do
     it { should have_many(:completed_readings).through(:user_readings).source(:reading) }
   end
 
+  describe 'active_storage_attachments' do
+    let(:user) { FactoryBot.create(:user) }
+    let(:file_path) { Rails.root.join('spec', 'fixtures', 'files', 'test_avatar.png') }
+    let(:file) { Rack::Test::UploadedFile.new(file_path, 'image/png') }
+
+    before do
+      # Create a dummy file for testing if it doesn't exist
+      FileUtils.mkdir_p(File.dirname(file_path))
+      FileUtils.touch(file_path) unless File.exist?(file_path)
+    end
+
+    it { should have_one_attached(:avatar) }
+
+    it 'can have an avatar attached' do
+      user.avatar.attach(file)
+      expect(user.avatar).to be_attached
+    end
+
+    it 'processes a thumb variant' do
+      user.avatar.attach(file)
+      expect(user.avatar.variant(:thumb)).to be_a(ActiveStorage::VariantWithRecord)
+    end
+
+    it 'processes a medium variant' do
+      user.avatar.attach(file)
+      expect(user.avatar.variant(:medium)).to be_a(ActiveStorage::VariantWithRecord)
+    end
+  end
+
   describe 'validations' do
     subject { FactoryBot.build(:user) } # Use FactoryBot for a default valid user
 

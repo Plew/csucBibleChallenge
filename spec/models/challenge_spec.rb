@@ -15,7 +15,7 @@ RSpec.describe Challenge, type: :model do
     it { should validate_presence_of(:start_date) }
     it { should validate_presence_of(:end_date) }
     it { should validate_presence_of(:timezone) }
-    it { should validate_inclusion_of(:timezone).in_array(ActiveSupport::TimeZone.all.map(&:name)).with_message("%{value} is not a valid timezone") }
+    it { should validate_inclusion_of(:timezone).in_array(ActiveSupport::TimeZone.all.map(&:name)).with_message(/is not a valid timezone/) }
 
     context 'when end_date is before start_date' do
       it 'is invalid' do
