@@ -6,23 +6,6 @@
           <div class="relative w-8 h-8 flex items-center justify-center">
             <!-- Background Circle -->
             <div class="absolute inset-0 rounded-full border-2 border-base-200"></div>
-            <!-- Progress Ring -->
-            <% if day[:group_completion].to_i > 0 %>
-              <svg class="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="46"
-                  fill="none"
-                  stroke="currentColor"
-                  class="text-primary"
-                  stroke-width="4"
-                  stroke-dasharray="<%= (day[:group_completion].to_f * 2.89).round(1) %> 289"
-                  stroke-linecap="round"
-                  transform="rotate(-90 50 50)"
-                />
-              </svg>
-            <% end %>
             <!-- Button Content (read-only) -->
             <div class="relative z-10 w-6 h-6 rounded-full flex items-center justify-center <%= day[:completed] ? 'bg-success text-success-content' : 'bg-base-200 text-base-content' %>">
               <% if day[:completed] %>
