@@ -49,10 +49,21 @@ module ApplicationHelper
 
     # Default to medium size if an invalid key is provided
     dimension = sizes[size_key.to_sym] || sizes[:medium]
-
-    # Merge provided html_options with the size option
     options = { size: dimension }.merge(html_options)
 
-    image_tag(Avatarro.image(user.username), options)
+    if user.avatar.attached?
+      variant =
+        case size_key.to_sym
+        when :tiny
+          user.avatar.variant(:thumb)
+        when :large
+          user.avatar.variant(:large)
+        else
+          user.avatar.variant(:medium)
+        end
+      image_tag(variant, options)
+    else
+      image_tag(Avatarro.image(user.username), options)
+    end
   end
 end
