@@ -17,7 +17,17 @@ class FakeMunich
     ['Ben', 'Wagner'],
     ['Emma', 'Becker'],
     ['Paul', 'Hoffmann'],
-    ['Laura', 'Schäfer']
+    ['Laura', 'Schäfer'],
+    ['Tim', 'Keller'],
+    ['Johanna', 'Krüger'],
+    ['Felix', 'Baumann'],
+    ['Clara', 'Wolf'],
+    ['Julian', 'Koch'],
+    ['Nina', 'Voigt'],
+    ['Moritz', 'Hartmann'],
+    ['Lena', 'Zimmermann'],
+    ['Fabian', 'Brandt'],
+    ['Sarah', 'Krause']
   ].freeze
   BOOK_NUMBER = 43 # John
   CHAPTER_COUNT = 21
@@ -70,16 +80,25 @@ class FakeMunich
       end_date: Date.today - 7 + 3.months,
       timezone: 'Berlin'
     )
-    # Create users
+    # Create users and attach avatars
     @users = GERMAN_NAMES.each_with_index.map do |(first, last), idx|
       ascii_first = I18n.transliterate(first.downcase)
       ascii_last = I18n.transliterate(last.downcase)
       email = "#{ascii_first}.#{ascii_last}@example.com"
-      User.create!(
+      user = User.create!(
         username: "#{ascii_first}#{ascii_last}",
         email: email,
         password: USER_PASSWORD
       )
+      avatar_path = Rails.root.join('db', 'fixtures', 'avatars', "#{idx + 1}.jpg")
+      if File.exist?(avatar_path)
+        user.avatar.attach(
+          io: File.open(avatar_path),
+          filename: "#{idx + 1}.jpg",
+          content_type: 'image/jpeg'
+        )
+      end
+      user
     end
     # Assign each group a unique creator from the users
     @groups = GROUP_NAMES.each_with_index.map do |name, idx|
