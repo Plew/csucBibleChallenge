@@ -54,6 +54,8 @@
 
   </div>
 
+  <%= render(NavBarComponent.new) %>
+
   <%# Flash Messages %>
   <% if flash[:notice] %>
     <div x-data="{ show: true }"
