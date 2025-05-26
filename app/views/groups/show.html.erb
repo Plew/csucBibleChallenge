@@ -1,42 +1,12 @@
 <div class="container mx-auto px-4 py-6">
-  <!-- DaisyUI Breadcrumbs -->
-  <div class="breadcrumbs text-sm mb-4">
-    <ul>
-      <li><%= link_to 'Home', root_path %></li>
-      <li><%= link_to 'Groups', groups_path %></li>
-      <li><span><%= @group.name %></span></li>
-    </ul>
-  </div>
 
-  <div class="bg-base-100 rounded-lg shadow p-4 mb-6">
-    <div class="flex items-center gap-4 flex-wrap">
-      <div class="text-xl font-bold truncate" title="<%= @group.name %>"><%= @group.name %></div>
-      <div class="flex-grow"></div>
-      <% enrollments = @group.user_group_enrollments.includes(:user).to_a.shuffle %>
-      <% shown_enrollments = enrollments.first(5) %>
-      <% extra_count = enrollments.size - shown_enrollments.size %>
-      <div class="avatar-group -space-x-6 flex-shrink-0">
-        <% shown_enrollments.each do |enrollment| %>
-          <div class="avatar">
-            <div class="w-8">
-              <%= avatar_image_tag(enrollment.user, :tiny, class: 'rounded-full') %>
-            </div>
-          </div>
-        <% end %>
-        <% if extra_count > 0 %>
-          <div class="avatar avatar-placeholder">
-            <div class="bg-neutral text-neutral-content w-8">
-              <span>+<%= extra_count %></span>
-            </div>
-          </div>
-        <% end %>
+  <div class="bg-base-100 rounded-lg shadow p-4 mb-2">
+    <div class="text-xl font-bold truncate" title="<%= @group.name %>"><%= @group.name %></div>
+    <% unless @user_group %>
+      <div class="mt-2">
+        <%= button_to 'Join', join_group_path(@group), method: :post, class: 'btn btn-primary btn-sm', data: { turbo: true } %>
       </div>
-      <% unless @user_group %>
-        <div class="flex-shrink-0 ml-2">
-          <%= button_to 'Join', join_group_path(@group), method: :post, class: 'btn btn-primary btn-sm', data: { turbo: true } %>
-        </div>
-      <% end %>
-    </div>
+    <% end %>
   </div>
 
   <div class="bg-base-100 rounded-lg shadow p-4">
