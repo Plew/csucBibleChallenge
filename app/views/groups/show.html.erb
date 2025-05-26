@@ -1,52 +1,60 @@
-<div id="group-component" class="flex flex-col w-full">
-  <div class="flex justify-between items-center mx-2 mt-4">
-    <div class="w-6 h-6">
-      <%= link_to "Edit Group", edit_group_path(@group), class: "text-blue-500 hover:text-blue-700" %>
-    </div>
-    <div class="w-6 h-6">
-      <%= link_to create_or_join_path do %>
-        <%= image_tag 'pluswhite100.png' %>
-      <% end %>
-    </div>
+<div class="container mx-auto px-4 py-6">
+  <!-- DaisyUI Breadcrumbs -->
+  <div class="breadcrumbs text-sm mb-4">
+    <ul>
+      <li><%= link_to 'Home', root_path %></li>
+      <li><%= link_to 'Groups', groups_path %></li>
+      <li><span><%= @group.name %></span></li>
+    </ul>
   </div>
-  <div class="flex justify-center items-center mx-2 mt-2">
-    <div class="text-2xl font-bold">
-      <%= @group.name %>
-    </div>
-  </div>
-  <div class="flex justify-between items-center h-64 max-w-full px-2">
-    <div class="flex-shrink-0">
-      <% if @previous_group_id %>
-        <%= link_to group_path(@previous_group_id) do %>
-          <%= image_tag 'previous.png', class: 'w-16 h-16' %>
-        <% end %>
-      <% end %>
-    </div>
 
-    <div class="flex-grow flex justify-center items-center h-64 w-full overflow-hidden">
-      <div class="w-full h-full flex justify-center items-center">
-        <%= render(PiechartComponent.new(group_id: @group.id, title: @group.name, user_checkin_data: @pie_chart_data)) %>
+  <div class="bg-base-100 rounded-lg shadow p-4 mb-6">
+    <div class="flex items-center gap-4 flex-wrap">
+      <div class="text-xl font-bold truncate" title="<%= @group.name %>"><%= @group.name %></div>
+      <div class="flex-grow"></div>
+      <% enrollments = @group.user_group_enrollments.includes(:user).to_a.shuffle %>
+      <% shown_enrollments = enrollments.first(5) %>
+      <% extra_count = enrollments.size - shown_enrollments.size %>
+      <div class="avatar-group -space-x-6 flex-shrink-0">
+        <% shown_enrollments.each do |enrollment| %>
+          <div class="avatar">
+            <div class="w-8">
+              <%= avatar_image_tag(enrollment.user, :tiny, class: 'rounded-full') %>
+            </div>
+          </div>
+        <% end %>
+        <% if extra_count > 0 %>
+          <div class="avatar avatar-placeholder">
+            <div class="bg-neutral text-neutral-content w-8">
+              <span>+<%= extra_count %></span>
+            </div>
+          </div>
+        <% end %>
       </div>
-    </div>
-
-    <div class="flex-shrink-0">
-      <% if @next_group_id %>
-        <%= link_to group_path(@next_group_id) do %>
-          <%= image_tag 'next.png', class: 'w-16 h-16' %>
-        <% end %>
+      <% unless @user_group %>
+        <div class="flex-shrink-0 ml-2">
+          <%= button_to 'Join', join_group_path(@group), method: :post, class: 'btn btn-primary btn-sm', data: { turbo: true } %>
+        </div>
       <% end %>
     </div>
   </div>
-</div>
 
-<div class="flex flex-col items-center gap-4 mx-8 mt-8">
-  <div class="text-xl">
-    Group members
-  </div>
-  <div class="flex flex-col w-full">
-    <% @group.users.each do |member| %>
-      <div class="text-sm">
-        <%= member.name %>
+  <div class="bg-base-100 rounded-lg shadow p-4">
+    <ul class="list bg-base-100 rounded-box">
+      <li class="p-4 pb-2 text-xs opacity-60 tracking-wide">Group Members</li>
+      <% @group.user_group_enrollments.includes(:user).each do |enrollment| %>
+        <li class="list-row flex items-center gap-3 py-2 px-2">
+          <div><%= avatar_image_tag(enrollment.user, :tiny, class: 'size-10 rounded-box') %></div>
+          <div class="flex-1 min-w-0">
+            <div class="truncate"><%= enrollment.user.username %></div>
+            <div class="text-xs uppercase font-semibold opacity-60 truncate"><%= enrollment.user.email %></div>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+    <% if @user_group && @group == @user_group %>
+      <div class="mt-4 flex justify-end">
+        <%= button_to 'Leave Group', leave_groups_path, method: :post, data: { turbo: true, confirm: 'Are you sure you want to leave your group?' }, class: 'btn btn-error btn-sm' %>
       </div>
     <% end %>
   </div>

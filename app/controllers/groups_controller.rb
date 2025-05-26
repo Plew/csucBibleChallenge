@@ -100,6 +100,12 @@ class GroupsController < ApplicationController
     redirect_to groups_path, notice: 'Group and all memberships have been deleted.'
   end
 
+  # GET /groups/:id
+  def show
+    @group = @challenge.groups.includes(user_group_enrollments: :user).find(params[:id])
+    @user_group = current_user.groups.where(challenge_id: @challenge.id).first
+  end
+
   private
 
   def set_enrollment_and_challenge

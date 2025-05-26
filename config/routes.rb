@@ -55,7 +55,7 @@ Rails.application.routes.draw do
 
   resources :user_readings, only: [:create]
 
-  resources :groups, only: [:index, :new, :create] do
+  resources :groups, only: [:index, :new, :create, :show] do
     member do
       post :join
       get :confirm_destroy
