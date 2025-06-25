@@ -1,0 +1,25 @@
+<div class="stats shadow mb-4">
+  <div class="stat">
+    <div class="stat-figure text-primary">
+      <%= checkmark_icon_svg.html_safe %>
+    </div>
+    <div class="stat-title">Overall Progress</div>
+    <div class="stat-value text-primary"><%= overall_progress_percentage %>%</div>
+    <div class="stat-desc"><%= overall_progress_description %></div>
+  </div>
+  
+  <div class="stat">
+    <div class="stat-figure text-secondary">
+      <%= clock_icon_svg.html_safe %>
+    </div>
+    <div class="stat-title">On Track</div>
+    <div class="stat-value text-secondary"><%= on_track_percentage %>%</div>
+    <div class="stat-desc"><%= on_track_description %></div>
+  </div>
+  
+  <div class="stat">
+    <div class="stat-title">Current Streak</div>
+    <div class="stat-value"><%= current_streak_days %> days</div>
+    <div class="stat-desc"><%= streak_description %></div>
+  </div>
+</div>
