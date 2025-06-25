@@ -84,17 +84,77 @@ class UserLeaderboard
   end
 
   # Returns users ordered by current reading streak (highest first)
-  # Note: This is a simplified streak calculation - consecutive days from today backwards
+  # Note: This calculates consecutive days from today backwards using a single SQL query
   def by_current_streak
-    user_streaks = enrolled_users.map do |user|
-      streak_days = calculate_current_streak(user)
-      { user: user, streak_days: streak_days }
-    end
+    sql = <<~SQL
+      WITH RECURSIVE streak_calc AS (
+        -- Base case: Start from current date for each user
+        SELECT 
+          users.id as user_id,
+          users.username,
+          '#{current_date_in_challenge_timezone}' as check_date,
+          CASE 
+            WHEN completed_readings.reading_date = '#{current_date_in_challenge_timezone}' THEN 1 
+            ELSE 0 
+          END as current_streak,
+          0 as iteration
+        FROM users
+        INNER JOIN user_challenge_enrollments uce ON uce.user_id = users.id AND uce.challenge_id = #{challenge.id}
+        LEFT JOIN (
+          SELECT ur.user_id, r.scheduled_date as reading_date
+          FROM user_readings ur
+          INNER JOIN readings r ON r.id = ur.reading_id 
+          WHERE r.challenge_id = #{challenge.id} 
+            AND r.scheduled_date <= '#{current_date_in_challenge_timezone}'
+        ) completed_readings ON completed_readings.user_id = users.id 
+                              AND completed_readings.reading_date = '#{current_date_in_challenge_timezone}'
+        
+        UNION ALL
+        
+        -- Recursive case: Check previous days
+        SELECT 
+          sc.user_id,
+          u.username,
+          date(sc.check_date, '-1 day'),
+          CASE 
+            WHEN cr.reading_date = date(sc.check_date, '-1 day') AND sc.current_streak > 0 
+            THEN sc.current_streak + 1
+            ELSE 0
+          END,
+          sc.iteration + 1
+        FROM streak_calc sc
+        INNER JOIN users u ON u.id = sc.user_id
+        LEFT JOIN (
+          SELECT ur.user_id, r.scheduled_date as reading_date
+          FROM user_readings ur
+          INNER JOIN readings r ON r.id = ur.reading_id 
+          WHERE r.challenge_id = #{challenge.id}
+            AND r.scheduled_date <= '#{current_date_in_challenge_timezone}'
+        ) cr ON cr.user_id = sc.user_id AND cr.reading_date = date(sc.check_date, '-1 day')
+        WHERE sc.current_streak > 0 
+          AND date(sc.check_date, '-1 day') >= '#{challenge.start_date}'
+          AND sc.iteration < 365  -- Prevent infinite recursion
+      ),
+      user_max_streaks AS (
+        SELECT 
+          user_id,
+          username,
+          MAX(current_streak) as current_streak
+        FROM streak_calc 
+        GROUP BY user_id, username
+      )
+      SELECT users.*, COALESCE(ums.current_streak, 0) as current_streak
+      FROM users
+      INNER JOIN user_challenge_enrollments uce ON uce.user_id = users.id AND uce.challenge_id = #{challenge.id}
+      LEFT JOIN user_max_streaks ums ON ums.user_id = users.id
+      ORDER BY current_streak DESC, users.username ASC
+      LIMIT #{limit}
+    SQL
 
-    user_streaks
-      .sort_by { |entry| [-entry[:streak_days], entry[:user].username] }
-      .first(limit)
-      .map { |entry| entry[:user].tap { |u| u.define_singleton_method(:current_streak) { entry[:streak_days] } } }
+    User.find_by_sql(sql).map do |user|
+      user.define_singleton_method(:current_streak) { user[:current_streak].to_i }
+      user
+    end
   end
 
   # Returns users ordered by most recent activity (most recent first)
@@ -131,33 +191,4 @@ class UserLeaderboard
     @current_date ||= Time.current.in_time_zone(challenge.timezone).to_date
   end
 
-  def calculate_current_streak(user)
-    return 0 if total_readings.zero?
-
-    # Get all user's completed readings for this challenge, ordered by scheduled date desc
-    completed_dates = user.user_readings
-                         .joins(:reading)
-                         .where(readings: { challenge_id: challenge.id })
-                         .where('readings.scheduled_date <= ?', current_date_in_challenge_timezone)
-                         .pluck('readings.scheduled_date')
-                         .sort.reverse
-
-    return 0 if completed_dates.empty?
-
-    # Calculate streak from most recent date backwards
-    streak = 0
-    current_check_date = current_date_in_challenge_timezone
-
-    # Start from today and work backwards
-    while current_check_date >= challenge.start_date
-      if completed_dates.include?(current_check_date)
-        streak += 1
-        current_check_date -= 1.day
-      else
-        break
-      end
-    end
-
-    streak
-  end
 end
