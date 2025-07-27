@@ -11,4 +11,3 @@ pin "Chart.bundle", to: "Chart.bundle.js"
 # Chart.js from CDN
 pin "chart.js", to: "https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"
 pin "@kurkle/color", to: "https://ga.jspm.io/npm:@kurkle/color@0.3.2/dist/color.esm.js"
-pin "@stagewise/toolbar", to: "@stagewise--toolbar.js" # @0.1.0

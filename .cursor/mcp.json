@@ -1,8 +1,4 @@
 {
   "mcpServers": {
-    "stagewise": {
-      "url": "http://localhost:5746/sse",
-      "env": {}
-    }
   }
 }

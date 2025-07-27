@@ -32,7 +32,7 @@ class UserStatsComponentPreview < ViewComponent::Preview
       timezone: 'UTC'
     )
     
-    # Mock the readings association
+    # Mock the readings association with a simple object
     readings = (0..59).map do |day_offset|
       Reading.new(
         id: day_offset + 1,
@@ -43,16 +43,10 @@ class UserStatsComponentPreview < ViewComponent::Preview
       )
     end
     
+    # Create a simple mock object that responds to the methods we need
+    readings_relation = MockReadingsRelation.new(readings)
+    
     challenge.define_singleton_method(:readings) do
-      readings_relation = double('readings_relation')
-      allow(readings_relation).to receive(:count).and_return(60)
-      allow(readings_relation).to receive(:any?).and_return(true)
-      allow(readings_relation).to receive(:where) { |condition|
-        filtered = readings.select { |r| r.scheduled_date <= Date.current }
-        filtered_relation = double('filtered_relation')
-        allow(filtered_relation).to receive(:count).and_return(filtered.length)
-        filtered_relation
-      }
       readings_relation
     end
     
@@ -72,15 +66,10 @@ class UserStatsComponentPreview < ViewComponent::Preview
       )
     end
     
+    user_readings_relation = MockUserReadingsRelation.new(user_readings, 45)
+    
     user.define_singleton_method(:user_readings) do
-      relation = double('user_readings_relation')
-      allow(relation).to receive(:joins).and_return(relation)
-      allow(relation).to receive(:where).and_return(relation)
-      allow(relation).to receive(:count).and_return(45)
-      allow(relation).to receive(:pluck).and_return(
-        (0..44).map { |i| 30.days.ago.to_date + i.days }
-      )
-      relation
+      user_readings_relation
     end
     
     user
@@ -90,15 +79,12 @@ class UserStatsComponentPreview < ViewComponent::Preview
     user = User.new(id: 2, username: "bob", email: "bob@example.com")
     
     # Mock 20 completed readings (33% of 60 total) with gaps
+    user_readings_relation = MockUserReadingsRelation.new([], 20, 
+      (0..19).map { |i| 30.days.ago.to_date + (i * 2).days }
+    )
+    
     user.define_singleton_method(:user_readings) do
-      relation = double('user_readings_relation')
-      allow(relation).to receive(:joins).and_return(relation)
-      allow(relation).to receive(:where).and_return(relation)
-      allow(relation).to receive(:count).and_return(20)
-      allow(relation).to receive(:pluck).and_return(
-        (0..19).map { |i| 30.days.ago.to_date + (i * 2).days } # Every other day
-      )
-      relation
+      user_readings_relation
     end
     
     user
@@ -107,13 +93,10 @@ class UserStatsComponentPreview < ViewComponent::Preview
   def new_user_with_no_progress
     user = User.new(id: 3, username: "charlie", email: "charlie@example.com")
     
+    user_readings_relation = MockUserReadingsRelation.new([], 0, [])
+    
     user.define_singleton_method(:user_readings) do
-      relation = double('user_readings_relation')
-      allow(relation).to receive(:joins).and_return(relation)
-      allow(relation).to receive(:where).and_return(relation)
-      allow(relation).to receive(:count).and_return(0)
-      allow(relation).to receive(:pluck).and_return([])
-      relation
+      user_readings_relation
     end
     
     user
@@ -125,15 +108,65 @@ class UserStatsComponentPreview < ViewComponent::Preview
     # Mock 14-day current streak
     streak_dates = (0..13).map { |i| Date.current - i.days }.reverse
     
+    user_readings_relation = MockUserReadingsRelation.new([], 25, streak_dates)
+    
     user.define_singleton_method(:user_readings) do
-      relation = double('user_readings_relation')
-      allow(relation).to receive(:joins).and_return(relation)
-      allow(relation).to receive(:where).and_return(relation)
-      allow(relation).to receive(:count).and_return(25)
-      allow(relation).to receive(:pluck).and_return(streak_dates)
-      relation
+      user_readings_relation
     end
     
     user
+  end
+
+  # Simple mock objects to replace RSpec doubles
+  class MockReadingsRelation
+    def initialize(readings)
+      @readings = readings
+    end
+
+    def count
+      @readings.length
+    end
+
+    def any?
+      @readings.any?
+    end
+
+    def where(*args)
+      # Handle different where patterns:
+      # .where('scheduled_date <= ?', date) 
+      # .where(readings: { challenge_id: id })
+      if args.length == 2 && args[0].is_a?(String) && args[0].include?('scheduled_date')
+        date_value = args[1]
+        filtered = @readings.select { |r| r.scheduled_date <= date_value }
+        MockReadingsRelation.new(filtered)
+      else
+        self
+      end
+    end
+  end
+
+  class MockUserReadingsRelation
+    def initialize(user_readings, count = nil, pluck_dates = nil)
+      @user_readings = user_readings
+      @count = count || user_readings.length
+      @pluck_dates = pluck_dates || []
+    end
+
+    def joins(association)
+      self
+    end
+
+    def where(*args)
+      # Handle different where call patterns - just return self for mocking
+      self
+    end
+
+    def count
+      @count
+    end
+
+    def pluck(column)
+      @pluck_dates
+    end
   end
 end
