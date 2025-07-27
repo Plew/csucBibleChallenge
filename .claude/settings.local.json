@@ -7,7 +7,10 @@
       "mcp__context7__get-library-docs",
       "WebFetch(domain:daisyui.com)",
       "Bash(bundle exec rspec:*)",
-      "Bash(claude doctor)"
+      "Bash(claude doctor)",
+      "Bash(cut:*)",
+      "Bash(grep:*)",
+      "Bash(rm:*)"
     ],
     "deny": []
   }
