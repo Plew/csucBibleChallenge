@@ -1,16 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "Bash(bundle exec rails:*)",
-      "WebFetch(domain:docs.anthropic.com)",
-      "mcp__context7__resolve-library-id",
-      "mcp__context7__get-library-docs",
-      "WebFetch(domain:daisyui.com)",
-      "Bash(bundle exec rspec:*)",
-      "Bash(claude doctor)",
-      "Bash(cut:*)",
-      "Bash(grep:*)",
-      "Bash(rm:*)"
+      "mcp__playwright__browser_navigate"
     ],
     "deny": []
   }
