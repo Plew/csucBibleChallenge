@@ -32,6 +32,11 @@ Rails.application.routes.draw do
   get 'profile/edit', to: 'users#edit', as: :edit_user_profile
   patch 'profile', to: 'users#update', as: :user_profile
 
+  # Admin routes
+  namespace :admin do
+    resources :challenges, only: [:new, :create]
+  end
+
   namespace :api do
     namespace :v1 do
       resources :users, only: [:create]

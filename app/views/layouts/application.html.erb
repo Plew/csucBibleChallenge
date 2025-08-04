@@ -42,6 +42,9 @@
               <%= link_to "Today", root_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
               <%= link_to "Groups", groups_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
             <% end %>
+            <% if current_user.admin? %>
+              <%= link_to "Create Challenge", new_admin_challenge_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
+            <% end %>
             <%= link_to "Profile", edit_user_profile_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
             <%= link_to "Log Out", destroy_user_session_path, data: { turbo_method: :delete }, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
           <% else %>
