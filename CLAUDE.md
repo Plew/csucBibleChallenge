@@ -113,3 +113,10 @@ This is a Rails 8 application for managing Bible reading challenges. Users can j
 
 - Always use mobile mode on playwright when testing; this application will always be in responsive mode, unless testing component in lookbook. If using lookbook, use desktop mode
 
+## Notes
+
+- To see what versions of the Bible are available, look in the 'version' column of the Verse model
+
+## Dev Credentials
+
+- Test account: Use `pdbradley@gmail.com` with password `nargh000` for development testing

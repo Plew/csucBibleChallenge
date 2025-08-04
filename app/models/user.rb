@@ -15,6 +15,7 @@ class User < ApplicationRecord
   validates :username, presence: true, uniqueness: true
   validates :email, presence: true, uniqueness: { case_sensitive: false }, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :password, presence: true, length: { minimum: 6 }, if: -> { new_record? || !password.nil? }
+  validates :version, inclusion: { in: %w[ASV ESV KJV NASB NKJV], message: "must be a valid Bible version" }
 
   def admin?
     admin

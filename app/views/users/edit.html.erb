@@ -38,6 +38,22 @@
             <% end %>
             <%= f.file_field :avatar, class: "file-input file-input-bordered w-full" %>
           </div>
+
+          <div class="form-control mt-2">
+            <%= f.label :version, class: "label" do %>
+              <span class="label-text">Preferred Bible Version</span>
+            <% end %>
+            <%= f.select :version, 
+                options_for_select([
+                  ['American Standard Version (ASV)', 'ASV'],
+                  ['English Standard Version (ESV)', 'ESV'],
+                  ['King James Version (KJV)', 'KJV'],
+                  ['New American Standard Bible (NASB)', 'NASB'],
+                  ['New King James Version (NKJV)', 'NKJV']
+                ], @user.version), 
+                {}, 
+                { class: "select select-bordered w-full" } %>
+          </div>
           
           <div class="form-control mt-6">
             <%= f.submit "Save", class: "btn btn-primary" %>

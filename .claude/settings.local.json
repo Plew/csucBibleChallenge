@@ -16,7 +16,10 @@
       "Bash(grep:*)",
       "mcp__playwright__browser_resize",
       "Bash(true)",
-      "Bash(kill:*)"
+      "Bash(kill:*)",
+      "Bash(find:*)",
+      "mcp__playwright__browser_select_option",
+      "mcp__playwright__browser_snapshot"
     ],
     "deny": []
   }
