@@ -58,11 +58,11 @@
             <h3 class="text-lg font-semibold mb-3 sm:mb-4">Old Testament</h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
               <% old_testament_books.each do |book| %>
-                <label class="flex items-center space-x-3 cursor-pointer">
+                <label class="flex items-center cursor-pointer">
                   <input type="checkbox" 
                          name="selected_books[]" 
                          value="<%= book[:number] %>" 
-                         class="checkbox checkbox-primary" 
+                         class="checkbox checkbox-primary mr-2" 
                          data-challenge-creator-target="bookCheckbox"
                          data-action="change->challenge-creator#updateSchedule"
                          data-testament="old"
@@ -78,11 +78,11 @@
             <h3 class="text-lg font-semibold mb-3 sm:mb-4">New Testament</h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
               <% new_testament_books.each do |book| %>
-                <label class="flex items-center space-x-3 cursor-pointer">
+                <label class="flex items-center cursor-pointer">
                   <input type="checkbox" 
                          name="selected_books[]" 
                          value="<%= book[:number] %>" 
-                         class="checkbox checkbox-primary" 
+                         class="checkbox checkbox-primary mr-2" 
                          data-challenge-creator-target="bookCheckbox"
                          data-action="change->challenge-creator#updateSchedule"
                          data-testament="new"
