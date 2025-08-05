@@ -19,8 +19,15 @@
       "Bash(kill:*)",
       "Bash(find:*)",
       "mcp__playwright__browser_select_option",
-      "mcp__playwright__browser_snapshot"
+      "mcp__playwright__browser_snapshot",
+      "Bash(gh workflow:*)",
+      "Bash(ls:*)",
+      "Bash(bundle exec rails:*)",
+      "Bash(bundle install:*)",
+      "mcp__playwright__browser_evaluate",
+      "mcp__playwright__browser_network_requests"
     ],
     "deny": []
   }
 }
+
