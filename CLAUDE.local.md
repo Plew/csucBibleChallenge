@@ -1,0 +1,2 @@
+## Timezone Management
+- As far as managing timezones; we won't do a per user timezone management. We only give a bible reading challenge a timezone and it is assumed all participants are within that timezone.
