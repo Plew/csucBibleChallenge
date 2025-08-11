@@ -1,6 +1,6 @@
-<div class="container mx-auto px-1">
+<div class="container mx-auto">
   <% if @user_challenge %>
-    <div class="mb-4">
+    <div >
       <%= render WeeklyCheckInComponent.new(days: @weekly_check_in_days, selected_date: @selected_date, mobile: @is_mobile) %>
     </div>
     <% if @selected_reading %>
