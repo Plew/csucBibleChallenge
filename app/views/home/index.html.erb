@@ -1,19 +1,23 @@
 <div class="container mx-auto px-1">
   <% if @user_challenge %>
     <div class="mb-4">
-      <%= render WeeklyCheckInComponent.new(days: @weekly_check_in_days) %>
+      <%= render WeeklyCheckInComponent.new(days: @weekly_check_in_days, selected_date: @selected_date) %>
     </div>
     <h1 class="text-xl font-bold text-center text-base-content">
-      Today's Reading
+      <% if @selected_date == Time.current.in_time_zone(@user_challenge.timezone).to_date %>
+        Today's Reading
+      <% else %>
+        Reading for <%= @selected_date.strftime('%B %-d, %Y') %>
+      <% end %>
     </h1>
 
-    <% if @todays_reading %>
-      <% reading_is_completed = current_user.user_readings.exists?(reading_id: @todays_reading.id) %>
+    <% if @selected_reading %>
+      <% reading_is_completed = current_user.user_readings.exists?(reading_id: @selected_reading.id) %>
       <div class="bg-base-100 shadow-sm rounded-lg">
-        <details <%= "open" unless reading_is_completed %> class="collapse">
+        <details open class="collapse">
           <summary class="collapse-title text-xl font-medium cursor-pointer">
             <div class="flex items-center justify-between">
-              <span><%= @todays_reading_title %></span>
+              <span><%= @selected_reading_title %></span>
               <% if reading_is_completed %>
                 <div class="badge badge-success gap-2">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
@@ -25,7 +29,7 @@
             </div>
           </summary>
           <div class="collapse-content">
-            <%= render ReadingDisplayComponent.new(title: "", verses: @todays_reading_verses) %>
+            <%= render ReadingDisplayComponent.new(title: @selected_reading_title, verses: @selected_reading_verses) %>
 
             <div class="flex justify-center mt-4 mb-8">
               <% if reading_is_completed %>
@@ -36,7 +40,8 @@
                   Marked as Read
                 </button>
               <% else %>
-                <%= button_to "Mark as Read", user_readings_path(reading_id: @todays_reading.id), method: :post, class: "btn btn-success" %>
+                <% date_param = @selected_date != Time.current.in_time_zone(@user_challenge.timezone).to_date ? { date: @selected_date } : {} %>
+                <%= button_to "Mark as Read", user_readings_path(reading_id: @selected_reading.id, **date_param), method: :post, class: "btn btn-success" %>
               <% end %>
             </div>
           </div>
@@ -45,7 +50,14 @@
     <% else %>
       <div class="bg-base-100 shadow-sm rounded-lg p-4 flex flex-col items-center text-center">
         <h2 class="text-lg font-semibold mb-2">No Readings Scheduled</h2>
-        <p>There are no readings scheduled for you today in the <%= @user_challenge.name %>.</p>
+        <p>There are no readings scheduled for 
+          <% if @selected_date == Time.current.in_time_zone(@user_challenge.timezone).to_date %>
+            you today
+          <% else %>
+            <%= @selected_date.strftime('%B %-d, %Y') %>
+          <% end %>
+          in the <%= @user_challenge.name %>.
+        </p>
       </div>
     <% end %>
   <% else %>

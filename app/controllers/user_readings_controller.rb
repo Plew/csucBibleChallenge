@@ -11,6 +11,8 @@ class UserReadingsController < ApplicationController
       # Handle potential errors, e.g., already marked as read
       flash[:alert] = @user_reading.errors.full_messages.to_sentence.presence || "Could not mark as read."
     end
-    redirect_to root_path
+    
+    # Preserve the selected date when redirecting
+    redirect_to params[:date].present? ? root_path(date: params[:date]) : root_path
   end
 end 

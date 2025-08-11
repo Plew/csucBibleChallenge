@@ -26,7 +26,8 @@ class WeeklyCheckInService
         day_of_week: date.strftime('%a'),
         day_of_month: date.day.to_s,
         completed: completed,
-        group_completion: group_completion
+        group_completion: group_completion,
+        has_reading: reading.present?
       }
     end
   end

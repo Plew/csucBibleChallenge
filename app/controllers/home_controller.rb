@@ -8,10 +8,22 @@ class HomeController < ApplicationController
 
     if @user_challenge
       today_in_challenge_tz = Time.current.in_time_zone(@user_challenge.timezone).to_date
-      @todays_reading = @user_challenge.readings.find_by(scheduled_date: today_in_challenge_tz)
-      if @todays_reading
-        @todays_reading_title = helpers.book_number_to_name(@todays_reading.book_number) + " " + @todays_reading.chapter_number.to_s
-        @todays_reading_verses = @todays_reading.verses.map { |v| { verse_number: v.verse_number, verse_text: v.verse_text } }
+      
+      # Check if a specific date is requested
+      if params[:date].present?
+        begin
+          @selected_date = Date.parse(params[:date])
+        rescue Date::Error
+          @selected_date = today_in_challenge_tz
+        end
+      else
+        @selected_date = today_in_challenge_tz
+      end
+
+      @selected_reading = @user_challenge.readings.find_by(scheduled_date: @selected_date)
+      if @selected_reading
+        @selected_reading_title = helpers.book_number_to_name(@selected_reading.book_number) + " " + @selected_reading.chapter_number.to_s
+        @selected_reading_verses = @selected_reading.verses.map { |v| { verse_number: v.verse_number, verse_text: v.verse_text } }
       end
 
       # Weekly Check-in Data
