@@ -26,8 +26,10 @@ class HomeController < ApplicationController
         @selected_reading_verses = @selected_reading.verses.map { |v| { verse_number: v.verse_number, verse_text: v.verse_text } }
       end
 
-      # Weekly Check-in Data
-      @weekly_check_in_days = WeeklyCheckInService.new(current_user, @user_challenge).days(today_in_challenge_tz)
+      # Always use mobile mode (7 days maximum)
+      @is_mobile = true  # Always assume mobile for consistent UI
+      num_days = 7
+      @weekly_check_in_days = WeeklyCheckInService.new(current_user, @user_challenge).days(@selected_date, num_days)
     end
     # The placeholder @today_readings is removed.
   end
