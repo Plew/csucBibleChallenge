@@ -13,7 +13,6 @@ class TopReadersStatistics
                           )
                           .where.not(challenges: { timezone: nil })
                           .group('users.id')
-                          .order('total_chapters_read DESC')
                           .limit(50)
 
     users_with_stats.map do |user|
@@ -26,7 +25,7 @@ class TopReadersStatistics
         completion_percentage: calculate_completion_percentage(user),
         avatar_url: avatar_url_for(user)
       }
-    end
+    end.sort_by { |user_data| -user_data[:completion_percentage] }
   end
 
   private

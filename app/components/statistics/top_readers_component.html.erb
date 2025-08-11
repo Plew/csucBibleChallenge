@@ -1,40 +1,40 @@
 <div class="card bg-base-100 shadow-xl">
-  <div class="card-body">
-    <h2 class="card-title text-2xl mb-6">📚 Top Readers</h2>
+  <div class="card-body p-2">
+    <h2 class="card-title text-xl mb-2">📚 Top Readers</h2>
     
     <% if has_readers? %>
-      <div class="space-y-4">
+      <div class="space-y-1">
         <% top_readers_data.each_with_index do |reader_data, index| %>
           <% user = reader_data[:user] %>
           <% chapters = reader_data[:total_chapters_read] %>
           <% percentage = reader_data[:completion_percentage] %>
           
-          <div class="flex items-center space-x-4 p-4 bg-base-200 rounded-lg">
-            <div class="text-2xl font-bold text-primary w-8">
+          <div class="flex items-center space-x-3 p-1.5 bg-base-200 rounded">
+            <div class="text-lg font-bold text-primary w-6 text-center">
               #<%= index + 1 %>
             </div>
             
             <div class="avatar">
-              <div class="w-12 rounded-full">
+              <div class="w-8 rounded-full">
                 <% if reader_data[:avatar_url] %>
-                  <%= image_tag reader_data[:avatar_url], alt: user.username, class: "w-12 h-12 rounded-full object-cover" %>
+                  <%= image_tag reader_data[:avatar_url], alt: user.username, class: "w-8 h-8 rounded-full object-cover" %>
                 <% else %>
-                  <div class="w-12 h-12 rounded-full bg-primary text-primary-content flex items-center justify-center font-bold">
+                  <div class="w-8 h-8 rounded-full bg-primary text-primary-content flex items-center justify-center font-bold text-xs">
                     <%= avatar_fallback_initials(user) %>
                   </div>
                 <% end %>
               </div>
             </div>
             
-            <div class="flex-grow">
-              <div class="font-semibold text-lg"><%= user.username %></div>
-              <div class="text-sm opacity-70">
+            <div class="flex-grow min-w-0">
+              <div class="font-medium text-base truncate"><%= user.username %></div>
+              <div class="text-xs opacity-70">
                 <%= reader_data[:chapters_completed] %>/<%= reader_data[:chapters_scheduled] %> chapters read
               </div>
             </div>
             
-            <div class="text-right">
-              <div class="text-2xl font-bold text-accent">
+            <div class="text-right flex-shrink-0">
+              <div class="text-lg font-bold text-accent">
                 <%= percentage %>%
               </div>
               <div class="text-xs opacity-70">
@@ -45,9 +45,9 @@
         <% end %>
       </div>
     <% else %>
-      <div class="text-center py-8">
-        <div class="text-4xl mb-4">📖</div>
-        <div class="text-lg opacity-70">No reading data available yet</div>
+      <div class="text-center py-4">
+        <div class="text-3xl mb-2">📖</div>
+        <div class="text-base opacity-70">No reading data available yet</div>
         <div class="text-sm opacity-50">Start reading to appear on the leaderboard!</div>
       </div>
     <% end %>
