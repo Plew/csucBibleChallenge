@@ -3,49 +3,23 @@
     <div class="mb-4">
       <%= render WeeklyCheckInComponent.new(days: @weekly_check_in_days, selected_date: @selected_date, mobile: @is_mobile) %>
     </div>
-    <h1 class="text-xl font-bold text-center text-base-content">
-      <% if @selected_date == Time.current.in_time_zone(@user_challenge.timezone).to_date %>
-        Today's Reading
-      <% else %>
-        Reading for <%= @selected_date.strftime('%B %-d, %Y') %>
-      <% end %>
-    </h1>
-
     <% if @selected_reading %>
       <% reading_is_completed = current_user.user_readings.exists?(reading_id: @selected_reading.id) %>
-      <div class="bg-base-100 shadow-sm rounded-lg">
-        <details open class="collapse">
-          <summary class="collapse-title text-xl font-medium cursor-pointer">
-            <div class="flex items-center justify-between">
-              <span><%= @selected_reading_title %></span>
-              <% if reading_is_completed %>
-                <div class="badge badge-success gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                  </svg>
-                  Read
-                </div>
-              <% end %>
-            </div>
-          </summary>
-          <div class="collapse-content">
-            <%= render ReadingDisplayComponent.new(title: @selected_reading_title, verses: @selected_reading_verses) %>
+      
+      <%= render ReadingDisplayComponent.new(title: @selected_reading_title, verses: @selected_reading_verses) %>
 
-            <div class="flex justify-center mt-4 mb-8">
-              <% if reading_is_completed %>
-                <button class="btn btn-outline btn-success" disabled>
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                  </svg>
-                  Marked as Read
-                </button>
-              <% else %>
-                <% date_param = @selected_date != Time.current.in_time_zone(@user_challenge.timezone).to_date ? { date: @selected_date } : {} %>
-                <%= button_to "Mark as Read", user_readings_path(reading_id: @selected_reading.id, **date_param), method: :post, class: "btn btn-success" %>
-              <% end %>
-            </div>
-          </div>
-        </details>
+      <div class="flex justify-center mt-4 mb-8">
+        <% if reading_is_completed %>
+          <button class="btn btn-outline btn-success" disabled>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+            </svg>
+            Marked as Read
+          </button>
+        <% else %>
+          <% date_param = @selected_date != Time.current.in_time_zone(@user_challenge.timezone).to_date ? { date: @selected_date } : {} %>
+          <%= button_to "Mark as Read", user_readings_path(reading_id: @selected_reading.id, **date_param), method: :post, class: "btn btn-success" %>
+        <% end %>
       </div>
     <% else %>
       <div class="bg-base-100 shadow-sm rounded-lg p-4 flex flex-col items-center text-center">
