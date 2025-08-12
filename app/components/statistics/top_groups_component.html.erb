@@ -1,0 +1,49 @@
+<div class="card bg-base-100 shadow-xl">
+  <div class="card-body p-2">
+    <h2 class="card-title text-xl mb-2">👥 Top Groups</h2>
+    
+    <% if has_groups? %>
+      <div class="space-y-1">
+        <% top_groups_data.each do |group_data| %>
+          <% group = group_data[:group] %>
+          <% percentage = group_data[:completion_percentage] %>
+          <% members = group_data[:members] || [] %>
+          
+          <div class="flex items-center space-x-3 p-1.5 bg-base-200 rounded">
+            <div class="text-lg font-bold text-accent w-12 text-center flex-shrink-0">
+              <%= percentage %>%
+            </div>
+            
+            <div class="flex-grow min-w-0">
+              <div class="font-medium text-base truncate"><%= group.name %></div>
+              <div class="flex items-center space-x-1 mt-1">
+                <% members.each do |member| %>
+                  <div class="avatar">
+                    <div class="w-6 h-6 rounded-full">
+                      <% if member[:avatar_url] %>
+                        <%= image_tag member[:avatar_url], alt: member[:username], class: "w-6 h-6 rounded-full object-cover" %>
+                      <% else %>
+                        <div class="w-6 h-6 rounded-full bg-primary text-primary-content flex items-center justify-center font-bold text-xs">
+                          <%= avatar_fallback_initials(member) %>
+                        </div>
+                      <% end %>
+                    </div>
+                  </div>
+                <% end %>
+                <% if members.size > 5 %>
+                  <div class="text-xs opacity-70 ml-1">+<%= members.size - 5 %> more</div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="text-center py-4">
+        <div class="text-3xl mb-2">👥</div>
+        <div class="text-base opacity-70">No group data available yet</div>
+        <div class="text-sm opacity-50">Create groups to appear on the leaderboard!</div>
+      </div>
+    <% end %>
+  </div>
+</div>
