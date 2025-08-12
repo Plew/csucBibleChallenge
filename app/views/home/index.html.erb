@@ -1,7 +1,7 @@
 <div class="container mx-auto">
   <% if @user_challenge %>
     <div >
-      <%= render WeeklyCheckInComponent.new(days: @weekly_check_in_days, selected_date: @selected_date, mobile: @is_mobile) %>
+      <%= render DateBarComponent.new(days: @weekly_check_in_days, selected_date: @selected_date, mobile: @is_mobile) %>
     </div>
     <% if @selected_reading %>
       <% reading_is_completed = current_user.user_readings.exists?(reading_id: @selected_reading.id) %>
