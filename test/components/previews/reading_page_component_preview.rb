@@ -77,15 +77,18 @@ class ReadingPageComponentPreview < ViewComponent::Preview
   private
 
   def sample_days
+    # Generate proper Monday-Sunday week containing today
     today = Date.current
+    start_of_week = today.beginning_of_week(:monday)
+    
     7.times.map do |i|
-      date = today - (6 - i).days
+      date = start_of_week + i.days
       {
         date: date,
         day_of_week: date.strftime('%a'),
         day_of_month: date.day.to_s,
         month_day: date.strftime('%b %-d'),
-        completed: [1, 3, 5].include?(i), # Some days completed
+        completed: [1, 3, 5].include?(i), # Some days completed (Tue, Thu, Sat)
         group_completion: [0, 25, 50, 75, 100, 33, 66][i],
         has_reading: true
       }
@@ -93,31 +96,36 @@ class ReadingPageComponentPreview < ViewComponent::Preview
   end
 
   def sample_days_for_date(target_date)
+    # Generate proper Monday-Sunday week containing the target date
+    start_of_week = target_date.beginning_of_week(:monday)
+    
     7.times.map do |i|
-      date = target_date - 3.days + i.days
+      date = start_of_week + i.days
       {
         date: date,
         day_of_week: date.strftime('%a'),
         day_of_month: date.day.to_s,
         month_day: date.strftime('%b %-d'),
         completed: date <= Date.current - 1.day, # Past days completed
-        group_completion: rand(0..100),
+        group_completion: [0, 25, 50, 75, 100, 33, 66][i % 7],
         has_reading: true
       }
     end
   end
 
   def generate_cross_month_days
-    # Generate dates from Aug 29 to Sep 4 (cross month)
-    start_date = Date.new(2025, 8, 29)
+    # Generate Monday-Sunday week that spans across months
+    # Sept 1st, 2025 is a Monday, so this creates a perfect cross-month week
+    start_of_week = Date.new(2025, 9, 1).beginning_of_week(:monday) # Aug 25, 2025 is Monday
+    
     7.times.map do |i|
-      date = start_date + i.days
+      date = start_of_week + i.days
       {
         date: date,
         day_of_week: date.strftime('%a'),
         day_of_month: date.day.to_s,
         month_day: date.strftime('%b %-d'),
-        completed: i < 3, # First few days completed
+        completed: i < 3, # First few days completed (Mon, Tue, Wed)
         group_completion: [25, 50, 75, 100, 20, 40, 60][i],
         has_reading: true
       }

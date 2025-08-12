@@ -3,122 +3,126 @@
 class DateBarComponentPreview < ViewComponent::Preview
   def default
     render DateBarComponent.new(
-      days: sample_days,
       selected_date: Date.current,
-      mobile: true
+      mobile: true,
+      days: generate_week_with_data(Date.current, [1, 3, 5])
     )
   end
 
   def all_completed
-    completed_days = sample_days.map { |day| day.merge(completed: true) }
     render DateBarComponent.new(
-      days: completed_days,
       selected_date: Date.current,
-      mobile: true
+      mobile: true,
+      days: generate_week_with_data(Date.current, (0..6).to_a)
     )
   end
 
   def none_completed
-    incomplete_days = sample_days.map { |day| day.merge(completed: false) }
     render DateBarComponent.new(
-      days: incomplete_days,
       selected_date: Date.current,
-      mobile: true
+      mobile: true,
+      days: generate_week_with_data(Date.current, [])
     )
   end
 
-  def cross_month_dates
+  def cross_month_week
+    # Week that spans across months (e.g., Aug 30 - Sep 5, 2025)
+    cross_month_date = Date.new(2025, 9, 1) # Monday Sep 1st
     render DateBarComponent.new(
-      days: generate_cross_month_days,
-      selected_date: Date.new(2025, 9, 1), # Sept 1st
-      mobile: true
+      selected_date: cross_month_date,
+      mobile: true,
+      days: generate_week_with_data(cross_month_date, [0, 2, 4])
     )
   end
 
   def selected_past_date
-    past_date = Date.current - 3.days
+    past_date = Date.current - 7.days # Previous week
     render DateBarComponent.new(
-      days: sample_days_for_date(past_date),
       selected_date: past_date,
-      mobile: true
+      mobile: true,
+      days: generate_week_with_data(past_date, [0, 1, 2, 3, 4]) # Weekdays completed
     )
   end
 
   def selected_future_date
-    future_date = Date.current + 2.days
+    future_date = Date.current + 7.days # Next week
     render DateBarComponent.new(
-      days: sample_days_for_date(future_date),
       selected_date: future_date,
-      mobile: true
+      mobile: true,
+      days: generate_week_with_data(future_date, [])
     )
   end
 
   def mixed_reading_availability
-    mixed_days = sample_days.map.with_index do |day, index|
-      # Every other day has no reading scheduled
-      day.merge(has_reading: index.even?)
-    end
     render DateBarComponent.new(
-      days: mixed_days,
       selected_date: Date.current,
-      mobile: true
+      mobile: true,
+      days: generate_week_with_mixed_availability(Date.current)
     )
   end
 
   def desktop_mode
     render DateBarComponent.new(
-      days: sample_days,
       selected_date: Date.current,
-      mobile: false
+      mobile: false,
+      days: generate_week_with_data(Date.current, [1, 3, 5])
+    )
+  end
+
+  def tuesday_selected
+    # Show what it looks like when Tuesday is selected
+    tuesday = Date.current.beginning_of_week(:monday) + 1.day
+    render DateBarComponent.new(
+      selected_date: tuesday,
+      mobile: true,
+      days: generate_week_with_data(tuesday, [0, 1, 3])
+    )
+  end
+
+  def weekend_selected
+    # Show what it looks like when weekend day is selected
+    saturday = Date.current.beginning_of_week(:monday) + 5.days
+    render DateBarComponent.new(
+      selected_date: saturday,
+      mobile: true,
+      days: generate_week_with_data(saturday, [0, 1, 2, 3, 4, 5])
     )
   end
 
   private
 
-  def sample_days
-    today = Date.current
+  def generate_week_with_data(selected_date, completed_day_indices = [])
+    # Find the Monday of the week containing the selected date
+    start_of_week = selected_date.beginning_of_week(:monday)
+    
     7.times.map do |i|
-      date = today - (6 - i).days
+      date = start_of_week + i.days
       {
         date: date,
         day_of_week: date.strftime('%a'),
         day_of_month: date.day.to_s,
         month_day: date.strftime('%b %-d'),
-        completed: [1, 3, 5].include?(i), # Some days completed
-        group_completion: [0, 25, 50, 75, 100, 33, 66][i],
+        completed: completed_day_indices.include?(i),
+        group_completion: [0, 25, 50, 75, 100, 33, 66][i % 7],
         has_reading: true
       }
     end
   end
 
-  def sample_days_for_date(target_date)
+  def generate_week_with_mixed_availability(selected_date)
+    # Find the Monday of the week containing the selected date
+    start_of_week = selected_date.beginning_of_week(:monday)
+    
     7.times.map do |i|
-      date = target_date - 3.days + i.days
+      date = start_of_week + i.days
       {
         date: date,
         day_of_week: date.strftime('%a'),
         day_of_month: date.day.to_s,
         month_day: date.strftime('%b %-d'),
-        completed: date <= Date.current - 1.day, # Past days completed
-        group_completion: rand(0..100),
-        has_reading: true
-      }
-    end
-  end
-
-  def generate_cross_month_days
-    # Generate dates from Aug 29 to Sep 4 (cross month)
-    start_date = Date.new(2025, 8, 29)
-    7.times.map do |i|
-      date = start_date + i.days
-      {
-        date: date,
-        day_of_week: date.strftime('%a'),
-        day_of_month: date.day.to_s,
-        month_day: date.strftime('%b %-d'),
-        completed: i < 3, # First few days completed
-        group_completion: [25, 50, 75, 100, 20, 40, 60][i],
-        has_reading: true
+        completed: [1, 3].include?(i),
+        group_completion: [0, 25, 50, 75, 100, 33, 66][i % 7],
+        has_reading: i < 5 # Monday-Friday have readings, weekend doesn't
       }
     end
   end
