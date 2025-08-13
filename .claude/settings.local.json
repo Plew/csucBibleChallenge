@@ -28,7 +28,8 @@
       "mcp__playwright__browser_network_requests",
       "mcp__context7__resolve-library-id",
       "mcp__context7__get-library-docs",
-      "Bash(npm run build:css:*)"
+      "Bash(npm run build:css:*)",
+      "Bash(git add:*)"
     ],
     "deny": []
   }
