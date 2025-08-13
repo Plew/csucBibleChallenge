@@ -1,0 +1,7 @@
+"TextID";"Version";"NT_Book";"NT_Chapter";"NT_Verse";"VerseBreak";"VerseText"
+"1";"NASB";"UnknownBook";"1";"1";"No";"Some verse text"
+"2";"NASB";"Matthew";"1";"1";"No";"Valid verse text"
+"3";"";"Matthew";"1";"1";"No";"Missing version"
+"4";"NASB";"";"1";"1";"No";"Missing book"
+"5";"NASB";"Matthew";"1";"1";"No";""
+"6";"NASB";"Matthew";"1";"2";"No";"Another valid verse"
