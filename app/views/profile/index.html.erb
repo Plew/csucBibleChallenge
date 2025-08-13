@@ -1,0 +1,49 @@
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold mb-6 text-center text-base-content">Account Settings</h1>
+
+  <div class="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+    <%# Profile Details Card %>
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title">Profile Details</h2>
+        <p class="text-base-content/70">Update your name, avatar, and Bible version preferences</p>
+        <div class="card-actions justify-end">
+          <%= link_to "Edit Details", edit_profile_details_path, class: "btn btn-primary" %>
+        </div>
+      </div>
+    </div>
+
+    <%# Change Password Card %>
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title">Password</h2>
+        <p class="text-base-content/70">Change your account password</p>
+        <div class="card-actions justify-end">
+          <%= link_to "Change Password", edit_profile_password_path, class: "btn btn-primary" %>
+        </div>
+      </div>
+    </div>
+
+    <%# Challenge Enrollment Card %>
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title">Challenge Enrollment</h2>
+        <p class="text-base-content/70">Manage your Bible reading challenge participation</p>
+        <div class="card-actions justify-end">
+          <%= link_to "Manage Enrollments", profile_enrollments_path, class: "btn btn-primary" %>
+        </div>
+      </div>
+    </div>
+
+    <%# Account Actions Card %>
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title">Account Actions</h2>
+        <p class="text-base-content/70">Sign out of your account</p>
+        <div class="card-actions justify-end">
+          <%= link_to "Log out", destroy_user_session_path, data: { turbo_method: :delete }, class: "btn btn-error btn-outline" %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
