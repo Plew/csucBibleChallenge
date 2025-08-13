@@ -1,0 +1,19 @@
+<div class="flex flex-col items-center flex-shrink-0 min-w-0" <%= "data-date=\"#{date}\"" if selected %>>
+  <div class="relative mb-0.5">
+    <a href="<%= link_url %>" class="<%= link_classes %>">
+      <!-- Background Circle -->
+      <div class="absolute inset-0 rounded-full border-2 <%= border_classes %>"></div>
+      
+      <!-- Button Content -->
+      <div class="relative z-10 w-6 h-6 rounded-full flex items-center justify-center <%= inner_circle_classes %>">
+        <% if completed %>
+          <!-- DaisyUI check icon -->
+          <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+          </svg>
+        <% end %>
+      </div>
+    </a>
+  </div>
+  <span class="<%= text_classes %>"><%= month_day %></span>
+</div>
