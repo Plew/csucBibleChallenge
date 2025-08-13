@@ -6,7 +6,7 @@ class Api::V1::UsersController < Api::BaseController
     if user.save
       render json: user, status: :created, except: [:password_digest]
     else
-      render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: user.errors.full_messages }, status: :unprocessable_content
     end
   end
 

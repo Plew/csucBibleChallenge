@@ -23,7 +23,7 @@ class Admin::ChallengesController < ApplicationController
       create_readings_for_challenge(@challenge, params[:selected_books])
       redirect_to root_path, notice: 'Challenge created successfully!'
     else
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 

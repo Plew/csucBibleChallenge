@@ -20,7 +20,10 @@ RSpec.describe Profile::EnrollmentsController, type: :controller do
   end
 
   context 'when user is logged in' do
-    before { session[:user_id] = user.id }
+    before do
+      user # Force creation
+      session[:user_id] = user.id
+    end
 
     describe 'GET #index' do
       context 'when user has no enrollments' do
@@ -105,6 +108,7 @@ RSpec.describe Profile::EnrollmentsController, type: :controller do
         let(:other_user_enrollment) { create(:user_challenge_enrollment, user: other_user, challenge: challenge) }
 
         it 'does not delete the enrollment' do
+          other_user_enrollment # Force creation
           expect {
             expect {
               delete :destroy, params: { id: other_user_enrollment.id }
@@ -113,6 +117,7 @@ RSpec.describe Profile::EnrollmentsController, type: :controller do
         end
 
         it 'raises RecordNotFound error' do
+          other_user_enrollment # Force creation
           expect {
             delete :destroy, params: { id: other_user_enrollment.id }
           }.to raise_error(ActiveRecord::RecordNotFound)

@@ -11,7 +11,7 @@ module Api
         
         render json: { data: pie_data }
       rescue StandardError => e
-        render json: { error: e.message }, status: :unprocessable_entity
+        render json: { error: e.message }, status: :unprocessable_content
       end
 
       private

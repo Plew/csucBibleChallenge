@@ -13,7 +13,7 @@ class Api::V1::GroupsController < Api::BaseController
     if @group.save
       render json: @group, status: :created
     else
-      render json: { errors: @group.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: @group.errors.full_messages }, status: :unprocessable_content
     end
   end
 

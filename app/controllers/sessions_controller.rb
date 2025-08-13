@@ -16,13 +16,13 @@ class SessionsController < ApplicationController
       redirect_to root_path
     else
       flash.now[:alert] = 'Invalid email/username or password combination'
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 
   # DELETE /users/sign_out
   def destroy
-    log_out if logged_in?
+    log_out # Always clear session, even if invalid
     redirect_to root_url, notice: 'Logged out!'
   end
 end 

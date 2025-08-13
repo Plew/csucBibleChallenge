@@ -93,7 +93,7 @@ RSpec.describe Profile::PasswordsController, type: :controller do
 
         it 'returns unprocessable entity status' do
           patch :update, params: { user: invalid_current_password_attributes }
-          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response).to have_http_status(:unprocessable_content)
         end
       end
 
@@ -120,7 +120,7 @@ RSpec.describe Profile::PasswordsController, type: :controller do
 
         it 'returns unprocessable entity status' do
           patch :update, params: { user: mismatched_confirmation_attributes }
-          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response).to have_http_status(:unprocessable_content)
         end
 
         it 'assigns user with validation errors' do
@@ -148,7 +148,7 @@ RSpec.describe Profile::PasswordsController, type: :controller do
         it 'renders the edit template with validation errors' do
           patch :update, params: { user: weak_password_attributes }
           expect(response).to render_template(:edit)
-          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response).to have_http_status(:unprocessable_content)
         end
       end
 

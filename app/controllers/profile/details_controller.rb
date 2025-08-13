@@ -11,7 +11,7 @@ class Profile::DetailsController < Profile::BaseController
     if @user.update(details_params)
       redirect_to edit_profile_details_path, notice: 'Profile details updated successfully.'
     else
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   end
 

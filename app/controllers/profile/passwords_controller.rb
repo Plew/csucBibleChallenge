@@ -11,7 +11,7 @@ class Profile::PasswordsController < Profile::BaseController
     if @user.update(password_params)
       redirect_to edit_profile_password_path, notice: 'Password updated successfully.'
     else
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   end
 

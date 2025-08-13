@@ -19,7 +19,7 @@ class Api::V1::ChallengesController < Api::BaseController
     if @challenge.save
       render json: @challenge, status: :created
     else
-      render json: { errors: @challenge.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: @challenge.errors.full_messages }, status: :unprocessable_content
     end
   end
 

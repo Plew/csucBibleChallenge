@@ -14,7 +14,7 @@ class Api::V1::ReadingsController < Api::BaseController
     if @reading.save
       render json: @reading, status: :created
     else
-      render json: { errors: @reading.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: @reading.errors.full_messages }, status: :unprocessable_content
     end
   end
 

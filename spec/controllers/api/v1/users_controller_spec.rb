@@ -75,7 +75,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 
       it 'returns unprocessable entity status' do
         post :create, params: { user: invalid_attributes }
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it 'returns JSON with error messages' do
@@ -116,7 +116,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 
       it 'returns unprocessable entity status' do
         post :create, params: { user: duplicate_email_attributes }
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it 'returns error about email uniqueness' do
@@ -195,7 +195,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
         )
         
         post :create, params: { user: attributes_with_empty_confirmation }
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         
         json_response = JSON.parse(response.body)
         expect(json_response['errors']).to include(match(/Password confirmation doesn't match/))
@@ -218,7 +218,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
         )
         
         post :create, params: { user: invalid_email_attributes }
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
 

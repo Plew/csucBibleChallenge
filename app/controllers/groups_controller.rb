@@ -35,7 +35,7 @@ class GroupsController < ApplicationController
       UserGroupEnrollment.create!(user: current_user, group: @group)
       redirect_to groups_path
     else
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 

@@ -52,11 +52,13 @@ RSpec.describe SessionsController, type: :controller do
 
     context 'with valid credentials' do
       it 'logs in the user' do
+        user # Force creation of user before the request
         post :create, params: valid_credentials
         expect(session[:user_id]).to eq(user.id)
       end
 
       it 'redirects to root path' do
+        user # Force creation of user before the request
         post :create, params: valid_credentials
         expect(response).to redirect_to(root_path)
       end
@@ -75,7 +77,7 @@ RSpec.describe SessionsController, type: :controller do
 
       it 'returns unprocessable entity status' do
         post :create, params: invalid_credentials
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it 'sets an alert flash message' do
@@ -117,6 +119,7 @@ RSpec.describe SessionsController, type: :controller do
       end
 
       it 'logs in the user regardless of email case' do
+        user # Force creation of user before the request
         post :create, params: case_insensitive_credentials
         expect(session[:user_id]).to eq(user.id)
       end
@@ -176,6 +179,8 @@ RSpec.describe SessionsController, type: :controller do
       before { session[:user_id] = other_user.id }
 
       it 'overwrites the existing session with new user' do
+        user # Force creation of user before the request
+        other_user # Force creation of other_user before the request
         post :create, params: valid_credentials
         expect(session[:user_id]).to eq(user.id)
         expect(session[:user_id]).not_to eq(other_user.id)

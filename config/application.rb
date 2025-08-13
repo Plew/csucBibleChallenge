@@ -35,5 +35,8 @@ module Irmbi
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    # Fix Rails 8.1 timezone deprecation warning
+    config.active_support.to_time_preserves_timezone = :zone
   end
 end

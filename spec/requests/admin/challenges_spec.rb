@@ -104,7 +104,7 @@ RSpec.describe "Admin::Challenges", type: :request do
 
       it "returns unprocessable entity status" do
         post admin_challenges_path, params: invalid_params
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it "redisplays the form" do

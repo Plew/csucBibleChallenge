@@ -16,7 +16,7 @@ class Api::V1::UserReadingsController < Api::BaseController
   def create
     challenge = @reading.challenge
     unless challenge&.timezone.present?
-      return render json: { errors: ["Challenge timezone not set for this reading."] }, status: :unprocessable_entity
+      return render json: { errors: ["Challenge timezone not set for this reading."] }, status: :unprocessable_content
     end
 
     current_date_in_challenge_tz = Time.current.in_time_zone(challenge.timezone).to_date
@@ -36,7 +36,7 @@ class Api::V1::UserReadingsController < Api::BaseController
         existing_reading = UserReading.find_by(user: current_user, reading: @reading)
         render json: { errors: ["You have already marked this reading."], user_reading: existing_reading }, status: :conflict
       else
-        render json: { errors: @user_reading.errors.full_messages }, status: :unprocessable_entity
+        render json: { errors: @user_reading.errors.full_messages }, status: :unprocessable_content
       end
     end
   end
@@ -48,7 +48,7 @@ class Api::V1::UserReadingsController < Api::BaseController
     # Timezone validation for un-checking
     challenge = @user_reading.reading.challenge # @user_reading is set by before_action
     unless challenge&.timezone.present?
-      return render json: { errors: ["Challenge timezone not set for this reading."] }, status: :unprocessable_entity
+      return render json: { errors: ["Challenge timezone not set for this reading."] }, status: :unprocessable_content
     end
 
     current_date_in_challenge_tz = Time.current.in_time_zone(challenge.timezone).to_date
@@ -81,14 +81,14 @@ class Api::V1::UserReadingsController < Api::BaseController
     # If this is a user check-in, it should respect the challenge timezone and reading date.
     # completed_on should probably be required in params or derived carefully.
     unless user_reading_params[:completed_on]
-        return render json: { errors: ["completed_on is required for this action"] }, status: :unprocessable_entity
+        return render json: { errors: ["completed_on is required for this action"] }, status: :unprocessable_content
     end
 
 
     if @user_reading.save
       render json: @user_reading, status: :created
     else
-      render json: { errors: @user_reading.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: @user_reading.errors.full_messages }, status: :unprocessable_content
     end
   end
 

@@ -77,7 +77,7 @@ RSpec.describe UsersController, type: :controller do
 
       it 'returns unprocessable entity status' do
         post :create, params: { user: invalid_attributes }
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it 'assigns user with errors' do
