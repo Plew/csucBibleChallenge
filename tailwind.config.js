@@ -8,6 +8,8 @@ module.exports = {
     './app/views/**/*.{erb,haml,html,slim}',
     './app/components/**/*.{erb,haml,html,slim}'
   ],
+  safelist: [
+  ],
   theme: {
     extend: {
       fontFamily: {
