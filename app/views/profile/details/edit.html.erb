@@ -1,0 +1,65 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex items-center mb-6">
+    <%= link_to "← Back to Profile", profile_path, class: "btn btn-ghost btn-sm" %>
+    <h1 class="text-3xl font-bold text-center text-base-content flex-1">Profile Details</h1>
+  </div>
+
+  <div class="max-w-2xl mx-auto">
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title">Update Profile Information</h2>
+        <%= form_with(model: @user, url: profile_details_path, method: :patch, local: true) do |f| %>
+          <div class="form-control">
+            <%= f.label :username, class: "label" do %>
+              <span class="label-text">Name</span>
+            <% end %>
+            <%= f.text_field :username, class: "input input-bordered w-full" %>
+          </div>
+
+          <div class="form-control mt-2">
+            <label class="label">
+              <span class="label-text">Email (cannot be changed here)</span>
+            </label>
+            <input type="email" value="<%= @user.email %>" class="input input-bordered w-full" disabled />
+          </div>
+
+          <div class="form-control mt-2">
+            <%= f.label :avatar, class: "label" do %>
+              <span class="label-text">Avatar</span>
+            <% end %>
+            <%= avatar_image_tag(current_user, :tiny) %>
+
+            <% if @user.avatar.attached? %>
+              <div class="avatar mb-2">
+                <div class="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                  <%= image_tag @user.avatar.variant(:thumb) %>
+                </div>
+              </div>
+            <% end %>
+            <%= f.file_field :avatar, class: "file-input file-input-bordered w-full" %>
+          </div>
+
+          <div class="form-control mt-2">
+            <%= f.label :version, class: "label" do %>
+              <span class="label-text">Preferred Bible Version</span>
+            <% end %>
+            <%= f.select :version, 
+                options_for_select([
+                  ['American Standard Version (ASV)', 'ASV'],
+                  ['English Standard Version (ESV)', 'ESV'],
+                  ['King James Version (KJV)', 'KJV'],
+                  ['New American Standard Bible (NASB)', 'NASB'],
+                  ['New King James Version (NKJV)', 'NKJV']
+                ], @user.version), 
+                {}, 
+                { class: "select select-bordered w-full" } %>
+          </div>
+          
+          <div class="form-control mt-6">
+            <%= f.submit "Save Changes", class: "btn btn-primary" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

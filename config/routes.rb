@@ -29,8 +29,12 @@ Rails.application.routes.draw do
   resources :user_challenge_enrollments, only: [:destroy] # DELETE /user_challenge_enrollments/:id
 
   # User Profile UI
-  get 'profile/edit', to: 'users#edit', as: :edit_user_profile
-  patch 'profile', to: 'users#update', as: :user_profile
+  get 'profile', to: 'profile#index', as: :profile
+  namespace :profile do
+    resource :details, only: [:edit, :update], controller: 'details'
+    resource :password, only: [:edit, :update], controller: 'passwords'  
+    resources :enrollments, only: [:index, :destroy], controller: 'enrollments'
+  end
 
   # Admin routes
   namespace :admin do
