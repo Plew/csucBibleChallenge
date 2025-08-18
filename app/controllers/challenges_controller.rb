@@ -24,8 +24,13 @@ class ChallengesController < ApplicationController
     # @available_challenges = [] # No challenges available
   end
 
-  # Other actions like show, join, leave would go here eventually
-  # def show
-  #   @challenge = Challenge.find(params[:id])
-  # end
+  # GET /challenges/:id
+  def show
+    @challenge = Challenge.find(params[:id])
+  end
+
+  # GET /challenges/:id/summary
+  def summary
+    @challenge = Challenge.find(params[:id])
+  end
 end 

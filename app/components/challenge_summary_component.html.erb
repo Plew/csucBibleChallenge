@@ -1,0 +1,150 @@
+<div class="card bg-base-100 shadow-xl">
+  <div class="card-body">
+    <!-- Header with Title and Status -->
+    <div class="flex flex-col gap-4 mb-6">
+      <div>
+        <h1 class="card-title text-xl sm:text-2xl font-bold text-base-content leading-tight break-words">
+          <%= challenge.name %>
+        </h1>
+        <div class="flex flex-col sm:flex-row sm:items-center gap-2 mt-3">
+          <span class="badge <%= status_badge_class %> text-sm w-fit">
+            <%= challenge_status.capitalize %>
+          </span>
+          <span class="text-sm text-base-content/70">
+            <%= status_text %>
+          </span>
+        </div>
+      </div>
+      <div class="w-full sm:w-auto">
+        <div class="stat bg-base-200 rounded-lg p-3 w-full sm:min-w-0">
+          <div class="stat-title text-xs">Progress</div>
+          <div class="stat-value text-xl sm:text-2xl"><%= challenge_progress_percentage %>%</div>
+          <div class="stat-desc text-xs">by date</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="mb-6">
+      <div class="flex justify-between text-sm text-base-content/70 mb-1">
+        <span>Challenge Progress</span>
+        <span><%= challenge_progress_percentage %>% complete</span>
+      </div>
+      <progress class="progress progress-primary w-full" 
+                value="<%= challenge_progress_percentage %>" 
+                max="100"></progress>
+    </div>
+
+    <!-- Main Stats Grid -->
+    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+      <!-- Participants -->
+      <div class="stat bg-base-200 rounded-lg p-3 sm:p-4">
+        <div class="stat-figure text-primary hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-6 h-6 sm:w-8 sm:h-8 stroke-current">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+          </svg>
+        </div>
+        <div class="stat-title text-xs">Participants</div>
+        <div class="stat-value text-lg sm:text-xl text-primary"><%= statistics.number_of_participants %></div>
+        <div class="stat-desc text-xs">people joined</div>
+      </div>
+
+      <!-- Chapters Read -->
+      <div class="stat bg-base-200 rounded-lg p-3 sm:p-4">
+        <div class="stat-figure text-secondary hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-6 h-6 sm:w-8 sm:h-8 stroke-current">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+          </svg>
+        </div>
+        <div class="stat-title text-xs">Chapters Read</div>
+        <div class="stat-value text-lg sm:text-xl text-secondary"><%= statistics.total_chapters_read %></div>
+        <div class="stat-desc text-xs">total completions</div>
+      </div>
+
+      <!-- Total Days -->
+      <div class="stat bg-base-200 rounded-lg p-3 sm:p-4">
+        <div class="stat-figure text-accent hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-6 h-6 sm:w-8 sm:h-8 stroke-current">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+          </svg>
+        </div>
+        <div class="stat-title text-xs">Duration</div>
+        <div class="stat-value text-lg sm:text-xl text-accent"><%= ((challenge.end_date - challenge.start_date).to_i + 1) %></div>
+        <div class="stat-desc text-xs">total days</div>
+      </div>
+
+      <!-- Readings -->
+      <div class="stat bg-base-200 rounded-lg p-3 sm:p-4">
+        <div class="stat-figure text-info hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-6 h-6 sm:w-8 sm:h-8 stroke-current">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+        </div>
+        <div class="stat-title text-xs">Readings</div>
+        <div class="stat-value text-lg sm:text-xl text-info"><%= challenge.readings.count %></div>
+        <div class="stat-desc text-xs">chapters planned</div>
+      </div>
+    </div>
+
+    <!-- Date and Timezone Info -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+      <!-- Timeline Card -->
+      <div class="card bg-base-200 shadow-sm">
+        <div class="card-body p-3 sm:p-4">
+          <h3 class="card-title text-base sm:text-lg mb-3 sm:mb-4">Timeline</h3>
+          <div class="space-y-3">
+            <div class="flex justify-between items-center">
+              <span class="text-sm font-medium">Created:</span>
+              <span class="text-sm"><%= created_at_formatted %></span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-sm font-medium">Starts:</span>
+              <span class="text-sm font-semibold text-success"><%= formatted_start_date %></span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-sm font-medium">Ends:</span>
+              <span class="text-sm font-semibold text-error"><%= formatted_end_date %></span>
+            </div>
+            <div class="divider my-2"></div>
+            <div class="flex justify-between items-center">
+              <span class="text-sm font-medium">Timezone:</span>
+              <span class="text-sm badge badge-outline"><%= challenge.timezone %></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions Card -->
+      <div class="card bg-base-200 shadow-sm">
+        <div class="card-body p-3 sm:p-4">
+          <h3 class="card-title text-base sm:text-lg mb-3 sm:mb-4">Quick Actions</h3>
+          <div class="space-y-3">
+            <%= link_to challenge_path(challenge), class: "btn btn-primary btn-sm w-full" do %>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              View Details
+            <% end %>
+            
+            <%= link_to challenges_path, class: "btn btn-outline btn-sm w-full" do %>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+              </svg>
+              All Challenges
+            <% end %>
+
+            <% if challenge_status == 'active' %>
+              <%= link_to "#", class: "btn btn-success btn-sm w-full" do %>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Start Reading
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

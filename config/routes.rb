@@ -23,8 +23,11 @@ Rails.application.routes.draw do
   delete 'users/sign_out', to: 'sessions#destroy', as: :destroy_user_session
 
   # Challenges UI
-  resources :challenges, only: [:index] do # Add :show, :new, :create, etc. as needed for UI
+  resources :challenges, only: [:index, :show] do # Add :show, :new, :create, etc. as needed for UI
     resources :user_challenge_enrollments, only: [:create], as: :enrollments # POST challenges/:challenge_id/enrollments
+    member do
+      get :summary
+    end
   end
   resources :user_challenge_enrollments, only: [:destroy] # DELETE /user_challenge_enrollments/:id
 
