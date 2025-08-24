@@ -1,10 +1,3 @@
 <% content_for :title, "Stats" %>
 
-<div class="px-2 py-3">
-  <div class="mb-3">
-    <h1 class="text-2xl font-bold text-center mb-1">📊 Reading Statistics</h1>
-    <p class="text-center opacity-70 text-sm">See how everyone is doing with their Bible reading challenges</p>
-  </div>
-  
-  <%= render Statistics::TopReadersComponent.new(top_readers_data: @top_readers_data) %>
-</div>
+<%= render StatsPageComponent.new %>

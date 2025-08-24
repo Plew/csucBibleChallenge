@@ -67,6 +67,9 @@ Rails.application.routes.draw do
 
   get 'about', to: 'pages#about'
   get 'stats', to: 'stats#index'
+  get 'stats/challenge', to: 'stats#challenge', as: :stats_challenge
+  get 'stats/group', to: 'stats#group', as: :stats_group
+  get 'stats/personal', to: 'stats#personal', as: :stats_personal
 
   resources :user_readings, only: [:create]
 
