@@ -1,14 +1,14 @@
 <div class="w-full px-2 py-2 bg-base-100 shadow-sm" data-controller="date-scroll" data-date-scroll-selected-date-value="<%= @selected_date&.to_s %>">
   <div class="flex items-center justify-between min-w-0">
     <!-- Previous Week Arrow -->
-    <a href="/?date=<%= previous_week_date %>" class="flex-shrink-0 p-2 hover:bg-base-200 rounded-full transition-colors self-center">
+    <a href="/?date=<%= previous_week_date %>" class="flex-shrink-0 p-2 hover:bg-base-200 rounded-full transition-colors self-start mt-1">
       <svg class="w-5 h-5 text-base-content/70" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
       </svg>
     </a>
     
     <!-- Week Days -->
-    <div class="flex flex-1 justify-between items-center mx-2 min-w-0">
+    <div class="flex flex-1 justify-between items-center mx-2 min-w-0 gap-1">
       <% @days.each do |day| %>
         <% is_selected = @selected_date && day[:date] == @selected_date %>
         <%= render DateCircleComponent.new(
@@ -23,7 +23,7 @@
     </div>
     
     <!-- Next Week Arrow -->
-    <a href="/?date=<%= next_week_date %>" class="flex-shrink-0 p-2 hover:bg-base-200 rounded-full transition-colors self-center">
+    <a href="/?date=<%= next_week_date %>" class="flex-shrink-0 p-2 hover:bg-base-200 rounded-full transition-colors self-start mt-1">
       <svg class="w-5 h-5 text-base-content/70" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
       </svg>

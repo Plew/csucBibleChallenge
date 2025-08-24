@@ -19,7 +19,7 @@ class DateCircleComponent < ViewComponent::Base
   end
 
   def link_classes
-    base_classes = "relative w-6 h-6 flex items-center justify-center"
+    base_classes = "relative w-8 h-8 flex items-center justify-center"
     interactive_classes = has_reading ? "cursor-pointer hover:opacity-80" : "cursor-default"
     "#{base_classes} #{interactive_classes}"
   end
@@ -43,10 +43,8 @@ class DateCircleComponent < ViewComponent::Base
   end
 
   def text_classes
-    base_classes = "text-[10px] leading-tight whitespace-nowrap"
-    if completed
-      style_classes = "font-bold text-primary"
-    elsif selected
+    base_classes = "text-xs leading-tight whitespace-nowrap"
+    if selected
       style_classes = "font-bold text-primary"
     else
       style_classes = "text-base-content/70"
