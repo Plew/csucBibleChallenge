@@ -1,71 +1,53 @@
 <div class="container mx-auto px-4 py-8">
-  <h1 class="text-3xl font-bold mb-6 text-center text-base-content">Account Settings</h1>
+  <h1 class="text-xl font-semibold mb-4 text-center text-base-content">Account Settings</h1>
 
-  <div class="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+  <div class="grid md:grid-cols-2 gap-4 w-full">
     <%# Challenge Enrollment Card %>
-    <div class="card bg-base-100 shadow-xl">
-      <div class="card-body">
-        <h2 class="card-title">Challenge Enrollment</h2>
-        <p class="text-base-content/70">Manage your Bible reading challenge participation</p>
-        <div class="card-actions justify-end">
-          <%= link_to "Manage Enrollments", profile_enrollments_path, class: "btn btn-primary" %>
-        </div>
+    <%= link_to profile_enrollments_path, class: "card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow cursor-pointer w-full" do %>
+      <div class="card-body p-4">
+        <h2 class="text-sm font-medium">Challenge Enrollment</h2>
+        <p class="text-xs text-base-content/70">Manage your Bible reading challenge participation</p>
       </div>
-    </div>
+    <% end %>
 
     <%# Profile Details Card %>
-    <div class="card bg-base-100 shadow-xl">
-      <div class="card-body">
-        <h2 class="card-title">Profile Details</h2>
-        <p class="text-base-content/70">Update your name and basic information</p>
-        <div class="card-actions justify-end">
-          <%= link_to "Edit Details", edit_profile_details_path, class: "btn btn-primary" %>
-        </div>
+    <%= link_to edit_profile_details_path, class: "card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow cursor-pointer w-full" do %>
+      <div class="card-body p-4">
+        <h2 class="text-sm font-medium">Profile Details</h2>
+        <p class="text-xs text-base-content/70">Update your name and basic information</p>
       </div>
-    </div>
+    <% end %>
 
     <%# Update Avatar Card %>
-    <div class="card bg-base-100 shadow-xl">
-      <div class="card-body">
-        <h2 class="card-title">Avatar</h2>
-        <p class="text-base-content/70">Update your profile picture</p>
-        <div class="card-actions justify-end">
-          <%= link_to "Update Avatar", edit_profile_avatar_path, class: "btn btn-primary" %>
-        </div>
+    <%= link_to edit_profile_avatar_path, class: "card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow cursor-pointer w-full" do %>
+      <div class="card-body p-4">
+        <h2 class="text-sm font-medium">Avatar</h2>
+        <p class="text-xs text-base-content/70">Update your profile picture</p>
       </div>
-    </div>
+    <% end %>
 
     <%# Bible Version Card %>
-    <div class="card bg-base-100 shadow-xl">
-      <div class="card-body">
-        <h2 class="card-title">Bible Version</h2>
-        <p class="text-base-content/70">Change your preferred Bible version</p>
-        <div class="card-actions justify-end">
-          <%= link_to "Update Bible Version", edit_profile_version_path, class: "btn btn-primary" %>
-        </div>
+    <%= link_to edit_profile_version_path, class: "card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow cursor-pointer w-full" do %>
+      <div class="card-body p-4">
+        <h2 class="text-sm font-medium">Bible Version</h2>
+        <p class="text-xs text-base-content/70">Change your preferred Bible version</p>
       </div>
-    </div>
+    <% end %>
 
     <%# Change Password Card %>
-    <div class="card bg-base-100 shadow-xl">
-      <div class="card-body">
-        <h2 class="card-title">Password</h2>
-        <p class="text-base-content/70">Change your account password</p>
-        <div class="card-actions justify-end">
-          <%= link_to "Change Password", edit_profile_password_path, class: "btn btn-primary" %>
-        </div>
+    <%= link_to edit_profile_password_path, class: "card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow cursor-pointer w-full" do %>
+      <div class="card-body p-4">
+        <h2 class="text-sm font-medium">Password</h2>
+        <p class="text-xs text-base-content/70">Change your account password</p>
       </div>
-    </div>
+    <% end %>
 
     <%# Account Actions Card %>
-    <div class="card bg-base-100 shadow-xl">
-      <div class="card-body">
-        <h2 class="card-title">Account Actions</h2>
-        <p class="text-base-content/70">Sign out of your account</p>
-        <div class="card-actions justify-end">
-          <%= link_to "Log out", destroy_user_session_path, data: { turbo_method: :delete }, class: "btn btn-error btn-outline" %>
-        </div>
+    <%= link_to destroy_user_session_path, data: { turbo_method: :delete }, class: "card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow cursor-pointer w-full" do %>
+      <div class="card-body p-4">
+        <h2 class="text-sm font-medium">Log out</h2>
+        <p class="text-xs text-base-content/70">Sign out of your account</p>
       </div>
-    </div>
+    <% end %>
   </div>
 </div>
