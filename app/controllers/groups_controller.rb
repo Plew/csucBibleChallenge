@@ -83,6 +83,10 @@ class GroupsController < ApplicationController
       redirect_to groups_path, alert: 'You are already in a group.'
       return
     end
+    if group.closed_to_new_members
+      redirect_to groups_path, alert: 'This group is closed to new members.'
+      return
+    end
     UserGroupEnrollment.create!(user: current_user, group: group)
     redirect_to groups_path
   rescue ActiveRecord::RecordInvalid => e
@@ -106,6 +110,19 @@ class GroupsController < ApplicationController
     @user_group = current_user.groups.where(challenge_id: @challenge.id).first
   end
 
+  # PATCH /groups/:id/toggle_closed
+  def toggle_closed
+    group = @challenge.groups.find(params[:id])
+    unless group.creator == current_user
+      redirect_to group_path(group), alert: 'Only the group creator can perform this action.'
+      return
+    end
+    
+    closed_value = params[:closed_to_new_members] == '1'
+    group.update!(closed_to_new_members: closed_value)
+    redirect_to group_path(group)
+  end
+
   private
 
   def set_enrollment_and_challenge
@@ -118,6 +135,6 @@ class GroupsController < ApplicationController
   end
 
   def group_params
-    params.require(:group).permit(:name)
+    params.require(:group).permit(:name, :closed_to_new_members)
   end
 end 

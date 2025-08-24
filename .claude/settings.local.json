@@ -36,7 +36,8 @@
       "WebFetch(domain:platform.openai.com)",
       "Bash(git pull:*)",
       "Bash(git reset:*)",
-      "Bash(bundle exec lookbook:*)"
+      "Bash(bundle exec lookbook:*)",
+      "Bash(bundle exec:*)"
     ],
     "deny": []
   }

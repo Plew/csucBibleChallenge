@@ -78,6 +78,7 @@ Rails.application.routes.draw do
       post :join
       get :confirm_destroy
       post :destroy_and_leave
+      patch :toggle_closed
     end
     collection do
       post :leave

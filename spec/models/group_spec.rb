@@ -15,6 +15,18 @@ RSpec.describe Group, type: :model do
     it { should validate_uniqueness_of(:name).scoped_to(:challenge_id).with_message("name should be unique within the challenge") }
   end
 
+  describe 'attributes' do
+    it 'has closed_to_new_members defaulting to false' do
+      group = FactoryBot.create(:group)
+      expect(group.closed_to_new_members).to eq(false)
+    end
+
+    it 'can be set to closed_to_new_members' do
+      group = FactoryBot.create(:group, closed_to_new_members: true)
+      expect(group.closed_to_new_members).to eq(true)
+    end
+  end
+
   it 'is valid with valid attributes' do
     expect(FactoryBot.build(:group)).to be_valid
   end

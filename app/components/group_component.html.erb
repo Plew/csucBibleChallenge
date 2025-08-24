@@ -1,0 +1,51 @@
+<div class="container mx-auto px-4 py-6">
+  <div class="bg-base-100 rounded-lg shadow p-4 mb-2">
+    <div class="text-xl font-bold truncate" title="<%= group.name %>"><%= group.name %></div>
+    <% if can_join_group? %>
+      <div class="mt-2">
+        <%= button_to 'Join', join_group_path(group), method: :post, class: 'btn btn-primary btn-sm', data: { turbo: true } %>
+      </div>
+    <% elsif !user_group && group.closed_to_new_members %>
+      <div class="mt-2 text-sm text-warning">
+        This group is closed to new members
+      </div>
+    <% end %>
+  </div>
+
+  <div class="bg-base-100 rounded-lg shadow p-4">
+    <ul class="list bg-base-100 rounded-box">
+      <li class="p-4 pb-2 text-xs opacity-60 tracking-wide">Group Members</li>
+      <% group.user_group_enrollments.includes(:user).each do |enrollment| %>
+        <li class="list-row flex items-center gap-3 py-2 px-2">
+          <div><%= avatar_image_tag(enrollment.user, :tiny, class: 'size-10 rounded-box') %></div>
+          <div class="flex-1 min-w-0">
+            <div class="truncate"><%= enrollment.user.username %></div>
+            <div class="text-xs uppercase font-semibold opacity-60 truncate"><%= enrollment.user.email %></div>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+    
+    <% if is_user_in_this_group? %>
+      <div class="mt-4 flex justify-end">
+        <%= button_to 'Leave Group', leave_groups_path, method: :post, data: { turbo: true, confirm: 'Are you sure you want to leave your group?' }, class: 'btn btn-error btn-sm' %>
+      </div>
+    <% end %>
+
+    <% if can_toggle_closed_status? %>
+      <div class="mt-4 pt-4 border-t border-base-300">
+        <%= form_with url: toggle_closed_group_path(group), method: :patch, local: true, class: "flex items-center gap-3" do |form| %>
+          <div class="form-control">
+            <%= form.check_box :closed_to_new_members, 
+                checked: group.closed_to_new_members, 
+                class: "checkbox checkbox-sm",
+                onchange: "this.form.submit();" %>
+          </div>
+          <%= form.label :closed_to_new_members, "No one else can join this group", class: "label cursor-pointer flex-1" do %>
+            <span class="label-text">No one else can join this group</span>
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>
