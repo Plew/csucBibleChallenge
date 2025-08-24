@@ -36,7 +36,7 @@ class DateCircleComponent < ViewComponent::Base
 
   def inner_circle_classes
     if completed
-      "bg-success text-success-content"
+      "bg-primary text-primary-content"
     else
       "bg-base-200 text-base-content"
     end
@@ -44,7 +44,13 @@ class DateCircleComponent < ViewComponent::Base
 
   def text_classes
     base_classes = "text-[10px] leading-tight whitespace-nowrap"
-    style_classes = selected ? "font-bold text-primary" : "text-base-content/70"
+    if completed
+      style_classes = "font-bold text-primary"
+    elsif selected
+      style_classes = "font-bold text-primary"
+    else
+      style_classes = "text-base-content/70"
+    end
     "#{base_classes} #{style_classes}"
   end
 
