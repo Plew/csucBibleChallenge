@@ -1,19 +1,13 @@
 <div class="container mx-auto px-4 py-8">
   <div class="mb-6">
     <%= link_to "← Back to Profile", profile_path, class: "btn btn-ghost btn-sm" %>
-    <h1 class="text-xl font-semibold text-base-content mt-2">Challenge Enrollment</h1>
   </div>
 
   <div class="max-w-2xl mx-auto">
     <div class="card bg-base-100 shadow-xl">
       <div class="card-body">
-        <h2 class="card-title">Your Challenge Participation</h2>
         <% if @user_enrollment %>
           <p class="mb-4">You are currently enrolled in: <strong class="font-semibold"><%= @user_enrollment.challenge.name %></strong></p>
-          <div class="alert alert-info mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            <span>Your progress will be saved even if you leave this challenge.</span>
-          </div>
           <div class="card-actions justify-start">
             <%= button_to "Leave Challenge", profile_enrollment_path(@user_enrollment), method: :delete, data: { confirm: "Are you sure you want to leave this challenge? Your progress will be saved." }, class: "btn btn-error btn-outline" %>
           </div>
