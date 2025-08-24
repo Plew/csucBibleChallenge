@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Stats::GroupStatsComponent < ViewComponent::Base
+class Statistics::TopGroupsComponent < ViewComponent::Base
   def initialize(top_groups_data:)
     @top_groups_data = top_groups_data
   end
@@ -8,4 +8,8 @@ class Stats::GroupStatsComponent < ViewComponent::Base
   private
 
   attr_reader :top_groups_data
+
+  def has_groups?
+    top_groups_data.any?
+  end
 end

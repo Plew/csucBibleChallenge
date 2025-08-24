@@ -1,0 +1,22 @@
+<div class="avatar-group -space-x-6 flex-shrink-0" style="width: <%= avatar_container_width %>px;">
+  <% shown_users.each do |user| %>
+    <div class="avatar">
+      <div class="w-8">
+        <%= avatar_image_tag(user, size, class: 'rounded-full') %>
+      </div>
+    </div>
+  <% end %>
+  <% if has_extra_users? %>
+    <div class="avatar avatar-placeholder">
+      <div class="bg-neutral text-neutral-content w-8">
+        <span>+<%= extra_count %></span>
+      </div>
+    </div>
+  <% end %>
+  <% (max_avatars - shown_users.size - (has_extra_users? ? 1 : 0)).times do %>
+    <div class="avatar invisible">
+      <div class="w-8">
+      </div>
+    </div>
+  <% end %>
+</div>

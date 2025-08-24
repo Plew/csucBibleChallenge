@@ -1,6 +1,6 @@
 <div class="px-2 py-3">
   <div class="mb-6">
-    <h1 class="text-2xl font-bold text-center mb-1">📊 Statistics</h1>
+    <h1 class="text-2xl font-bold text-center mb-1">Statistics</h1>
     <p class="text-center opacity-70 text-sm">Choose a statistics category to explore</p>
   </div>
 
@@ -9,12 +9,8 @@
       <%= link_to option[:path], class: "block" do %>
         <div class="card bg-base-100 shadow-sm hover:shadow-md transition-shadow">
           <div class="card-body p-4">
-            <div class="flex items-center space-x-3">
-              <span class="text-2xl"><%= option[:icon] %></span>
-              <div class="flex-1">
-                <h3 class="font-semibold text-base-content"><%= option[:title] %></h3>
-                <p class="text-sm opacity-70"><%= option[:description] %></p>
-              </div>
+            <div class="flex items-center justify-between">
+              <h3 class="font-semibold text-base-content"><%= option[:title] %></h3>
               <span class="text-base-content opacity-40">→</span>
             </div>
           </div>

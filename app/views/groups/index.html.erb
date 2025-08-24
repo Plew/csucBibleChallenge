@@ -16,25 +16,7 @@
           <div class="flex items-center min-w-0 flex-1 gap-2">
             <div class="text-base truncate max-w-[8rem] sm:max-w-[14rem] flex-shrink-0" style="width:8rem;" title="<%= group.name %>"><%= group.name %></div>
             <div class="flex-grow"></div>
-            <% enrollments = group.user_group_enrollments.includes(:user).to_a.shuffle %>
-            <% shown_enrollments = enrollments.first(5) %>
-            <% extra_count = enrollments.size - shown_enrollments.size %>
-            <div class="avatar-group -space-x-6 flex-shrink-0">
-              <% shown_enrollments.each do |enrollment| %>
-                <div class="avatar">
-                  <div class="w-8">
-                    <%= avatar_image_tag(enrollment.user, :tiny, class: 'rounded-full') %>
-                  </div>
-                </div>
-              <% end %>
-              <% if extra_count > 0 %>
-                <div class="avatar avatar-placeholder">
-                  <div class="bg-neutral text-neutral-content w-8">
-                    <span>+<%= extra_count %></span>
-                  </div>
-                </div>
-              <% end %>
-            </div>
+            <%= render OverlaidAvatarsComponent.new(users: group.users, max_avatars: 5, size: :tiny) %>
             <% if !@user_group %>
               <div class="flex-shrink-0 ml-2">
                 <%= button_to 'Join', join_group_path(group), method: :post, class: 'btn btn-primary btn-sm', data: { turbo: true } %>

@@ -10,21 +10,15 @@ class StatsPageComponent < ViewComponent::Base
     [
       {
         title: "Challenge Stats",
-        description: "View statistics across all reading challenges",
-        path: stats_challenge_path,
-        icon: "📊"
+        path: stats_challenge_path
       },
       {
-        title: "Group Stats", 
-        description: "Compare performance between different groups",
-        path: stats_group_path,
-        icon: "👥"
+        title: "Group Stats",
+        path: stats_group_path
       },
       {
         title: "Personal Stats",
-        description: "Your individual reading progress and achievements", 
-        path: stats_personal_path,
-        icon: "📈"
+        path: stats_personal_path
       }
     ]
   end

@@ -1,19 +1,30 @@
 # frozen_string_literal: true
 
 class TopReadersStatistics
-  def self.call
-    new.call
+  def self.call(challenge: nil)
+    new(challenge).call
+  end
+
+  def initialize(challenge = nil)
+    @challenge = challenge
   end
 
   def call
-    users_with_stats = User.joins(:user_readings, :challenges)
-                          .select(
-                            'users.*',
-                            'COUNT(user_readings.id) as total_chapters_read'
-                          )
-                          .where.not(challenges: { timezone: nil })
-                          .group('users.id')
-                          .limit(50)
+    base_query = User.joins(:user_readings, :challenges)
+                     .select(
+                       'users.*',
+                       'COUNT(user_readings.id) as total_chapters_read'
+                     )
+                     .where.not(challenges: { timezone: nil })
+
+    users_with_stats = if @challenge
+                         base_query.where(challenges: { id: @challenge.id })
+                                   .group('users.id')
+                                   .limit(50)
+                       else
+                         base_query.group('users.id')
+                                   .limit(50)
+                       end
 
     users_with_stats.map do |user|
       chapters_data = calculate_chapters_data(user)
@@ -34,7 +45,9 @@ class TopReadersStatistics
     total_scheduled = 0
     total_completed = 0
 
-    user.challenges.includes(:readings).each do |challenge|
+    challenges_to_calculate = @challenge ? [@challenge] : user.challenges.includes(:readings)
+    
+    challenges_to_calculate.each do |challenge|
       current_date_in_tz = Time.current.in_time_zone(challenge.timezone).to_date
       
       scheduled_count = challenge.readings
@@ -60,7 +73,9 @@ class TopReadersStatistics
     total_scheduled = 0
     total_completed = 0
 
-    user.challenges.includes(:readings).each do |challenge|
+    challenges_to_calculate = @challenge ? [@challenge] : user.challenges.includes(:readings)
+
+    challenges_to_calculate.each do |challenge|
       current_date_in_tz = Time.current.in_time_zone(challenge.timezone).to_date
       
       scheduled_count = challenge.readings

@@ -5,10 +5,13 @@ class StatsController < ApplicationController
   end
 
   def challenge
-    @top_readers_data = TopReadersStatistics.call
+    current_challenge = current_user.challenges.first
+    @top_readers_data = TopReadersStatistics.call(challenge: current_challenge)
   end
 
   def group
+    current_challenge = current_user.challenges.first
+    @top_groups_data = TopGroupsStatistics.call(challenge: current_challenge)
   end
 
   def personal
