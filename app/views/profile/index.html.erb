@@ -2,13 +2,46 @@
   <h1 class="text-3xl font-bold mb-6 text-center text-base-content">Account Settings</h1>
 
   <div class="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+    <%# Challenge Enrollment Card %>
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title">Challenge Enrollment</h2>
+        <p class="text-base-content/70">Manage your Bible reading challenge participation</p>
+        <div class="card-actions justify-end">
+          <%= link_to "Manage Enrollments", profile_enrollments_path, class: "btn btn-primary" %>
+        </div>
+      </div>
+    </div>
+
     <%# Profile Details Card %>
     <div class="card bg-base-100 shadow-xl">
       <div class="card-body">
         <h2 class="card-title">Profile Details</h2>
-        <p class="text-base-content/70">Update your name, avatar, and Bible version preferences</p>
+        <p class="text-base-content/70">Update your name and basic information</p>
         <div class="card-actions justify-end">
           <%= link_to "Edit Details", edit_profile_details_path, class: "btn btn-primary" %>
+        </div>
+      </div>
+    </div>
+
+    <%# Update Avatar Card %>
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title">Avatar</h2>
+        <p class="text-base-content/70">Update your profile picture</p>
+        <div class="card-actions justify-end">
+          <%= link_to "Update Avatar", edit_profile_avatar_path, class: "btn btn-primary" %>
+        </div>
+      </div>
+    </div>
+
+    <%# Bible Version Card %>
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title">Bible Version</h2>
+        <p class="text-base-content/70">Change your preferred Bible version</p>
+        <div class="card-actions justify-end">
+          <%= link_to "Update Bible Version", edit_profile_version_path, class: "btn btn-primary" %>
         </div>
       </div>
     </div>
@@ -20,17 +53,6 @@
         <p class="text-base-content/70">Change your account password</p>
         <div class="card-actions justify-end">
           <%= link_to "Change Password", edit_profile_password_path, class: "btn btn-primary" %>
-        </div>
-      </div>
-    </div>
-
-    <%# Challenge Enrollment Card %>
-    <div class="card bg-base-100 shadow-xl">
-      <div class="card-body">
-        <h2 class="card-title">Challenge Enrollment</h2>
-        <p class="text-base-content/70">Manage your Bible reading challenge participation</p>
-        <div class="card-actions justify-end">
-          <%= link_to "Manage Enrollments", profile_enrollments_path, class: "btn btn-primary" %>
         </div>
       </div>
     </div>

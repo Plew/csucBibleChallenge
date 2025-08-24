@@ -1,0 +1,42 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="mb-6">
+    <%= link_to "← Back to Profile", profile_path, class: "btn btn-ghost btn-sm" %>
+    <h1 class="text-xl font-semibold text-base-content mt-2">Update Avatar</h1>
+  </div>
+
+  <div class="max-w-2xl mx-auto">
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title">Change Your Avatar</h2>
+        <%= form_with(model: @user, url: profile_avatar_path, method: :patch, local: true) do |f| %>
+          <div class="form-control mt-2">
+            <%= f.label :avatar, class: "label" do %>
+              <span class="label-text">Avatar</span>
+            <% end %>
+            
+            <% if @user.avatar.attached? %>
+              <div class="avatar mb-2">
+                <div class="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                  <%= image_tag @user.avatar.variant(:thumb) %>
+                </div>
+              </div>
+              <p class="text-sm text-base-content/70 mb-2">Current avatar</p>
+            <% else %>
+              <%= avatar_image_tag(current_user, :tiny) %>
+              <p class="text-sm text-base-content/70 mb-2">Default avatar</p>
+            <% end %>
+            
+            <%= f.file_field :avatar, class: "file-input file-input-bordered w-full" %>
+            <div class="label">
+              <span class="label-text-alt">Choose a new image to update your avatar</span>
+            </div>
+          </div>
+          
+          <div class="form-control mt-6">
+            <%= f.submit "Update Avatar", class: "btn btn-primary" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

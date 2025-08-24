@@ -36,6 +36,8 @@ Rails.application.routes.draw do
   namespace :profile do
     resource :details, only: [:edit, :update], controller: 'details'
     resource :password, only: [:edit, :update], controller: 'passwords'  
+    resource :avatar, only: [:edit, :update], controller: 'avatars'
+    resource :version, only: [:edit, :update], controller: 'versions'
     resources :enrollments, only: [:index, :destroy], controller: 'enrollments'
   end
 
