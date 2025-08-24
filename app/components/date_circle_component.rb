@@ -19,7 +19,7 @@ class DateCircleComponent < ViewComponent::Base
   end
 
   def link_classes
-    base_classes = "relative w-8 h-8 flex items-center justify-center"
+    base_classes = "relative w-6 h-6 flex items-center justify-center"
     interactive_classes = has_reading ? "cursor-pointer hover:opacity-80" : "cursor-default"
     "#{base_classes} #{interactive_classes}"
   end
@@ -46,5 +46,9 @@ class DateCircleComponent < ViewComponent::Base
     base_classes = "text-[10px] leading-tight whitespace-nowrap"
     style_classes = selected ? "font-bold text-primary" : "text-base-content/70"
     "#{base_classes} #{style_classes}"
+  end
+
+  def day_letter
+    day_of_week.first.upcase
   end
 end
