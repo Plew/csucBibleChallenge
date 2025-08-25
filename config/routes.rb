@@ -69,6 +69,7 @@ Rails.application.routes.draw do
   end
 
   get 'about', to: 'pages#about'
+  get 'faq', to: 'pages#faq'
   get 'stats', to: 'stats#index'
   get 'stats/challenge', to: 'stats#challenge', as: :stats_challenge
   get 'stats/group', to: 'stats#group', as: :stats_group

@@ -3,6 +3,8 @@ de:
   navigation:
     profile: "Profil"
     groups: "Gruppen"
+    about: "Über uns"
+    faq: "FAQ"
     language: "Sprache"
     english: "English"
     german: "Deutsch"

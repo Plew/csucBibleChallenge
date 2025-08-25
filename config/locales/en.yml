@@ -32,6 +32,8 @@ en:
   navigation:
     profile: "Profile"
     groups: "Groups"
+    about: "About"
+    faq: "FAQ"
     language: "Language"
     english: "English"
     german: "Deutsch"
