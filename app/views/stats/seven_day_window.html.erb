@@ -1,7 +1,12 @@
 <% content_for :title, "7 Day Window Stats" %>
 
 <div class="container mx-auto px-4 py-6">
-  <h1 class="text-2xl font-bold mb-6">7 Day Window</h1>
-  
+  <div class="text-sm breadcrumbs mb-4">
+    <ul>
+      <li><%= link_to "Stats", stats_path, class: "link link-hover" %></li>
+      <li>7 Day Window</li>
+    </ul>
+  </div>
+
   <%= render SevenDayLeaderboardComponent.new(leaderboard_data: @seven_day_leaderboard_data) %>
 </div>
