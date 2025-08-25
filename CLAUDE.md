@@ -128,3 +128,4 @@ This is a Rails 8 application for managing Bible reading challenges. Users can j
 ## Mobile Responsiveness
 
 - All pages need to primarily look right in mobile responsive mode. Desktop is not important
+- always when designing anything make sure there are not big margins or padding.  the content should go almost all the way to the left and right.

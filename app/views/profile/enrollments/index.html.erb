@@ -1,23 +1,49 @@
-<div class="container mx-auto px-4 py-8">
-  <div class="mb-6">
+<div class="px-2 py-4">
+  <div class="mb-4">
     <%= link_to "← Back to Profile", profile_path, class: "btn btn-ghost btn-sm" %>
   </div>
 
-  <div class="max-w-2xl mx-auto">
-    <div class="card bg-base-100 shadow-xl">
-      <div class="card-body">
+  <div class="bg-base-100">
+    <div class="p-4">
         <% if @user_enrollment %>
           <p class="mb-4">You are currently enrolled in: <strong class="font-semibold"><%= @user_enrollment.challenge.name %></strong></p>
-          <div class="card-actions justify-start">
+          <div class="card-actions justify-start mb-6">
             <%= button_to "Leave Challenge", profile_enrollment_path(@user_enrollment), method: :delete, data: { confirm: "Are you sure you want to leave this challenge? Your progress will be saved." }, class: "btn btn-error btn-outline" %>
           </div>
+          
+          <% if @user_enrollment.challenge.readings.any? %>
+            <div class="mt-6">
+              <h3 class="text-lg font-semibold mb-3">Reading Schedule</h3>
+              <div class="overflow-x-auto">
+                <table class="table table-xs table-zebra">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Reading</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% @user_enrollment.challenge.readings.order(:scheduled_date).each do |reading| %>
+                      <tr>
+                        <td class="text-sm">
+                          <%= reading.scheduled_date.strftime("%b %d") %>
+                        </td>
+                        <td class="text-sm">
+                          <%= book_number_to_name(reading.book_number) %> <%= reading.chapter_number %>
+                        </td>
+                      </tr>
+                    <% end %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          <% end %>
         <% else %>
           <p class="mb-4">You are not currently enrolled in any challenge.</p>
           <div class="card-actions justify-start">
             <%= link_to "Browse Available Challenges", root_path, class: "btn btn-primary" %>
           </div>
         <% end %>
-      </div>
     </div>
   </div>
 </div>
