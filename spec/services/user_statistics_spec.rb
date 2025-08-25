@@ -80,4 +80,27 @@ describe UserStatistics do
       expect(subject.last_check_in_date).to eq(Date.current - 1)
     end
   end
+
+  describe '#on_schedule_percentage' do
+    it 'returns 0 if no readings completed' do
+      expect(subject.on_schedule_percentage).to eq(0)
+    end
+
+    it 'returns 100 if all completed readings were on schedule' do
+      readings.first(3).each do |reading|
+        create(:user_reading, user: user, reading: reading, completed_on: reading.scheduled_date)
+      end
+      expect(subject.on_schedule_percentage).to eq(100.0)
+    end
+
+    it 'returns correct percentage for mixed on/off schedule readings' do
+      # Complete 4 readings: 3 on schedule, 1 off schedule
+      readings.first(3).each do |reading|
+        create(:user_reading, user: user, reading: reading, completed_on: reading.scheduled_date)
+      end
+      create(:user_reading, user: user, reading: readings[3], completed_on: readings[3].scheduled_date + 1.day)
+      
+      expect(subject.on_schedule_percentage).to eq(75.0)
+    end
+  end
 end 

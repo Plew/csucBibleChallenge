@@ -51,7 +51,16 @@ class UserStatistics
     user.last_login_at&.to_date if user.respond_to?(:last_login_at)
   end
 
+  # Percentage of completed readings that were completed on their scheduled date
+  def on_schedule_percentage
+    on_schedule_stats.percentage
+  end
+
   private
+
+  def on_schedule_stats
+    @on_schedule_stats ||= OnScheduleStatistic.new(user, challenge)
+  end
 
   def last_activity_date
     [last_check_in_date, last_login_date].compact.max
