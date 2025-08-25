@@ -18,7 +18,16 @@ class ChallengeFormComponent < ViewComponent::Base
   attr_reader :challenge, :bible_books, :form_url, :cancel_url
 
   def timezone_options
-    ActiveSupport::TimeZone.all.map { |tz| [tz.name, tz.name] }
+    options = ActiveSupport::TimeZone.all.map { |tz| [tz.name, tz.name] }
+    
+    # Add Munich as an option that maps to Berlin timezone
+    berlin_tz = ActiveSupport::TimeZone['Berlin']
+    if berlin_tz
+      options << ['Munich', berlin_tz.name]
+    end
+    
+    # Sort alphabetically for better UX
+    options.sort_by(&:first)
   end
 
   def default_timezone

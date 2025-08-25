@@ -4,7 +4,7 @@ class HomeController < ApplicationController
   # GET /
   def index
     @user_challenge = current_user.challenges.first # User can only be in one challenge as per user_query
-    @challenges = Challenge.all # For listing available challenges if user hasn\'t joined one
+    @challenges = Challenge.where('end_date >= ?', Date.current) # Only show active/future challenges
 
     if @user_challenge
       today_in_challenge_tz = Time.current.in_time_zone(@user_challenge.timezone).to_date
