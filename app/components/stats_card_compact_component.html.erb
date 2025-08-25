@@ -1,0 +1,30 @@
+<div class="bg-base-100 border border-base-300 rounded-lg p-4 mb-6">
+  <div class="grid grid-cols-2 gap-4">
+    <div class="text-center">
+      <div class="text-xs text-base-content/70 uppercase tracking-wide">Today's Reading</div>
+      <div class="text-lg font-bold text-primary"><%= today_reading %></div>
+    </div>
+    
+    <div class="text-center">
+      <div class="text-xs text-base-content/70 uppercase tracking-wide">Members</div>
+      <div class="text-lg font-bold text-secondary"><%= challenge_members %></div>
+    </div>
+    
+    <div class="text-center">
+      <div class="text-xs text-base-content/70 uppercase tracking-wide">Total Read</div>
+      <div class="text-lg font-bold text-accent"><%= chapters_read %></div>
+    </div>
+    
+    <div class="text-center">
+      <div class="text-xs text-base-content/70 uppercase tracking-wide">Today</div>
+      <div class="text-lg font-bold"><%= chapters_today %></div>
+    </div>
+  </div>
+  
+  <div class="divider my-3"></div>
+  
+  <div class="text-center">
+    <div class="text-xs text-base-content/70 uppercase tracking-wide mb-1">Top Readers</div>
+    <div class="text-sm font-medium"><%= top_readers.join(" • ") %></div>
+  </div>
+</div>
