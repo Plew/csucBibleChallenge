@@ -1,5 +1,11 @@
 de:
   hello: "Hallo Welt"
+  navigation:
+    profile: "Profil"
+    groups: "Gruppen"
+    language: "Sprache"
+    english: "English"
+    german: "Deutsch"
   bible_books:
     genesis: "Genesis"
     exodus: "Exodus"

@@ -22,6 +22,9 @@ Rails.application.routes.draw do
   post 'users/sign_in', to: 'sessions#create', as: :user_session
   delete 'users/sign_out', to: 'sessions#destroy', as: :destroy_user_session
 
+  # Language switching
+  patch 'language', to: 'languages#update', as: :update_language
+
   # Challenges UI
   resources :challenges, only: [:index, :show] do # Add :show, :new, :create, etc. as needed for UI
     resources :user_challenge_enrollments, only: [:create], as: :enrollments # POST challenges/:challenge_id/enrollments

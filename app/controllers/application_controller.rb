@@ -1,7 +1,17 @@
 class ApplicationController < ActionController::Base
+  before_action :set_locale
   helper_method :current_user, :logged_in?
 
   private
+
+  def set_locale
+    I18n.locale = extract_locale || I18n.default_locale
+  end
+
+  def extract_locale
+    parsed_locale = params[:locale] || cookies[:locale]
+    I18n.available_locales.map(&:to_s).include?(parsed_locale) ? parsed_locale : nil
+  end
 
   # Placeholder for current_user
   # In a real app, this would involve session management (e.g., session[:user_id])

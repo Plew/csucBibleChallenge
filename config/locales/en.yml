@@ -29,6 +29,12 @@
 
 en:
   hello: "Hello world"
+  navigation:
+    profile: "Profile"
+    groups: "Groups"
+    language: "Language"
+    english: "English"
+    german: "Deutsch"
   bible_books:
     genesis: "Genesis"
     exodus: "Exodus"
