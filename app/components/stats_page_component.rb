@@ -9,6 +9,10 @@ class StatsPageComponent < ViewComponent::Base
   def stats_options
     [
       {
+        title: "7 Day Window",
+        path: stats_seven_day_window_path
+      },
+      {
         title: "Challenge Stats",
         path: stats_challenge_path
       },

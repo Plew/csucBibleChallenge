@@ -74,6 +74,7 @@ Rails.application.routes.draw do
   get 'stats/challenge', to: 'stats#challenge', as: :stats_challenge
   get 'stats/group', to: 'stats#group', as: :stats_group
   get 'stats/personal', to: 'stats#personal', as: :stats_personal
+  get 'stats/seven_day_window', to: 'stats#seven_day_window', as: :stats_seven_day_window
 
   resources :user_readings, only: [:create]
 

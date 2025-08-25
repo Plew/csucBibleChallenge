@@ -1,0 +1,39 @@
+<div class="bg-base-100 rounded-lg shadow p-2">
+  <h2 class="text-lg font-bold mb-2">7-Day Reading Leaderboard</h2>
+  
+  <% if leaderboard_data.any? %>
+    <div class="space-y-1">
+      <% leaderboard_data.each_with_index do |reader, index| %>
+        <div class="flex items-center justify-between px-3 py-2 bg-base-200 rounded-lg">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-primary text-primary-content rounded-full flex items-center justify-center text-sm font-bold">
+              <%= index + 1 %>
+            </div>
+            <div>
+              <div class="font-medium"><%= reader[:name] %></div>
+              <div class="text-xs text-base-content/70">Past 7 days</div>
+            </div>
+          </div>
+          
+          <div class="text-right">
+            <div class="flex gap-4">
+              <div class="text-center">
+                <div class="text-sm font-bold text-success"><%= reader[:completion_percentage] %>%</div>
+                <div class="text-xs text-base-content/70">Complete</div>
+              </div>
+              <div class="text-center">
+                <div class="text-sm font-bold text-info"><%= reader[:on_schedule_percentage] %>%</div>
+                <div class="text-xs text-base-content/70">On Schedule</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="text-center py-8 text-base-content/70">
+      <div class="text-lg mb-2">No data available</div>
+      <div class="text-sm">Start reading to see your progress!</div>
+    </div>
+  <% end %>
+</div>

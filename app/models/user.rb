@@ -21,6 +21,8 @@ class User < ApplicationRecord
   validates :current_password, presence: true, if: :password_being_updated?
   validate :current_password_correct, if: :password_being_updated?
 
+  alias_attribute :name, :username
+
   def admin?
     admin
   end

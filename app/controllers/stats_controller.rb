@@ -16,4 +16,9 @@ class StatsController < ApplicationController
 
   def personal
   end
+
+  def seven_day_window
+    current_challenge = current_user.challenges.first
+    @seven_day_leaderboard_data = SevenDayWindowStatistics.call(challenge: current_challenge)
+  end
 end
