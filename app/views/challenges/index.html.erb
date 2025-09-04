@@ -19,19 +19,23 @@
         <% @my_challenges.each do |challenge| %>
           <div class="card bg-base-100 shadow-xl">
             <div class="card-body">
-              <h3 class="card-title"><%= challenge.try(:name) || "Unnamed Challenge" %></h3>
-              <p class="text-sm text-gray-600"><%= challenge.try(:dates) || "Dates not specified" %></p>
-              <% if challenge.try(:progress).present? %>
-                <p class="text-sm">Progress: <%= challenge.progress %></p>
-                <%# Basic progress bar example %>
-                <progress class="progress progress-success w-full" value="<%= challenge.progress.to_i %>" max="100"></progress>
-              <% end %>
-              <% if challenge.try(:group_name).present? %>
-                <p class="text-sm">Group: <%= challenge.group_name %></p>
-              <% end %>
-              <div class="card-actions justify-end mt-2">
-                <%= link_to "View Details", "#", class: "btn btn-sm btn-outline" %><%# Placeholder %>
-                <button class="btn btn-sm btn-error">Leave Challenge</button><%# Placeholder %>
+              <h3 class="card-title"><%= challenge.name %></h3>
+              <p class="text-sm text-gray-600">
+                <%= challenge.start_date.strftime("%b %d, %Y") %> - 
+                <%= challenge.end_date.strftime("%b %d, %Y") %>
+              </p>
+              <p class="text-xs text-gray-500">Created by: <%= challenge.creator.username %></p>
+              <div class="card-actions justify-between mt-2">
+                <div>
+                  <%= link_to "View Details", challenge_path(challenge), class: "btn btn-sm btn-outline" %>
+                </div>
+                <div class="flex gap-2">
+                  <% if current_user == challenge.creator %>
+                    <%= link_to "Delete", delete_confirmation_admin_challenge_path(challenge), 
+                        class: "btn btn-sm btn-error" %>
+                  <% end %>
+                  <button class="btn btn-sm btn-warning">Leave Challenge</button><%# Placeholder %>
+                </div>
               </div>
             </div>
           </div>
@@ -57,14 +61,12 @@
         <% @available_challenges.each do |challenge| %>
           <div class="card bg-base-100 shadow-xl">
             <div class="card-body">
-              <h3 class="card-title"><%= challenge.try(:name) || "Unnamed Challenge" %></h3>
-              <p class="text-sm text-gray-600"><%= challenge.try(:dates) || "Dates not specified" %></p>
-              <% if challenge.try(:description).present? %>
-                <p><%= challenge.description %></p>
-              <% end %>
-              <% if challenge.try(:creator).present? %>
-                <p class="text-xs text-gray-500">Created by: <%= challenge.creator %></p>
-              <% end %>
+              <h3 class="card-title"><%= challenge.name %></h3>
+              <p class="text-sm text-gray-600">
+                <%= challenge.start_date.strftime("%b %d, %Y") %> - 
+                <%= challenge.end_date.strftime("%b %d, %Y") %>
+              </p>
+              <p class="text-xs text-gray-500">Created by: <%= challenge.creator.username %></p>
               <div class="card-actions justify-end mt-2">
                 <button class="btn btn-sm btn-primary">Join Challenge</button><%# Placeholder %>
               </div>

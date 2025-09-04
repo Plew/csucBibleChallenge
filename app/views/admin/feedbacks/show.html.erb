@@ -1,0 +1,125 @@
+<div class="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
+  <div class="max-w-4xl mx-auto">
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-2xl sm:text-3xl font-bold">Feedback Details</h1>
+      <%= link_to "← Back to All Feedback", admin_feedbacks_path, class: "btn btn-ghost" %>
+    </div>
+
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <div class="flex items-start justify-between mb-6">
+          <div>
+            <h2 class="card-title text-xl mb-2"><%= @feedback.subject %></h2>
+            <div class="flex items-center gap-4 text-sm text-base-content/70">
+              <div class="badge badge-outline"><%= @feedback.category_display %></div>
+              <span>Submitted <%= @feedback.created_at.strftime("%B %d, %Y at %I:%M %p") %></span>
+            </div>
+          </div>
+          
+          <%= link_to "Delete Feedback", admin_feedback_path(@feedback), 
+              data: { 
+                turbo_method: :delete, 
+                turbo_confirm: "Are you sure you want to delete this feedback? This action cannot be undone." 
+              },
+              class: "btn btn-error" %>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Main Content -->
+          <div class="lg:col-span-2 space-y-6">
+            <div>
+              <label class="label font-semibold">Message:</label>
+              <div class="bg-base-200 p-4 rounded-lg">
+                <p class="whitespace-pre-wrap"><%= @feedback.message %></p>
+              </div>
+            </div>
+
+            <% if @feedback.screenshot.present? %>
+              <div>
+                <label class="label font-semibold">Screenshot:</label>
+                <div class="bg-base-200 p-4 rounded-lg">
+                  <%= image_tag @feedback.screenshot.variant(:medium), 
+                      class: "max-w-full h-auto rounded-lg shadow-sm border cursor-pointer",
+                      alt: "Feedback screenshot",
+                      onclick: "document.getElementById('screenshot_modal').showModal()" %>
+                  
+                  <!-- Full size screenshot modal -->
+                  <dialog id="screenshot_modal" class="modal">
+                    <div class="modal-box max-w-4xl">
+                      <form method="dialog">
+                        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                      </form>
+                      <h3 class="font-bold text-lg mb-4">Screenshot</h3>
+                      <%= image_tag @feedback.screenshot, 
+                          class: "w-full h-auto",
+                          alt: "Feedback screenshot full size" %>
+                    </div>
+                    <form method="dialog" class="modal-backdrop">
+                      <button>close</button>
+                    </form>
+                  </dialog>
+                </div>
+              </div>
+            <% end %>
+          </div>
+
+          <!-- Sidebar Info -->
+          <div class="space-y-4">
+            <div class="card bg-base-200">
+              <div class="card-body">
+                <h3 class="font-semibold mb-3">Submission Info</h3>
+                
+                <div class="space-y-3">
+                  <div>
+                    <label class="text-sm font-medium text-base-content/70">From:</label>
+                    <div class="flex items-center gap-2 mt-1">
+                      <% if @feedback.user&.avatar&.attached? %>
+                        <%= image_tag @feedback.user.avatar.variant(:thumb), 
+                            class: "w-8 h-8 rounded-full", 
+                            alt: @feedback.author_name %>
+                      <% else %>
+                        <div class="w-8 h-8 rounded-full bg-base-300 flex items-center justify-center">
+                          <span class="text-sm font-medium"><%= @feedback.author_name.first %></span>
+                        </div>
+                      <% end %>
+                      <span><%= @feedback.author_name %></span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label class="text-sm font-medium text-base-content/70">Category:</label>
+                    <div class="badge badge-outline mt-1"><%= @feedback.category_display %></div>
+                  </div>
+
+                  <div>
+                    <label class="text-sm font-medium text-base-content/70">Submitted:</label>
+                    <p class="text-sm mt-1"><%= @feedback.created_at.strftime("%B %d, %Y") %></p>
+                    <p class="text-xs text-base-content/60"><%= @feedback.created_at.strftime("at %I:%M %p") %></p>
+                  </div>
+
+                  <% if @feedback.user.present? %>
+                    <div>
+                      <label class="text-sm font-medium text-base-content/70">User Email:</label>
+                      <p class="text-sm mt-1 break-all"><%= @feedback.user.email %></p>
+                    </div>
+                  <% end %>
+
+                  <div>
+                    <label class="text-sm font-medium text-base-content/70">Has Screenshot:</label>
+                    <div class="mt-1">
+                      <% if @feedback.screenshot.present? %>
+                        <div class="badge badge-success badge-sm">Yes</div>
+                      <% else %>
+                        <div class="badge badge-ghost badge-sm">No</div>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

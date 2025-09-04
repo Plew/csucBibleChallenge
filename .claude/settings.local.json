@@ -37,7 +37,8 @@
       "Bash(git pull:*)",
       "Bash(git reset:*)",
       "Bash(bundle exec lookbook:*)",
-      "Bash(bundle exec:*)"
+      "Bash(bundle exec:*)",
+      "mcp__playwright__browser_console_messages"
     ],
     "deny": []
   }

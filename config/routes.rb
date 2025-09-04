@@ -46,7 +46,12 @@ Rails.application.routes.draw do
 
   # Admin routes
   namespace :admin do
-    resources :challenges, only: [:new, :create]
+    resources :challenges, only: [:new, :create, :destroy] do
+      member do
+        get :delete_confirmation
+      end
+    end
+    resources :feedbacks, only: [:index, :show, :destroy]
   end
 
   namespace :api do
@@ -77,6 +82,9 @@ Rails.application.routes.draw do
   get 'stats/seven_day_window', to: 'stats#seven_day_window', as: :stats_seven_day_window
 
   resources :user_readings, only: [:create]
+  
+  # Feedback
+  resources :feedbacks, only: [:new, :create, :show]
 
   resources :groups, only: [:index, :new, :create, :show] do
     member do

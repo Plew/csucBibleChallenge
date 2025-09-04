@@ -87,6 +87,12 @@ RSpec.describe Admin::ChallengesController, type: :controller do
         }.to change(Challenge, :count).by(1)
       end
 
+      it 'sets the creator to the current admin user' do
+        post :create, params: valid_params
+        challenge = Challenge.last
+        expect(challenge.creator).to eq(admin_user)
+      end
+
       it 'creates readings for selected books' do
         expect {
           post :create, params: valid_params
@@ -135,6 +141,100 @@ RSpec.describe Admin::ChallengesController, type: :controller do
         }.to change(Challenge, :count).by(1)
         
         expect(Reading.count).to eq(0)
+      end
+    end
+  end
+
+  describe 'GET #delete_confirmation' do
+    let(:challenge) { create(:challenge, creator: admin_user) }
+    
+    context 'when user is the challenge creator' do
+      before { session[:user_id] = admin_user.id }
+
+      it 'returns http success' do
+        get :delete_confirmation, params: { id: challenge.id }
+        expect(response).to have_http_status(:success)
+      end
+
+      it 'assigns the challenge' do
+        get :delete_confirmation, params: { id: challenge.id }
+        expect(assigns(:challenge)).to eq(challenge)
+      end
+    end
+
+    context 'when user is not the challenge creator' do
+      let(:other_admin) { create(:user, admin: true) }
+      before { session[:user_id] = other_admin.id }
+
+      it 'redirects with error' do
+        get :delete_confirmation, params: { id: challenge.id }
+        expect(response).to redirect_to(root_path)
+        expect(flash[:alert]).to eq('You can only delete challenges you created.')
+      end
+    end
+
+    context 'when user is not logged in' do
+      it 'redirects to login' do
+        get :delete_confirmation, params: { id: challenge.id }
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+  end
+
+  describe 'DELETE #destroy' do
+    let!(:challenge) { create(:challenge, creator: admin_user) }
+    let!(:other_user) { create(:user) }
+    let!(:enrollment) { create(:user_challenge_enrollment, challenge: challenge, user: other_user) }
+    let!(:reading) { create(:reading, challenge: challenge) }
+
+    context 'when user is the challenge creator' do
+      before { session[:user_id] = admin_user.id }
+
+      context 'with correct confirmation text' do
+        it 'deletes the challenge and all related data' do
+          expect {
+            delete :destroy, params: { id: challenge.id, confirmation_text: 'i want this' }
+          }.to change(Challenge, :count).by(-1)
+            .and change(UserChallengeEnrollment, :count).by(-1)
+            .and change(Reading, :count).by(-1)
+        end
+
+        it 'redirects to root with success message' do
+          delete :destroy, params: { id: challenge.id, confirmation_text: 'i want this' }
+          expect(response).to redirect_to(root_path)
+          expect(flash[:notice]).to eq('Challenge deleted successfully.')
+        end
+      end
+
+      context 'with incorrect confirmation text' do
+        it 'does not delete the challenge' do
+          expect {
+            delete :destroy, params: { id: challenge.id, confirmation_text: 'wrong text' }
+          }.not_to change(Challenge, :count)
+        end
+
+        it 'redirects back with error' do
+          delete :destroy, params: { id: challenge.id, confirmation_text: 'wrong text' }
+          expect(response).to redirect_to(delete_confirmation_admin_challenge_path(challenge))
+          expect(flash[:alert]).to eq('Confirmation text is incorrect. Please type "i want this" exactly.')
+        end
+      end
+    end
+
+    context 'when user is not the challenge creator' do
+      let(:other_admin) { create(:user, admin: true) }
+      before { session[:user_id] = other_admin.id }
+
+      it 'does not delete the challenge' do
+        expect {
+          delete :destroy, params: { id: challenge.id, confirmation_text: 'i want this' }
+        }.not_to change(Challenge, :count)
+      end
+
+      it 'redirects with error' do
+        delete :destroy, params: { id: challenge.id, confirmation_text: 'i want this' }
+        expect(response).to redirect_to(root_path)
+        expect(flash[:alert]).to eq('You can only delete challenges you created.')
       end
     end
   end

@@ -1,6 +1,8 @@
 class Admin::ChallengesController < ApplicationController
   before_action :require_login
   before_action :require_admin
+  before_action :set_challenge, only: [:delete_confirmation, :destroy]
+  before_action :ensure_creator, only: [:delete_confirmation, :destroy]
 
   def new
     @challenge = Challenge.new
@@ -9,6 +11,7 @@ class Admin::ChallengesController < ApplicationController
 
   def create
     @challenge = Challenge.new(challenge_params)
+    @challenge.creator = current_user
     @bible_books = load_bible_books
 
     # Calculate end_date before saving
@@ -27,6 +30,21 @@ class Admin::ChallengesController < ApplicationController
     end
   end
 
+  def delete_confirmation
+    # @challenge is set by before_action
+  end
+
+  def destroy
+    if params[:confirmation_text] != 'i want this'
+      redirect_to delete_confirmation_admin_challenge_path(@challenge), 
+                  alert: 'Confirmation text is incorrect. Please type "i want this" exactly.'
+      return
+    end
+
+    @challenge.destroy
+    redirect_to root_path, notice: 'Challenge deleted successfully.'
+  end
+
   private
 
   def challenge_params
@@ -35,6 +53,16 @@ class Admin::ChallengesController < ApplicationController
 
   def require_admin
     redirect_to root_path, alert: 'Access denied.' unless current_user&.admin?
+  end
+
+  def set_challenge
+    @challenge = Challenge.find(params[:id])
+  end
+
+  def ensure_creator
+    unless @challenge.creator == current_user
+      redirect_to root_path, alert: 'You can only delete challenges you created.'
+    end
   end
 
   def load_bible_books

@@ -114,4 +114,101 @@ RSpec.describe "Admin::Challenges", type: :request do
     end
   end
 
+  describe "challenge deletion" do
+    let!(:challenge) { create(:challenge, creator: admin_user) }
+    let!(:other_admin) { create(:user, admin: true) }
+
+    describe "GET /admin/challenges/:id/delete_confirmation" do
+      context "when user is the creator" do
+        before { login_via_session(admin_user) }
+
+        it "returns http success" do
+          get delete_confirmation_admin_challenge_path(challenge)
+          expect(response).to have_http_status(:success)
+        end
+
+        it "displays deletion confirmation page with warning" do
+          get delete_confirmation_admin_challenge_path(challenge)
+          expect(response.body).to include('Delete Challenge')
+          expect(response.body).to include('This action cannot be undone')
+          expect(response.body).to include('All user progress and data will be permanently lost')
+          expect(response.body).to include('i want this')
+        end
+      end
+
+      context "when user is not the creator" do
+        before { login_via_session(other_admin) }
+
+        it "redirects with error message" do
+          get delete_confirmation_admin_challenge_path(challenge)
+          expect(response).to redirect_to(root_path)
+          expect(flash[:alert]).to eq('You can only delete challenges you created.')
+        end
+      end
+
+      context "when user is not logged in" do
+        it "redirects to login" do
+          get delete_confirmation_admin_challenge_path(challenge)
+          expect(response).to redirect_to(new_user_session_path)
+        end
+      end
+    end
+
+    describe "DELETE /admin/challenges/:id" do
+      let!(:other_user) { create(:user) }
+      let!(:enrollment) { create(:user_challenge_enrollment, challenge: challenge, user: other_user) }
+      let!(:reading) { create(:reading, challenge: challenge) }
+
+      context "when user is the creator" do
+        before { login_via_session(admin_user) }
+
+        context "with correct confirmation text" do
+          it "deletes the challenge and all related data" do
+            expect {
+              delete admin_challenge_path(challenge), params: { confirmation_text: 'i want this' }
+            }.to change(Challenge, :count).by(-1)
+              .and change(UserChallengeEnrollment, :count).by(-1)
+              .and change(Reading, :count).by(-1)
+          end
+
+          it "redirects to root with success message" do
+            delete admin_challenge_path(challenge), params: { confirmation_text: 'i want this' }
+            expect(response).to redirect_to(root_path)
+            expect(flash[:notice]).to eq('Challenge deleted successfully.')
+          end
+        end
+
+        context "with incorrect confirmation text" do
+          it "does not delete the challenge" do
+            expect {
+              delete admin_challenge_path(challenge), params: { confirmation_text: 'wrong text' }
+            }.not_to change(Challenge, :count)
+          end
+
+          it "redirects back with error message" do
+            delete admin_challenge_path(challenge), params: { confirmation_text: 'wrong text' }
+            expect(response).to redirect_to(delete_confirmation_admin_challenge_path(challenge))
+            expect(flash[:alert]).to eq('Confirmation text is incorrect. Please type "i want this" exactly.')
+          end
+        end
+      end
+
+      context "when user is not the creator" do
+        before { login_via_session(other_admin) }
+
+        it "does not delete the challenge" do
+          expect {
+            delete admin_challenge_path(challenge), params: { confirmation_text: 'i want this' }
+          }.not_to change(Challenge, :count)
+        end
+
+        it "redirects with error message" do
+          delete admin_challenge_path(challenge), params: { confirmation_text: 'i want this' }
+          expect(response).to redirect_to(root_path)
+          expect(flash[:alert]).to eq('You can only delete challenges you created.')
+        end
+      end
+    end
+  end
+
 end

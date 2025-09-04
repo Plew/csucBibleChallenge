@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_24_070731) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_04_150850) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -46,6 +46,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_24_070731) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "timezone"
+    t.integer "creator_id", null: false
+    t.index ["creator_id"], name: "index_challenges_on_creator_id"
+  end
+
+  create_table "feedbacks", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "category"
+    t.string "subject"
+    t.text "message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_feedbacks_on_user_id"
   end
 
   create_table "groups", force: :cascade do |t|
@@ -128,6 +140,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_24_070731) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "challenges", "users", column: "creator_id"
+  add_foreign_key "feedbacks", "users"
   add_foreign_key "groups", "challenges"
   add_foreign_key "groups", "users", column: "creator_id"
   add_foreign_key "readings", "challenges"

@@ -1,4 +1,5 @@
 class Challenge < ApplicationRecord
+  belongs_to :creator, class_name: 'User'
   has_many :user_challenge_enrollments, dependent: :destroy
   has_many :users, through: :user_challenge_enrollments
   has_many :readings, dependent: :destroy

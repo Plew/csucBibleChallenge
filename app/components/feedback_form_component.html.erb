@@ -1,0 +1,66 @@
+<div class="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
+  <div class="max-w-2xl mx-auto">
+    <h1 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-8">Send Feedback</h1>
+    <p class="text-base-content/70 mb-6">Help us improve by reporting bugs or suggesting new features!</p>
+
+    <%= form_with model: feedback, url: form_url, local: true, class: "space-y-4 sm:space-y-6" do |form| %>
+      <% if feedback.errors.any? %>
+        <div class="alert alert-error">
+          <ul class="list-disc list-inside">
+            <% feedback.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+          <h2 class="card-title mb-4">Feedback Details</h2>
+          
+          <div class="form-control w-full">
+            <%= form.label :category, "Type of Feedback", class: "label" %>
+            <%= form.select :category, 
+                options_for_select(category_options, feedback.category), 
+                { prompt: "Select a category..." }, 
+                { class: "select select-bordered w-full" } %>
+          </div>
+
+          <div class="form-control w-full">
+            <%= form.label :subject, "Subject", class: "label" %>
+            <%= form.text_field :subject, 
+                class: "input input-bordered w-full", 
+                placeholder: "Brief description of your feedback",
+                maxlength: 255 %>
+          </div>
+
+          <div class="form-control w-full">
+            <%= form.label :message, "Description", class: "label" %>
+            <%= form.text_area :message, 
+                class: "textarea textarea-bordered w-full h-32", 
+                placeholder: "Please provide details about the issue or suggestion...",
+                maxlength: 2000 %>
+            <div class="label">
+              <span class="label-text-alt">Maximum 2000 characters</span>
+            </div>
+          </div>
+
+          <div class="form-control w-full">
+            <%= form.label :screenshot, "Screenshot (Optional)", class: "label" %>
+            <%= form.file_field :screenshot, 
+                class: "file-input file-input-bordered w-full",
+                accept: "image/jpeg,image/png,image/gif,image/webp" %>
+            <div class="label">
+              <span class="label-text-alt">Upload an image to help illustrate the issue (JPEG, PNG, GIF, or WebP, max 5MB)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-6">
+        <%= form.submit "Submit Feedback", class: "btn btn-primary w-full sm:w-auto" %>
+        <%= link_to "Cancel", cancel_url, class: "btn btn-ghost w-full sm:w-auto" %>
+      </div>
+    <% end %>
+  </div>
+</div>

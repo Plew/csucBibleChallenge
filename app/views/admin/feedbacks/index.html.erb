@@ -1,0 +1,125 @@
+<div class="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
+  <div class="max-w-6xl mx-auto">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+      <h1 class="text-2xl sm:text-3xl font-bold">Manage Feedback</h1>
+      <div class="stats stats-horizontal shadow">
+        <div class="stat">
+          <div class="stat-title">Total Submissions</div>
+          <div class="stat-value text-lg"><%= @feedbacks.count %></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="card bg-base-100 shadow-xl mb-6">
+      <div class="card-body">
+        <%= form_with url: admin_feedbacks_path, method: :get, local: true, class: "flex flex-col sm:flex-row gap-4" do |form| %>
+          <div class="form-control flex-1">
+            <%= form.text_field :search, 
+                value: params[:search],
+                placeholder: "Search by subject or message...", 
+                class: "input input-bordered w-full" %>
+          </div>
+          
+          <div class="form-control">
+            <%= form.select :category, 
+                options_from_collection_for_select(@categories.map {|c| [c, c]}, :first, :last, params[:category]), 
+                { prompt: "All Categories" }, 
+                { class: "select select-bordered" } %>
+          </div>
+          
+          <div class="form-control">
+            <%= form.submit "Filter", class: "btn btn-primary" %>
+            <%= link_to "Clear", admin_feedbacks_path, class: "btn btn-ghost" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Feedback List -->
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <% if @feedbacks.any? %>
+          <div class="overflow-x-auto">
+            <table class="table table-zebra">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Subject</th>
+                  <th>From</th>
+                  <th>Date</th>
+                  <th>Screenshot</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @feedbacks.each do |feedback| %>
+                  <tr>
+                    <td>
+                      <div class="badge badge-outline badge-sm"><%= feedback.category_display %></div>
+                    </td>
+                    <td>
+                      <div class="font-medium"><%= truncate(feedback.subject, length: 50) %></div>
+                      <div class="text-sm text-base-content/70">
+                        <%= truncate(feedback.message, length: 80) %>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="flex items-center gap-2">
+                        <% if feedback.user&.avatar&.attached? %>
+                          <%= image_tag feedback.user.avatar.variant(:thumb), 
+                              class: "w-6 h-6 rounded-full", 
+                              alt: feedback.author_name %>
+                        <% else %>
+                          <div class="w-6 h-6 rounded-full bg-base-300 flex items-center justify-center">
+                            <span class="text-xs"><%= feedback.author_name.first %></span>
+                          </div>
+                        <% end %>
+                        <span class="text-sm"><%= feedback.author_name %></span>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="text-sm"><%= feedback.created_at.strftime("%m/%d/%y") %></span>
+                    </td>
+                    <td>
+                      <% if feedback.screenshot.present? %>
+                        <div class="badge badge-success badge-sm">Yes</div>
+                      <% else %>
+                        <div class="badge badge-ghost badge-sm">No</div>
+                      <% end %>
+                    </td>
+                    <td>
+                      <div class="flex gap-2">
+                        <%= link_to "View", admin_feedback_path(feedback), class: "btn btn-sm btn-outline" %>
+                        <%= link_to "Delete", admin_feedback_path(feedback), 
+                            data: { 
+                              turbo_method: :delete, 
+                              turbo_confirm: "Are you sure you want to delete this feedback?" 
+                            },
+                            class: "btn btn-sm btn-error" %>
+                      </div>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination removed for simplicity -->
+        <% else %>
+          <div class="text-center py-12">
+            <div class="text-4xl mb-4">📝</div>
+            <h3 class="text-lg font-semibold mb-2">No feedback found</h3>
+            <p class="text-base-content/70">
+              <% if params[:search].present? || params[:category].present? %>
+                Try adjusting your filters to see more results.
+              <% else %>
+                No feedback has been submitted yet.
+              <% end %>
+            </p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

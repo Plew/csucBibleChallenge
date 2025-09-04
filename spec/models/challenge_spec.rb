@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Challenge, type: :model do
   describe 'associations' do
+    it { should belong_to(:creator).class_name('User') }
     it { should have_many(:user_challenge_enrollments).dependent(:destroy) }
     it { should have_many(:users).through(:user_challenge_enrollments) }
     it { should have_many(:readings).dependent(:destroy) }
@@ -43,6 +44,35 @@ RSpec.describe Challenge, type: :model do
   describe '#create' do
     it 'is valid with valid attributes' do
       expect(FactoryBot.build(:challenge)).to be_valid
+    end
+  end
+
+  describe 'deletion' do
+    let(:creator) { FactoryBot.create(:user, admin: true) }
+    let(:challenge) { FactoryBot.create(:challenge, creator: creator) }
+    let(:other_user) { FactoryBot.create(:user) }
+
+    before do
+      # Create related records
+      @enrollment = FactoryBot.create(:user_challenge_enrollment, challenge: challenge, user: other_user)
+      @reading = FactoryBot.create(:reading, challenge: challenge)
+      @group = FactoryBot.create(:group, challenge: challenge)
+      @user_reading = FactoryBot.create(:user_reading, user: other_user, reading: @reading)
+    end
+
+    it 'destroys all associated records when deleted' do
+      challenge_id = challenge.id
+
+      expect { challenge.destroy }
+        .to change(Challenge, :count).by(-1)
+        .and change(UserChallengeEnrollment, :count).by(-1)
+        .and change(Reading, :count).by(-1) 
+        .and change(Group, :count).by(-1)
+        .and change(UserReading, :count).by(-1)
+    end
+
+    it 'does not destroy users when challenge is deleted' do
+      expect { challenge.destroy }.not_to change(User, :count)
     end
   end
 end
