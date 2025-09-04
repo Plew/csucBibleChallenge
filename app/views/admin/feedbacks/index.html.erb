@@ -1,7 +1,6 @@
-<div class="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
-  <div class="max-w-6xl mx-auto">
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-      <h1 class="text-2xl sm:text-3xl font-bold">Manage Feedback</h1>
+<div class="px-1 py-2">
+    <div class="flex flex-col gap-3 mb-4 px-2">
+      <h1 class="text-2xl font-bold">Manage Feedback</h1>
       <div class="stats stats-horizontal shadow">
         <div class="stat">
           <div class="stat-title">Total Submissions</div>
@@ -11,9 +10,9 @@
     </div>
 
     <!-- Filters -->
-    <div class="card bg-base-100 shadow-xl mb-6">
-      <div class="card-body">
-        <%= form_with url: admin_feedbacks_path, method: :get, local: true, class: "flex flex-col sm:flex-row gap-4" do |form| %>
+    <div class="card bg-base-100 shadow-xl mb-3 mx-1">
+      <div class="card-body px-3 py-4">
+        <%= form_with url: admin_feedbacks_path, method: :get, local: true, class: "flex flex-col gap-3" do |form| %>
           <div class="form-control flex-1">
             <%= form.text_field :search, 
                 value: params[:search],
@@ -28,17 +27,17 @@
                 { class: "select select-bordered" } %>
           </div>
           
-          <div class="form-control">
-            <%= form.submit "Filter", class: "btn btn-primary" %>
-            <%= link_to "Clear", admin_feedbacks_path, class: "btn btn-ghost" %>
+          <div class="flex gap-2">
+            <%= form.submit "Filter", class: "btn btn-primary flex-1" %>
+            <%= link_to "Clear", admin_feedbacks_path, class: "btn btn-ghost flex-1" %>
           </div>
         <% end %>
       </div>
     </div>
 
     <!-- Feedback List -->
-    <div class="card bg-base-100 shadow-xl">
-      <div class="card-body">
+    <div class="card bg-base-100 shadow-xl mx-1">
+      <div class="card-body px-3 py-4">
         <% if @feedbacks.any? %>
           <div class="overflow-x-auto">
             <table class="table table-zebra">
@@ -107,8 +106,8 @@
 
           <!-- Pagination removed for simplicity -->
         <% else %>
-          <div class="text-center py-12">
-            <div class="text-4xl mb-4">📝</div>
+          <div class="text-center py-8">
+            <div class="text-4xl mb-3">📝</div>
             <h3 class="text-lg font-semibold mb-2">No feedback found</h3>
             <p class="text-base-content/70">
               <% if params[:search].present? || params[:category].present? %>
@@ -121,5 +120,4 @@
         <% end %>
       </div>
     </div>
-  </div>
 </div>

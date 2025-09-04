@@ -1,11 +1,10 @@
-<div class="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
-  <div class="max-w-2xl mx-auto">
-    <h1 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-8">Send Feedback</h1>
-    <p class="text-base-content/70 mb-6">Help us improve by reporting bugs or suggesting new features!</p>
+<div class="px-1 py-2">
+    <h1 class="text-2xl font-bold mb-3 px-2">Send Feedback</h1>
+    <p class="text-base-content/70 mb-4 px-2">Help us improve by reporting bugs or suggesting new features!</p>
 
-    <%= form_with model: feedback, url: form_url, local: true, class: "space-y-4 sm:space-y-6" do |form| %>
+    <%= form_with model: feedback, url: form_url, local: true, class: "space-y-3" do |form| %>
       <% if feedback.errors.any? %>
-        <div class="alert alert-error">
+        <div class="alert alert-error mx-1">
           <ul class="list-disc list-inside">
             <% feedback.errors.full_messages.each do |message| %>
               <li><%= message %></li>
@@ -14,9 +13,9 @@
         </div>
       <% end %>
 
-      <div class="card bg-base-100 shadow-xl">
-        <div class="card-body">
-          <h2 class="card-title mb-4">Feedback Details</h2>
+      <div class="card bg-base-100 shadow-xl mx-1">
+        <div class="card-body px-3 py-4">
+          <h2 class="card-title mb-3">Feedback Details</h2>
           
           <div class="form-control w-full">
             <%= form.label :category, "Type of Feedback", class: "label" %>
@@ -57,10 +56,9 @@
         </div>
       </div>
 
-      <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-6">
-        <%= form.submit "Submit Feedback", class: "btn btn-primary w-full sm:w-auto" %>
-        <%= link_to "Cancel", cancel_url, class: "btn btn-ghost w-full sm:w-auto" %>
+      <div class="flex flex-col gap-2 mt-4 mx-1">
+        <%= form.submit "Submit Feedback", class: "btn btn-primary w-full" %>
+        <%= link_to "Cancel", cancel_url, class: "btn btn-ghost w-full" %>
       </div>
     <% end %>
-  </div>
 </div>

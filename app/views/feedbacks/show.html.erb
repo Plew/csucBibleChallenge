@@ -1,18 +1,17 @@
-<div class="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
-  <div class="max-w-2xl mx-auto">
-    <div class="flex items-center gap-4 mb-6">
-      <h1 class="text-2xl sm:text-3xl font-bold">Feedback Submitted</h1>
+<div class="px-1 py-2">
+    <div class="flex items-center gap-3 mb-4 px-2">
+      <h1 class="text-2xl font-bold">Feedback Submitted</h1>
       <div class="badge badge-success badge-lg">Success</div>
     </div>
 
-    <div class="card bg-base-100 shadow-xl">
-      <div class="card-body">
+    <div class="card bg-base-100 shadow-xl mx-1">
+      <div class="card-body px-3 py-4">
         <div class="flex items-start justify-between mb-4">
           <h2 class="card-title"><%= @feedback.subject %></h2>
           <div class="badge badge-outline"><%= @feedback.category_display %></div>
         </div>
 
-        <div class="space-y-4">
+        <div class="space-y-3">
           <div>
             <label class="label font-semibold">From:</label>
             <p class="text-base-content/80"><%= @feedback.author_name %></p>
@@ -42,14 +41,15 @@
           <% end %>
         </div>
 
-        <div class="card-actions justify-between mt-6">
-          <p class="text-sm text-base-content/60">
+        <div class="mt-4">
+          <p class="text-sm text-base-content/60 mb-3">
             We'll review your feedback and get back to you if needed. Thank you for helping us improve!
           </p>
-          <%= link_to "Submit Another", new_feedback_path, class: "btn btn-outline" %>
-          <%= link_to "Back to Home", root_path, class: "btn btn-primary" %>
+          <div class="flex flex-col gap-2">
+            <%= link_to "Submit Another", new_feedback_path, class: "btn btn-outline w-full" %>
+            <%= link_to "Back to Home", root_path, class: "btn btn-primary w-full" %>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 </div>
