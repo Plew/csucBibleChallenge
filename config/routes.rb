@@ -21,6 +21,12 @@ Rails.application.routes.draw do
   get 'users/sign_in', to: 'sessions#new', as: :new_user_session
   post 'users/sign_in', to: 'sessions#create', as: :user_session
   delete 'users/sign_out', to: 'sessions#destroy', as: :destroy_user_session
+  
+  # Password Reset routes
+  get 'password_reset/new', to: 'password_resets#new', as: :new_password_reset
+  post 'password_reset', to: 'password_resets#create', as: :password_reset
+  get 'password_reset/:token/edit', to: 'password_resets#edit', as: :edit_password_reset
+  patch 'password_reset/:token', to: 'password_resets#update', as: :update_password_reset
 
   # Language switching
   patch 'language', to: 'languages#update', as: :update_language

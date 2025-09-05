@@ -1,0 +1,27 @@
+<div class="min-h-screen flex justify-center bg-base-200 pt-6 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-md w-full space-y-8">
+    <div>
+      <h2 class="mt-2 text-center text-3xl font-extrabold text-base-content">
+        Reset Your Password
+      </h2>
+      <p class="mt-2 text-center text-sm text-base-content/70">
+        Enter your email address and we'll send you a link to reset your password.
+      </p>
+    </div>
+    
+    <%= form_with(url: password_reset_path, local: true, html: { class: "mt-8 space-y-6" }) do |f| %>
+      <div>
+        <%= f.label :email, "Email", class: "label" %>
+        <%= f.email_field :email, class: "input input-bordered w-full", placeholder: "Enter your email address", required: true %>
+      </div>
+
+      <div>
+        <%= f.submit "Send Reset Instructions", class: "btn btn-primary w-full" %>
+      </div>
+    <% end %>
+
+    <div class="text-sm text-center">
+      <%= link_to "Back to Sign In", new_user_session_path, class: "font-medium text-primary hover:text-primary-focus" %>
+    </div>
+  </div>
+</div>

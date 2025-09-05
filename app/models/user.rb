@@ -12,16 +12,28 @@ class User < ApplicationRecord
   has_many :user_group_enrollments, dependent: :destroy
   has_many :groups, through: :user_group_enrollments
 
-  attr_accessor :current_password
+  attr_accessor :current_password, :skip_current_password_validation
 
   validates :username, presence: true, uniqueness: true
   validates :email, presence: true, uniqueness: { case_sensitive: false }, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :password, presence: true, length: { minimum: 6 }, if: -> { new_record? || !password.nil? }
   validates :version, inclusion: { in: %w[ASV ESV KJV NASB NKJV], message: "must be a valid Bible version" }
-  validates :current_password, presence: true, if: :password_being_updated?
-  validate :current_password_correct, if: :password_being_updated?
+  validates :current_password, presence: true, if: :password_being_updated_and_not_resetting?
+  validate :current_password_correct, if: :password_being_updated_and_not_resetting?
 
   alias_attribute :name, :username
+
+  def create_reset_digest
+    token = SecureRandom.urlsafe_base64
+    self.reset_digest = token
+    self.password_reset_sent_at = Time.current
+    save!(validate: false)
+    token
+  end
+
+  def password_reset_valid?
+    password_reset_sent_at && password_reset_sent_at > 2.hours.ago
+  end
 
   def admin?
     admin
@@ -31,6 +43,10 @@ class User < ApplicationRecord
 
   def password_being_updated?
     !new_record? && password.present?
+  end
+
+  def password_being_updated_and_not_resetting?
+    password_being_updated? && !skip_current_password_validation
   end
 
   def current_password_correct
