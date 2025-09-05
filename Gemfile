@@ -71,6 +71,7 @@ group :development do
   gem "actioncable"
   gem "lookbook", ">= 2.3.2"
   gem "hotwire-livereload", "~> 1.2"
+  gem "letter_opener"
 end
 
 group :test do
