@@ -108,4 +108,39 @@ RSpec.describe User, type: :model do
       end
     end
   end
+
+  describe 'scopes' do
+    describe '.wants_daily_email' do
+      let!(:user_with_email) { create(:user, daily_email: true) }
+      let!(:user_without_email) { create(:user, daily_email: false) }
+
+      it 'returns users who want daily emails' do
+        expect(User.wants_daily_email).to include(user_with_email)
+        expect(User.wants_daily_email).not_to include(user_without_email)
+      end
+
+      it 'works correctly when users have mixed preferences' do
+        result = User.wants_daily_email
+        expect(result.count).to eq(1)
+        expect(result.first).to eq(user_with_email)
+      end
+    end
+  end
+
+  describe 'daily_email attribute' do
+    it 'defaults to true for new users' do
+      user = User.new
+      expect(user.daily_email).to be_truthy
+    end
+
+    it 'can be set to false' do
+      user = create(:user, daily_email: false)
+      expect(user.daily_email).to be_falsey
+    end
+
+    it 'can be set to true' do
+      user = create(:user, daily_email: true)
+      expect(user.daily_email).to be_truthy
+    end
+  end
 end

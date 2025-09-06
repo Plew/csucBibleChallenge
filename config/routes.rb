@@ -47,6 +47,7 @@ Rails.application.routes.draw do
     resource :password, only: [:edit, :update], controller: 'passwords'  
     resource :avatar, only: [:edit, :update], controller: 'avatars'
     resource :version, only: [:edit, :update], controller: 'versions'
+    resource :email_preferences, only: [:edit, :update], controller: 'email_preferences'
     resources :enrollments, only: [:index, :destroy], controller: 'enrollments'
   end
 

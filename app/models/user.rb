@@ -21,6 +21,8 @@ class User < ApplicationRecord
   validates :current_password, presence: true, if: :password_being_updated_and_not_resetting?
   validate :current_password_correct, if: :password_being_updated_and_not_resetting?
 
+  scope :wants_daily_email, -> { where(daily_email: true) }
+
   alias_attribute :name, :username
 
   def create_reset_digest

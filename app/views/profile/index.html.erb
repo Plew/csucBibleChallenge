@@ -34,6 +34,14 @@
       </div>
     <% end %>
 
+    <%# Email Preferences Card %>
+    <%= link_to edit_profile_email_preferences_path, class: "card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow cursor-pointer w-full" do %>
+      <div class="card-body p-4">
+        <h2 class="text-sm font-medium">Email Preferences</h2>
+        <p class="text-xs text-base-content/70">Manage your daily email notifications</p>
+      </div>
+    <% end %>
+
     <%# Change Password Card %>
     <%= link_to edit_profile_password_path, class: "card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow cursor-pointer w-full" do %>
       <div class="card-body p-4">
