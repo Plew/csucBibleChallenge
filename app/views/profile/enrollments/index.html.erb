@@ -9,6 +9,10 @@
           <p class="mb-4">You are currently enrolled in: <strong class="font-semibold"><%= @user_enrollment.challenge.name %></strong></p>
           <div class="card-actions justify-start mb-6">
             <%= button_to "Leave Challenge", profile_enrollment_path(@user_enrollment), method: :delete, data: { confirm: "Are you sure you want to leave this challenge? Your progress will be saved." }, class: "btn btn-error btn-outline" %>
+            
+            <% if @user_enrollment.challenge.creator == current_user %>
+              <%= link_to "Delete Challenge", delete_challenge_confirmation_profile_enrollment_path(@user_enrollment), class: "btn btn-error ml-2" %>
+            <% end %>
           </div>
           
           <% if @user_enrollment.challenge.readings.any? %>

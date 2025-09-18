@@ -48,7 +48,12 @@ Rails.application.routes.draw do
     resource :avatar, only: [:edit, :update], controller: 'avatars'
     resource :version, only: [:edit, :update], controller: 'versions'
     resource :email_preferences, only: [:edit, :update], controller: 'email_preferences'
-    resources :enrollments, only: [:index, :destroy], controller: 'enrollments'
+    resources :enrollments, only: [:index, :destroy], controller: 'enrollments' do
+      member do
+        get :delete_challenge_confirmation
+        delete :delete_challenge
+      end
+    end
   end
 
   # Admin routes

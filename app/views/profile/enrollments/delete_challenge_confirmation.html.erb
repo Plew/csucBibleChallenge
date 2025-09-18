@@ -1,0 +1,48 @@
+<div class="px-2 py-4">
+  <div class="mb-4">
+    <%= link_to "← Back to Enrollments", profile_enrollments_path, class: "btn btn-ghost btn-sm" %>
+  </div>
+
+  <div class="bg-base-100">
+    <div class="p-4">
+      <div class="text-center">
+        <div class="mb-6">
+          <svg class="mx-auto h-16 w-16 text-error" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 19.5c-.77.833.192 2.5 1.732 2.5z" />
+          </svg>
+        </div>
+        
+        <h2 class="text-2xl font-bold text-error mb-4">Delete Challenge?</h2>
+        
+        <div class="bg-warning/10 border border-warning/20 rounded-lg p-4 mb-6">
+          <p class="text-lg font-semibold mb-2">Challenge: <%= @challenge.name %></p>
+          <p class="text-sm text-warning mb-2">
+            ⚠️ This action cannot be undone!
+          </p>
+          <div class="text-sm text-left space-y-1">
+            <p>• All participants will be removed from the challenge</p>
+            <p>• All reading progress will be permanently deleted</p>
+            <p>• All groups within this challenge will be deleted</p>
+            <p>• Challenge statistics will be lost forever</p>
+          </div>
+        </div>
+
+        <div class="stats shadow mb-6">
+          <div class="stat">
+            <div class="stat-title">Participants</div>
+            <div class="stat-value text-lg"><%= @challenge.users.count %></div>
+          </div>
+          <div class="stat">
+            <div class="stat-title">Total Readings</div>
+            <div class="stat-value text-lg"><%= @challenge.readings.count %></div>
+          </div>
+        </div>
+
+        <div class="flex gap-4 justify-center">
+          <%= link_to "Cancel", profile_enrollments_path, class: "btn btn-outline" %>
+          <%= button_to "Delete Challenge", delete_challenge_profile_enrollment_path(@user_enrollment), method: :delete, class: "btn btn-error", data: { confirm: "Type 'DELETE' to confirm you want to permanently delete this challenge and all its data." } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
