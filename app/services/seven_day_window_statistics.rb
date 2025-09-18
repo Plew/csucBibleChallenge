@@ -17,10 +17,11 @@ class SevenDayWindowStatistics
       {
         name: user.name,
         completion_percentage: seven_day_data[:completion_percentage],
-        on_schedule_percentage: seven_day_data[:on_schedule_percentage]
+        on_schedule_percentage: seven_day_data[:on_schedule_percentage],
+        completed_days: seven_day_data[:completed_days],
+        total_days: seven_day_data[:total_days]
       }
-    end.select { |data| data[:completion_percentage] == 100.0 }
-       .sort_by { |data| -data[:on_schedule_percentage] }
+    end.sort_by { |data| [-data[:completion_percentage], -data[:on_schedule_percentage]] }
   end
 
   private
@@ -81,7 +82,9 @@ class SevenDayWindowStatistics
 
     {
       completion_percentage: completion_percentage,
-      on_schedule_percentage: on_schedule_percentage
+      on_schedule_percentage: on_schedule_percentage,
+      completed_days: total_completed_7_days,
+      total_days: total_scheduled_7_days
     }
   end
 end
