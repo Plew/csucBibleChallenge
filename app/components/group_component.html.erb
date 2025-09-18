@@ -1,26 +1,32 @@
 <div class="container mx-auto px-4 py-6">
-  <div class="bg-base-100 rounded-lg shadow p-4 mb-2">
-    <div class="text-xl font-bold truncate" title="<%= group.name %>"><%= group.name %></div>
-    <% if can_join_group? %>
+  <div class="text-sm breadcrumbs mb-4">
+    <ul>
+      <li><%= link_to "Groups", groups_path, class: "link link-hover" %></li>
+      <li><%= group.name %></li>
+    </ul>
+  </div>
+  <% if can_join_group? %>
+    <div class="bg-base-100 rounded-lg shadow p-4 mb-2">
       <div class="mt-2">
         <%= button_to 'Join', join_group_path(group), method: :post, class: 'btn btn-primary btn-sm', data: { turbo: true } %>
       </div>
-    <% elsif !user_group && group.closed_to_new_members %>
+    </div>
+  <% elsif !user_group && group.closed_to_new_members %>
+    <div class="bg-base-100 rounded-lg shadow p-4 mb-2">
       <div class="mt-2 text-sm text-warning">
         This group is closed to new members
       </div>
-    <% end %>
-  </div>
+    </div>
+  <% end %>
 
   <div class="bg-base-100 rounded-lg shadow p-4">
     <ul class="list bg-base-100 rounded-box">
       <li class="p-4 pb-2 text-xs opacity-60 tracking-wide">Group Members</li>
       <% group.user_group_enrollments.includes(:user).each do |enrollment| %>
         <li class="list-row flex items-center gap-3 py-2 px-2">
-          <div><%= avatar_image_tag(enrollment.user, :tiny, class: 'size-10 rounded-box') %></div>
+          <div><%= avatar_image_tag(enrollment.user, :tiny, class: 'size-10 rounded-full') %></div>
           <div class="flex-1 min-w-0">
             <div class="truncate"><%= enrollment.user.username %></div>
-            <div class="text-xs uppercase font-semibold opacity-60 truncate"><%= enrollment.user.email %></div>
           </div>
         </li>
       <% end %>
