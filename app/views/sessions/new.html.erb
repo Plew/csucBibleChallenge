@@ -11,9 +11,25 @@
           <%= f.label :email, "Email", class: "label" %>
           <%= f.text_field :email, class: "input input-bordered w-full", placeholder: "Email", required: true %>
         </div>
-        <div class="pt-2">
+        <div class="pt-2" x-data="{ showPassword: false }">
           <%= f.label :password, class: "label" %>
-          <%= f.password_field :password, class: "input input-bordered w-full", placeholder: "Password", required: true %>
+          <div class="relative">
+            <input 
+              :type="showPassword ? 'text' : 'password'" 
+              name="session[password]" 
+              id="session_password" 
+              class="input input-bordered w-full pr-10" 
+              placeholder="Password" 
+              required
+            >
+            <button type="button" @click="showPassword = !showPassword" class="absolute inset-y-0 right-0 flex items-center pr-3 text-base-content/40 hover:text-base-content transition-colors duration-200">
+              <!-- Simple eye icon that gets brighter on hover -->
+              <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
 
