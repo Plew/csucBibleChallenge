@@ -10,7 +10,8 @@ class TopReadersStatistics
   end
 
   def call
-    base_query = User.joins(:user_readings, :challenges)
+    base_query = User.joins(:challenges)
+                     .left_joins(:user_readings)
                      .select(
                        'users.*',
                        'COUNT(user_readings.id) as total_chapters_read'
