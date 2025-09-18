@@ -19,10 +19,6 @@ class StatsPageComponent < ViewComponent::Base
       {
         title: "Group Stats",
         path: stats_group_path
-      },
-      {
-        title: "Personal Stats",
-        path: stats_personal_path
       }
     ]
   end

@@ -1,8 +1,6 @@
 <div class="px-2 py-3">
-  <div class="mb-3">
+  <div class="mb-6">
     <%= link_to "← Back to Stats", stats_path, class: "btn btn-ghost btn-sm" %>
-    <h1 class="text-2xl font-bold text-center mb-1">Group Statistics</h1>
-    <p class="text-center opacity-70 text-sm">Compare performance between different groups</p>
   </div>
   
   <%= render Statistics::TopGroupsComponent.new(top_groups_data: @top_groups_data) %>
