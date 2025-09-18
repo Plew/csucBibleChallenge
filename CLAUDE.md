@@ -53,6 +53,14 @@ This is a Rails 8 application for managing Bible reading challenges. Users can j
 - `kamal deploy` - Deploy to production
 - `kamal logs` - View production logs
 
+### Production Management
+
+- **Change user password in production:**
+  ```bash
+  kamal app exec 'bin/rails runner "user = User.find_by(email: \"EMAIL\"); user.update_attribute(:password, \"NEW_PASSWORD\")"'
+  ```
+  Note: Use `update_attribute` to bypass validations that require current password
+
 ## Architecture
 
 ### API Structure

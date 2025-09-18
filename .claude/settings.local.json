@@ -40,7 +40,8 @@
       "Bash(bundle exec:*)",
       "mcp__playwright__browser_console_messages",
       "Bash(open tmp/letter_opener/1757095724_781794_dd364a6/rich.html)",
-      "Bash(git restore:*)"
+      "Bash(git restore:*)",
+      "Bash(kamal app exec:*)"
     ],
     "deny": []
   }
