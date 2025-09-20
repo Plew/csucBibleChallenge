@@ -17,7 +17,7 @@ class User < ApplicationRecord
   validates :username, presence: true, uniqueness: true
   validates :email, presence: true, uniqueness: { case_sensitive: false }, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :password, presence: true, length: { minimum: 6 }, if: -> { new_record? || !password.nil? }
-  validates :version, inclusion: { in: %w[ASV ESV KJV NASB NKJV], message: "must be a valid Bible version" }
+  validates :version, inclusion: { in: %w[ASV ELB2006 ESV KJV NASB NKJV], message: "must be a valid Bible version" }
   validates :current_password, presence: true, if: :password_being_updated_and_not_resetting?
   validate :current_password_correct, if: :password_being_updated_and_not_resetting?
 

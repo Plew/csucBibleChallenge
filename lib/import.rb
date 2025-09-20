@@ -2,7 +2,10 @@ require 'csv'
 require 'cgi'
 
 class Import
-  FILE_PATH = Rails.root.join('db', 'texts', 'lubbock_texts.csv')
+  FILE_PATHS = [
+    Rails.root.join('db', 'texts', 'lubbock_texts.csv'),
+    Rails.root.join('db', 'texts', 'elberfelder_2006.csv')
+  ]
 
   # Map book names to book numbers based on ApplicationHelper.book_number_to_name
   # Includes both "First/Second" and "1/2" naming formats from CSV
@@ -40,12 +43,18 @@ class Import
 
   def call
     verses = []
-    line_count = 0
-    skipped_count = 0
+    total_line_count = 0
+    total_skipped_count = 0
 
-    Rails.logger.info "Starting import from #{FILE_PATH}"
+    FILE_PATHS.each do |file_path|
+      next unless File.exist?(file_path)
+      
+      line_count = 0
+      skipped_count = 0
+      
+      Rails.logger.info "Starting import from #{file_path}"
 
-    CSV.foreach(FILE_PATH, headers: true, col_sep: ';', liberal_parsing: true, encoding: 'UTF-8:UTF-8', invalid: :replace, undef: :replace, replace: '') do |row|
+      CSV.foreach(file_path, headers: true, col_sep: ';', liberal_parsing: true, encoding: 'UTF-8:UTF-8', invalid: :replace, undef: :replace, replace: '') do |row|
       line_count += 1
       
       # Parse CSV columns: TextID, Version, NT_Book, NT_Chapter, NT_Verse, VerseBreak, VerseText
@@ -81,19 +90,26 @@ class Import
         updated_at: Time.current
       }
 
-      # Process in batches to avoid memory issues
-      if verses.size >= 1000
-        upsert_verses(verses)
-        verses.clear
+        # Process in batches to avoid memory issues
+        if verses.size >= 1000
+          upsert_verses(verses)
+          verses.clear
+        end
       end
+
+      total_line_count += line_count
+      total_skipped_count += skipped_count
+      
+      Rails.logger.info "Successfully processed #{line_count} lines from #{file_path}"
+      Rails.logger.info "Skipped #{skipped_count} lines due to unknown book names." if skipped_count > 0
     end
 
     # Process remaining verses
     upsert_verses(verses) if verses.any?
 
-    Rails.logger.info "Successfully processed #{line_count} lines."
+    Rails.logger.info "Successfully processed #{total_line_count} total lines."
     Rails.logger.info "Imported verses from #{BOOK_NAME_TO_NUMBER.keys & get_imported_books} books."
-    Rails.logger.info "Skipped #{skipped_count} lines due to unknown book names." if skipped_count > 0
+    Rails.logger.info "Skipped #{total_skipped_count} total lines due to unknown book names." if total_skipped_count > 0
     Rails.logger.info "Import completed successfully."
 
   rescue StandardError => e
