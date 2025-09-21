@@ -24,6 +24,11 @@
           </div>
 
           <div class="form-control w-full">
+            <%= form.label :description, "Description (optional)", class: "label" %>
+            <%= form.text_area :description, class: "textarea textarea-bordered w-full", placeholder: "Enter a brief description of the challenge", rows: 3 %>
+          </div>
+
+          <div class="form-control w-full">
             <%= form.label :start_date, "Start Date", class: "label" %>
             <%= form.date_field :start_date, class: "input input-bordered w-full", data: { "challenge-creator-target": "startDate", action: "change->challenge-creator#updateSchedule" } %>
           </div>

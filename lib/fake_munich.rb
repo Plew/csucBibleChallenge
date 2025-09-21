@@ -6,6 +6,7 @@
 
 class FakeMunich
   CHALLENGE_NAME = 'Munich Fall Reading Challenge'.freeze
+  UNIQUE_SUFFIX = Time.current.to_i.to_s[-6..-1] # Last 6 digits of timestamp
   GROUP_NAMES = %w[Sauerkraut Bratwurst Pretzel Schnitzel].freeze
   GERMAN_NAMES = [
     ['Lukas', 'Müller'],
@@ -74,31 +75,53 @@ class FakeMunich
 
   # Create users first, then assign each group a unique creator from the users
   def create_challenge_and_groups_and_users
+    # Create the first user to be the challenge creator
+    first_name, last_name = GERMAN_NAMES.first
+    ascii_first = I18n.transliterate(first_name.downcase)
+    ascii_last = I18n.transliterate(last_name.downcase)
+    email = "#{ascii_first}.#{ascii_last}.#{UNIQUE_SUFFIX}@example.com"
+    challenge_creator = User.create!(
+      username: "#{ascii_first}#{ascii_last}#{UNIQUE_SUFFIX}",
+      email: email,
+      password: USER_PASSWORD
+    )
+    
     @challenge = Challenge.create!(
       name: CHALLENGE_NAME,
       start_date: Date.today - 7,
       end_date: Date.today - 7 + 3.months,
-      timezone: 'Berlin'
+      timezone: 'Berlin',
+      creator: challenge_creator
     )
-    # Create users and attach avatars
-    @users = GERMAN_NAMES.each_with_index.map do |(first, last), idx|
+    # Create remaining users and attach avatars (skip first user who is already the challenge creator)
+    @users = [challenge_creator] + GERMAN_NAMES[1..-1].each_with_index.map do |(first, last), idx|
       ascii_first = I18n.transliterate(first.downcase)
       ascii_last = I18n.transliterate(last.downcase)
-      email = "#{ascii_first}.#{ascii_last}@example.com"
+      email = "#{ascii_first}.#{ascii_last}.#{UNIQUE_SUFFIX}@example.com"
       user = User.create!(
-        username: "#{ascii_first}#{ascii_last}",
+        username: "#{ascii_first}#{ascii_last}#{UNIQUE_SUFFIX}",
         email: email,
         password: USER_PASSWORD
       )
-      avatar_path = Rails.root.join('db', 'fixtures', 'avatars', "#{idx + 1}.jpg")
+      avatar_path = Rails.root.join('db', 'fixtures', 'avatars', "#{idx + 2}.jpg")
       if File.exist?(avatar_path)
         user.avatar.attach(
           io: File.open(avatar_path),
-          filename: "#{idx + 1}.jpg",
+          filename: "#{idx + 2}.jpg",
           content_type: 'image/jpeg'
         )
       end
       user
+    end
+    
+    # Add avatar to challenge creator
+    avatar_path = Rails.root.join('db', 'fixtures', 'avatars', "1.jpg")
+    if File.exist?(avatar_path)
+      challenge_creator.avatar.attach(
+        io: File.open(avatar_path),
+        filename: "1.jpg",
+        content_type: 'image/jpeg'
+      )
     end
     # Assign each group a unique creator from the users
     @groups = GROUP_NAMES.each_with_index.map do |name, idx|
@@ -153,7 +176,7 @@ class FakeMunich
     GERMAN_NAMES.map do |first, last|
       ascii_first = I18n.transliterate(first.downcase)
       ascii_last = I18n.transliterate(last.downcase)
-      "#{ascii_first}.#{ascii_last}@example.com"
+      "#{ascii_first}.#{ascii_last}.#{UNIQUE_SUFFIX}@example.com"
     end
   end
 end 

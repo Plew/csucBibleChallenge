@@ -64,7 +64,9 @@
 
   </div>
 
-  <%= render(NavBarComponent.new) %>
+  <% if logged_in? %>
+    <%= render(NavBarComponent.new) %>
+  <% end %>
 
   <%# Flash Messages %>
   <% if flash[:notice] %>

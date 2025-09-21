@@ -48,7 +48,7 @@ class Admin::ChallengesController < ApplicationController
   private
 
   def challenge_params
-    params.require(:challenge).permit(:name, :start_date, :timezone)
+    params.require(:challenge).permit(:name, :description, :start_date, :timezone)
   end
 
   def require_admin

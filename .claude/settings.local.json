@@ -43,7 +43,8 @@
       "Bash(git restore:*)",
       "Bash(kamal app exec:*)",
       "Bash(git config:*)",
-      "Bash(kamal deploy:*)"
+      "Bash(kamal deploy:*)",
+      "Bash(curl:*)"
     ],
     "deny": []
   }

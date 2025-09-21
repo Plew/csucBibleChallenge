@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_21_140425) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_21_162212) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -48,6 +48,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_21_140425) do
     t.string "timezone"
     t.integer "creator_id", null: false
     t.string "invitation_token"
+    t.text "description"
     t.index ["creator_id"], name: "index_challenges_on_creator_id"
     t.index ["invitation_token"], name: "index_challenges_on_invitation_token", unique: true
   end

@@ -1,62 +1,16 @@
-<div class="container mx-auto">
-  <% if @user_challenge %>
-    <div >
-      <%= render DateBarComponent.new(days: @weekly_check_in_days, selected_date: @selected_date, mobile: @is_mobile) %>
+<div class="min-h-screen flex flex-col justify-start items-center px-4 pt-16">
+  <div class="max-w-md w-full text-center">
+    <h1 class="text-4xl font-bold text-base-content mb-6">
+      Welcome to Hiera Grammata!
+    </h1>
+    
+    <p class="text-lg text-base-content/80 mb-12 leading-relaxed">
+      Join a Bible reading challenge and read one chapter a day, with friends.
+    </p>
+    
+    <div class="space-y-4">
+      <%= link_to "Log In", new_user_session_path, class: "btn btn-primary btn-lg w-full" %>
+      <%= link_to "Sign Up", new_user_registration_path, class: "btn btn-outline btn-lg w-full" %>
     </div>
-    <% if @selected_reading %>
-      <% reading_is_completed = current_user.user_readings.exists?(reading_id: @selected_reading.id) %>
-      
-      <%= render ReadingDisplayComponent.new(title: @selected_reading_title, verses: @selected_reading_verses) %>
-
-      <div class="flex justify-center mt-4 mb-8">
-        <% if reading_is_completed %>
-          <button class="btn btn-outline btn-success" disabled>
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-            </svg>
-            Marked as Read
-          </button>
-        <% else %>
-          <% date_param = @selected_date != Time.current.in_time_zone(@user_challenge.timezone).to_date ? { date: @selected_date } : {} %>
-          <%= button_to "Mark as Read", user_readings_path(reading_id: @selected_reading.id, **date_param), method: :post, class: "btn btn-success" %>
-        <% end %>
-      </div>
-    <% else %>
-      <div class="bg-base-100 shadow-sm rounded-lg p-4 flex flex-col items-center text-center">
-        <h2 class="text-lg font-semibold mb-2">No Readings Scheduled</h2>
-        <p>There are no readings scheduled for 
-          <% if @selected_date == Time.current.in_time_zone(@user_challenge.timezone).to_date %>
-            you today
-          <% else %>
-            <%= @selected_date.strftime('%B %-d, %Y') %>
-          <% end %>
-          in the <%= @user_challenge.name %>.
-        </p>
-      </div>
-    <% end %>
-  <% else %>
-    <h1 class="text-3xl font-bold mb-6 text-center text-base-content">Join a Challenge</h1>
-    <% if @challenges.any? %>
-      <div class="grid grid-cols-1 gap-6">
-        <% @challenges.each do |challenge| %>
-          <div class="bg-base-100 shadow-sm rounded-lg p-4 flex flex-row items-center justify-between">
-            <div class="flex-grow">
-              <h2 class="text-lg font-semibold"><%= challenge.name %></h2>
-              <p class="text-sm text-base-content/70">
-                <%= challenge.start_date.strftime('%Y-%m-%d') %> - <%= challenge.end_date.strftime('%Y-%m-%d') %>
-              </p>
-            </div>
-            <div class="flex-shrink-0 ml-4">
-              <%= button_to "Join", challenge_enrollments_path(challenge_id: challenge.id), method: :post, class: "btn btn-primary btn-sm" %>
-            </div>
-          </div>
-        <% end %>
-      </div>
-    <% else %>
-      <div class="bg-base-100 shadow-sm rounded-lg p-4 flex flex-col items-center text-center">
-        <h2 class="text-lg font-semibold mb-2">No Challenges Available</h2>
-        <p>There are currently no challenges available to join. Please check back later.</p>
-      </div>
-    <% end %>
-  <% end %>
+  </div>
 </div> 
