@@ -1,8 +1,19 @@
 class HomeController < ApplicationController
-  before_action :require_login, only: [:index] # Redirect to login if not logged in
-
   # GET /
   def index
+    if logged_in?
+      # Redirect logged-in users to their reading page
+      redirect_to reading_path and return
+    end
+    
+    # Show welcome screen for logged-out users
+  end
+
+  # GET /reading
+  def reading
+    require_login
+    return unless logged_in? # Add explicit return if not logged in
+    
     @user_challenge = current_user.challenges.first # User can only be in one challenge as per user_query
     @challenges = Challenge.where('end_date >= ?', Date.current) # Only show active/future challenges
 
@@ -23,7 +34,8 @@ class HomeController < ApplicationController
       @selected_reading = @user_challenge.readings.find_by(scheduled_date: @selected_date)
       if @selected_reading
         @selected_reading_title = helpers.book_number_to_name(@selected_reading.book_number) + " " + @selected_reading.chapter_number.to_s
-        @selected_reading_verses = @selected_reading.verses.map { |v| { verse_number: v.verse_number, verse_text: v.verse_text } }
+        user_version = current_user.version || 'KJV'
+        @selected_reading_verses = @selected_reading.verses(version: user_version).map { |v| { verse_number: v.verse_number, verse_text: v.verse_text } }
       end
 
       # Always use mobile mode (7 days maximum)
