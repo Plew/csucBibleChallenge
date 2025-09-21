@@ -138,3 +138,4 @@ This is a Rails 8 application for managing Bible reading challenges. Users can j
 - All pages need to primarily look right in mobile responsive mode. Desktop is not important
 - always when designing anything make sure there are not big margins or padding.  the content should go almost all the way to the left and right.
 - in app/controllers/profile are all the controllers managing aspects of a users profile that they can edit.  if anything is added to a users profile, you can look at these controllers and repeat what they have done and how they have done it.
+- don't ever deploy to production using kamal without being asked to do so

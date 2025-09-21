@@ -5,8 +5,9 @@ class HomeController < ApplicationController
       # Redirect logged-in users to their reading page
       redirect_to reading_path and return
     end
-    
+
     # Show welcome screen for logged-out users
+    @challenges = Challenge.where('end_date >= ?', Date.current)
   end
 
   # GET /reading
