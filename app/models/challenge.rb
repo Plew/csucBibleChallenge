@@ -9,7 +9,22 @@ class Challenge < ApplicationRecord
   validates :start_date, presence: true
   validates :end_date, presence: true
   validates :timezone, presence: true, inclusion: { in: ActiveSupport::TimeZone.all.map(&:name), message: "%{value} is not a valid timezone" }
+  validates :invitation_token, uniqueness: true, allow_nil: true
   validate :end_date_after_start_date
+
+  before_create :generate_invitation_token
+
+  def generate_invitation_token
+    loop do
+      self.invitation_token = SecureRandom.alphanumeric(6)
+      break unless Challenge.exists?(invitation_token: invitation_token)
+    end
+  end
+
+  def regenerate_invitation_token!
+    generate_invitation_token
+    save!
+  end
 
   private
 

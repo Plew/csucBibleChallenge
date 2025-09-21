@@ -17,6 +17,7 @@ RSpec.describe Challenge, type: :model do
     it { should validate_presence_of(:end_date) }
     it { should validate_presence_of(:timezone) }
     it { should validate_inclusion_of(:timezone).in_array(ActiveSupport::TimeZone.all.map(&:name)).with_message(/is not a valid timezone/) }
+    it { should validate_uniqueness_of(:invitation_token).allow_nil }
 
     context 'when end_date is before start_date' do
       it 'is invalid' do
@@ -44,6 +45,52 @@ RSpec.describe Challenge, type: :model do
   describe '#create' do
     it 'is valid with valid attributes' do
       expect(FactoryBot.build(:challenge)).to be_valid
+    end
+  end
+
+  describe 'invitation token' do
+    describe 'callbacks' do
+      it 'generates an invitation token before creation' do
+        challenge = FactoryBot.build(:challenge, invitation_token: nil)
+        expect(challenge.invitation_token).to be_nil
+        challenge.save!
+        expect(challenge.invitation_token).to be_present
+        expect(challenge.invitation_token.length).to eq(6)
+      end
+
+      it 'generates unique invitation tokens' do
+        challenge1 = FactoryBot.create(:challenge)
+        challenge2 = FactoryBot.create(:challenge)
+        expect(challenge1.invitation_token).not_to eq(challenge2.invitation_token)
+      end
+    end
+
+    describe '#generate_invitation_token' do
+      let(:challenge) { FactoryBot.build(:challenge) }
+
+      it 'generates a 6-character alphanumeric token' do
+        challenge.generate_invitation_token
+        expect(challenge.invitation_token).to match(/\A[a-zA-Z0-9]{6}\z/)
+      end
+
+      it 'ensures token uniqueness' do
+        existing_challenge = FactoryBot.create(:challenge)
+        allow(SecureRandom).to receive(:alphanumeric).and_return(existing_challenge.invitation_token, 'ABC123')
+        
+        challenge.generate_invitation_token
+        expect(challenge.invitation_token).to eq('ABC123')
+      end
+    end
+
+    describe '#regenerate_invitation_token!' do
+      let(:challenge) { FactoryBot.create(:challenge) }
+
+      it 'generates a new token and saves the challenge' do
+        original_token = challenge.invitation_token
+        challenge.regenerate_invitation_token!
+        expect(challenge.invitation_token).not_to eq(original_token)
+        expect(challenge.reload.invitation_token).not_to eq(original_token)
+      end
     end
   end
 

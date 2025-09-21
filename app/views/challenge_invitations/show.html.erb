@@ -1,0 +1,47 @@
+<div class="min-h-screen flex items-start justify-center bg-base-200 pt-16 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-md w-full space-y-8">
+    <div class="text-center">
+      <h2 class="mt-6 text-3xl font-extrabold text-base-content">
+        You're Invited!
+      </h2>
+      <p class="mt-2 text-sm text-base-content/70">
+        Join the Bible reading challenge
+      </p>
+    </div>
+
+    <div class="bg-base-100 rounded-lg shadow-lg p-6 space-y-4">
+      <div class="text-center">
+        <h3 class="text-xl font-bold text-base-content"><%= @challenge.name %></h3>
+        <p class="text-sm text-base-content/60 mt-1">
+          <%= @challenge.start_date.strftime("%B %-d, %Y") %> - <%= @challenge.end_date.strftime("%B %-d, %Y") %>
+        </p>
+        <p class="text-xs text-base-content/50 mt-1">
+          Timezone: <%= @challenge.timezone %>
+        </p>
+      </div>
+
+      <div class="stats shadow w-full">
+        <div class="stat">
+          <div class="stat-title">Total Participants</div>
+          <div class="stat-value text-primary"><%= @challenge.users.count %></div>
+        </div>
+      </div>
+
+      <div class="space-y-3">
+        <%= link_to "Sign Up & Join Challenge", new_user_registration_path(challenge_invitation_token: @challenge.invitation_token), 
+            class: "btn btn-primary w-full" %>
+        
+        <div class="divider text-xs">or</div>
+        
+        <%= link_to "Already have an account? Log In", new_user_session_path, 
+            class: "btn btn-outline w-full" %>
+      </div>
+    </div>
+
+    <div class="text-center">
+      <p class="text-xs text-base-content/50">
+        This invitation is for the <%= @challenge.name %> challenge.
+      </p>
+    </div>
+  </div>
+</div>

@@ -14,6 +14,9 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   root "home#index"
+  
+  # Reading page for logged-in users
+  get "reading", to: "home#reading", as: :reading
 
   # User Authentication UI routes
   get 'users/sign_up', to: 'users#new', as: :new_user_registration
@@ -30,6 +33,9 @@ Rails.application.routes.draw do
 
   # Language switching
   patch 'language', to: 'languages#update', as: :update_language
+
+  # Challenge invitation links
+  get 'challenges/:token/join', to: 'challenge_invitations#show', as: :challenge_invitation
 
   # Challenges UI
   resources :challenges, only: [:index, :show] do # Add :show, :new, :create, etc. as needed for UI
