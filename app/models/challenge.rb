@@ -14,6 +14,8 @@ class Challenge < ApplicationRecord
 
   before_create :generate_invitation_token
 
+  scope :active, -> { where('start_date <= ? AND end_date >= ?', Date.current, Date.current) }
+
   def generate_invitation_token
     loop do
       self.invitation_token = SecureRandom.alphanumeric(6)
