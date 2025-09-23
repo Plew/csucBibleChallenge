@@ -14,7 +14,7 @@ RSpec.describe Import do
         Import.call
       end
 
-      it 'imports verses from CSV file' do
+      it 'imports verses from CSV file', :slow do
         expect(Verse.count).to eq(5)
       end
 
@@ -86,7 +86,7 @@ RSpec.describe Import do
         expect { Import.call }.not_to change { Verse.count }
       end
 
-      it 'updates existing verses if text has changed' do
+      it 'updates existing verses if text has changed', :slow do
         temp_file.write(File.read(basic_csv_path))
         temp_file.close
         
@@ -119,7 +119,7 @@ RSpec.describe Import do
         stub_const('Import::FILE_PATH', error_conditions_csv_path)
       end
       
-      it 'handles unknown book names and missing data gracefully' do
+      it 'handles unknown book names and missing data gracefully', :slow do
         expect { Import.call }.not_to raise_error
         expect(Verse.count).to eq(2)
         valid_verses = Verse.where(verse_text: ['Valid verse text', 'Another valid verse'])

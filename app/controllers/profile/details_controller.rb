@@ -18,6 +18,6 @@ class Profile::DetailsController < Profile::BaseController
   private
 
   def details_params
-    params.require(:user).permit(:username)
+    params.require(:user).permit(:username, :version, :avatar)
   end
 end

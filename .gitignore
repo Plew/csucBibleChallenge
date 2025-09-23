@@ -45,3 +45,6 @@
 
 # Playwright screenshots
 /.playwright-mcp/
+
+# RSpec example status persistence file
+/spec/examples.txt
