@@ -1,5 +1,5 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: 'noreply@hiegra.com'
+  default from: 'noreply@mail.hiegra.com'
   layout 'mailer'
 end
 
