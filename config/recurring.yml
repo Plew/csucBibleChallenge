@@ -9,20 +9,7 @@
 #     priority: 2
 #     schedule: at 5am every day
 
-development:
-  daily_challenge_summaries_dev:
-    class: DailyChallengeSummaryJob
-    queue: default
-    schedule: every 2 minutes
-    description: "Send daily summary emails to challenge creators (dev - every 2 minutes)"
-
 production:
   clear_solid_queue_finished_jobs:
     command: "SolidQueue::Job.clear_finished_in_batches(sleep_between_batches: 0.3)"
     schedule: every hour at minute 12
-    
-  daily_challenge_summaries:
-    class: DailyChallengeSummaryJob
-    queue: default
-    schedule: at 4am every day
-    description: "Send daily summary emails to challenge creators (4am UTC = ~6am Munich)"

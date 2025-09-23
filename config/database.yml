@@ -30,3 +30,9 @@ test:
 production:
   <<: *default
   database: storage/production.sqlite3
+
+queue:
+  production:
+    <<: *default
+    database: storage/queue_production.sqlite3
+    migrations_paths: db/queue_migrate
