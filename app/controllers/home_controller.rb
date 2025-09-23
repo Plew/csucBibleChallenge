@@ -2,8 +2,8 @@ class HomeController < ApplicationController
   # GET /
   def index
     if logged_in?
-      # Redirect logged-in users to their reading page
-      redirect_to reading_path and return
+      # Redirect logged-in users to their reading page, preserving date parameter
+      redirect_to reading_path(params.permit(:date)) and return
     end
 
     # Show welcome screen for logged-out users

@@ -15,7 +15,7 @@ class DateCircleComponent < ViewComponent::Base
   attr_reader :date, :day_of_week, :month_day, :completed, :selected, :has_reading
 
   def link_url
-    has_reading ? "/?date=#{date}" : '#'
+    has_reading ? "/reading?date=#{date}" : '#'
   end
 
   def link_classes
