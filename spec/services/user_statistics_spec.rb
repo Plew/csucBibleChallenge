@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe UserStatistics do
+RSpec.describe UserStatistics, type: :service do
   let(:challenge) { create(:challenge, start_date: Date.current - 10, end_date: Date.current + 10) }
   let(:user) { create(:user) }
   let!(:enrollment) { create(:user_challenge_enrollment, user: user, challenge: challenge, created_at: Date.current - 5) }

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe GroupStatistics do
+RSpec.describe GroupStatistics, type: :service do
   let(:challenge) { create(:challenge, start_date: Date.current - 10, end_date: Date.current + 10) }
   let(:group) { create(:group, challenge: challenge) }
   let(:users) { create_list(:user, 3) }
