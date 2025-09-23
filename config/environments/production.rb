@@ -72,15 +72,18 @@ Rails.application.configure do
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 
   # Configure Action Mailer for Amazon SES
-  config.action_mailer.delivery_method = :smtp
-  config.action_mailer.perform_deliveries = true
-  config.action_mailer.smtp_settings = {
-    address: "email-smtp.#{Rails.application.credentials.aws[:ses][:region]}.amazonaws.com",
-    port: 587,
-    user_name: Rails.application.credentials.aws[:ses][:smtp_username],
-    password: Rails.application.credentials.aws[:ses][:smtp_password],
-    authentication: :login,
-    enable_starttls_auto: true
-  }
-  config.action_mailer.default_url_options = { host: 'www.hiegra.com' }
+  # Only configure SES if credentials are available (not during asset precompilation)
+  if Rails.application.credentials.aws&.dig(:ses)
+    config.action_mailer.delivery_method = :smtp
+    config.action_mailer.perform_deliveries = true
+    config.action_mailer.smtp_settings = {
+      address: "email-smtp.#{Rails.application.credentials.aws[:ses][:region]}.amazonaws.com",
+      port: 587,
+      user_name: Rails.application.credentials.aws[:ses][:smtp_username],
+      password: Rails.application.credentials.aws[:ses][:smtp_password],
+      authentication: :login,
+      enable_starttls_auto: true
+    }
+    config.action_mailer.default_url_options = { host: 'www.hiegra.com' }
+  end
 end
