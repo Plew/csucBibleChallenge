@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_21_162212) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_23_062548) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -141,6 +141,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_21_162212) do
     t.index ["book_number"], name: "index_verses_on_book_number"
     t.index ["chapter_number"], name: "index_verses_on_chapter_number"
     t.index ["verse_number"], name: "index_verses_on_verse_number"
+    t.index ["version", "book_number", "chapter_number", "verse_number"], name: "index_verses_on_version_book_chapter_verse", unique: true
     t.index ["version"], name: "index_verses_on_version"
   end
 

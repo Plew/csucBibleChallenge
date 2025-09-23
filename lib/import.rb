@@ -139,27 +139,63 @@ class Import
   def upsert_verses(verses)
     return if verses.empty?
 
-    # Process each verse individually for idempotent behavior
-    counter = 0
-    verses.each do |verse_attrs|
-      verse = Verse.find_or_initialize_by(
-        version: verse_attrs[:version],
-        book_number: verse_attrs[:book_number],
-        chapter_number: verse_attrs[:chapter_number],
-        verse_number: verse_attrs[:verse_number]
-      )
-      # print version booknumber chapter number verse number every 1000 verses
-      if counter % 1000 == 0
-        puts "version: #{verse_attrs[:version]}, book_number: #{verse_attrs[:book_number]}, chapter_number: #{verse_attrs[:chapter_number]}, verse_number: #{verse_attrs[:verse_number]}"
-      end
-      counter += 1
-      
-      verse.verse_text = verse_attrs[:verse_text]
-      verse.updated_at = verse_attrs[:updated_at]
-      verse.save! if verse.changed?
+    puts "Processing batch of #{verses.size} verses - version: #{verses.first[:version]}, book: #{verses.first[:book_number]}"
+
+    # Build lookup keys for existing verses
+    lookup_keys = verses.map do |v|
+      [v[:version], v[:book_number], v[:chapter_number], v[:verse_number]]
     end
 
-    Rails.logger.info "Processed batch of #{verses.size} verses"
+    # Query existing verses in one go
+    existing_verses = Verse.where(
+      version: lookup_keys.map(&:first).uniq,
+      book_number: lookup_keys.map { |k| k[1] }.uniq,
+      chapter_number: lookup_keys.map { |k| k[2] }.uniq,
+      verse_number: lookup_keys.map { |k| k[3] }.uniq
+    ).index_by { |v| [v.version, v.book_number, v.chapter_number, v.verse_number] }
+
+    new_verses = []
+    verses_to_update = []
+
+    verses.each do |verse_attrs|
+      lookup_key = [verse_attrs[:version], verse_attrs[:book_number], 
+                   verse_attrs[:chapter_number], verse_attrs[:verse_number]]
+      
+      existing_verse = existing_verses[lookup_key]
+      
+      if existing_verse
+        # Check if verse text has changed
+        if existing_verse.verse_text != verse_attrs[:verse_text]
+          verses_to_update << {
+            id: existing_verse.id,
+            verse_text: verse_attrs[:verse_text],
+            updated_at: verse_attrs[:updated_at]
+          }
+        end
+      else
+        # New verse to insert
+        new_verses << verse_attrs
+      end
+    end
+
+    # Bulk insert new verses
+    if new_verses.any?
+      Verse.insert_all(new_verses)
+      Rails.logger.info "Inserted #{new_verses.size} new verses"
+    end
+
+    # Bulk update existing verses that changed
+    if verses_to_update.any?
+      verses_to_update.each do |update_attrs|
+        Verse.where(id: update_attrs[:id]).update_all(
+          verse_text: update_attrs[:verse_text],
+          updated_at: update_attrs[:updated_at]
+        )
+      end
+      Rails.logger.info "Updated #{verses_to_update.size} existing verses"
+    end
+
+    Rails.logger.info "Processed batch of #{verses.size} verses (#{new_verses.size} new, #{verses_to_update.size} updated)"
   end
 
   def get_imported_books
