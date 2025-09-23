@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Import do
+RSpec.describe Import, :slow do
   let(:basic_csv_path) { Rails.root.join('spec/fixtures/test_verses_basic.csv') }
   let(:html_entities_csv_path) { Rails.root.join('spec/fixtures/test_verses_html_entities.csv') }
   let(:error_conditions_csv_path) { Rails.root.join('spec/fixtures/test_verses_error_conditions.csv') }

@@ -1,3 +1,8 @@
 <% content_for :title, "Stats" %>
 
-<%= render StatsPageComponent.new %>
+<%= render StatsPageComponent.new(
+  top_readers_data: @top_readers_data,
+  participant_count: @participant_count,
+  top_groups_data: @top_groups_data,
+  seven_day_leaderboard_data: @seven_day_leaderboard_data
+) %>

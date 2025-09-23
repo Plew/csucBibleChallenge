@@ -1,25 +1,14 @@
 # frozen_string_literal: true
 
 class StatsPageComponent < ViewComponent::Base
-  def initialize
+  def initialize(top_readers_data:, participant_count:, top_groups_data:, seven_day_leaderboard_data:)
+    @top_readers_data = top_readers_data
+    @participant_count = participant_count
+    @top_groups_data = top_groups_data
+    @seven_day_leaderboard_data = seven_day_leaderboard_data
   end
 
   private
 
-  def stats_options
-    [
-      {
-        title: "7 Day Window",
-        path: stats_seven_day_window_path
-      },
-      {
-        title: "Challenge Stats",
-        path: stats_challenge_path
-      },
-      {
-        title: "Group Stats",
-        path: stats_group_path
-      }
-    ]
-  end
+  attr_reader :top_readers_data, :participant_count, :top_groups_data, :seven_day_leaderboard_data
 end
