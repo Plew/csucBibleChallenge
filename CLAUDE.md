@@ -139,3 +139,5 @@ This is a Rails 8 application for managing Bible reading challenges. Users can j
 - always when designing anything make sure there are not big margins or padding.  the content should go almost all the way to the left and right.
 - in app/controllers/profile are all the controllers managing aspects of a users profile that they can edit.  if anything is added to a users profile, you can look at these controllers and repeat what they have done and how they have done it.
 - don't ever deploy to production using kamal without being asked to do so
+- When I say to deploy to production, I want you to do the following:  1. ssh interactively into philip@hetzdev 2. go into code/reverse folder 3. git pull main 4. run kamal deploy 
+note that kamal deploy could be a background task so that you can finish this task; you don't need to wait for it to complete
