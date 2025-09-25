@@ -4,15 +4,15 @@ class GroupsController < ApplicationController
 
   # GET /groups
   def index
-    @groups = @challenge.groups.order(:name)
-                  .includes(user_group_enrollments: { user: [ :avatar_attachment, :avatar_blob ] })
     @user_group = current_user.groups.where(challenge_id: @challenge.id).first
     if @user_group
-      @groups = @groups.where.not(id: @user_group.id).to_a
-      @groups.unshift(@user_group)
-    else
-      @groups = @groups.to_a
+      redirect_to group_path(@user_group)
+      return
     end
+    
+    @groups = @challenge.groups.order(:name)
+                  .includes(user_group_enrollments: { user: [ :avatar_attachment, :avatar_blob ] })
+                  .to_a
   end
 
   # GET /groups/new

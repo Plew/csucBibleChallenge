@@ -12,6 +12,36 @@ RSpec.describe GroupsController, type: :controller do
     enrollment # Create the enrollment so user is enrolled in challenge
   end
 
+  describe 'GET #index' do
+    context 'when user is not in a group' do
+      it 'renders the index template' do
+        get :index
+        expect(response).to render_template(:index)
+      end
+
+      it 'assigns groups to @groups' do
+        group # Ensure the let group is created
+        group2 = create(:group, challenge: challenge)
+        get :index
+        expect(assigns(:groups)).to match_array([group, group2])
+      end
+    end
+
+    context 'when user is already in a group' do
+      let!(:user_group_enrollment) { create(:user_group_enrollment, user: user, group: group) }
+
+      it 'redirects to the user group' do
+        get :index
+        expect(response).to redirect_to(group_path(group))
+      end
+
+      it 'does not render the index template' do
+        get :index
+        expect(response).not_to render_template(:index)
+      end
+    end
+  end
+
   describe 'PATCH #toggle_closed' do
     context 'when user is the group creator' do
       let(:creator_group) { create(:group, challenge: challenge, creator: user) }
