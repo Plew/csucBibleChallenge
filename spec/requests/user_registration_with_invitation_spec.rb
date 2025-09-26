@@ -13,7 +13,7 @@ RSpec.describe "User Registration with Challenge Invitation", type: :request do
       # Step 2: User goes to signup page
       get new_user_registration_path
       expect(response).to have_http_status(:success)
-      expect(response.body).to include("Create your Hiegra Account")
+      expect(response.body).to include("Create your account.")
 
       # Step 3: User submits signup form
       user_params = {
@@ -119,7 +119,7 @@ RSpec.describe "User Registration with Challenge Invitation", type: :request do
       }.not_to change(User, :count)
 
       expect(response).to have_http_status(:unprocessable_content)
-      expect(response.body).to include("Create your Hiegra Account")
+      expect(response.body).to include("Create your account.")
       # Session token should still be present for retry
       expect(session[:challenge_invitation_token]).to eq(challenge.invitation_token)
     end
