@@ -1,0 +1,69 @@
+<div class="container mx-auto px-4 py-8 max-w-2xl">
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-3xl font-bold">Edit Challenge</h1>
+    <%= link_to "Back to Challenges", admin_challenges_path, class: "btn btn-outline" %>
+  </div>
+
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body">
+      <%= form_with(model: [:admin, @challenge], local: true, class: "space-y-6") do |form| %>
+        <% if @challenge.errors.any? %>
+          <div class="alert alert-error">
+            <div>
+              <h3 class="font-bold">Please fix the following errors:</h3>
+              <ul class="list-disc list-inside">
+                <% @challenge.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+              </ul>
+            </div>
+          </div>
+        <% end %>
+
+        <div class="form-control">
+          <%= form.label :title, class: "label" %>
+          <span class="label-text">Title</span>
+          <%= form.text_field :title, class: "input input-bordered w-full" %>
+        </div>
+
+        <div class="form-control">
+          <%= form.label :description, class: "label" %>
+          <span class="label-text">Description</span>
+          <%= form.text_area :description, class: "textarea textarea-bordered h-24", rows: 4 %>
+        </div>
+
+        <div class="form-control">
+          <%= form.label :start_date, class: "label" %>
+          <span class="label-text">Start Date</span>
+          <%= form.date_field :start_date, class: "input input-bordered w-full" %>
+        </div>
+
+        <div class="form-control">
+          <%= form.label :timezone, class: "label" %>
+          <span class="label-text">Timezone</span>
+          <%= form.select :timezone, 
+                options_for_select([
+                  ['Eastern Time (US & Canada)', 'America/New_York'],
+                  ['Central Time (US & Canada)', 'America/Chicago'],
+                  ['Mountain Time (US & Canada)', 'America/Denver'],
+                  ['Pacific Time (US & Canada)', 'America/Los_Angeles'],
+                  ['UTC', 'UTC']
+                ], @challenge.timezone), 
+                { prompt: 'Select timezone' }, 
+                { class: "select select-bordered w-full" } %>
+        </div>
+
+        <div class="form-control">
+          <label class="label cursor-pointer">
+            <%= form.check_box :hidden, class: "checkbox" %>
+            <span class="label-text">Hide this challenge from public view</span>
+          </label>
+        </div>
+
+        <div class="form-control mt-6">
+          <%= form.submit "Update Challenge", class: "btn btn-primary w-full" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

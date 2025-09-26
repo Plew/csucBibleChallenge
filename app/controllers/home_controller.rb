@@ -7,7 +7,7 @@ class HomeController < ApplicationController
     end
 
     # Show welcome screen for logged-out users
-    @challenges = Challenge.where('end_date >= ?', Date.current)
+    @challenges = Challenge.where('end_date >= ? AND hidden = ?', Date.current, false)
   end
 
   # GET /reading
@@ -16,7 +16,7 @@ class HomeController < ApplicationController
     return unless logged_in? # Add explicit return if not logged in
     
     @user_challenge = current_user.challenges.first # User can only be in one challenge as per user_query
-    @challenges = Challenge.where('end_date >= ?', Date.current) # Only show active/future challenges
+    @challenges = Challenge.where('end_date >= ? AND hidden = ?', Date.current, false) # Only show active/future challenges
 
     if @user_challenge
       today_in_challenge_tz = Time.current.in_time_zone(@user_challenge.timezone).to_date

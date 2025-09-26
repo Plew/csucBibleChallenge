@@ -1,0 +1,67 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-3xl font-bold">Manage Users</h1>
+    <%= link_to "Admin Dashboard", admin_root_path, class: "btn btn-outline" %>
+  </div>
+
+  <div class="card bg-base-100 shadow-xl mb-6">
+    <div class="card-body">
+      <%= form_with url: admin_users_path, method: :get, local: true, class: "flex gap-4" do |form| %>
+        <div class="form-control flex-1">
+          <%= form.text_field :search, 
+                value: params[:search], 
+                placeholder: "Search by email or user ID...", 
+                class: "input input-bordered w-full" %>
+        </div>
+        <div>
+          <%= form.submit "Search", class: "btn btn-primary" %>
+          <%= link_to "Clear", admin_users_path, class: "btn btn-outline" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body">
+      <div class="overflow-x-auto">
+        <table class="table table-zebra w-full">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Email</th>
+              <th>Admin</th>
+              <th>Created</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @users.each do |user| %>
+              <tr>
+                <td><%= user.id %></td>
+                <td class="font-semibold"><%= user.email %></td>
+                <td>
+                  <% if user.admin? %>
+                    <span class="badge badge-error">Admin</span>
+                  <% else %>
+                    <span class="badge badge-ghost">User</span>
+                  <% end %>
+                </td>
+                <td><%= user.created_at.strftime("%B %d, %Y") %></td>
+                <td>
+                  <div class="join">
+                    <%= link_to "View", admin_user_path(user), class: "btn btn-sm btn-info join-item" %>
+                    <%= link_to "Reset Password", 
+                        reset_password_admin_user_path(user), 
+                        method: :patch,
+                        data: { confirm: "Are you sure you want to reset #{user.email}'s password?" },
+                        class: "btn btn-sm btn-warning join-item" %>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

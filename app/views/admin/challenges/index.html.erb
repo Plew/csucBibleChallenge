@@ -1,0 +1,53 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-3xl font-bold">Manage Challenges</h1>
+    <div class="space-x-2">
+      <%= link_to "Admin Dashboard", admin_root_path, class: "btn btn-outline" %>
+      <%= link_to "New Challenge", new_admin_challenge_path, class: "btn btn-primary" %>
+    </div>
+  </div>
+
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body">
+      <div class="overflow-x-auto">
+        <table class="table table-zebra w-full">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Description</th>
+              <th>Start Date</th>
+              <th>Timezone</th>
+              <th>Hidden</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @challenges.each do |challenge| %>
+              <tr>
+                <td class="font-semibold"><%= challenge.title %></td>
+                <td class="max-w-xs">
+                  <div class="truncate"><%= challenge.description %></div>
+                </td>
+                <td><%= challenge.start_date.strftime("%B %d, %Y") if challenge.start_date %></td>
+                <td><%= challenge.timezone %></td>
+                <td>
+                  <% if challenge.hidden? %>
+                    <span class="badge badge-warning">Hidden</span>
+                  <% else %>
+                    <span class="badge badge-success">Visible</span>
+                  <% end %>
+                </td>
+                <td>
+                  <div class="join">
+                    <%= link_to "Edit", edit_admin_challenge_path(challenge), class: "btn btn-sm btn-outline join-item" %>
+                    <%= link_to "View", admin_challenge_path(challenge), class: "btn btn-sm btn-info join-item" %>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

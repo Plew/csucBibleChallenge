@@ -1,8 +1,24 @@
-class Admin::ChallengesController < ApplicationController
-  before_action :require_login
-  before_action :require_admin
-  before_action :set_challenge, only: [:delete_confirmation, :destroy]
+class Admin::ChallengesController < Admin::BaseController
+  before_action :set_challenge, only: [:show, :edit, :update, :delete_confirmation, :destroy]
   before_action :ensure_creator, only: [:delete_confirmation, :destroy]
+
+  def index
+    @challenges = Challenge.all.order(created_at: :desc)
+  end
+
+  def show
+  end
+
+  def edit
+  end
+
+  def update
+    if @challenge.update(challenge_params)
+      redirect_to admin_challenges_path, notice: 'Challenge was successfully updated.'
+    else
+      render :edit, status: :unprocessable_entity
+    end
+  end
 
   def new
     @challenge = Challenge.new
@@ -48,11 +64,7 @@ class Admin::ChallengesController < ApplicationController
   private
 
   def challenge_params
-    params.require(:challenge).permit(:name, :description, :start_date, :timezone)
-  end
-
-  def require_admin
-    redirect_to root_path, alert: 'Access denied.' unless current_user&.admin?
+    params.require(:challenge).permit(:title, :name, :description, :start_date, :timezone, :hidden)
   end
 
   def set_challenge

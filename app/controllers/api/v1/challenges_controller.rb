@@ -3,7 +3,7 @@ class Api::V1::ChallengesController < Api::BaseController
 
   # GET /api/v1/challenges
   def index
-    @challenges = Challenge.all
+    @challenges = Challenge.where(hidden: false)
     render json: @challenges
   end
 

@@ -5,10 +5,10 @@ class ChallengesController < ApplicationController
   def index
     if current_user
       @my_challenges = current_user.challenges.includes(:creator)
-      @available_challenges = Challenge.includes(:creator).where.not(id: @my_challenges.pluck(:id))
+      @available_challenges = Challenge.includes(:creator).where.not(id: @my_challenges.pluck(:id)).where(hidden: false)
     else
       @my_challenges = []
-      @available_challenges = Challenge.includes(:creator).all
+      @available_challenges = Challenge.includes(:creator).where(hidden: false)
     end
   end
 

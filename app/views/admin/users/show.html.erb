@@ -1,0 +1,50 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-3xl font-bold">User Details</h1>
+    <div class="space-x-2">
+      <%= link_to "Back to Users", admin_users_path, class: "btn btn-outline" %>
+      <%= link_to "Reset Password", 
+          reset_password_admin_user_path(@user), 
+          method: :patch,
+          data: { confirm: "Are you sure you want to reset #{@user.email}'s password?" },
+          class: "btn btn-warning" %>
+    </div>
+  </div>
+
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body">
+      <h2 class="card-title">User Information</h2>
+      
+      <div class="space-y-4">
+        <div>
+          <label class="font-semibold">ID:</label>
+          <p><%= @user.id %></p>
+        </div>
+        
+        <div>
+          <label class="font-semibold">Email:</label>
+          <p><%= @user.email %></p>
+        </div>
+        
+        <div>
+          <label class="font-semibold">Admin Status:</label>
+          <% if @user.admin? %>
+            <span class="badge badge-error">Admin</span>
+          <% else %>
+            <span class="badge badge-ghost">User</span>
+          <% end %>
+        </div>
+        
+        <div>
+          <label class="font-semibold">Created:</label>
+          <p><%= @user.created_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+        </div>
+        
+        <div>
+          <label class="font-semibold">Last Updated:</label>
+          <p><%= @user.updated_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

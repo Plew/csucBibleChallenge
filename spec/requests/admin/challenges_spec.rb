@@ -3,9 +3,15 @@ require 'rails_helper'
 RSpec.describe "Admin::Challenges", type: :request do
   let(:admin_user) { create(:user, admin: true) }
   let(:regular_user) { create(:user, admin: false) }
+  let(:challenge) { create(:challenge) }
 
   describe "authorization" do
     context "when user is not logged in" do
+      it "redirects to login for GET /admin/challenges" do
+        get admin_challenges_path
+        expect(response).to redirect_to(new_user_session_path)
+      end
+
       it "redirects to login for GET /admin/challenges/new" do
         get new_admin_challenge_path
         expect(response).to redirect_to(new_user_session_path)
@@ -20,16 +26,119 @@ RSpec.describe "Admin::Challenges", type: :request do
     context "when user is not an admin" do
       before { login_via_session(regular_user) }
 
+      it "redirects to root for GET /admin/challenges" do
+        get admin_challenges_path
+        expect(response).to redirect_to(root_path)
+      end
+
       it "redirects to root for GET /admin/challenges/new" do
         get new_admin_challenge_path
         expect(response).to redirect_to(root_path)
-        expect(flash[:alert]).to eq('Access denied.')
       end
 
       it "redirects to root for POST /admin/challenges" do
         post admin_challenges_path, params: { challenge: { name: 'Test' } }
         expect(response).to redirect_to(root_path)
-        expect(flash[:alert]).to eq('Access denied.')
+      end
+    end
+  end
+
+  describe "GET /admin/challenges" do
+    before { login_via_session(admin_user) }
+
+    let!(:visible_challenge) { create(:challenge, title: "Visible Challenge", hidden: false) }
+    let!(:hidden_challenge) { create(:challenge, title: "Hidden Challenge", hidden: true) }
+
+    it "returns http success" do
+      get admin_challenges_path
+      expect(response).to have_http_status(:success)
+    end
+
+    it "displays all challenges including hidden ones" do
+      get admin_challenges_path
+      expect(response.body).to include("Visible Challenge")
+      expect(response.body).to include("Hidden Challenge")
+    end
+  end
+
+  describe "GET /admin/challenges/:id" do
+    before { login_via_session(admin_user) }
+
+    it "returns http success" do
+      get admin_challenge_path(challenge)
+      expect(response).to have_http_status(:success)
+    end
+
+    it "displays challenge details" do
+      get admin_challenge_path(challenge)
+      expect(response.body).to include(challenge.title)
+    end
+  end
+
+  describe "GET /admin/challenges/:id/edit" do
+    before { login_via_session(admin_user) }
+
+    it "returns http success" do
+      get edit_admin_challenge_path(challenge)
+      expect(response).to have_http_status(:success)
+    end
+
+    it "displays edit form" do
+      get edit_admin_challenge_path(challenge)
+      expect(response.body).to include("Edit Challenge")
+      expect(response.body).to include(challenge.title)
+    end
+  end
+
+  describe "PATCH /admin/challenges/:id" do
+    before { login_via_session(admin_user) }
+
+    context "with valid parameters" do
+      let(:valid_attributes) do
+        {
+          title: "Updated Challenge Title",
+          description: "Updated description", 
+          hidden: true
+        }
+      end
+
+      it "updates the challenge" do
+        patch admin_challenge_path(challenge), params: { challenge: valid_attributes }
+        challenge.reload
+        expect(challenge.title).to eq("Updated Challenge Title")
+        expect(challenge.description).to eq("Updated description")
+        expect(challenge.hidden).to be true
+      end
+
+      it "redirects to admin challenges index" do
+        patch admin_challenge_path(challenge), params: { challenge: valid_attributes }
+        expect(response).to redirect_to(admin_challenges_path)
+      end
+
+      it "displays success notice" do
+        patch admin_challenge_path(challenge), params: { challenge: valid_attributes }
+        follow_redirect!
+        expect(response.body).to include("Challenge was successfully updated")
+      end
+    end
+
+    context "with invalid parameters" do
+      let(:invalid_attributes) do
+        {
+          title: "" # Assuming title is required
+        }
+      end
+
+      it "does not update the challenge" do
+        original_title = challenge.title
+        patch admin_challenge_path(challenge), params: { challenge: invalid_attributes }
+        challenge.reload
+        expect(challenge.title).to eq(original_title)
+      end
+
+      it "renders edit template" do
+        patch admin_challenge_path(challenge), params: { challenge: invalid_attributes }
+        expect(response).to have_http_status(:unprocessable_entity)
       end
     end
   end

@@ -1,0 +1,76 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-3xl font-bold"><%= @challenge.title %></h1>
+    <div class="space-x-2">
+      <%= link_to "Back to Challenges", admin_challenges_path, class: "btn btn-outline" %>
+      <%= link_to "Edit Challenge", edit_admin_challenge_path(@challenge), class: "btn btn-primary" %>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title">Challenge Details</h2>
+        
+        <div class="space-y-4">
+          <div>
+            <label class="font-semibold">Title:</label>
+            <p><%= @challenge.title %></p>
+          </div>
+          
+          <div>
+            <label class="font-semibold">Description:</label>
+            <p><%= @challenge.description %></p>
+          </div>
+          
+          <div>
+            <label class="font-semibold">Start Date:</label>
+            <p><%= @challenge.start_date.strftime("%B %d, %Y") if @challenge.start_date %></p>
+          </div>
+          
+          <div>
+            <label class="font-semibold">End Date:</label>
+            <p><%= @challenge.end_date.strftime("%B %d, %Y") if @challenge.end_date %></p>
+          </div>
+          
+          <div>
+            <label class="font-semibold">Timezone:</label>
+            <p><%= @challenge.timezone %></p>
+          </div>
+          
+          <div>
+            <label class="font-semibold">Status:</label>
+            <% if @challenge.hidden? %>
+              <span class="badge badge-warning">Hidden</span>
+            <% else %>
+              <span class="badge badge-success">Visible</span>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title">Statistics</h2>
+        
+        <div class="space-y-4">
+          <div>
+            <label class="font-semibold">Total Readings:</label>
+            <p><%= @challenge.readings.count %></p>
+          </div>
+          
+          <div>
+            <label class="font-semibold">Created:</label>
+            <p><%= @challenge.created_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+          </div>
+          
+          <div>
+            <label class="font-semibold">Creator:</label>
+            <p><%= @challenge.creator&.email || "Unknown" %></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

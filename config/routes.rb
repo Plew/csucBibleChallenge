@@ -64,9 +64,15 @@ Rails.application.routes.draw do
 
   # Admin routes
   namespace :admin do
-    resources :challenges, only: [:new, :create, :destroy] do
+    root 'dashboard#index'
+    resources :challenges, only: [:index, :show, :edit, :update, :new, :create, :destroy] do
       member do
         get :delete_confirmation
+      end
+    end
+    resources :users, only: [:index, :show] do
+      member do
+        patch :reset_password
       end
     end
     resources :feedbacks, only: [:index, :show, :destroy]

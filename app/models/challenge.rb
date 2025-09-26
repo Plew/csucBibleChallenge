@@ -15,6 +15,8 @@ class Challenge < ApplicationRecord
   before_create :generate_invitation_token
 
   scope :active, -> { where('start_date <= ? AND end_date >= ?', Date.current, Date.current) }
+  
+  alias_attribute :title, :name
 
   def generate_invitation_token
     loop do
