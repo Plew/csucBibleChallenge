@@ -1,0 +1,24 @@
+<div id="chat-messages" class="max-h-96 overflow-y-auto mb-4">
+  <% if messages.any? %>
+    <% messages.each do |message| %>
+      <div class="chat <%= message.user == current_user ? 'chat-end' : 'chat-start' %> mb-2">
+        <div class="chat-image avatar">
+          <div class="w-10 rounded-full">
+            <%= avatar_image_tag(message.user, :tiny, class: 'rounded-full') %>
+          </div>
+        </div>
+        <div class="chat-header">
+          <%= message.user.username %>
+          <time class="text-xs opacity-50"><%= time_ago_in_words(message.created_at) %> ago</time>
+        </div>
+        <div class="chat-bubble <%= message.user == current_user ? 'chat-bubble-primary' : '' %>">
+          <%= simple_format(h(message.content)) %>
+        </div>
+      </div>
+    <% end %>
+  <% else %>
+    <div class="text-center text-gray-500 py-8">
+      No messages yet. Start the conversation!
+    </div>
+  <% end %>
+</div>

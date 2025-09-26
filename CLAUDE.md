@@ -127,7 +127,7 @@ This is a Rails 8 application for managing Bible reading challenges. Users can j
 
 ## Dev Credentials
 
-- Test account: Use `pdbradley@gmail.com` with password `nargh000` for development testing
+- Test account: Use `pdbradley@gmail.com` with password `nargh111` for development testing
 
 ## Playwright Testing
 

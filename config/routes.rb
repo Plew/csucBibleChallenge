@@ -105,6 +105,7 @@ Rails.application.routes.draw do
   resources :feedbacks, only: [:new, :create, :show]
 
   resources :groups, only: [:index, :new, :create, :show] do
+    resources :group_messages, only: [:index, :create], path: 'messages'
     member do
       post :join
       get :confirm_destroy
