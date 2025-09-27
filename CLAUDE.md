@@ -141,3 +141,7 @@ This is a Rails 8 application for managing Bible reading challenges. Users can j
 - don't ever deploy to production using kamal without being asked to do so
 - When I say to deploy to production, I want you to do the following:  1. ssh interactively into philip@hetzdev 2. go into code/reverse folder 3. git pull main 4. run kamal deploy 
 note that kamal deploy could be a background task so that you can finish this task; you don't need to wait for it to complete
+- whenever you need to start a rails server, use bin/dev not rails s
+- when you are using playwright and need to take screenshots, store them in context/screenshots/latest.png, and you can keep overwriting latest.png with each successive screenshot
+- no, the playwright screenshots should be saved in context/screenshots off of the app folder, not within .playwright-mcp
+- actually it is fine to save it in the .playwright-mcp folder, please remove the instructions that said contrary

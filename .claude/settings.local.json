@@ -44,7 +44,8 @@
       "Bash(kamal app exec:*)",
       "Bash(git config:*)",
       "Bash(kamal deploy:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(bin/dev:*)"
     ],
     "deny": []
   }
