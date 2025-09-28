@@ -1,0 +1,12 @@
+#!/bin/bash
+#
+# Pre-deploy hook to run database migrations
+# This runs before any new containers are started
+#
+
+echo "Running database migrations..."
+
+# Run migrations on the primary server using the new version
+./bin/kamal app exec --primary --version=$KAMAL_VERSION "./bin/rails db:migrate"
+
+echo "Database migrations completed."
