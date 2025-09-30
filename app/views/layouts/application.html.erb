@@ -65,7 +65,7 @@
 
   </div>
 
-  <% if logged_in? %>
+  <% if logged_in? && current_user.challenges.any? %>
     <%= render(NavBarComponent.new) %>
   <% end %>
 

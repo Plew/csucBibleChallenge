@@ -45,7 +45,8 @@
       "Bash(git config:*)",
       "Bash(kamal deploy:*)",
       "Bash(curl:*)",
-      "Bash(bin/dev:*)"
+      "Bash(bin/dev:*)",
+      "mcp__playwright__browser_wait_for"
     ],
     "deny": []
   }

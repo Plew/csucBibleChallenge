@@ -35,7 +35,6 @@
       </div>
     <% end %>
   <% else %>
-    <h1 class="text-3xl font-bold mb-6 text-center text-base-content">Join a Challenge</h1>
     <% if @challenges.any? %>
       <div class="grid grid-cols-1 gap-6">
         <% @challenges.each do |challenge| %>
@@ -43,11 +42,11 @@
             <div class="flex-grow">
               <h2 class="text-lg font-semibold"><%= challenge.name %></h2>
               <p class="text-sm text-base-content/70">
-                <%= challenge.start_date.strftime('%Y-%m-%d') %> - <%= challenge.end_date.strftime('%Y-%m-%d') %>
+                <%= challenge.description.present? ? challenge.description : "No description available" %>
               </p>
             </div>
             <div class="flex-shrink-0 ml-4">
-              <%= button_to "Join", challenge_enrollments_path(challenge_id: challenge.id), method: :post, class: "btn btn-primary btn-sm" %>
+              <%= link_to "Details", challenge_path(challenge), class: "btn btn-primary btn-sm" %>
             </div>
           </div>
         <% end %>

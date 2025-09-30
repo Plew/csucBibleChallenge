@@ -12,8 +12,12 @@ class HomeController < ApplicationController
 
   # GET /reading
   def reading
-    require_login
-    return unless logged_in? # Add explicit return if not logged in
+    # Allow both logged-in and logged-out users to access this page
+    if !logged_in?
+      # For logged-out users, just show challenges
+      @challenges = Challenge.where('end_date >= ? AND hidden = ?', Date.current, false)
+      return
+    end
     
     @user_challenge = current_user.challenges.first # User can only be in one challenge as per user_query
     @challenges = Challenge.where('end_date >= ? AND hidden = ?', Date.current, false) # Only show active/future challenges
