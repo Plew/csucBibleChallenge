@@ -1,0 +1,87 @@
+<div class="px-2">
+  <div class="bg-base-100 shadow-sm rounded-lg p-4 md:p-6">
+    <h1 class="text-2xl font-bold mb-4 text-base-content text-center"><%= @challenge.name %></h1>
+    
+    <%= render(CountdownComponent.new(challenge: @challenge)) %>
+    
+    <% if @challenge.description.present? %>
+      <div class="mb-6">
+        <p class="text-base-content/80 text-center"><%= @challenge.description %></p>
+      </div>
+    <% end %>
+
+    <div class="mb-4">
+      <div class="overflow-x-auto">
+        <table class="table table-xs">
+          <tbody>
+            <tr>
+              <td class="font-semibold text-xs py-1">Start Date</td>
+              <td class="text-xs py-1"><%= @challenge.start_date.strftime('%B %-d, %Y') %></td>
+            </tr>
+            <tr>
+              <td class="font-semibold text-xs py-1">End Date</td>
+              <td class="text-xs py-1"><%= @challenge.end_date.strftime('%B %-d, %Y') %></td>
+            </tr>
+            <tr>
+              <td class="font-semibold text-xs py-1">Participants</td>
+              <td class="text-xs py-1"><%= @user_count %> user<%= @user_count == 1 ? '' : 's' %></td>
+            </tr>
+            <tr>
+              <td class="font-semibold text-xs py-1">Timezone</td>
+              <td class="text-xs py-1"><%= @challenge.timezone %></td>
+            </tr>
+            <% if @most_recent_user %>
+              <tr>
+                <td class="font-semibold text-xs py-1">Recent Member</td>
+                <td class="text-xs py-1"><%= @most_recent_user.name %></td>
+              </tr>
+              <tr>
+                <td class="font-semibold text-xs py-1">Joined</td>
+                <td class="text-xs py-1"><%= time_ago_in_words(@most_recent_join_time) %> ago</td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <% if @books_and_chapters.any? %>
+      <div class="mb-6">
+        <div tabindex="0" class="collapse collapse-arrow bg-base-200">
+          <div class="collapse-title text-md font-semibold">
+            Bible Chapters (<%= @books_and_chapters.values.flatten.size %> total)
+          </div>
+          <div class="collapse-content"> 
+            <div class="text-sm text-base-content/80">
+              <% @books_and_chapters.each do |book_number, chapters| %>
+                <div class="mb-1">
+                  <strong><%= book_number_to_name(book_number) %>:</strong> 
+                  <% if chapters.size > 5 %>
+                    Chapters <%= chapters.min %>-<%= chapters.max %> (<%= chapters.size %> chapters)
+                  <% else %>
+                    Chapter<%= chapters.size == 1 ? '' : 's' %> <%= chapters.join(', ') %>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+
+    <div class="flex justify-center">
+      <% if logged_in? %>
+        <% if current_user.challenges.include?(@challenge) %>
+          <button class="btn btn-outline btn-success" disabled>
+            Already Joined
+          </button>
+        <% else %>
+          <%= button_to "Join Challenge", challenge_enrollments_path(challenge_id: @challenge.id), method: :post, class: "btn btn-primary" %>
+        <% end %>
+      <% else %>
+        <%= button_to "Join Challenge", challenge_enrollments_path(challenge_id: @challenge.id), method: :post, class: "btn btn-primary" %>
+      <% end %>
+    </div>
+  </div>
+</div>
