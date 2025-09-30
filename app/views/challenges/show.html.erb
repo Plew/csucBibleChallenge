@@ -47,10 +47,11 @@
 
     <% if @books_and_chapters.any? %>
       <div class="mb-6">
-        <div tabindex="0" class="collapse collapse-arrow bg-base-200">
-          <div class="collapse-title text-md font-semibold">
+        <div class="collapse collapse-arrow border-base-300 bg-base-200 border">
+          <input type="checkbox" id="bible-chapters-collapse">
+          <label for="bible-chapters-collapse" class="collapse-title text-xl font-medium">
             Bible Chapters (<%= @books_and_chapters.values.flatten.size %> total)
-          </div>
+          </label>
           <div class="collapse-content"> 
             <div class="text-sm text-base-content/80">
               <% @books_and_chapters.each do |book_number, chapters| %>

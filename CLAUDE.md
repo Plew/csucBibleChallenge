@@ -146,3 +146,4 @@ note that kamal deploy could be a background task so that you can finish this ta
 - no, the playwright screenshots should be saved in context/screenshots off of the app folder, not within .playwright-mcp
 - actually it is fine to save it in the .playwright-mcp folder, please remove the instructions that said contrary
 - any info about recurring jobs is in config/recurring.yml
+- do not run the rails server directly always use bin/dev.  one reason it may not work is that you need to remove the old pid file
