@@ -28,6 +28,7 @@ class UsersController < ApplicationController
       
       redirect_to root_path
     else
+      flash[:alert] = @user.errors.full_messages.join(", ")
       @challenge_invitation_token = session[:challenge_invitation_token]
       render :new, status: :unprocessable_content
     end

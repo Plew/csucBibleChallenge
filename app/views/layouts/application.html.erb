@@ -53,8 +53,6 @@
             <%= link_to t('navigation.faq'), faq_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
             <%= link_to "Log Out", destroy_user_session_path, data: { turbo_method: :delete }, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
           <% else %>
-            <%= link_to "Log In", new_user_session_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
-            <%= link_to "Sign Up", new_user_registration_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
             <%= link_to "Send Feedback", new_feedback_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
             <%= link_to t('navigation.about'), about_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
             <%= link_to t('navigation.faq'), faq_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
@@ -70,7 +68,7 @@
   <% end %>
 
   <%# Flash Messages %>
-  <% if flash[:notice] %>
+  <% flash.each do |type, message| %>
     <div x-data="{ 
            show: true, 
            timer: null,
@@ -84,7 +82,9 @@
              this.startTimer() 
            }
          }"
-         x-init="startTimer(); document.addEventListener('turbo:load', () => { show = true; startTimer() })"
+         x-init="startTimer(); 
+                document.addEventListener('turbo:load', () => { show = true; startTimer() });
+                document.addEventListener('turbo:render', () => { show = true; startTimer() })"
          x-show="show"
          @mouseenter="pauseTimer()"
          @mouseleave="resumeTimer()"
@@ -94,133 +94,9 @@
          x-transition:leave="transition ease-in duration-500 transform"
          x-transition:leave-start="opacity-100 translate-y-0 scale-100"
          x-transition:leave-end="opacity-0 translate-y-4 scale-95"
-         class="fixed top-5 left-1/2 -translate-x-1/2 z-50 alert alert-success shadow-lg rounded-box w-auto max-w-md cursor-pointer">
+         class="fixed top-20 left-4 right-4 z-50 bg-primary text-primary-content shadow-lg rounded-box cursor-pointer px-4 py-3">
       <div class="flex items-center justify-between">
-        <span><%= flash[:notice] %></span>
-        <button @click="show = false" class="ml-4 text-lg font-bold hover:opacity-70">×</button>
-      </div>
-    </div>
-  <% end %>
-  <% if flash[:alert] %>
-    <div x-data="{ 
-           show: true, 
-           timer: null,
-           startTimer() { 
-             this.timer = setTimeout(() => this.show = false, 2000) 
-           },
-           pauseTimer() { 
-             if (this.timer) clearTimeout(this.timer) 
-           },
-           resumeTimer() { 
-             this.startTimer() 
-           }
-         }"
-         x-init="startTimer(); document.addEventListener('turbo:load', () => { show = true; startTimer() })"
-         x-show="show"
-         @mouseenter="pauseTimer()"
-         @mouseleave="resumeTimer()"
-         x-transition:enter="transition ease-out duration-500 transform"
-         x-transition:enter-start="opacity-0 translate-y-4 scale-95"
-         x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-         x-transition:leave="transition ease-in duration-500 transform"
-         x-transition:leave-start="opacity-100 translate-y-0 scale-100"
-         x-transition:leave-end="opacity-0 translate-y-4 scale-95"
-         class="fixed top-5 left-1/2 -translate-x-1/2 z-50 alert alert-error shadow-lg rounded-box w-auto max-w-md cursor-pointer">
-      <div class="flex items-center justify-between">
-        <span><%= flash[:alert] %></span>
-        <button @click="show = false" class="ml-4 text-lg font-bold hover:opacity-70">×</button>
-      </div>
-    </div>
-  <% end %>
-  <% if flash[:info] %>
-    <div x-data="{ 
-           show: true, 
-           timer: null,
-           startTimer() { 
-             this.timer = setTimeout(() => this.show = false, 2000) 
-           },
-           pauseTimer() { 
-             if (this.timer) clearTimeout(this.timer) 
-           },
-           resumeTimer() { 
-             this.startTimer() 
-           }
-         }"
-         x-init="startTimer(); document.addEventListener('turbo:load', () => { show = true; startTimer() })"
-         x-show="show"
-         @mouseenter="pauseTimer()"
-         @mouseleave="resumeTimer()"
-         x-transition:enter="transition ease-out duration-500 transform"
-         x-transition:enter-start="opacity-0 translate-y-4 scale-95"
-         x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-         x-transition:leave="transition ease-in duration-500 transform"
-         x-transition:leave-start="opacity-100 translate-y-0 scale-100"
-         x-transition:leave-end="opacity-0 translate-y-4 scale-95"
-         class="fixed top-5 left-1/2 -translate-x-1/2 z-50 alert alert-info shadow-lg rounded-box w-auto max-w-md cursor-pointer">
-      <div class="flex items-center justify-between">
-        <span><%= flash[:info] %></span>
-        <button @click="show = false" class="ml-4 text-lg font-bold hover:opacity-70">×</button>
-      </div>
-    </div>
-  <% end %>
-  <% if flash[:success] %>
-    <div x-data="{ 
-           show: true, 
-           timer: null,
-           startTimer() { 
-             this.timer = setTimeout(() => this.show = false, 2000) 
-           },
-           pauseTimer() { 
-             if (this.timer) clearTimeout(this.timer) 
-           },
-           resumeTimer() { 
-             this.startTimer() 
-           }
-         }"
-         x-init="startTimer(); document.addEventListener('turbo:load', () => { show = true; startTimer() })"
-         x-show="show"
-         @mouseenter="pauseTimer()"
-         @mouseleave="resumeTimer()"
-         x-transition:enter="transition ease-out duration-500 transform"
-         x-transition:enter-start="opacity-0 translate-y-4 scale-95"
-         x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-         x-transition:leave="transition ease-in duration-500 transform"
-         x-transition:leave-start="opacity-100 translate-y-0 scale-100"
-         x-transition:leave-end="opacity-0 translate-y-4 scale-95"
-         class="fixed top-5 left-1/2 -translate-x-1/2 z-50 alert alert-success shadow-lg rounded-box w-auto max-w-md cursor-pointer">
-      <div class="flex items-center justify-between">
-        <span><%= flash[:success] %></span>
-        <button @click="show = false" class="ml-4 text-lg font-bold hover:opacity-70">×</button>
-      </div>
-    </div>
-  <% end %>
-  <% if flash[:danger] %>
-    <div x-data="{ 
-           show: true, 
-           timer: null,
-           startTimer() { 
-             this.timer = setTimeout(() => this.show = false, 2000) 
-           },
-           pauseTimer() { 
-             if (this.timer) clearTimeout(this.timer) 
-           },
-           resumeTimer() { 
-             this.startTimer() 
-           }
-         }"
-         x-init="startTimer(); document.addEventListener('turbo:load', () => { show = true; startTimer() })"
-         x-show="show"
-         @mouseenter="pauseTimer()"
-         @mouseleave="resumeTimer()"
-         x-transition:enter="transition ease-out duration-500 transform"
-         x-transition:enter-start="opacity-0 translate-y-4 scale-95"
-         x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-         x-transition:leave="transition ease-in duration-500 transform"
-         x-transition:leave-start="opacity-100 translate-y-0 scale-100"
-         x-transition:leave-end="opacity-0 translate-y-4 scale-95"
-         class="fixed top-5 left-1/2 -translate-x-1/2 z-50 alert alert-error shadow-lg rounded-box w-auto max-w-md cursor-pointer">
-      <div class="flex items-center justify-between">
-        <span><%= flash[:danger] %></span>
+        <span><%= message %></span>
         <button @click="show = false" class="ml-4 text-lg font-bold hover:opacity-70">×</button>
       </div>
     </div>
