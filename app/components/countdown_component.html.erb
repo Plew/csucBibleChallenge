@@ -1,0 +1,33 @@
+<% if show_countdown? %>
+  <div class="mb-4 p-3 bg-info/10 rounded-lg" 
+       data-controller="countdown" 
+       data-countdown-target-value="<%= target_datetime %>">
+    <h3 class="text-sm font-semibold mb-2 text-center">Starts in</h3>
+    <div class="flex justify-center gap-2 text-center">
+      <div class="flex flex-col items-center p-2 bg-neutral rounded-box text-neutral-content min-w-0 flex-1">
+        <span class="countdown font-mono text-lg" data-countdown-target="days">
+          <span style="--value:<%= days_until_start %>;" aria-live="polite" aria-label="<%= days_until_start %>"><%= days_until_start %></span>
+        </span>
+        <span class="text-xs">days</span>
+      </div> 
+      <div class="flex flex-col items-center p-2 bg-neutral rounded-box text-neutral-content min-w-0 flex-1">
+        <span class="countdown font-mono text-lg" data-countdown-target="hours">
+          <span style="--value:<%= hours_until_start %>;" aria-live="polite" aria-label="<%= hours_until_start %>"><%= hours_until_start %></span>
+        </span>
+        <span class="text-xs">hrs</span>
+      </div> 
+      <div class="flex flex-col items-center p-2 bg-neutral rounded-box text-neutral-content min-w-0 flex-1">
+        <span class="countdown font-mono text-lg" data-countdown-target="minutes">
+          <span style="--value:<%= minutes_until_start %>;" aria-live="polite" aria-label="<%= minutes_until_start %>"><%= minutes_until_start %></span>
+        </span>
+        <span class="text-xs">min</span>
+      </div> 
+      <div class="flex flex-col items-center p-2 bg-neutral rounded-box text-neutral-content min-w-0 flex-1">
+        <span class="countdown font-mono text-lg" data-countdown-target="seconds">
+          <span style="--value:<%= seconds_until_start %>;" aria-live="polite" aria-label="<%= seconds_until_start %>"><%= seconds_until_start %></span>
+        </span>
+        <span class="text-xs">sec</span>
+      </div>
+    </div>
+  </div>
+<% end %>
