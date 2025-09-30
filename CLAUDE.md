@@ -145,3 +145,4 @@ note that kamal deploy could be a background task so that you can finish this ta
 - when you are using playwright and need to take screenshots, store them in context/screenshots/latest.png, and you can keep overwriting latest.png with each successive screenshot
 - no, the playwright screenshots should be saved in context/screenshots off of the app folder, not within .playwright-mcp
 - actually it is fine to save it in the .playwright-mcp folder, please remove the instructions that said contrary
+- any info about recurring jobs is in config/recurring.yml
