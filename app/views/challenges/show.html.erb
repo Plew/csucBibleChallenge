@@ -8,8 +8,8 @@
     <h1 class="text-lg font-semibold mb-2 text-base-content text-center"><%= @challenge.name %></h1>
     
     <% if @challenge.description.present? %>
-      <div class="mb-4">
-        <p class="text-sm text-base-content/80 text-center"><%= @challenge.description %></p>
+      <div class="mb-4 prose prose-sm max-w-none text-center">
+        <%= markdown(@challenge.description) %>
       </div>
     <% end %>
     

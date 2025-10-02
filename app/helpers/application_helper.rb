@@ -66,4 +66,34 @@ module ApplicationHelper
       image_tag(Avatarro.image(user.username), options)
     end
   end
+
+  # Renders Markdown text as HTML
+  #
+  # @param text [String] The markdown text to render
+  # @return [String] HTML-safe rendered markdown
+  #
+  # @example
+  #   markdown("**Bold text** and [a link](https://example.com)")
+  def markdown(text)
+    return '' if text.blank?
+
+    options = {
+      filter_html: true,
+      hard_wrap: true,
+      link_attributes: { target: '_blank', rel: 'noopener noreferrer' },
+      no_styles: true
+    }
+
+    extensions = {
+      autolink: true,
+      no_intra_emphasis: true,
+      fenced_code_blocks: true,
+      strikethrough: true,
+      superscript: true
+    }
+
+    renderer = Redcarpet::Render::HTML.new(options)
+    markdown = Redcarpet::Markdown.new(renderer, extensions)
+    markdown.render(text).html_safe
+  end
 end

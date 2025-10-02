@@ -24,8 +24,13 @@
           </div>
 
           <div class="form-control w-full">
-            <%= form.label :description, "Description (optional)", class: "label" %>
+            <%= form.label :description, "Description (optional - Markdown supported)", class: "label" %>
             <%= form.text_area :description, class: "textarea textarea-bordered w-full", placeholder: "Enter a brief description of the challenge", rows: 3 %>
+            <div class="label">
+              <span class="label-text-alt text-xs">
+                Markdown syntax: **bold**, *italic*, [link](url), ![image](url), - lists
+              </span>
+            </div>
           </div>
 
           <div class="form-control w-full">

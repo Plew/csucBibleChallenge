@@ -13,7 +13,13 @@ class SessionsController < ApplicationController
     if user && user.authenticate(params[:session][:password])
       log_in user
       # TODO: Implement remember me functionality if params[:session][:remember_me] == '1'
-      redirect_to reading_path
+
+      # Redirect to user's first challenge show page if they have one
+      if user.challenges.any?
+        redirect_to challenge_path(user.challenges.first)
+      else
+        redirect_to challenges_path
+      end
     else
       flash.now[:alert] = 'Invalid email/username or password combination'
       render :new, status: :unprocessable_content

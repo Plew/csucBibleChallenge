@@ -28,8 +28,13 @@
 
         <div class="form-control">
           <%= form.label :description, class: "label" %>
-          <span class="label-text">Description</span>
+          <span class="label-text">Description (Markdown supported)</span>
           <%= form.text_area :description, class: "textarea textarea-bordered h-24", rows: 4 %>
+          <div class="label">
+            <span class="label-text-alt text-xs">
+              Markdown syntax: **bold**, *italic*, [link](url), ![image](url), - lists
+            </span>
+          </div>
         </div>
 
         <div class="form-control">
