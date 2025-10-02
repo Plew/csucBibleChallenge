@@ -40,9 +40,6 @@
           role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
         <div class="py-1" role="none">
           <% if logged_in? %>
-            <% if current_user.user_challenge_enrollments.any? %>
-              <%= link_to "Today", root_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
-            <% end %>
             <% if current_user.admin? %>
               <%= link_to "Create Challenge", new_admin_challenge_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
               <%= link_to "Manage Feedback", admin_feedbacks_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
@@ -64,7 +61,10 @@
   </div>
 
   <% if logged_in? && current_user.challenges.any? %>
-    <%= render(NavBarComponent.new) %>
+    <% user_challenge = current_user.challenges.first %>
+    <% if user_challenge && Date.current >= user_challenge.start_date %>
+      <%= render(NavBarComponent.new) %>
+    <% end %>
   <% end %>
 
   <%# Flash Messages %>

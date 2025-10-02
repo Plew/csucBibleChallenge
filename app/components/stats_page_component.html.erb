@@ -12,9 +12,11 @@
     </div>
 
     <!-- Group Stats (Top Groups) -->
-    <div>
-      <%= render Statistics::TopGroupsComponent.new(top_groups_data: top_groups_data) %>
-    </div>
+    <% if top_groups_data.length > 1 %>
+      <div>
+        <%= render Statistics::TopGroupsComponent.new(top_groups_data: top_groups_data) %>
+      </div>
+    <% end %>
 
     <!-- 7 Day Stats -->
     <div>

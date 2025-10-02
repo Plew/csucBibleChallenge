@@ -1,105 +1,25 @@
-<div class="container mx-auto px-4 py-8">
-  <h1 class="text-3xl font-bold mb-6 text-center text-base-content">Reading Challenges</h1>
-
-  <div class="tabs tabs-boxed mb-6">
-    <a class="tab tab-active" data-tab="my-challenges">My Challenges</a> 
-    <a class="tab" data-tab="available-challenges">Available Challenges</a>
-  </div>
-
-  <div id="my-challenges-content" class="tab-content">
-    <h2 class="text-2xl font-semibold mb-4 text-base-content">My Challenges</h2>
-    <% if @my_challenges.blank? %>
-      <div class="card bg-base-100 shadow-md">
-        <div class="card-body items-center text-center">
-          <p>You haven't joined any challenges yet.</p>
-        </div>
-      </div>
-    <% else %>
-      <div class="grid md:grid-cols-2 gap-6">
-        <% @my_challenges.each do |challenge| %>
-          <div class="card bg-base-100 shadow-xl">
-            <div class="card-body">
-              <h3 class="card-title"><%= challenge.name %></h3>
-              <p class="text-sm text-gray-600">
-                <%= challenge.start_date.strftime("%b %d, %Y") %> - 
-                <%= challenge.end_date.strftime("%b %d, %Y") %>
-              </p>
-              <p class="text-xs text-gray-500">Created by: <%= challenge.creator.username %></p>
-              <div class="card-actions justify-between mt-2">
-                <div>
-                  <%= link_to "View Details", challenge_path(challenge), class: "btn btn-sm btn-outline" %>
-                </div>
-                <div class="flex gap-2">
-                  <% if current_user == challenge.creator %>
-                    <%= link_to "Delete", delete_confirmation_admin_challenge_path(challenge), 
-                        class: "btn btn-sm btn-error" %>
-                  <% end %>
-                  <button class="btn btn-sm btn-warning">Leave Challenge</button><%# Placeholder %>
-                </div>
-              </div>
-            </div>
+<div class="container mx-auto">
+  <h1 class="text-base font-semibold mb-4 mt-8 text-center">Choose a Bible Challenge</h1>
+  <% if @challenges.any? %>
+    <div class="grid grid-cols-1 gap-4">
+      <% @challenges.each do |challenge| %>
+        <div class="bg-base-100 shadow-sm rounded-lg p-3 flex flex-row items-center justify-between">
+          <div class="flex-grow">
+            <h2 class="text-sm font-medium line-clamp-2"><%= challenge.name %></h2>
+            <p class="text-xs text-base-content/70 line-clamp-4">
+              <%= challenge.description.present? ? challenge.description : "No description available" %>
+            </p>
           </div>
-        <% end %>
-      </div>
-    <% end %>
-  </div>
-
-  <div id="available-challenges-content" class="tab-content hidden">
-    <h2 class="text-2xl font-semibold mb-4 text-base-content">Available Challenges</h2>
-    <%# Optional: Search/filter input %>
-    <%# <div class="form-control mb-4">
-      <input type="text" placeholder="Search available challenges" class="input input-bordered w-full md:w-1/2">
-    </div> %>
-    <% if @available_challenges.blank? %>
-      <div class="card bg-base-100 shadow-md">
-        <div class="card-body items-center text-center">
-          <p>No new challenges available at the moment.</p>
-        </div>
-      </div>
-    <% else %>
-      <div class="grid md:grid-cols-2 gap-6">
-        <% @available_challenges.each do |challenge| %>
-          <div class="card bg-base-100 shadow-xl">
-            <div class="card-body">
-              <h3 class="card-title"><%= challenge.name %></h3>
-              <p class="text-sm text-gray-600">
-                <%= challenge.start_date.strftime("%b %d, %Y") %> - 
-                <%= challenge.end_date.strftime("%b %d, %Y") %>
-              </p>
-              <p class="text-xs text-gray-500">Created by: <%= challenge.creator.username %></p>
-              <div class="card-actions justify-end mt-2">
-                <button class="btn btn-sm btn-primary">Join Challenge</button><%# Placeholder %>
-              </div>
-            </div>
+          <div class="flex-shrink-0 ml-3">
+            <%= link_to "Details", challenge_path(challenge), class: "btn btn-primary btn-xs h-6" %>
           </div>
-        <% end %>
-      </div>
-    <% end %>
-  </div>
-
-</div>
-
-<script>
-  document.addEventListener('turbo:load', function() {
-    const tabs = document.querySelectorAll('.tabs .tab');
-    const tabContents = document.querySelectorAll('.tab-content');
-
-    tabs.forEach(tab => {
-      tab.addEventListener('click', function(event) {
-        event.preventDefault();
-        
-        tabs.forEach(t => t.classList.remove('tab-active'));
-        this.classList.add('tab-active');
-        
-        const targetContentId = this.dataset.tab + '-content';
-        tabContents.forEach(content => {
-          if (content.id === targetContentId) {
-            content.classList.remove('hidden');
-          } else {
-            content.classList.add('hidden');
-          }
-        });
-      });
-    });
-  });
-</script> 
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="bg-base-100 shadow-sm rounded-lg p-3 flex flex-col items-center text-center">
+      <h2 class="text-sm font-medium mb-2">No Challenges Available</h2>
+      <p class="text-xs">There are currently no challenges available to join. Please check back later.</p>
+    </div>
+  <% end %>
+</div> 

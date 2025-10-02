@@ -1,15 +1,9 @@
 class ChallengesController < ApplicationController
-  before_action :require_login, only: [:index]
 
   # GET /challenges
   def index
-    if current_user
-      @my_challenges = current_user.challenges.includes(:creator)
-      @available_challenges = Challenge.includes(:creator).where.not(id: @my_challenges.pluck(:id)).where(hidden: false)
-    else
-      @my_challenges = []
-      @available_challenges = Challenge.includes(:creator).where(hidden: false)
-    end
+    # Show simple list of active and upcoming challenges
+    @challenges = Challenge.where('end_date >= ? AND hidden = ?', Date.current, false)
   end
 
   # GET /challenges/:id
@@ -20,6 +14,7 @@ class ChallengesController < ApplicationController
     @most_recent_join_time = @challenge.user_challenge_enrollments.order(created_at: :desc).first&.created_at
     @challenge_readings = @challenge.readings.order(:scheduled_date)
     @books_and_chapters = @challenge_readings.group_by(&:book_number).transform_values { |readings| readings.map(&:chapter_number) }
+    @user_enrollment = current_user&.user_challenge_enrollments&.find_by(challenge: @challenge)
   end
 
   # GET /challenges/:id/summary

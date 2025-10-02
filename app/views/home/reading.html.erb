@@ -1,8 +1,11 @@
 <div class="container mx-auto">
   <% if @user_challenge %>
-    <div >
-      <%= render DateBarComponent.new(days: @weekly_check_in_days, selected_date: @selected_date, mobile: @is_mobile) %>
+    <div class="text-center mb-4">
+      <h2 class="text-lg font-medium text-base-content">
+        <%= @selected_date.strftime('%A, %B %-d, %Y') %>
+      </h2>
     </div>
+    
     <% if @selected_reading %>
       <% reading_is_completed = current_user.user_readings.exists?(reading_id: @selected_reading.id) %>
       
@@ -32,30 +35,6 @@
           <% end %>
           in the <%= @user_challenge.name %>.
         </p>
-      </div>
-    <% end %>
-  <% else %>
-    <h1 class="text-base font-semibold mb-4 text-center">Active and Upcoming</h1>
-    <% if @challenges.any? %>
-      <div class="grid grid-cols-1 gap-4">
-        <% @challenges.each do |challenge| %>
-          <div class="bg-base-100 shadow-sm rounded-lg p-3 flex flex-row items-center justify-between">
-            <div class="flex-grow">
-              <h2 class="text-sm font-medium line-clamp-2"><%= challenge.name %></h2>
-              <p class="text-xs text-base-content/70 line-clamp-4">
-                <%= challenge.description.present? ? challenge.description : "No description available" %>
-              </p>
-            </div>
-            <div class="flex-shrink-0 ml-3">
-              <%= link_to "Details", challenge_path(challenge), class: "btn btn-primary btn-xs h-6" %>
-            </div>
-          </div>
-        <% end %>
-      </div>
-    <% else %>
-      <div class="bg-base-100 shadow-sm rounded-lg p-3 flex flex-col items-center text-center">
-        <h2 class="text-sm font-medium mb-2">No Challenges Available</h2>
-        <p class="text-xs">There are currently no challenges available to join. Please check back later.</p>
       </div>
     <% end %>
   <% end %>

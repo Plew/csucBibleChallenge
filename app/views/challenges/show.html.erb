@@ -1,7 +1,9 @@
 <div class="px-2">
-  <div class="mb-4">
-    <%= link_to "← Back", reading_path, class: "text-sm text-base-content/70 hover:text-base-content" %>
-  </div>
+  <% unless @user_enrollment %>
+    <div class="mb-4">
+      <%= link_to "← Back", reading_path, class: "text-sm text-base-content/70 hover:text-base-content" %>
+    </div>
+  <% end %>
   <div class="bg-base-100 shadow-sm rounded-lg p-4 md:p-6">
     <h1 class="text-lg font-semibold mb-2 text-base-content text-center"><%= @challenge.name %></h1>
     
@@ -31,12 +33,8 @@
             </tr>
             <% if @most_recent_user %>
               <tr>
-                <td class="font-semibold text-xs py-1">Recent Member</td>
-                <td class="text-xs py-1"><%= @most_recent_user.name %></td>
-              </tr>
-              <tr>
-                <td class="font-semibold text-xs py-1">Joined</td>
-                <td class="text-xs py-1"><%= time_ago_in_words(@most_recent_join_time) %> ago</td>
+                <td class="font-semibold text-xs py-1">Newest Member</td>
+                <td class="text-xs py-1"><%= @most_recent_user.name %> (<%= time_ago_in_words(@most_recent_join_time) %> ago)</td>
               </tr>
             <% end %>
           </tbody>
@@ -46,12 +44,11 @@
 
 
 
-    <div class="flex justify-center mb-6 mt-8">
+    <div class="flex flex-col items-center mb-6 mt-8">
       <% if logged_in? %>
-        <% if current_user.challenges.include?(@challenge) %>
-          <button class="btn btn-outline btn-success" disabled>
-            Already Joined
-          </button>
+        <% if @user_enrollment %>
+          <p class="text-sm text-primary mb-6">You are a member of this challenge</p>
+          <%= button_to "Leave Challenge", user_challenge_enrollment_path(@user_enrollment), method: :delete, class: "btn btn-outline btn-error", data: { confirm: "Are you sure you want to leave this challenge?" } %>
         <% else %>
           <%= button_to "Join Challenge", challenge_enrollments_path(challenge_id: @challenge.id), method: :post, class: "btn btn-primary" %>
         <% end %>

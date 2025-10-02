@@ -2,7 +2,14 @@ class HomeController < ApplicationController
   # GET /
   def index
     if logged_in?
-      # Redirect logged-in users to their reading page, preserving date parameter
+      user_challenge = current_user.challenges.first
+
+      # If user has a challenge that hasn't started yet, redirect to challenge show page
+      if user_challenge && Date.current < user_challenge.start_date
+        redirect_to challenge_path(user_challenge) and return
+      end
+
+      # Otherwise redirect to reading page, preserving date parameter
       redirect_to reading_path(params.permit(:date)) and return
     end
 
@@ -14,13 +21,16 @@ class HomeController < ApplicationController
   def reading
     # Allow both logged-in and logged-out users to access this page
     if !logged_in?
-      # For logged-out users, just show challenges
-      @challenges = Challenge.where('end_date >= ? AND hidden = ?', Date.current, false)
-      return
+      # For logged-out users, redirect to challenges page
+      redirect_to challenges_path and return
     end
     
     @user_challenge = current_user.challenges.first # User can only be in one challenge as per user_query
-    @challenges = Challenge.where('end_date >= ? AND hidden = ?', Date.current, false) # Only show active/future challenges
+
+    # If user is not enrolled in any challenge, redirect to challenges page
+    if !@user_challenge
+      redirect_to challenges_path and return
+    end
 
     if @user_challenge
       today_in_challenge_tz = Time.current.in_time_zone(@user_challenge.timezone).to_date

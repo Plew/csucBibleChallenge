@@ -16,24 +16,22 @@ class UserChallengeEnrollmentsController < ApplicationController
     # @enrollment.group_id = params[:group_id] # Ensure group_id is permitted and valid
 
     if @enrollment.save
-      redirect_to root_path #, notice: "Successfully joined #{@challenge.name}!"
+      redirect_to challenge_path(@challenge) #, notice: "Successfully joined #{@challenge.name}!"
     else
       # If coming from a dedicated join page, render :new might be appropriate
-      # For now, redirecting to root with an alert if there was a list of challenges
-      redirect_to root_path, alert: "Could not join challenge: #{@enrollment.errors.full_messages.to_sentence}"
+      # For now, redirecting to challenge details with an alert
+      redirect_to challenge_path(@challenge), alert: "Could not join challenge: #{@enrollment.errors.full_messages.to_sentence}"
     end
   end
 
   # DELETE /user_challenge_enrollments/:id
   def destroy
-    challenge_name = @enrollment.challenge.name # Get name before destroying
     if @enrollment.user == current_user
       @enrollment.destroy
-      redirect_to root_path, notice: "You have left the challenge: #{challenge_name}."
-      # If we had a dedicated profile page, redirect_to profile_path might be better.
+      redirect_to challenges_path
     else
       # This case should ideally not be reachable if buttons are only shown to the correct user
-      redirect_to root_path, alert: 'You are not authorized to perform this action.'
+      redirect_to challenges_path, alert: 'You are not authorized to perform this action.'
     end
   end
 
