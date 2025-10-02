@@ -67,15 +67,31 @@ module ApplicationHelper
     end
   end
 
-  # Renders Markdown text as HTML
+  # Renders Markdown text as HTML with YouTube embed support
   #
   # @param text [String] The markdown text to render
   # @return [String] HTML-safe rendered markdown
   #
   # @example
   #   markdown("**Bold text** and [a link](https://example.com)")
+  #   markdown("Check out this video: [youtube:dQw4w9WgXcQ]")
   def markdown(text)
     return '' if text.blank?
+
+    # First, replace YouTube shortcodes with placeholder tokens to protect them from markdown processing
+    youtube_placeholders = {}
+    text_with_placeholders = text.gsub(/\[youtube:([^\]]+)\]/) do |match|
+      video_identifier = Regexp.last_match(1)
+      video_id = extract_youtube_id(video_identifier)
+
+      if video_id
+        placeholder = "YOUTUBE_EMBED_#{SecureRandom.hex(8)}"
+        youtube_placeholders[placeholder] = youtube_iframe(video_id)
+        placeholder
+      else
+        match
+      end
+    end
 
     options = {
       filter_html: true,
@@ -93,8 +109,143 @@ module ApplicationHelper
     }
 
     renderer = Redcarpet::Render::HTML.new(options)
-    markdown = Redcarpet::Markdown.new(renderer, extensions)
-    markdown.render(text).html_safe
+    markdown_renderer = Redcarpet::Markdown.new(renderer, extensions)
+
+    # Render markdown with placeholders
+    rendered = markdown_renderer.render(text_with_placeholders)
+
+    # Replace placeholders with actual YouTube iframes
+    youtube_placeholders.each do |placeholder, iframe_html|
+      rendered = rendered.gsub(placeholder, iframe_html)
+    end
+
+    # Sanitize allowing YouTube iframes
+    sanitize_with_youtube(rendered).html_safe
+  end
+
+  # Processes YouTube shortcodes and converts them to iframe embeds
+  #
+  # @param text [String] Text containing [youtube:VIDEO_ID] or [youtube:URL] shortcodes
+  # @return [String] Text with YouTube embeds converted to iframe HTML
+  #
+  # @example
+  #   process_youtube_embeds("[youtube:dQw4w9WgXcQ]")
+  #   process_youtube_embeds("[youtube:https://www.youtube.com/watch?v=dQw4w9WgXcQ]")
+  def process_youtube_embeds(text)
+    # Match [youtube:VIDEO_ID] or [youtube:URL]
+    text.gsub(/\[youtube:([^\]]+)\]/) do |match|
+      video_identifier = Regexp.last_match(1)
+      video_id = extract_youtube_id(video_identifier)
+
+      if video_id
+        youtube_iframe(video_id)
+      else
+        match # Return original if we can't extract a valid ID
+      end
+    end
+  end
+
+  # Extracts YouTube video ID from various URL formats or returns the ID if already provided
+  #
+  # @param identifier [String] YouTube video ID or URL
+  # @return [String, nil] The video ID or nil if invalid
+  #
+  # @example
+  #   extract_youtube_id("dQw4w9WgXcQ") # => "dQw4w9WgXcQ"
+  #   extract_youtube_id("https://www.youtube.com/watch?v=dQw4w9WgXcQ") # => "dQw4w9WgXcQ"
+  #   extract_youtube_id("https://youtu.be/dQw4w9WgXcQ") # => "dQw4w9WgXcQ"
+  def extract_youtube_id(identifier)
+    return nil if identifier.blank?
+
+    # If it looks like a URL, parse it
+    if identifier.include?('youtube.com') || identifier.include?('youtu.be')
+      uri = URI.parse(identifier) rescue nil
+      return nil unless uri
+
+      if uri.host&.include?('youtube.com')
+        # Extract from ?v= parameter
+        params = CGI.parse(uri.query || '')
+        params['v']&.first
+      elsif uri.host&.include?('youtu.be')
+        # Extract from path
+        uri.path[1..]
+      end
+    else
+      # Assume it's already a video ID - validate it's alphanumeric with dashes/underscores
+      identifier.match?(/^[\w-]{11}$/) ? identifier : nil
+    end
+  end
+
+  # Generates a safe YouTube iframe embed
+  #
+  # @param video_id [String] The YouTube video ID
+  # @return [String] HTML iframe embed code
+  def youtube_iframe(video_id)
+    <<~HTML
+      <div class="relative w-full" style="padding-bottom: 56.25%;">
+        <iframe
+          class="absolute top-0 left-0 w-full h-full rounded-lg"
+          src="https://www.youtube-nocookie.com/embed/#{ERB::Util.html_escape(video_id)}"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+    HTML
+  end
+
+  # Sanitizes HTML while allowing YouTube iframes
+  #
+  # @param html [String] HTML to sanitize
+  # @return [String] Sanitized HTML
+  def sanitize_with_youtube(html)
+    # Use Rails sanitize with custom scrubber for YouTube iframes
+    scrubber = Loofah::Scrubber.new do |node|
+      if node.name == 'iframe'
+        # Only allow iframes from YouTube
+        src = node['src']
+        if src && (src.start_with?('https://www.youtube-nocookie.com/embed/', 'https://www.youtube.com/embed/'))
+          # Keep the iframe and its safe attributes
+          node.attributes.each do |name, attr|
+            unless %w[src frameborder allow allowfullscreen class].include?(name)
+              attr.remove
+            end
+          end
+          Loofah::Scrubber::CONTINUE
+        else
+          node.remove
+          Loofah::Scrubber::STOP
+        end
+      elsif node.name == 'div'
+        # Allow divs with class and style (for video wrapper)
+        node.attributes.each do |name, attr|
+          unless %w[class style].include?(name)
+            attr.remove
+          end
+        end
+        Loofah::Scrubber::CONTINUE
+      elsif %w[p br strong em a ul ol li blockquote code pre h1 h2 h3 h4 h5 h6].include?(node.name)
+        # Standard allowed tags
+        if node.name == 'a'
+          # Only keep href, target, rel for links
+          node.attributes.each do |name, attr|
+            unless %w[href target rel].include?(name)
+              attr.remove
+            end
+          end
+        else
+          # Remove all attributes from other tags
+          node.attributes.each { |name, attr| attr.remove }
+        end
+        Loofah::Scrubber::CONTINUE
+      else
+        # Remove any other tags
+        node.remove
+        Loofah::Scrubber::STOP
+      end
+    end
+
+    Loofah.fragment(html).scrub!(scrubber).to_s
   end
 
   # Returns timezone options for select boxes
