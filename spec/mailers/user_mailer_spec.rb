@@ -11,7 +11,7 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     it "renders the headers" do
-      expect(mail.subject).to eq("Password Reset - Hiegra")
+      expect(mail.subject).to eq("Password Reset - CSM Bible Challenge")
       expect(mail.to).to eq(["to@example.org"])
       expect(mail.from).to eq(["noreply@mail.hiegra.com"])
     end

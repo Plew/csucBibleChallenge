@@ -48,7 +48,8 @@
       "Bash(bin/dev:*)",
       "mcp__playwright__browser_wait_for",
       "mcp__playwright__browser_fill_form",
-      "Bash(xargs kill:*)"
+      "Bash(xargs kill:*)",
+      "Bash(lsof:*)"
     ],
     "deny": []
   }

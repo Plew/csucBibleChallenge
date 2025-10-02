@@ -31,7 +31,7 @@ class Challenge < ApplicationRecord
   end
 
   def join_url
-    Rails.application.routes.url_helpers.challenge_invitation_url(invitation_token)
+    Rails.application.routes.url_helpers.challenge_invitation_url(invitation_token, host: ENV.fetch('APP_HOST', 'localhost:3000'))
   end
 
   private

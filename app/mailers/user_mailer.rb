@@ -7,6 +7,6 @@ class UserMailer < ApplicationMailer
   def password_reset(user, token)
     @user = user
     @token = token
-    mail(to: user.email, subject: "Password Reset - Hiegra")
+    mail(to: user.email, subject: "Password Reset - CSM Bible Challenge")
   end
 end

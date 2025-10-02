@@ -5,7 +5,21 @@
     </div>
   <% end %>
   <div class="bg-base-100 shadow-sm rounded-lg p-4 md:p-6">
-    <h1 class="text-lg font-semibold mb-2 text-base-content line-clamp-2"><%= @challenge.name %></h1>
+    <div class="flex justify-between items-start mb-2">
+      <h1 class="text-lg font-semibold text-base-content line-clamp-2 flex-1"><%= @challenge.name %></h1>
+      <button
+        data-controller="share"
+        data-share-url-value="<%= @challenge.join_url %>"
+        data-share-title-value="<%= @challenge.name %>"
+        data-share-text-value="Join me in this Bible reading challenge!"
+        data-action="click->share#share"
+        class="btn btn-circle btn-sm btn-outline btn-primary ml-2"
+        title="Share challenge">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185z" />
+        </svg>
+      </button>
+    </div>
 
     <% if @challenge.description.present? %>
       <div class="mb-4 prose prose-sm max-w-none text-left">
@@ -44,10 +58,10 @@
 
 
 
-    <div class="flex flex-col items-center mb-6 mt-8">
+    <div class="flex flex-col items-center mb-6 mt-8 gap-4">
       <% if logged_in? %>
         <% if @user_enrollment %>
-          <p class="text-sm text-primary mb-6">You are a member of this challenge</p>
+          <p class="text-sm text-primary mb-2">You are a member of this challenge</p>
           <%= button_to "Leave Challenge", user_challenge_enrollment_path(@user_enrollment), method: :delete, class: "btn btn-outline btn-error", data: { confirm: "Are you sure you want to leave this challenge?" } %>
         <% else %>
           <%= button_to "Join Challenge", challenge_enrollments_path(challenge_id: @challenge.id), method: :post, class: "btn btn-primary" %>
