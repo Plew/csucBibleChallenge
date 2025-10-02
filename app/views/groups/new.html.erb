@@ -17,6 +17,11 @@
       <%= f.text_field :name, class: 'input input-bordered w-full', autofocus: true, required: true %>
     </div>
 
+    <div>
+      <%= f.label :motto, 'Group Motto', class: 'block font-semibold mb-1' %>
+      <%= f.text_field :motto, class: 'input input-bordered w-full', placeholder: 'Optional: Add a group motto or tagline' %>
+    </div>
+
     <div class="flex justify-center">
       <%= f.submit 'Create Group', class: 'btn btn-primary' %>
     </div>

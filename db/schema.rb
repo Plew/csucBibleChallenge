@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_28_063938) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_02_185958) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -81,8 +81,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_28_063938) do
     t.datetime "updated_at", null: false
     t.integer "creator_id", null: false
     t.boolean "closed_to_new_members", default: false, null: false
+    t.text "motto"
+    t.string "token"
     t.index ["challenge_id"], name: "index_groups_on_challenge_id"
     t.index ["creator_id"], name: "index_groups_on_creator_id"
+    t.index ["token"], name: "index_groups_on_token", unique: true
   end
 
   create_table "readings", force: :cascade do |t|

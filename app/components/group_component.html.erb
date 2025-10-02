@@ -14,6 +14,37 @@
   <% end %>
 
   <div class="bg-base-100 rounded-lg shadow p-4">
+    <div class="mb-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xl font-bold"><%= group.name %></h2>
+        <div class="flex gap-2">
+          <% if is_user_in_this_group? %>
+            <button
+              data-controller="share"
+              data-share-url-value="<%= group.join_url %>"
+              data-share-title-value="<%= group.name %>"
+              data-share-text-value="Join my group in this Bible reading challenge!"
+              data-action="click->share#share"
+              class="btn btn-circle btn-sm btn-outline btn-primary"
+              title="Share group">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185z" />
+              </svg>
+            </button>
+          <% end %>
+          <% if is_group_creator? && is_user_in_this_group? %>
+            <%= link_to 'Edit', edit_group_path(group), class: 'btn btn-sm btn-ghost' %>
+          <% end %>
+        </div>
+      </div>
+      <% if group.motto.present? %>
+        <div class="text-sm text-base-content/70 italic mt-1">"<%= group.motto %>"</div>
+      <% end %>
+      <% if group.closed_to_new_members %>
+        <div class="text-xs text-warning mt-1">🔒 Closed to new members</div>
+      <% end %>
+    </div>
+
     <ul class="list bg-base-100 rounded-box">
       <li class="p-4 pb-2 text-xs opacity-60 tracking-wide">
         <%= is_user_in_this_group? ? "Your Group Members" : "Group Members" %>
@@ -37,22 +68,6 @@
         </li>
       <% end %>
     </ul>
-
-    <% if can_toggle_closed_status? %>
-      <div class="mt-4 pt-4 border-t border-base-300">
-        <%= form_with url: toggle_closed_group_path(group), method: :patch, local: true, class: "flex items-center gap-3" do |form| %>
-          <div class="form-control">
-            <%= form.check_box :closed_to_new_members,
-                checked: group.closed_to_new_members,
-                class: "checkbox checkbox-sm",
-                onchange: "this.form.submit();" %>
-          </div>
-          <%= form.label :closed_to_new_members, "No one else can join this group", class: "label cursor-pointer flex-1" do %>
-            <span class="label-text">No one else can join this group</span>
-          <% end %>
-        <% end %>
-      </div>
-    <% end %>
   </div>
 
   <% if is_user_in_this_group? %>

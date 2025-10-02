@@ -1,19 +1,16 @@
 <div class="bg-base-100 rounded-lg shadow p-2">
-  <h2 class="text-lg font-bold mb-2 text-center">Last 7 Days Leaderboard</h2>
+  <h2 class="text-lg font-bold mb-2 text-center">7 Day Snapshot</h2>
   
   <% if leaderboard_data.any? %>
     <div class="space-y-1">
       <% leaderboard_data.each_with_index do |reader, index| %>
         <div class="flex items-center justify-between px-3 py-2 bg-base-200 rounded-lg">
           <div class="flex items-center gap-3">
-            <div class="w-8 h-8 bg-primary text-primary-content rounded-full flex items-center justify-center text-sm font-bold">
-              <%= index + 1 %>
-            </div>
             <div>
               <div class="font-medium"><%= reader[:name] %></div>
             </div>
           </div>
-          
+
           <div class="text-right">
             <div class="flex gap-4">
               <div class="text-center">

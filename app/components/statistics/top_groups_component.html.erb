@@ -14,12 +14,10 @@
             <div class="flex-grow min-w-0">
               <div class="font-medium text-base truncate"><%= group.name %></div>
               <div class="text-xs opacity-70">
-                <%= chapters %> chapters
+                <%= pluralize(size, 'member') %>
               </div>
             </div>
-            
-            <%= render OverlaidAvatarsComponent.new(users: group.users, max_avatars: 3, size: :tiny) %>
-            
+
             <div class="text-right flex-shrink-0">
               <div class="text-lg font-bold text-accent">
                 <%= percentage %>%

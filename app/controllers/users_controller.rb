@@ -9,6 +9,10 @@ class UsersController < ApplicationController
     if params[:challenge_id].present?
       session[:pending_challenge_id] = params[:challenge_id]
     end
+
+    # Store group_invitation_token if present
+    @group_invitation_token = params[:group_invitation_token] || session[:group_invitation_token]
+    session[:group_invitation_token] = @group_invitation_token if @group_invitation_token
   end
 
   # POST /users
@@ -16,6 +20,31 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
     if @user.save
       log_in @user # Log in the user after successful registration
+
+      # Check for group invitation token and auto-enroll
+      if session[:group_invitation_token].present?
+        group = Group.find_by(token: session[:group_invitation_token])
+        if group
+          # Enroll in challenge if not already enrolled
+          unless current_user.challenges.include?(group.challenge)
+            if current_user.challenges.empty?
+              challenge_enrollment = group.challenge.user_challenge_enrollments.new(user: current_user)
+              challenge_enrollment.save
+            end
+          end
+
+          # Enroll in group if in the challenge
+          if current_user.challenges.include?(group.challenge) && !current_user.groups.include?(group)
+            group_enrollment = group.user_group_enrollments.new(user: current_user)
+            if group_enrollment.save
+              session.delete(:group_invitation_token)
+              redirect_to group_path(group), notice: "Joined!"
+              return
+            end
+          end
+        end
+        session.delete(:group_invitation_token)
+      end
 
       # Check for challenge invitation token and auto-enroll
       if session[:challenge_invitation_token].present?
@@ -60,6 +89,7 @@ class UsersController < ApplicationController
     else
       flash[:alert] = @user.errors.full_messages.join(", ")
       @challenge_invitation_token = session[:challenge_invitation_token]
+      @group_invitation_token = session[:group_invitation_token]
       render :new, status: :unprocessable_content
     end
   end

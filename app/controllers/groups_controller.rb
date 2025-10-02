@@ -108,19 +108,33 @@ class GroupsController < ApplicationController
   def show
     @group = @challenge.groups.includes(user_group_enrollments: :user).find(params[:id])
     @user_group = current_user.groups.where(challenge_id: @challenge.id).first
+    @groups = @challenge.groups.order(:name)
+                  .includes(user_group_enrollments: { user: [ :avatar_attachment, :avatar_blob ] })
+                  .to_a
   end
 
-  # PATCH /groups/:id/toggle_closed
-  def toggle_closed
-    group = @challenge.groups.find(params[:id])
-    unless group.creator == current_user
-      redirect_to group_path(group), alert: 'Only the group creator can perform this action.'
+  # GET /groups/:id/edit
+  def edit
+    @group = @challenge.groups.find(params[:id])
+    unless @group.creator == current_user
+      redirect_to group_path(@group), alert: 'Only the group creator can edit this group.'
       return
     end
-    
-    closed_value = params[:closed_to_new_members] == '1'
-    group.update!(closed_to_new_members: closed_value)
-    redirect_to group_path(group)
+  end
+
+  # PATCH /groups/:id
+  def update
+    @group = @challenge.groups.find(params[:id])
+    unless @group.creator == current_user
+      redirect_to group_path(@group), alert: 'Only the group creator can edit this group.'
+      return
+    end
+
+    if @group.update(group_params)
+      redirect_to group_path(@group), notice: 'Group updated successfully.'
+    else
+      render :edit, status: :unprocessable_content
+    end
   end
 
   private
@@ -135,6 +149,6 @@ class GroupsController < ApplicationController
   end
 
   def group_params
-    params.require(:group).permit(:name, :closed_to_new_members)
+    params.require(:group).permit(:name, :closed_to_new_members, :motto)
   end
 end 

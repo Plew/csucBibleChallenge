@@ -55,22 +55,38 @@ class FakeMunich
     challenge = Challenge.find_by(name: CHALLENGE_NAME)
     return unless challenge
 
-    # Delete user_readings for users in this challenge
-    user_ids = challenge.users.pluck(:id)
-    UserReading.where(user_id: user_ids).delete_all
-    # Delete enrollments
-    UserChallengeEnrollment.where(challenge_id: challenge.id).delete_all
-    # Delete user_group_enrollments for groups in this challenge
-    group_ids = challenge.groups.pluck(:id)
-    UserGroupEnrollment.where(group_id: group_ids).delete_all
-    # Delete readings
-    challenge.readings.delete_all
-    # Delete groups
-    challenge.groups.delete_all
-    # Delete the challenge
-    challenge.destroy
-    # Delete fake users (by email domain)
-    User.where(email: fake_user_emails).destroy_all
+    # Wrap in transaction and temporarily disable foreign key checks for SQLite
+    ActiveRecord::Base.connection.execute('PRAGMA foreign_keys = OFF')
+
+    begin
+      ActiveRecord::Base.transaction do
+        # 1. Delete user_readings first (they reference readings and users)
+        reading_ids = challenge.readings.pluck(:id)
+        UserReading.where(reading_id: reading_ids).delete_all
+
+        # 2. Delete user group enrollments (they reference groups and users)
+        group_ids = challenge.groups.pluck(:id)
+        UserGroupEnrollment.where(group_id: group_ids).delete_all
+
+        # 3. Delete user challenge enrollments (they reference challenge and users)
+        UserChallengeEnrollment.where(challenge_id: challenge.id).delete_all
+
+        # 4. Delete readings (they reference challenge)
+        challenge.readings.delete_all
+
+        # 5. Delete groups (they reference challenge and creator)
+        challenge.groups.delete_all
+
+        # 6. Delete the challenge
+        challenge.delete
+
+        # 7. Delete fake users last (they were referenced by everything above)
+        User.where(email: fake_user_emails).delete_all
+      end
+    ensure
+      # Re-enable foreign key checks
+      ActiveRecord::Base.connection.execute('PRAGMA foreign_keys = ON')
+    end
   end
 
   # Create users first, then assign each group a unique creator from the users

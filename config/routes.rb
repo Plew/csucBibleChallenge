@@ -36,6 +36,9 @@ Rails.application.routes.draw do
   # Challenge invitation links
   get 'challenges/:token/join', to: 'challenge_invitations#show', as: :challenge_invitation
 
+  # Group invitation links
+  get 'groups/:token/join', to: 'group_invitations#show', as: :group_invitation
+
   # Challenges UI
   resources :challenges, only: [:index, :show] do # Add :show, :new, :create, etc. as needed for UI
     resources :user_challenge_enrollments, only: [:create], as: :enrollments # POST challenges/:challenge_id/enrollments
@@ -108,13 +111,12 @@ Rails.application.routes.draw do
   # Feedback
   resources :feedbacks, only: [:new, :create, :show]
 
-  resources :groups, only: [:index, :new, :create, :show] do
+  resources :groups, only: [:index, :new, :create, :show, :edit, :update] do
     resources :group_messages, only: [:index, :create], path: 'messages'
     member do
       post :join
       get :confirm_destroy
       post :destroy_and_leave
-      patch :toggle_closed
     end
     collection do
       post :leave

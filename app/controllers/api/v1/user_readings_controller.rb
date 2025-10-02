@@ -1,8 +1,8 @@
 class Api::V1::UserReadingsController < Api::BaseController
-  before_action :authenticate_user! # Assuming this is how you handle authentication in Api::BaseController
-  before_action :set_reading, only: [:create, :destroy_by_reading] # For nested routes
+  before_action :set_reading, only: [:create] # For nested routes
   before_action :set_user_reading_by_id, only: [:destroy_by_id] # For DELETE /user_readings/:id
-  before_action :set_user_reading_by_reading, only: [:destroy_by_reading] # For DELETE /readings/:reading_id/user_reading
+  before_action :set_reading_for_destroy, only: [:destroy]
+  before_action :set_user_reading_by_reading, only: [:destroy] # For DELETE /readings/:reading_id/user_reading
 
   # GET /api/v1/user_readings
   # Lists UserReadings for the current_user
@@ -21,6 +21,10 @@ class Api::V1::UserReadingsController < Api::BaseController
 
     current_date_in_challenge_tz = Time.current.in_time_zone(challenge.timezone).to_date
     scheduled_date = @reading.scheduled_date
+
+    if current_date_in_challenge_tz < scheduled_date
+      return render json: { errors: ["Cannot mark readings for future dates. This reading is scheduled for #{scheduled_date}. Current date in timezone is #{current_date_in_challenge_tz}."] }, status: :forbidden
+    end
 
     unless current_date_in_challenge_tz == scheduled_date
       return render json: { errors: ["Check-ins are only allowed on the scheduled date of the reading (#{scheduled_date}) in the challenge's timezone (#{challenge.timezone}). Current date in timezone is #{current_date_in_challenge_tz}."] }, status: :forbidden
@@ -116,14 +120,19 @@ class Api::V1::UserReadingsController < Api::BaseController
     render json: { errors: ["Reading not found"] }, status: :not_found unless @reading
   end
 
+  def set_reading_for_destroy
+    @reading = Reading.find_by(id: params[:reading_id])
+    render json: { errors: ["Reading not found"] }, status: :not_found unless @reading
+  end
+
   def set_user_reading_by_id
     @user_reading = UserReading.find_by(id: params[:id])
     render json: { error: "UserReading record not found" }, status: :not_found unless @user_reading
   end
-  
+
   def set_user_reading_by_reading
     # For DELETE /readings/:reading_id/user_reading
-    # Assumes @reading is already set by set_reading
+    # Assumes @reading is already set by set_reading_for_destroy
     @user_reading = UserReading.find_by(user: current_user, reading: @reading)
     render json: { error: "UserReading record not found for this user and reading" }, status: :not_found unless @user_reading
   end
