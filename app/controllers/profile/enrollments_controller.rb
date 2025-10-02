@@ -8,7 +8,7 @@ class Profile::EnrollmentsController < Profile::BaseController
   def destroy
     @user_enrollment = current_user.user_challenge_enrollments.find(params[:id])
     @user_enrollment.destroy
-    redirect_to profile_enrollments_path, notice: "Successfully left the challenge."
+    redirect_to challenges_path, notice: "Successfully left the challenge."
   end
 
   # GET /profile/enrollments/:id/delete_challenge_confirmation
@@ -35,6 +35,6 @@ class Profile::EnrollmentsController < Profile::BaseController
     end
 
     @challenge.destroy
-    redirect_to profile_enrollments_path, notice: "Challenge has been deleted successfully."
+    redirect_to challenges_path, notice: "Challenge has been deleted successfully."
   end
 end
