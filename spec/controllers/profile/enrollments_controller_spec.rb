@@ -92,9 +92,9 @@ RSpec.describe Profile::EnrollmentsController, type: :controller do
           expect { user_enrollment.reload }.to raise_error(ActiveRecord::RecordNotFound)
         end
 
-        it 'redirects to profile enrollments path' do
+        it 'redirects to challenges path' do
           delete :destroy, params: { id: user_enrollment.id }
-          expect(response).to redirect_to(profile_enrollments_path)
+          expect(response).to redirect_to(challenges_path)
         end
 
         it 'sets a success notice' do

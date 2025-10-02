@@ -28,10 +28,10 @@ RSpec.describe "User Registration with Challenge Invitation", type: :request do
       }.to change(User, :count).by(1)
         .and change(UserChallengeEnrollment, :count).by(1)
 
-      # Step 4: User is redirected to reading page with success message
-      expect(response).to redirect_to(reading_path)
+      # Step 4: User is redirected to challenge show page with success message
+      expect(response).to redirect_to(challenge_path(challenge))
       follow_redirect!
-      expect(response.body).to include("automatically enrolled in #{challenge.name}")
+      expect(response.body).to include("Joined!")
 
       # Step 5: Verify user is enrolled and session is cleaned up
       new_user = User.find_by(email: "newuser@example.com")

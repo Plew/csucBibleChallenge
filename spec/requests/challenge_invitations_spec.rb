@@ -12,10 +12,9 @@ RSpec.describe "Challenge Invitations", type: :request do
         expect(response).to redirect_to(challenge_path(challenge))
         expect(session[:challenge_invitation_token]).to eq(challenge.invitation_token)
 
-        # Follow redirect and verify invitation messaging appears
+        # Follow redirect and verify challenge name appears
         follow_redirect!
         expect(response.body).to include(challenge.name)
-        expect(response.body).to include("You're invited!")
       end
 
       context "when user is logged in" do

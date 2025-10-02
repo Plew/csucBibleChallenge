@@ -120,6 +120,26 @@ RSpec.describe "Admin::Challenges", type: :request do
         follow_redirect!
         expect(response.body).to include("Challenge was successfully updated")
       end
+
+      it "updates only the description field when other fields unchanged" do
+        original_title = challenge.title
+        original_timezone = challenge.timezone
+        original_start_date = challenge.start_date
+
+        patch admin_challenge_path(challenge), params: {
+          challenge: {
+            title: original_title,
+            description: "Only description changed",
+            timezone: original_timezone,
+            start_date: original_start_date
+          }
+        }
+
+        challenge.reload
+        expect(challenge.description).to eq("Only description changed")
+        expect(challenge.title).to eq(original_title)
+        expect(challenge.timezone).to eq(original_timezone)
+      end
     end
 
     context "with invalid parameters" do

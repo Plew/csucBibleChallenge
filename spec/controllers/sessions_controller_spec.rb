@@ -57,10 +57,10 @@ RSpec.describe SessionsController, type: :controller do
         expect(session[:user_id]).to eq(user.id)
       end
 
-      it 'redirects to reading path' do
+      it 'redirects to challenges path' do
         user # Force creation of user before the request
         post :create, params: valid_credentials
-        expect(response).to redirect_to(reading_path)
+        expect(response).to redirect_to(challenges_path)
       end
     end
 

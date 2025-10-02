@@ -6,7 +6,7 @@
 
   <div class="card bg-base-100 shadow-xl">
     <div class="card-body">
-      <%= form_with(model: [:admin, @challenge], local: true, class: "space-y-6") do |form| %>
+      <%= form_with(model: [:admin, @challenge], local: true, data: { turbo: false }, class: "space-y-6") do |form| %>
         <% if @challenge.errors.any? %>
           <div class="alert alert-error">
             <div>

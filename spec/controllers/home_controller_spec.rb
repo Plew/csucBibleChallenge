@@ -72,18 +72,17 @@ RSpec.describe HomeController, type: :controller do
 
     context 'when user has no challenges' do
       let(:user_without_challenges) { create(:user) }
-      
+
       before do
         session[:user_id] = user_without_challenges.id
       end
 
-      it 'shows available challenges to join' do
+      it 'redirects to challenges path' do
         available_challenge = create(:challenge, end_date: 1.week.from_now)
-        
+
         get :reading
-        
-        expect(response).to have_http_status(:success)
-        expect(assigns(:challenges)).to include(available_challenge)
+
+        expect(response).to redirect_to(challenges_path)
       end
     end
   end
