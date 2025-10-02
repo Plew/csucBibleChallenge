@@ -6,13 +6,16 @@ RSpec.describe "Challenge Invitations", type: :request do
 
   describe "GET /challenges/:token/join" do
     context "with valid invitation token" do
-      it "shows invitation page for non-logged-in users" do
+      it "stores token in session and redirects to challenge show page for non-logged-in users" do
         get challenge_invitation_path(challenge.invitation_token)
-        
-        expect(response).to have_http_status(:success)
-        expect(response.body).to include(challenge.name)
-        expect(response.body).to include("You're Invited!")
+
+        expect(response).to redirect_to(challenge_path(challenge))
         expect(session[:challenge_invitation_token]).to eq(challenge.invitation_token)
+
+        # Follow redirect and verify invitation messaging appears
+        follow_redirect!
+        expect(response.body).to include(challenge.name)
+        expect(response.body).to include("You're invited!")
       end
 
       context "when user is logged in" do

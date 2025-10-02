@@ -24,8 +24,9 @@ class ChallengeInvitationsController < ApplicationController
         redirect_to root_path, alert: "Could not join challenge: #{enrollment.errors.full_messages.to_sentence}"
       end
     else
-      # Show invitation page for non-logged-in users
+      # Store token and redirect to challenge show page for non-logged-in users
       session[:challenge_invitation_token] = @challenge.invitation_token
+      redirect_to challenge_path(@challenge)
     end
   end
 

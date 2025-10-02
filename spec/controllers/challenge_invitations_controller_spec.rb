@@ -7,11 +7,10 @@ RSpec.describe ChallengeInvitationsController, type: :controller do
   describe 'GET #show' do
     context 'with valid invitation token' do
       context 'when user is not logged in' do
-        it 'renders the invitation page and stores token in session' do
+        it 'stores token in session and redirects to challenge show page' do
           get :show, params: { token: challenge.invitation_token }
-          
-          expect(response).to be_successful
-          expect(assigns(:challenge)).to eq(challenge)
+
+          expect(response).to redirect_to(challenge_path(challenge))
           expect(session[:challenge_invitation_token]).to eq(challenge.invitation_token)
         end
       end
