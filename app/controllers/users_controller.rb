@@ -4,6 +4,11 @@ class UsersController < ApplicationController
     @user = User.new
     @challenge_invitation_token = params[:challenge_invitation_token] || session[:challenge_invitation_token]
     session[:challenge_invitation_token] = @challenge_invitation_token if @challenge_invitation_token
+
+    # Store challenge_id for auto-enrollment after signup
+    if params[:challenge_id].present?
+      session[:pending_challenge_id] = params[:challenge_id]
+    end
   end
 
   # POST /users
@@ -11,7 +16,7 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
     if @user.save
       log_in @user # Log in the user after successful registration
-      
+
       # Check for challenge invitation token and auto-enroll
       if session[:challenge_invitation_token].present?
         challenge = Challenge.find_by(invitation_token: session[:challenge_invitation_token])
@@ -19,13 +24,28 @@ class UsersController < ApplicationController
           enrollment = challenge.user_challenge_enrollments.new(user: current_user)
           if enrollment.save
             session.delete(:challenge_invitation_token) # Clear the token
-            redirect_to reading_path, notice: "Welcome! You've been automatically enrolled in #{challenge.name}."
+            session.delete(:pending_challenge_id) # Clear pending challenge if any
+            redirect_to challenge_path(challenge), notice: "Joined!"
             return
           end
         end
         session.delete(:challenge_invitation_token) # Clear token even if enrollment fails
       end
-      
+
+      # Check for pending challenge enrollment (from direct challenge page signup)
+      if session[:pending_challenge_id].present?
+        challenge = Challenge.find_by(id: session[:pending_challenge_id])
+        if challenge && !current_user.challenges.include?(challenge) && current_user.challenges.empty?
+          enrollment = challenge.user_challenge_enrollments.new(user: current_user)
+          if enrollment.save
+            session.delete(:pending_challenge_id) # Clear the pending challenge
+            redirect_to challenge_path(challenge), notice: "Joined!"
+            return
+          end
+        end
+        session.delete(:pending_challenge_id) # Clear pending challenge even if enrollment fails
+      end
+
       redirect_to root_path
     else
       flash[:alert] = @user.errors.full_messages.join(", ")

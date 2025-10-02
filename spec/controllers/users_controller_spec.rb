@@ -169,7 +169,7 @@ RSpec.describe UsersController, type: :controller do
 
     context 'when already logged in' do
       let(:existing_user) { create(:user) }
-      
+
       before { session[:user_id] = existing_user.id }
 
       it 'still allows user creation' do
@@ -183,6 +183,65 @@ RSpec.describe UsersController, type: :controller do
         expect(session[:user_id]).to eq(User.last.id)
         expect(session[:user_id]).not_to eq(existing_user.id)
       end
+    end
+
+    context 'with pending challenge enrollment' do
+      let(:challenge) { create(:challenge) }
+
+      before do
+        session[:pending_challenge_id] = challenge.id
+      end
+
+      it 'auto-enrolls user in the challenge after signup' do
+        post :create, params: { user: valid_attributes }
+        user = User.last
+        expect(user.challenges).to include(challenge)
+      end
+
+      it 'redirects to challenge show page with success message' do
+        post :create, params: { user: valid_attributes }
+        expect(response).to redirect_to(challenge_path(challenge))
+        expect(flash[:notice]).to eq("Joined!")
+      end
+
+      it 'clears the pending challenge from session' do
+        post :create, params: { user: valid_attributes }
+        expect(session[:pending_challenge_id]).to be_nil
+      end
+
+      it 'creates an enrollment record' do
+        expect {
+          post :create, params: { user: valid_attributes }
+        }.to change(UserChallengeEnrollment, :count).by(1)
+      end
+    end
+
+    context 'with challenge invitation token' do
+      let(:challenge) { create(:challenge) }
+
+      before do
+        session[:challenge_invitation_token] = challenge.invitation_token
+      end
+
+      it 'auto-enrolls user via invitation token' do
+        post :create, params: { user: valid_attributes }
+        user = User.last
+        expect(user.challenges).to include(challenge)
+      end
+
+      it 'clears the invitation token from session' do
+        post :create, params: { user: valid_attributes }
+        expect(session[:challenge_invitation_token]).to be_nil
+      end
+    end
+  end
+
+  describe 'GET #new with challenge_id' do
+    let(:challenge) { create(:challenge) }
+
+    it 'stores challenge_id in session' do
+      get :new, params: { challenge_id: challenge.id }
+      expect(session[:pending_challenge_id]).to eq(challenge.id.to_s)
     end
   end
 end
