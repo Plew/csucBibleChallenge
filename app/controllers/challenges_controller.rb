@@ -15,9 +15,6 @@ class ChallengesController < ApplicationController
     @challenge_readings = @challenge.readings.order(:scheduled_date)
     @books_and_chapters = @challenge_readings.group_by(&:book_number).transform_values { |readings| readings.map(&:chapter_number) }
     @user_enrollment = current_user&.user_challenge_enrollments&.find_by(challenge: @challenge)
-
-    # Check if user came from invitation link
-    @is_invitation = session[:challenge_invitation_token] == @challenge.invitation_token
   end
 
   # GET /challenges/:id/summary

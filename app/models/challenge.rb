@@ -30,6 +30,10 @@ class Challenge < ApplicationRecord
     save!
   end
 
+  def join_url
+    Rails.application.routes.url_helpers.challenge_invitation_url(invitation_token)
+  end
+
   private
 
   def end_date_after_start_date

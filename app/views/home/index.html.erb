@@ -3,14 +3,21 @@
     <h1 class="text-4xl font-bold text-base-content mb-6">
       Welcome to Hiera Grammata!
     </h1>
-    
+
     <p class="text-lg text-base-content/80 mb-12 leading-relaxed">
       Join a Bible reading challenge and read one chapter a day, with friends.
     </p>
-    
-    <div class="space-y-4">
+
+    <div class="space-y-4 mb-12">
       <%= link_to "Log In", new_user_session_path, class: "btn btn-primary btn-lg w-full" %>
       <%= link_to "Sign Up", new_user_registration_path, class: "btn btn-outline btn-lg w-full" %>
     </div>
+
+    <% if @challenges.present? %>
+      <div class="text-left">
+        <h2 class="text-base font-semibold mb-4 text-center">Active Challenges</h2>
+        <%= render 'challenges/challenge_list', challenges: @challenges %>
+      </div>
+    <% end %>
   </div>
 </div> 
