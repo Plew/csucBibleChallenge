@@ -5,10 +5,10 @@
     </div>
   <% end %>
   <div class="bg-base-100 shadow-sm rounded-lg p-4 md:p-6">
-    <h1 class="text-lg font-semibold mb-2 text-base-content text-center"><%= @challenge.name %></h1>
-    
+    <h1 class="text-lg font-semibold mb-2 text-base-content line-clamp-2"><%= @challenge.name %></h1>
+
     <% if @challenge.description.present? %>
-      <div class="mb-4 prose prose-sm max-w-none text-center">
+      <div class="mb-4 prose prose-sm max-w-none text-left">
         <%= markdown(@challenge.description) %>
       </div>
     <% end %>
