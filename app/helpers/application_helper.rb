@@ -96,4 +96,25 @@ module ApplicationHelper
     markdown = Redcarpet::Markdown.new(renderer, extensions)
     markdown.render(text).html_safe
   end
+
+  # Returns timezone options for select boxes
+  # Includes all ActiveSupport timezones plus Munich mapped to Berlin
+  #
+  # @return [Array<Array>] Array of [display_name, timezone_identifier] pairs sorted alphabetically
+  #
+  # @example
+  #   timezone_options_for_select
+  #   # => [["Abu Dhabi", "Abu Dhabi"], ["America/New_York", "America/New_York"], ..., ["Munich", "Berlin"]]
+  def timezone_options_for_select
+    options = ActiveSupport::TimeZone.all.map { |tz| [tz.name, tz.name] }
+
+    # Add Munich as an option that maps to Berlin timezone
+    berlin_tz = ActiveSupport::TimeZone['Berlin']
+    if berlin_tz
+      options << ['Munich', berlin_tz.name]
+    end
+
+    # Sort alphabetically for better UX
+    options.sort_by(&:first)
+  end
 end

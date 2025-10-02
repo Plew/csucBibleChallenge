@@ -46,15 +46,9 @@
         <div class="form-control">
           <%= form.label :timezone, class: "label" %>
           <span class="label-text">Timezone</span>
-          <%= form.select :timezone, 
-                options_for_select([
-                  ['Eastern Time (US & Canada)', 'America/New_York'],
-                  ['Central Time (US & Canada)', 'America/Chicago'],
-                  ['Mountain Time (US & Canada)', 'America/Denver'],
-                  ['Pacific Time (US & Canada)', 'America/Los_Angeles'],
-                  ['UTC', 'UTC']
-                ], @challenge.timezone), 
-                { prompt: 'Select timezone' }, 
+          <%= form.select :timezone,
+                options_for_select(timezone_options_for_select, @challenge.timezone),
+                { prompt: 'Select timezone' },
                 { class: "select select-bordered w-full" } %>
         </div>
 
