@@ -1,9 +1,24 @@
 <div class="container mx-auto">
   <% if @user_challenge %>
-    <div class="text-center mb-4">
-      <h2 class="text-lg font-medium text-base-content">
+    <div class="flex items-center justify-between mb-4 px-2">
+      <!-- Previous Day Arrow -->
+      <a href="/reading?date=<%= @previous_date %>" class="flex-shrink-0 p-2 hover:bg-base-200 rounded-full transition-colors">
+        <svg class="w-5 h-5 text-base-content/70" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+        </svg>
+      </a>
+
+      <!-- Date Display -->
+      <h2 class="text-lg font-medium text-base-content text-center">
         <%= @selected_date.strftime('%A, %B %-d, %Y') %>
       </h2>
+
+      <!-- Next Day Arrow -->
+      <a href="/reading?date=<%= @next_date %>" class="flex-shrink-0 p-2 hover:bg-base-200 rounded-full transition-colors">
+        <svg class="w-5 h-5 text-base-content/70" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+        </svg>
+      </a>
     </div>
     
     <% if @selected_reading %>
@@ -26,15 +41,7 @@
       </div>
     <% else %>
       <div class="bg-base-100 shadow-sm rounded-lg p-3 flex flex-col items-center text-center">
-        <h2 class="text-sm font-medium mb-2">No Readings Scheduled</h2>
-        <p class="text-xs">There are no readings scheduled for 
-          <% if @selected_date == Time.current.in_time_zone(@user_challenge.timezone).to_date %>
-            you today
-          <% else %>
-            <%= @selected_date.strftime('%B %-d, %Y') %>
-          <% end %>
-          in the <%= @user_challenge.name %>.
-        </p>
+        <h2 class="text-sm font-medium mb-2">No Reading Scheduled</h2>
       </div>
     <% end %>
   <% end %>

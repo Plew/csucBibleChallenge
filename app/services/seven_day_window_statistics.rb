@@ -28,8 +28,8 @@ class SevenDayWindowStatistics
 
   def base_users_query
     return User.none unless @challenge
-    
-    User.joins(:user_readings, :challenges)
+
+    User.joins(:challenges)
         .where(challenges: { id: @challenge.id })
         .where.not(challenges: { timezone: nil })
         .distinct

@@ -53,6 +53,10 @@ class HomeController < ApplicationController
         @selected_reading_verses = @selected_reading.verses(version: user_version).map { |v| { verse_number: v.verse_number, verse_text: v.verse_text } }
       end
 
+      # Calculate previous and next dates for navigation
+      @previous_date = @selected_date - 1.day
+      @next_date = @selected_date + 1.day
+
       # Always use mobile mode (7 days maximum)
       @is_mobile = true  # Always assume mobile for consistent UI
       

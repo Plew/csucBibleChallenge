@@ -1,10 +1,4 @@
 <div class="container mx-auto px-2 py-6">
-  <div class="text-sm breadcrumbs mb-4">
-    <ul>
-      <li><%= link_to "Groups", groups_path, class: "link link-hover" %></li>
-      <li><%= group.name %></li>
-    </ul>
-  </div>
   <% if can_join_group? %>
     <div class="bg-base-100 rounded-lg shadow p-4 mb-2">
       <div class="mt-2">
@@ -43,19 +37,13 @@
         </li>
       <% end %>
     </ul>
-    
-    <% if is_user_in_this_group? %>
-      <div class="mt-8 flex justify-center">
-        <%= button_to 'Leave Group', leave_groups_path, method: :post, data: { turbo: true, confirm: 'Are you sure you want to leave your group?' }, class: 'btn btn-error btn-sm' %>
-      </div>
-    <% end %>
 
     <% if can_toggle_closed_status? %>
       <div class="mt-4 pt-4 border-t border-base-300">
         <%= form_with url: toggle_closed_group_path(group), method: :patch, local: true, class: "flex items-center gap-3" do |form| %>
           <div class="form-control">
-            <%= form.check_box :closed_to_new_members, 
-                checked: group.closed_to_new_members, 
+            <%= form.check_box :closed_to_new_members,
+                checked: group.closed_to_new_members,
                 class: "checkbox checkbox-sm",
                 onchange: "this.form.submit();" %>
           </div>
@@ -66,6 +54,12 @@
       </div>
     <% end %>
   </div>
+
+  <% if is_user_in_this_group? %>
+    <div class="mt-4 flex justify-end">
+      <%= link_to 'Leave Group', leave_groups_path, method: :post, data: { turbo_method: :post, turbo_confirm: 'Are you sure you want to leave this group?' }, class: 'link link-error text-sm' %>
+    </div>
+  <% end %>
 
   <!-- Group Chat Component -->
   <%# render GroupChatComponent.new(group: group, current_user: current_user, user_group: user_group) %>

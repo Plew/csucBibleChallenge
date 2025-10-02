@@ -25,7 +25,12 @@ class UsersController < ApplicationController
           if enrollment.save
             session.delete(:challenge_invitation_token) # Clear the token
             session.delete(:pending_challenge_id) # Clear pending challenge if any
-            redirect_to challenge_path(challenge), notice: "Joined!"
+            # Redirect to reading page if challenge has started, otherwise to challenge page
+            if challenge.start_date <= Date.current && challenge.end_date >= Date.current
+              redirect_to reading_path, notice: "Joined!"
+            else
+              redirect_to challenge_path(challenge), notice: "Joined!"
+            end
             return
           end
         end
@@ -39,7 +44,12 @@ class UsersController < ApplicationController
           enrollment = challenge.user_challenge_enrollments.new(user: current_user)
           if enrollment.save
             session.delete(:pending_challenge_id) # Clear the pending challenge
-            redirect_to challenge_path(challenge), notice: "Joined!"
+            # Redirect to reading page if challenge has started, otherwise to challenge page
+            if challenge.start_date <= Date.current && challenge.end_date >= Date.current
+              redirect_to reading_path, notice: "Joined!"
+            else
+              redirect_to challenge_path(challenge), notice: "Joined!"
+            end
             return
           end
         end

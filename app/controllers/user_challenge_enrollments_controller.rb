@@ -16,7 +16,12 @@ class UserChallengeEnrollmentsController < ApplicationController
     # @enrollment.group_id = params[:group_id] # Ensure group_id is permitted and valid
 
     if @enrollment.save
-      redirect_to challenge_path(@challenge) #, notice: "Successfully joined #{@challenge.name}!"
+      # Redirect to reading page if challenge has started, otherwise to challenge page
+      if @challenge.start_date <= Date.current && @challenge.end_date >= Date.current
+        redirect_to reading_path
+      else
+        redirect_to challenge_path(@challenge)
+      end
     else
       # If coming from a dedicated join page, render :new might be appropriate
       # For now, redirecting to challenge details with an alert

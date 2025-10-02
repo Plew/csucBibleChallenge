@@ -14,9 +14,14 @@ class SessionsController < ApplicationController
       log_in user
       # TODO: Implement remember me functionality if params[:session][:remember_me] == '1'
 
-      # Redirect to user's first challenge show page if they have one
+      # Redirect to reading page if user has an active challenge, otherwise to challenge show page
       if user.challenges.any?
-        redirect_to challenge_path(user.challenges.first)
+        first_challenge = user.challenges.first
+        if first_challenge.start_date <= Date.current && first_challenge.end_date >= Date.current
+          redirect_to reading_path
+        else
+          redirect_to challenge_path(first_challenge)
+        end
       else
         redirect_to challenges_path
       end
