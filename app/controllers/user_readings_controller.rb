@@ -14,12 +14,6 @@ class UserReadingsController < ApplicationController
     current_date_in_challenge_tz = Time.current.in_time_zone(challenge.timezone).to_date
     scheduled_date = @reading.scheduled_date
 
-    if current_date_in_challenge_tz > scheduled_date
-      flash[:alert] = "Cannot mark readings for past dates."
-      redirect_to params[:date].present? ? root_path(date: params[:date]) : root_path
-      return
-    end
-
     if current_date_in_challenge_tz < scheduled_date
       flash[:alert] = "Cannot mark readings for future dates. This reading is scheduled for #{scheduled_date}."
       redirect_to params[:date].present? ? root_path(date: params[:date]) : root_path

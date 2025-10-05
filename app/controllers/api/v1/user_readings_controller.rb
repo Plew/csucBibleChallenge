@@ -26,10 +26,6 @@ class Api::V1::UserReadingsController < Api::BaseController
       return render json: { errors: ["Cannot mark readings for future dates. This reading is scheduled for #{scheduled_date}. Current date in timezone is #{current_date_in_challenge_tz}."] }, status: :forbidden
     end
 
-    unless current_date_in_challenge_tz == scheduled_date
-      return render json: { errors: ["Check-ins are only allowed on the scheduled date of the reading (#{scheduled_date}) in the challenge's timezone (#{challenge.timezone}). Current date in timezone is #{current_date_in_challenge_tz}."] }, status: :forbidden
-    end
-
     @user_reading = UserReading.new(user: current_user, reading: @reading, completed_on: current_date_in_challenge_tz)
 
     if @user_reading.save
