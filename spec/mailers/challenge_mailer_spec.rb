@@ -24,7 +24,7 @@ RSpec.describe ChallengeMailer, type: :mailer do
     it "renders the headers" do
       expect(mail.subject).to eq("Daily Summary: Test Challenge")
       expect(mail.to).to eq(["creator@example.com"])
-      expect(mail.from).to eq(["noreply@mail.hiegra.com"])
+      expect(mail.from).to eq(["noreply@mail.csmbiblechallenge.com"])
     end
 
     it "renders the body" do

@@ -42,39 +42,39 @@ RSpec.describe GroupsController, type: :controller do
     end
   end
 
-  describe 'PATCH #toggle_closed' do
+  describe 'PATCH #update' do
     context 'when user is the group creator' do
       let(:creator_group) { create(:group, challenge: challenge, creator: user) }
 
-      it 'toggles closed_to_new_members to true' do
-        patch :toggle_closed, params: { id: creator_group.id, closed_to_new_members: '1' }
+      it 'updates closed_to_new_members to true' do
+        patch :update, params: { id: creator_group.id, group: { closed_to_new_members: '1' } }
         creator_group.reload
         expect(creator_group.closed_to_new_members).to eq(true)
       end
 
-      it 'toggles closed_to_new_members to false' do
+      it 'updates closed_to_new_members to false' do
         creator_group.update!(closed_to_new_members: true)
-        patch :toggle_closed, params: { id: creator_group.id, closed_to_new_members: '0' }
+        patch :update, params: { id: creator_group.id, group: { closed_to_new_members: '0' } }
         creator_group.reload
         expect(creator_group.closed_to_new_members).to eq(false)
       end
 
       it 'redirects to the group page' do
-        patch :toggle_closed, params: { id: creator_group.id, closed_to_new_members: '1' }
+        patch :update, params: { id: creator_group.id, group: { closed_to_new_members: '1' } }
         expect(response).to redirect_to(group_path(creator_group))
       end
     end
 
     context 'when user is not the group creator' do
       it 'redirects with alert message' do
-        patch :toggle_closed, params: { id: group.id, closed_to_new_members: '1' }
+        patch :update, params: { id: group.id, group: { closed_to_new_members: '1' } }
         expect(response).to redirect_to(group_path(group))
-        expect(flash[:alert]).to eq('Only the group creator can perform this action.')
+        expect(flash[:alert]).to eq('Only the group creator can edit this group.')
       end
 
       it 'does not update the group' do
         original_status = group.closed_to_new_members
-        patch :toggle_closed, params: { id: group.id, closed_to_new_members: '1' }
+        patch :update, params: { id: group.id, group: { closed_to_new_members: '1' } }
         group.reload
         expect(group.closed_to_new_members).to eq(original_status)
       end

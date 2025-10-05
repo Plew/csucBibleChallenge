@@ -198,9 +198,9 @@ RSpec.describe UsersController, type: :controller do
         expect(user.challenges).to include(challenge)
       end
 
-      it 'redirects to challenge show page with success message' do
+      it 'redirects to reading page with success message (since challenge is active)' do
         post :create, params: { user: valid_attributes }
-        expect(response).to redirect_to(challenge_path(challenge))
+        expect(response).to redirect_to(reading_path)
         expect(flash[:notice]).to eq("Joined!")
       end
 

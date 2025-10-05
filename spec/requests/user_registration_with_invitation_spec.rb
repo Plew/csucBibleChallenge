@@ -28,8 +28,8 @@ RSpec.describe "User Registration with Challenge Invitation", type: :request do
       }.to change(User, :count).by(1)
         .and change(UserChallengeEnrollment, :count).by(1)
 
-      # Step 4: User is redirected to challenge show page with success message
-      expect(response).to redirect_to(challenge_path(challenge))
+      # Step 4: User is redirected to reading page with success message (since challenge is active)
+      expect(response).to redirect_to(reading_path)
       follow_redirect!
       expect(response.body).to include("Joined!")
 
