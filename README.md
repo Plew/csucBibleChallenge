@@ -1,60 +1,130 @@
-# README
+# Bible Reading Challenge App
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+A Rails 8 application for managing Bible reading challenges. Users can join challenges, track their reading progress, and participate in groups.
 
-Things you may want to cover:
+## Quick Start
 
-Codespaces:
+```bash
+git clone <repository-url>
+cd nargh
+bin/setup
+bin/dev
+```
 
-Setting up codespaces with Cursor is hard; Cursor does not connect to codespaces natively yet.
+**📖 For detailed setup instructions, see [SETUP.md](SETUP.md)**
 
-So set up a working codespace and then once it is running, connect to it from Cursor via ssh, using the  `gh cs ssh` command.  Make sure this command works first from cli before you try to connect from Cursor.
+The app will be available at `http://localhost:3000`
 
-`gh cs ssh --config` will spit out config that you can put into .ssh/config as a kind of ssh alias to use from within Cursor.
+**Test Account:** `pdbradley@gmail.com` / `nargh111`
 
+## Requirements
 
-https://thenounproject.com/icon/checkbox-2578273/
-https://thenounproject.com/icon/checkbox-2578274/
-checkboxes above.  SO HARD to find two matching with the same width!
+- Ruby 3.x
+- Node.js and npm
+- SQLite3
 
-next prev
-https://thenounproject.com/icon/back-arrow-7210852/
+## What is This?
 
+This is a Bible reading challenge app where users can:
+- Join reading challenges with scheduled daily readings
+- Track progress through Bible chapters
+- Participate in groups within challenges
+- View personal and group statistics
+- Read Bible verses in multiple versions (KJV, Elberfelder)
 
+## Project Structure
 
+### Key Models
 
+- `User` - Authentication with secure password, avatar support
+- `Challenge` - Reading challenges with timezone support
+- `Reading` - Individual Bible chapters within challenges
+- `Group` - Optional groups within challenges
+- `UserReading` - Progress tracking (completed readings)
+- `Verse` - Bible text storage (KJV and other versions)
 
-IDE Pain
+### Tech Stack
 
-Find it faster terminal window alongside the others? none of the vim bindings work in it
+**Backend:**
+- Rails 8
+- SQLite3 (development/test)
+- Session-based authentication
+- REST API at `/api/v1/`
 
-Find it faster but only open tabs?
-Going to history in find it faster or vim commands easily
-adding a new file alongside another
+**Frontend:**
+- Tailwind CSS + DaisyUI components
+- Hotwire (Turbo + Stimulus)
+- ViewComponent for reusable UI
+- Mobile-first responsive design
 
-can I do pure neovim and still have cursor help?
-dismissing cursor windows more easily
-faster key repeat hack
-when on a file in explorer, select and jump to it not neeeding command 1
+## Development
 
+### Common Commands
 
-menu ideas:
+```bash
+# Start development server
+bin/dev
 
-One person (checkbox, personal sparklines)
-Group (groups showing create / join a group)
-Globe (ticker)
-Statistics
+# Run tests
+bundle exec rspec
 
+# Generate test data (Munich challenge with groups/users)
+bin/rails fake_munich:generate
 
+# Build CSS
+npm run build:css
 
-Docker headache
+# View component library
+bin/rails lookbook
 
-kamal can break running the Dockerfile.  To reproduce locally:
-$ docker build -t foo .    
+# Code quality
+bundle exec rubocop   # Linter
+bundle exec brakeman  # Security scanner
+```
 
-$ docker run -it --user root foo /bin/bash
+### Database
 
-REMEMBER kamal builds the image locally.  You can reproduce deployment headache by doing kamal deploy and cutting and pasting the docker build command locally
+```bash
+bin/rails db:migrate          # Run migrations
+bin/rails db:seed             # Import Bible verses
+bin/rails fake_munich:generate # Generate test challenge data
+```
 
+## Production
 
+Deployed to `reverse.eleven89.org` using Kamal.
+
+```bash
+kamal deploy  # Deploy to production
+kamal logs    # View logs
+```
+
+Production credentials (AWS SES for email) are encrypted in `config/credentials.yml.enc`. Development doesn't require credentials.
+
+## Documentation
+
+- **[SETUP.md](SETUP.md)** - Complete setup and troubleshooting guide
+- **[CLAUDE.md](CLAUDE.md)** - Development guidelines for AI assistance
+- **[docs/prd.md](docs/prd.md)** - Product requirements and API specs
+- **[.cursor/rules/](.cursor/rules/)** - Code style and development protocols
+
+## Troubleshooting
+
+See [SETUP.md](SETUP.md) for detailed troubleshooting.
+
+Quick fixes:
+
+```bash
+# Server won't start
+rm tmp/pids/server.pid && bin/dev
+
+# Missing Bible data
+bin/rails db:seed
+
+# CSS not building
+npm install && npm run build:css
+```
+
+## License
+
+[Add your license here]
