@@ -1,5 +1,5 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: 'noreply@mail.hiegra.com'
+  default from: 'noreply@mail.csmbiblechallenge.com'
   layout 'mailer'
 end
 
