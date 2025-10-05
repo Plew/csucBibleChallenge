@@ -1,24 +1,24 @@
 <div class="px-2">
   <% unless @user_enrollment %>
-    <div class="mb-4">
+    <div class="mb-4 flex justify-between items-center">
       <%= link_to "← Back", root_path, class: "text-sm text-base-content/70 hover:text-base-content" %>
-    </div>
-  <% end %>
-  <div class="bg-base-100 shadow-sm rounded-lg p-4 md:p-6">
-    <div class="flex justify-between items-start mb-2">
-      <h1 class="text-lg font-semibold text-base-content line-clamp-2 flex-1"><%= @challenge.name %></h1>
       <button
         data-controller="share"
         data-share-url-value="<%= @challenge.join_url %>"
         data-share-title-value="<%= @challenge.name %>"
         data-share-text-value="Join me in this Bible reading challenge!"
         data-action="click->share#share"
-        class="btn btn-circle btn-sm btn-outline btn-primary ml-2"
+        class="btn btn-circle btn-sm btn-outline btn-primary"
         title="Share challenge">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185z" />
         </svg>
       </button>
+    </div>
+  <% end %>
+  <div class="bg-base-100 shadow-sm rounded-lg p-4 md:p-6">
+    <div class="flex justify-between items-start mb-2">
+      <h1 class="text-lg font-semibold text-base-content line-clamp-2 flex-1"><%= @challenge.name %></h1>
     </div>
 
     <% if @challenge.description.present? %>
@@ -40,10 +40,6 @@
             <tr>
               <td class="font-semibold text-xs py-1">End Date</td>
               <td class="text-xs py-1"><%= @challenge.end_date.strftime('%B %-d, %Y') %></td>
-            </tr>
-            <tr>
-              <td class="font-semibold text-xs py-1">Num Participants</td>
-              <td class="text-xs py-1"><%= @user_count %></td>
             </tr>
             <% if @most_recent_user %>
               <tr>
@@ -71,6 +67,29 @@
       <% end %>
     </div>
 
+    <% if @participants.any? %>
+      <div class="mb-6">
+        <div class="collapse collapse-arrow border-base-300 bg-base-200 border">
+          <input type="checkbox" id="participants-collapse">
+          <label for="participants-collapse" class="collapse-title text-xl font-medium">
+            Participants: <%= @user_count %>
+          </label>
+          <div class="collapse-content">
+            <div class="space-y-1">
+              <% @participants.each do |participant| %>
+                <div class="flex items-center gap-3 px-3 py-2 bg-base-100 rounded-lg">
+                  <div>
+                    <%= avatar_image_tag(participant, :tiny, class: 'rounded-full') %>
+                  </div>
+                  <div class="font-medium text-sm"><%= participant.name %></div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
     <% if @challenge_readings.any? %>
       <div class="mb-6">
         <div class="collapse collapse-arrow border-base-300 bg-base-200 border">
@@ -78,24 +97,14 @@
           <label for="reading-schedule-collapse" class="collapse-title text-xl font-medium">
             Reading Schedule
           </label>
-          <div class="collapse-content"> 
-            <div class="overflow-x-auto">
-              <table class="table table-xs">
-                <thead>
-                  <tr>
-                    <th class="text-xs">Date</th>
-                    <th class="text-xs">Chapter</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <% @challenge_readings.each do |reading| %>
-                    <tr>
-                      <td class="text-xs py-1"><%= reading.scheduled_date.strftime('%m/%d/%Y') %></td>
-                      <td class="text-xs py-1"><%= book_number_to_name(reading.book_number) %> <%= reading.chapter_number %></td>
-                    </tr>
-                  <% end %>
-                </tbody>
-              </table>
+          <div class="collapse-content">
+            <div class="space-y-1">
+              <% @challenge_readings.each do |reading| %>
+                <div class="flex items-center justify-between px-3 py-2 bg-base-100 rounded-lg">
+                  <div class="text-xs font-medium text-primary"><%= reading.scheduled_date.strftime('%m/%d/%Y') %></div>
+                  <div class="text-xs font-medium"><%= book_number_to_name(reading.book_number) %> <%= reading.chapter_number %></div>
+                </div>
+              <% end %>
             </div>
           </div>
         </div>

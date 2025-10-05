@@ -1,17 +1,19 @@
 <% if challenges.any? %>
   <div class="grid grid-cols-1 gap-4">
     <% challenges.each do |challenge| %>
-      <div class="bg-base-100 shadow-sm rounded-lg p-3 flex flex-row items-center justify-between">
-        <div class="flex-grow">
-          <h2 class="text-sm font-medium line-clamp-2"><%= challenge.name %></h2>
-          <div class="text-xs text-base-content/70 line-clamp-4 prose prose-xs max-w-none">
-            <%= challenge.description.present? ? markdown(challenge.description) : "No description available" %>
+      <%= link_to challenge_path(challenge), class: "block" do %>
+        <div class="bg-base-100 shadow-sm rounded-lg p-3 flex flex-row items-center justify-between hover:bg-base-200 transition-colors">
+          <div class="flex-grow">
+            <h2 class="text-sm font-medium line-clamp-2"><%= challenge.name %></h2>
+            <div class="text-xs text-base-content/70 line-clamp-4 prose prose-xs max-w-none">
+              <%= challenge.description.present? ? markdown(challenge.description) : "No description available" %>
+            </div>
+          </div>
+          <div class="flex-shrink-0 ml-3">
+            <span class="btn btn-primary btn-xs h-6">Join Challenge</span>
           </div>
         </div>
-        <div class="flex-shrink-0 ml-3">
-          <%= link_to "Details", challenge_path(challenge), class: "btn btn-primary btn-xs h-6" %>
-        </div>
-      </div>
+      <% end %>
     <% end %>
   </div>
 <% else %>
