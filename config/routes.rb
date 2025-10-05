@@ -49,10 +49,11 @@ Rails.application.routes.draw do
   resources :user_challenge_enrollments, only: [:destroy] # DELETE /user_challenge_enrollments/:id
 
   # User Profile UI
-  get 'profile', to: 'profile#index', as: :profile
+  get 'account', to: 'profile#index', as: :account
+  get 'profile', to: redirect('/account') # Redirect old profile path to account
   namespace :profile do
     resource :details, only: [:edit, :update], controller: 'details'
-    resource :password, only: [:edit, :update], controller: 'passwords'  
+    resource :password, only: [:edit, :update], controller: 'passwords'
     resource :avatar, only: [:edit, :update], controller: 'avatars'
     resource :version, only: [:edit, :update], controller: 'versions'
     resource :email_preferences, only: [:edit, :update], controller: 'email_preferences'
