@@ -1,0 +1,6 @@
+class AddUnsubscribeDigestToUsers < ActiveRecord::Migration[8.0]
+  def change
+    add_column :users, :unsubscribe_digest, :string
+    add_column :users, :unsubscribe_sent_at, :datetime
+  end
+end

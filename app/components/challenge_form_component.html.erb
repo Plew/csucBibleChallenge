@@ -42,6 +42,13 @@
             <%= form.label :timezone, "Timezone", class: "label" %>
             <%= form.select :timezone, options_for_select(timezone_options, default_timezone), {}, { class: "select select-bordered w-full" } %>
           </div>
+
+          <div class="form-control">
+            <label class="label cursor-pointer justify-start gap-2">
+              <%= form.check_box :hidden, class: "checkbox" %>
+              <span class="label-text">Hide this challenge from public view</span>
+            </label>
+          </div>
         </div>
       </div>
 

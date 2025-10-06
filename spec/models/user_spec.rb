@@ -143,4 +143,68 @@ RSpec.describe User, type: :model do
       expect(user.daily_email).to be_truthy
     end
   end
+
+  describe '#create_unsubscribe_digest' do
+    let(:user) { create(:user) }
+
+    it 'generates a unique token' do
+      token = user.create_unsubscribe_digest
+      expect(token).to be_present
+      expect(token.length).to be > 20
+    end
+
+    it 'saves the token to unsubscribe_digest' do
+      token = user.create_unsubscribe_digest
+      user.reload
+      expect(user.unsubscribe_digest).to eq(token)
+    end
+
+    it 'sets unsubscribe_sent_at to current time' do
+      user.create_unsubscribe_digest
+      user.reload
+      expect(user.unsubscribe_sent_at).to be_within(1.second).of(Time.current)
+    end
+
+    it 'generates different tokens on each call' do
+      token1 = user.create_unsubscribe_digest
+      token2 = user.create_unsubscribe_digest
+      expect(token1).not_to eq(token2)
+    end
+  end
+
+  describe '#unsubscribe_token_valid?' do
+    let(:user) { create(:user) }
+
+    context 'when token was just created' do
+      it 'returns true' do
+        user.create_unsubscribe_digest
+        expect(user.unsubscribe_token_valid?).to be true
+      end
+    end
+
+    context 'when token is within 24 hours' do
+      it 'returns true' do
+        user.create_unsubscribe_digest
+        user.update_column(:unsubscribe_sent_at, 23.hours.ago)
+        expect(user.unsubscribe_token_valid?).to be true
+      end
+    end
+
+    context 'when token is older than 24 hours' do
+      it 'returns false' do
+        user.create_unsubscribe_digest
+        user.update_column(:unsubscribe_sent_at, 25.hours.ago)
+        expect(user.unsubscribe_token_valid?).to be false
+      end
+    end
+
+    context 'when unsubscribe_sent_at is nil' do
+      it 'returns false' do
+        user.unsubscribe_digest = 'some_token'
+        user.unsubscribe_sent_at = nil
+        user.save!(validate: false)
+        expect(user.unsubscribe_token_valid?).to eq(false)
+      end
+    end
+  end
 end

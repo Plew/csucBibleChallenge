@@ -37,6 +37,18 @@ class User < ApplicationRecord
     password_reset_sent_at && password_reset_sent_at > 2.hours.ago
   end
 
+  def create_unsubscribe_digest
+    token = SecureRandom.urlsafe_base64
+    self.unsubscribe_digest = token
+    self.unsubscribe_sent_at = Time.current
+    save!(validate: false)
+    token
+  end
+
+  def unsubscribe_token_valid?
+    !!(unsubscribe_sent_at && unsubscribe_sent_at > 24.hours.ago)
+  end
+
   def admin?
     admin
   end

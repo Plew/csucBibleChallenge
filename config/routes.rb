@@ -30,6 +30,9 @@ Rails.application.routes.draw do
   get 'password_reset/:token/edit', to: 'password_resets#edit', as: :edit_password_reset
   patch 'password_reset/:token', to: 'password_resets#update', as: :update_password_reset
 
+  # Unsubscribe route
+  get 'unsubscribe/:token', to: 'unsubscribe#show', as: :unsubscribe
+
   # Language switching
   patch 'language', to: 'languages#update', as: :update_language
 

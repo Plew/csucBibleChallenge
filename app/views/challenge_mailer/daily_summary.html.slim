@@ -21,3 +21,10 @@ h2 Participants (#{@participants.count})
 
 p Thanks,
 p The CSM Bible Challenge Team
+
+hr style="margin: 20px 0; border: none; border-top: 1px solid #ccc;"
+
+p style="font-size: 12px; color: #666;"
+  | To manage your email preferences,
+  = link_to "click here", unsubscribe_url_for(@challenge.creator)
+  | .

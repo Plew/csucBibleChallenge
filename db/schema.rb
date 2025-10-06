@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_02_185958) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_06_093028) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -52,6 +52,21 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_02_185958) do
     t.boolean "hidden", default: false, null: false
     t.index ["creator_id"], name: "index_challenges_on_creator_id"
     t.index ["invitation_token"], name: "index_challenges_on_invitation_token", unique: true
+  end
+
+  create_table "email_login_tokens", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "challenge_id", null: false
+    t.integer "reading_id", null: false
+    t.string "token", null: false
+    t.datetime "clicked_at"
+    t.datetime "sent_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["challenge_id"], name: "index_email_login_tokens_on_challenge_id"
+    t.index ["reading_id"], name: "index_email_login_tokens_on_reading_id"
+    t.index ["token"], name: "index_email_login_tokens_on_token", unique: true
+    t.index ["user_id"], name: "index_email_login_tokens_on_user_id"
   end
 
   create_table "feedbacks", force: :cascade do |t|
@@ -261,6 +276,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_02_185958) do
     t.string "reset_digest"
     t.datetime "password_reset_sent_at"
     t.boolean "daily_email", default: true
+    t.string "unsubscribe_digest"
+    t.datetime "unsubscribe_sent_at"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
   end
@@ -283,6 +300,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_02_185958) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "challenges", "users", column: "creator_id"
+  add_foreign_key "email_login_tokens", "challenges"
+  add_foreign_key "email_login_tokens", "readings"
+  add_foreign_key "email_login_tokens", "users"
   add_foreign_key "feedbacks", "users"
   add_foreign_key "group_messages", "groups"
   add_foreign_key "group_messages", "users"
