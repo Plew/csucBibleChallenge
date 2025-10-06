@@ -48,6 +48,7 @@ builder:
 env:
   clear:
     APP_HOST: csmbiblechallenge.com
+    JOB_CONCURRENCY: 1
   secret:
     - RAILS_MASTER_KEY
 
