@@ -147,3 +147,4 @@ note that kamal deploy could be a background task so that you can finish this ta
 - actually it is fine to save it in the .playwright-mcp folder, please remove the instructions that said contrary
 - any info about recurring jobs is in config/recurring.yml
 - do not run the rails server directly always use bin/dev.  one reason it may not work is that you need to remove the old pid file
+- any time i want to show an avatar, use avatar_image_tag in application_helper.rb
