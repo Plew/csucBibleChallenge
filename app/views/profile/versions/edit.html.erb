@@ -17,16 +17,14 @@
               <p class="text-sm text-base-content/70">Current version: <strong><%= @user.version || 'KJV' %></strong></p>
             </div>
             
-            <%= f.select :version, 
+            <%= f.select :version,
                 options_for_select([
-                  ['American Standard Version (ASV)', 'ASV'],
-                  ['Elberfelder Bibel 2006 (German)', 'ELB2006'],
                   ['English Standard Version (ESV)', 'ESV'],
                   ['King James Version (KJV)', 'KJV'],
-                  ['New American Standard Bible (NASB)', 'NASB'],
-                  ['New King James Version (NKJV)', 'NKJV']
-                ], @user.version), 
-                {}, 
+                  ['Elberfelder Bibel 2006 (German)', 'ELB2006'],
+                  ['Schlachter 2000 (German)', 'Schlachter 2000']
+                ], @user.version),
+                {},
                 { class: "select select-bordered w-full" } %>
             
             <div class="label">

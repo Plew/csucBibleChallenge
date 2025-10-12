@@ -52,3 +52,4 @@
 # Ignore SQLite database files
 *.sqlite3
 *.sqlite3-*
+db/fixtures/de_schlachter.xml

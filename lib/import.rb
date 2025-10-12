@@ -4,7 +4,8 @@ require 'cgi'
 class Import
   FILE_PATHS = [
     Rails.root.join('db', 'texts', 'lubbock_texts.csv'),
-    Rails.root.join('db', 'texts', 'elberfelder_2006.csv')
+    Rails.root.join('db', 'texts', 'elberfelder_2006.csv'),
+    Rails.root.join('db', 'texts', 'schlachter_2000.csv')
   ]
 
   # Map book names to book numbers based on ApplicationHelper.book_number_to_name
@@ -14,7 +15,7 @@ class Import
     'Joshua' => 6, 'Judges' => 7, 'Ruth' => 8, 'First Samuel' => 9, 'Second Samuel' => 10,
     'First Kings' => 11, 'Second Kings' => 12, 'First Chronicles' => 13, 'Second Chronicles' => 14,
     'Ezra' => 15, 'Nehemiah' => 16, 'Esther' => 17, 'Job' => 18, 'Psalms' => 19,
-    'Proverbs' => 20, 'Ecclesiastes' => 21, 'Song of Songs' => 22, 'Isaiah' => 23, 'Jeremiah' => 24,
+    'Proverbs' => 20, 'Ecclesiastes' => 21, 'Song of Songs' => 22, 'Song of Solomon' => 22, 'Isaiah' => 23, 'Jeremiah' => 24,
     'Lamentations' => 25, 'Ezekiel' => 26, 'Daniel' => 27, 'Hosea' => 28, 'Joel' => 29,
     'Amos' => 30, 'Obadiah' => 31, 'Jonah' => 32, 'Micah' => 33, 'Nahum' => 34,
     'Habakkuk' => 35, 'Zephaniah' => 36, 'Haggai' => 37, 'Zechariah' => 38, 'Malachi' => 39,
@@ -30,6 +31,9 @@ class Import
     'First John' => 62, 'Second John' => 63, 'Third John' => 64,
     
     # Numbered books - "1/2/3" format (from CSV)
+    '1 Samuel' => 9, '2 Samuel' => 10,
+    '1 Kings' => 11, '2 Kings' => 12,
+    '1 Chronicles' => 13, '2 Chronicles' => 14,
     '1 Corinthians' => 46, '2 Corinthians' => 47,
     '1 Thessalonians' => 52, '2 Thessalonians' => 53,
     '1 Timothy' => 54, '2 Timothy' => 55,
