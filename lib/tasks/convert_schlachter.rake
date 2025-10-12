@@ -50,7 +50,7 @@ namespace :convert_schlachter do
 
             csv << [
               text_id,
-              'Schlachter 2000',
+              'SCHL2000',
               import_book_name,
               chapter_num,
               verse_num,
