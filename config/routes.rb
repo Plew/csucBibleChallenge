@@ -33,6 +33,9 @@ Rails.application.routes.draw do
   # Unsubscribe route
   get 'unsubscribe/:token', to: 'unsubscribe#show', as: :unsubscribe
 
+  # Email Login routes
+  get 'email_login/:token', to: 'email_login#show', as: :email_login
+
   # Language switching
   patch 'language', to: 'languages#update', as: :update_language
 
