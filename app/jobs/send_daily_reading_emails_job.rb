@@ -7,9 +7,6 @@ class SendDailyReadingEmailsJob < ApplicationJob
       # Get current time in the challenge's timezone
       current_time_in_tz = Time.current.in_time_zone(challenge.timezone)
 
-      # Only send emails at 6am in this timezone (check if it's between 6:00 and 6:59)
-      next unless current_time_in_tz.hour == 6
-
       # Get today's reading for this challenge
       today = current_time_in_tz.to_date
       reading = challenge.readings.find_by(scheduled_date: today)
