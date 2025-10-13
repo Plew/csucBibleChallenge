@@ -65,9 +65,9 @@ class TopReadersStatistics
       total_completed += completed_count
     end
 
-    return 0.0 if total_scheduled.zero?
-    
-    (total_completed.to_f / total_scheduled * 100).round(1)
+    return 0 if total_scheduled.zero?
+
+    (total_completed.to_f / total_scheduled * 100).round
   end
 
   def calculate_chapters_data(user)

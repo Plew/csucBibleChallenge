@@ -148,3 +148,4 @@ note that kamal deploy could be a background task so that you can finish this ta
 - any info about recurring jobs is in config/recurring.yml
 - do not run the rails server directly always use bin/dev.  one reason it may not work is that you need to remove the old pid file
 - any time i want to show an avatar, use avatar_image_tag in application_helper.rb
+- I would prefer you don't do a kamal deploy ever unless explicitly asked to do so.

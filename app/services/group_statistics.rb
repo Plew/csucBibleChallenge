@@ -23,7 +23,7 @@ class GroupStatistics
     group_user_ids = group.users.pluck(:id)
     completed_count = UserReading.where(user_id: group_user_ids, reading_id: reading.id).count
     return 0 if group_user_ids.empty?
-    (completed_count.to_f / group_user_ids.size * 100).round(2)
+    (completed_count.to_f / group_user_ids.size * 100).round
   end
 
   # Longest streak where every member completed the reading
@@ -62,6 +62,6 @@ class GroupStatistics
       completed = UserReading.where(user_id: user_id).joins(:reading).where(readings: { challenge_id: challenge.id }).where('readings.scheduled_date <= ?', Date.current).count
       (completed.to_f / total_readings * 100)
     end
-    (percentages.sum / group_user_ids.size).round(2)
+    (percentages.sum / group_user_ids.size).round
   end
 end 
