@@ -1,29 +1,29 @@
 <div class="px-2 py-4">
   <div class="mb-4">
-    <%= link_to "← Back", account_path, class: "btn btn-ghost btn-sm" %>
+    <%= link_to t('common.back'), account_path, class: "btn btn-ghost btn-sm" %>
   </div>
 
   <div class="bg-base-100">
     <div class="p-4">
         <% if @user_enrollment %>
-          <p class="mb-4">You are currently enrolled in: <strong class="font-semibold"><%= @user_enrollment.challenge.name %></strong></p>
+          <p class="mb-4"><%= t('profile.you_are_enrolled') %> <strong class="font-semibold"><%= @user_enrollment.challenge.name %></strong></p>
           <div class="card-actions justify-start mb-6">
-            <%= button_to "Leave Challenge", profile_enrollment_path(@user_enrollment), method: :delete, data: { confirm: "Are you sure you want to leave this challenge? Your progress will be saved." }, class: "btn btn-error btn-outline" %>
-            
+            <%= button_to t('profile.leave_challenge'), profile_enrollment_path(@user_enrollment), method: :delete, data: { confirm: t('profile.leave_confirmation') }, class: "btn btn-error btn-outline" %>
+
             <% if @user_enrollment.challenge.creator == current_user %>
-              <%= link_to "Delete Challenge", delete_challenge_confirmation_profile_enrollment_path(@user_enrollment), class: "btn btn-error ml-2" %>
+              <%= link_to t('challenges.delete_challenge'), delete_challenge_confirmation_profile_enrollment_path(@user_enrollment), class: "btn btn-error ml-2" %>
             <% end %>
           </div>
-          
+
           <% if @user_enrollment.challenge.readings.any? %>
             <div class="mt-6">
-              <h3 class="text-lg font-semibold mb-3">Reading Schedule</h3>
+              <h3 class="text-lg font-semibold mb-3"><%= t('profile.reading_schedule') %></h3>
               <div class="overflow-x-auto">
                 <table class="table table-xs table-zebra">
                   <thead>
                     <tr>
-                      <th>Date</th>
-                      <th>Reading</th>
+                      <th><%= t('profile.date') %></th>
+                      <th><%= t('profile.reading') %></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -43,9 +43,9 @@
             </div>
           <% end %>
         <% else %>
-          <p class="mb-4">You are not currently enrolled in any challenge.</p>
+          <p class="mb-4"><%= t('profile.not_enrolled') %></p>
           <div class="card-actions justify-start">
-            <%= link_to "Browse Available Challenges", root_path, class: "btn btn-primary" %>
+            <%= link_to t('profile.browse_challenges'), root_path, class: "btn btn-primary" %>
           </div>
         <% end %>
     </div>

@@ -1,12 +1,12 @@
 <div class="px-2 py-3">
   <div class="mb-6">
-    <%= link_to "← Back to Stats", stats_path, class: "btn btn-ghost btn-sm" %>
-    <h1 class="text-2xl font-bold text-center mb-1">Personal Statistics</h1>
-    <p class="text-center opacity-70 text-sm">Your individual reading progress and achievements</p>
+    <%= link_to t('stats.back_to_stats'), stats_path, class: "btn btn-ghost btn-sm" %>
+    <h1 class="text-2xl font-bold text-center mb-1"><%= t('stats.personal_stats') %></h1>
+    <p class="text-center opacity-70 text-sm"><%= t('stats.personal_description') %></p>
   </div>
 
   <div class="text-center py-12">
-    <h2 class="text-xl font-semibold mb-2">Coming Soon</h2>
-    <p class="opacity-70">Your personal statistics will be available here soon.</p>
+    <h2 class="text-xl font-semibold mb-2"><%= t('stats.coming_soon') %></h2>
+    <p class="opacity-70"><%= t('stats.coming_soon_message') %></p>
   </div>
 </div>

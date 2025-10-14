@@ -1,60 +1,60 @@
 <div class="container mx-auto px-4 py-8">
-  <h1 class="text-xl font-semibold mb-4 text-center text-base-content">Account Settings</h1>
+  <h1 class="text-xl font-semibold mb-4 text-center text-base-content"><%= t('profile.account_settings') %></h1>
 
   <div class="grid md:grid-cols-2 gap-4 w-full">
     <%# Challenge Enrollment Card %>
     <%= link_to profile_enrollments_path, class: "card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow cursor-pointer w-full" do %>
       <div class="card-body p-4">
-        <h2 class="text-sm font-medium">Challenge Enrollment</h2>
-        <p class="text-xs text-base-content/70">Manage your Bible reading challenge participation</p>
+        <h2 class="text-sm font-medium"><%= t('profile.challenge_enrollment') %></h2>
+        <p class="text-xs text-base-content/70"><%= t('profile.challenge_enrollment_desc') %></p>
       </div>
     <% end %>
 
     <%# Account Details Card %>
     <%= link_to edit_profile_details_path, class: "card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow cursor-pointer w-full" do %>
       <div class="card-body p-4">
-        <h2 class="text-sm font-medium">Account Details</h2>
-        <p class="text-xs text-base-content/70">Update your name and basic information</p>
+        <h2 class="text-sm font-medium"><%= t('profile.account_details') %></h2>
+        <p class="text-xs text-base-content/70"><%= t('profile.account_details_desc') %></p>
       </div>
     <% end %>
 
     <%# Update Avatar Card %>
     <%= link_to edit_profile_avatar_path, class: "card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow cursor-pointer w-full" do %>
       <div class="card-body p-4">
-        <h2 class="text-sm font-medium">Avatar</h2>
-        <p class="text-xs text-base-content/70">Update your profile picture</p>
+        <h2 class="text-sm font-medium"><%= t('profile.avatar') %></h2>
+        <p class="text-xs text-base-content/70"><%= t('profile.avatar_desc') %></p>
       </div>
     <% end %>
 
     <%# Bible Version Card %>
     <%= link_to edit_profile_version_path, class: "card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow cursor-pointer w-full" do %>
       <div class="card-body p-4">
-        <h2 class="text-sm font-medium">Bible Version</h2>
-        <p class="text-xs text-base-content/70">Change your preferred Bible version</p>
+        <h2 class="text-sm font-medium"><%= t('profile.bible_version') %></h2>
+        <p class="text-xs text-base-content/70"><%= t('profile.bible_version_desc') %></p>
       </div>
     <% end %>
 
     <%# Email Preferences Card %>
     <%= link_to edit_profile_email_preferences_path, class: "card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow cursor-pointer w-full" do %>
       <div class="card-body p-4">
-        <h2 class="text-sm font-medium">Email Preferences</h2>
-        <p class="text-xs text-base-content/70">Manage your daily email notifications</p>
+        <h2 class="text-sm font-medium"><%= t('profile.email_preferences') %></h2>
+        <p class="text-xs text-base-content/70"><%= t('profile.email_preferences_desc') %></p>
       </div>
     <% end %>
 
     <%# Change Password Card %>
     <%= link_to edit_profile_password_path, class: "card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow cursor-pointer w-full" do %>
       <div class="card-body p-4">
-        <h2 class="text-sm font-medium">Password</h2>
-        <p class="text-xs text-base-content/70">Change your account password</p>
+        <h2 class="text-sm font-medium"><%= t('profile.password') %></h2>
+        <p class="text-xs text-base-content/70"><%= t('profile.password_desc') %></p>
       </div>
     <% end %>
 
     <%# Account Actions Card %>
     <%= link_to destroy_user_session_path, data: { turbo_method: :delete }, class: "card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow cursor-pointer w-full" do %>
       <div class="card-body p-4">
-        <h2 class="text-sm font-medium">Log out</h2>
-        <p class="text-xs text-base-content/70">Sign out of your account</p>
+        <h2 class="text-sm font-medium"><%= t('profile.log_out') %></h2>
+        <p class="text-xs text-base-content/70"><%= t('profile.log_out_desc') %></p>
       </div>
     <% end %>
   </div>

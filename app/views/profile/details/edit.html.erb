@@ -1,6 +1,6 @@
 <div class="container mx-auto px-4 py-8">
   <div class="mb-6">
-    <%= link_to "← Back", account_path, class: "btn btn-ghost btn-sm" %>
+    <%= link_to t('common.back'), account_path, class: "btn btn-ghost btn-sm" %>
   </div>
 
   <div class="max-w-2xl mx-auto">
@@ -9,21 +9,21 @@
         <%= form_with(model: @user, url: profile_details_path, method: :patch, local: true) do |f| %>
           <div class="form-control">
             <%= f.label :username, class: "label" do %>
-              <span class="label-text">Name</span>
+              <span class="label-text"><%= t('profile.name_label') %></span>
             <% end %>
             <%= f.text_field :username, class: "input input-bordered w-full" %>
           </div>
 
           <div class="form-control mt-2">
             <label class="label">
-              <span class="label-text">Email (cannot be changed here)</span>
+              <span class="label-text"><%= t('profile.email_label') %></span>
             </label>
             <input type="email" value="<%= @user.email %>" class="input input-bordered w-full" disabled />
           </div>
 
-          
+
           <div class="form-control mt-6">
-            <%= f.submit "Save Changes", class: "btn btn-primary" %>
+            <%= f.submit t('common.save_changes'), class: "btn btn-primary" %>
           </div>
         <% end %>
       </div>

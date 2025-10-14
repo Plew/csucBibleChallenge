@@ -406,6 +406,7 @@ en:
     no_data: "No data available"
     start_reading_message: "Start reading to see your progress!"
     leaderboard: "Leaderboard"
+    chapters_read: "%{completed}/%{scheduled} chapters read"
     chapters_read_suffix: "chapters read"
     no_reading_data: "No reading data available yet"
     leaderboard_message: "Start reading to appear on the leaderboard!"

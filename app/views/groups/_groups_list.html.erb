@@ -3,7 +3,7 @@
     <%= link_to group_path(group), class: 'block py-2 px-2 hover:bg-base-200 transition-colors no-underline' do %>
       <div class="flex items-center justify-between mb-2">
         <div class="text-base font-medium"><%= group.name %></div>
-        <div class="text-sm text-base-content/60"><%= pluralize(group.users.count, 'member') %></div>
+        <div class="text-sm text-base-content/60"><%= pluralize(group.users.count, t('common.member_one'), t('common.member_other')) %></div>
       </div>
       <div class="flex gap-0.5 mb-2">
         <% group.users.first(5).each do |user| %>

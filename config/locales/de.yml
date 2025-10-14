@@ -351,6 +351,7 @@ de:
     no_data: "Keine Daten verfügbar"
     start_reading_message: "Beginne zu lesen, um deinen Fortschritt zu sehen!"
     leaderboard: "Bestenliste"
+    chapters_read: "%{completed}/%{scheduled} gelesene Kapitel"
     chapters_read_suffix: "gelesene Kapitel"
     no_reading_data: "Noch keine Lesedaten verfügbar"
     leaderboard_message: "Beginne zu lesen, um in der Bestenliste zu erscheinen!"

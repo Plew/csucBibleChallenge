@@ -3,16 +3,16 @@
     <% if @user_enrollment %>
       <div></div>
     <% else %>
-      <%= link_to "← Back", root_path, class: "text-sm text-base-content/70 hover:text-base-content" %>
+      <%= link_to t('common.back'), root_path, class: "text-sm text-base-content/70 hover:text-base-content" %>
     <% end %>
     <button
       data-controller="share"
       data-share-url-value="<%= @challenge.join_url %>"
       data-share-title-value="<%= @challenge.name %>"
-      data-share-text-value="Join me in this Bible reading challenge!"
+      data-share-text-value="<%= t('challenges.share_challenge') %>"
       data-action="click->share#share"
       class="btn btn-circle btn-sm btn-outline btn-primary"
-      title="Share challenge">
+      title="<%= t('challenges.share_title') %>">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
         <path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185z" />
       </svg>
@@ -36,17 +36,17 @@
         <table class="table table-xs">
           <tbody>
             <tr>
-              <td class="font-semibold text-xs py-1">Start Date</td>
+              <td class="font-semibold text-xs py-1"><%= t('challenges.start_date') %></td>
               <td class="text-xs py-1"><%= @challenge.start_date.strftime('%B %-d, %Y') %></td>
             </tr>
             <tr>
-              <td class="font-semibold text-xs py-1">End Date</td>
+              <td class="font-semibold text-xs py-1"><%= t('challenges.end_date') %></td>
               <td class="text-xs py-1"><%= @challenge.end_date.strftime('%B %-d, %Y') %></td>
             </tr>
             <% if @most_recent_user %>
               <tr>
-                <td class="font-semibold text-xs py-1">Newest Member</td>
-                <td class="text-xs py-1"><%= @most_recent_user.name %> (<%= time_ago_in_words(@most_recent_join_time) %> ago)</td>
+                <td class="font-semibold text-xs py-1"><%= t('challenges.newest_member') %></td>
+                <td class="text-xs py-1"><%= @most_recent_user.name %> (<%= time_ago_in_words(@most_recent_join_time) %> <%= t('common.ago') %>)</td>
               </tr>
             <% end %>
           </tbody>
@@ -59,13 +59,13 @@
     <div class="flex flex-col items-center mb-6 mt-8 gap-4">
       <% if logged_in? %>
         <% if @user_enrollment %>
-          <p class="text-sm text-primary mb-2">You are a member of this challenge</p>
-          <%= button_to "Leave Challenge", user_challenge_enrollment_path(@user_enrollment), method: :delete, class: "btn btn-outline btn-error", data: { confirm: "Are you sure you want to leave this challenge?" } %>
+          <p class="text-sm text-primary mb-2"><%= t('challenges.you_are_member') %></p>
+          <%= button_to t('challenges.leave_challenge'), user_challenge_enrollment_path(@user_enrollment), method: :delete, class: "btn btn-outline btn-error", data: { confirm: t('challenges.leave_confirmation') } %>
         <% else %>
-          <%= button_to "Join Challenge", challenge_enrollments_path(challenge_id: @challenge.id), method: :post, class: "btn btn-primary" %>
+          <%= button_to t('challenges.join_challenge'), challenge_enrollments_path(challenge_id: @challenge.id), method: :post, class: "btn btn-primary" %>
         <% end %>
       <% else %>
-        <%= link_to "Join Challenge", new_user_registration_path(challenge_id: @challenge.id), class: "btn btn-primary" %>
+        <%= link_to t('challenges.join_challenge'), new_user_registration_path(challenge_id: @challenge.id), class: "btn btn-primary" %>
       <% end %>
     </div>
 
@@ -74,7 +74,7 @@
         <div class="collapse collapse-arrow border-base-300 bg-base-200 border">
           <input type="checkbox" id="participants-collapse">
           <label for="participants-collapse" class="collapse-title text-xl font-medium">
-            Participants: <%= @user_count %>
+            <%= t('challenges.participants') %>: <%= @user_count %>
           </label>
           <div class="collapse-content">
             <div class="space-y-1">
@@ -97,7 +97,7 @@
         <div class="collapse collapse-arrow border-base-300 bg-base-200 border">
           <input type="checkbox" id="reading-schedule-collapse">
           <label for="reading-schedule-collapse" class="collapse-title text-xl font-medium">
-            Reading Schedule
+            <%= t('challenges.reading_schedule') %>
           </label>
           <div class="collapse-content">
             <div class="space-y-1">

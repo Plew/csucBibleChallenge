@@ -1,6 +1,6 @@
 <div class="bg-base-100 rounded-lg shadow p-2">
-  <h2 class="text-lg font-bold mb-2 text-center">7 Day Snapshot</h2>
-  
+  <h2 class="text-lg font-bold mb-2 text-center"><%= t('stats.seven_day_snapshot') %></h2>
+
   <% if leaderboard_data.any? %>
     <div class="space-y-1">
       <% leaderboard_data.each_with_index do |reader, index| %>
@@ -22,7 +22,7 @@
               </div>
               <div class="text-center flex-shrink-0 w-16">
                 <div class="text-sm font-bold text-info"><%= reader[:on_schedule_percentage] %>%</div>
-                <div class="text-xs text-base-content/70">On Schedule</div>
+                <div class="text-xs text-base-content/70"><%= t('stats.on_schedule') %></div>
               </div>
             </div>
           </div>
@@ -31,8 +31,8 @@
     </div>
   <% else %>
     <div class="text-center py-8 text-base-content/70">
-      <div class="text-lg mb-2">No data available</div>
-      <div class="text-sm">Start reading to see your progress!</div>
+      <div class="text-lg mb-2"><%= t('stats.no_data') %></div>
+      <div class="text-sm"><%= t('stats.start_reading_message') %></div>
     </div>
   <% end %>
 </div>

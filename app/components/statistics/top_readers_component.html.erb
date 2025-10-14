@@ -1,7 +1,7 @@
 <div class="card bg-base-100 shadow-xl">
   <div class="card-body p-2">
-    <h2 class="text-lg font-bold mb-2 text-center">Leaderboard</h2>
-    
+    <h2 class="text-lg font-bold mb-2 text-center"><%= t('stats.leaderboard') %></h2>
+
     <% if has_readers? %>
       <div class="space-y-1">
         <% top_readers_data.each_with_index do |reader_data, index| %>
@@ -15,7 +15,7 @@
             <div class="flex-grow min-w-0">
               <div class="font-medium text-base truncate"><%= user.username %></div>
               <div class="text-xs opacity-70">
-                <%= reader_data[:chapters_completed] %>/<%= reader_data[:chapters_scheduled] %> chapters read
+                <%= t('stats.chapters_read', completed: reader_data[:chapters_completed], scheduled: reader_data[:chapters_scheduled]) %>
               </div>
             </div>
 
@@ -29,8 +29,8 @@
       </div>
     <% else %>
       <div class="text-center py-4">
-        <div class="text-base opacity-70">No reading data available yet</div>
-        <div class="text-sm opacity-50">Start reading to appear on the leaderboard!</div>
+        <div class="text-base opacity-70"><%= t('stats.no_reading_data') %></div>
+        <div class="text-sm opacity-50"><%= t('stats.leaderboard_message') %></div>
       </div>
     <% end %>
   </div>

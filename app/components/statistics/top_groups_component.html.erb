@@ -1,7 +1,7 @@
 <div class="card bg-base-100 shadow-xl">
   <div class="card-body p-2">
-    <h2 class="text-lg font-bold mb-2 text-center">Top Groups</h2>
-    
+    <h2 class="text-lg font-bold mb-2 text-center"><%= t('stats.top_groups') %></h2>
+
     <% if has_groups? %>
       <div class="space-y-1">
         <% top_groups_data.each_with_index do |group_data, index| %>
@@ -16,7 +16,7 @@
             <div class="flex-grow min-w-0">
               <div class="font-medium text-base truncate"><%= group.name %></div>
               <div class="text-xs opacity-70">
-                <%= pluralize(size, 'member') %>
+                <%= pluralize(size, t('common.member_one'), t('common.member_other')) %>
               </div>
             </div>
 
@@ -30,8 +30,8 @@
       </div>
     <% else %>
       <div class="text-center py-4">
-        <div class="text-base opacity-70">No groups available yet</div>
-        <div class="text-sm opacity-50">Create or join a group to see group rankings!</div>
+        <div class="text-base opacity-70"><%= t('stats.no_groups') %></div>
+        <div class="text-sm opacity-50"><%= t('stats.top_groups_message') %></div>
       </div>
     <% end %>
   </div>

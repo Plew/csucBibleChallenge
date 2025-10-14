@@ -1,36 +1,36 @@
 <div class="container mx-auto px-4 py-8">
   <div class="mb-6">
-    <%= link_to "← Back", account_path, class: "btn btn-ghost btn-sm" %>
+    <%= link_to t('common.back'), account_path, class: "btn btn-ghost btn-sm" %>
   </div>
 
   <div class="max-w-2xl mx-auto">
     <div class="card bg-base-100 shadow-xl">
       <div class="card-body">
-        <h2 class="card-title">Update Your Password</h2>
+        <h2 class="card-title"><%= t('profile.update_password_title') %></h2>
         <%= form_with(model: @user, url: profile_password_path, method: :patch, local: true) do |f| %>
           <div class="form-control">
             <%= f.label :current_password, class: "label" do %>
-              <span class="label-text">Current Password</span>
+              <span class="label-text"><%= t('profile.current_password') %></span>
             <% end %>
             <%= f.password_field :current_password, class: "input input-bordered w-full", autocomplete: "current-password" %>
           </div>
 
           <div class="form-control mt-2">
-            <%= f.label :password, "New Password", class: "label" do %>
-              <span class="label-text">New Password</span>
+            <%= f.label :password, t('profile.new_password'), class: "label" do %>
+              <span class="label-text"><%= t('profile.new_password') %></span>
             <% end %>
             <%= f.password_field :password, class: "input input-bordered w-full", autocomplete: "new-password" %>
           </div>
 
           <div class="form-control mt-2">
-            <%= f.label :password_confirmation, "Confirm New Password", class: "label" do %>
-              <span class="label-text">Confirm New Password</span>
+            <%= f.label :password_confirmation, t('profile.confirm_password'), class: "label" do %>
+              <span class="label-text"><%= t('profile.confirm_password') %></span>
             <% end %>
             <%= f.password_field :password_confirmation, class: "input input-bordered w-full", autocomplete: "new-password" %>
           </div>
 
           <div class="form-control mt-6">
-            <%= f.submit "Change Password", class: "btn btn-primary" %>
+            <%= f.submit t('profile.change_password'), class: "btn btn-primary" %>
           </div>
         <% end %>
       </div>
