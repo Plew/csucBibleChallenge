@@ -85,6 +85,10 @@ Rails.application.routes.draw do
       end
     end
     resources :feedbacks, only: [:index, :show, :destroy]
+
+    # Challenge transfer routes
+    get 'change_challenge', to: 'challenge_transfers#new', as: :change_challenge
+    post 'change_challenge', to: 'challenge_transfers#create'
   end
 
   namespace :api do

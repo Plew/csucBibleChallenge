@@ -1,0 +1,53 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-3xl font-bold">Transfer Users Between Challenges</h1>
+    <%= link_to "Admin Dashboard", admin_root_path, class: "btn btn-outline" %>
+  </div>
+
+  <div class="card bg-base-100 shadow-xl max-w-2xl mx-auto">
+    <div class="card-body">
+      <h2 class="card-title mb-4">Move all users from one challenge to another</h2>
+
+      <div class="alert alert-warning mb-6">
+        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+        <span>This will move all user enrollments from the "From" challenge to the "To" challenge. Users already enrolled in the "To" challenge will be skipped.</span>
+      </div>
+
+      <%= form_with url: admin_change_challenge_path, method: :post, class: "space-y-6" do |f| %>
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text font-semibold">From Challenge</span>
+          </label>
+          <select name="from_challenge_id" class="select select-bordered w-full" required>
+            <option value="">Select source challenge...</option>
+            <% @challenges.each do |challenge| %>
+              <option value="<%= challenge.id %>">
+                <%= challenge.title %> (<%= challenge.user_challenge_enrollments.count %> users)
+              </option>
+            <% end %>
+          </select>
+        </div>
+
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text font-semibold">To Challenge</span>
+          </label>
+          <select name="to_challenge_id" class="select select-bordered w-full" required>
+            <option value="">Select destination challenge...</option>
+            <% @challenges.each do |challenge| %>
+              <option value="<%= challenge.id %>">
+                <%= challenge.title %> (<%= challenge.user_challenge_enrollments.count %> users)
+              </option>
+            <% end %>
+          </select>
+        </div>
+
+        <div class="form-control mt-6">
+          <button type="submit" class="btn btn-primary">
+            Transfer Users
+          </button>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
