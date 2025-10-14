@@ -23,10 +23,10 @@ class Feedback < ApplicationRecord
   end
 
   def author_name
-    anonymous? ? "Anonymous" : user.username
+    anonymous? ? I18n.t("feedback.anonymous") : user.username
   end
 
   def category_display
-    category.humanize
+    I18n.t("feedback.categories.#{category}")
   end
 end

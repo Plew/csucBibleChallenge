@@ -103,6 +103,44 @@ This is a Rails 8 application for managing Bible reading challenges. Users can j
 - Mobile-first design approach
 - Use DaisyUI components for UI consistency
 
+### Internationalization (i18n)
+
+**IMPORTANT: This application supports multiple languages (English and German). All user-facing text MUST use Rails i18n.**
+
+- **Never hardcode user-facing text** - Always use `t()` helper in views or `I18n.t()` in Ruby code
+- **Translation keys** are organized by section in `config/locales/en.yml` and `config/locales/de.yml`
+- **Locale management:**
+  - Default locale: English (`en`)
+  - Available locales: English (`en`), German (`de`)
+  - Locale is set via cookie (`locale`) and persists across sessions
+  - Language selector in navigation triggers server-side locale change and page reload
+- **Translation key structure:**
+  - Common UI: `common.back`, `common.cancel`, `common.save`, etc.
+  - Navigation: `navigation.log_in`, `navigation.settings`, etc.
+  - Page-specific: `home.tagline`, `challenges.join_challenge`, `profile.account_settings`, etc.
+  - Use descriptive, hierarchical keys: `section.subsection.key`
+- **What NOT to translate:**
+  - Bible verses from database (stored in Verse model)
+  - User-generated content (usernames, group names, challenge titles, etc.)
+  - Code comments and variable names
+  - HTML attributes (class, id, data-*)
+- **Adding new text:**
+  1. Add translation key to both `config/locales/en.yml` AND `config/locales/de.yml`
+  2. Use descriptive key names that indicate context
+  3. In views: `<%= t('key.path') %>`
+  4. For pluralization: use Rails' built-in pluralization (`_one`, `_other` suffixes)
+  5. For interpolation: `t('key', name: user.name)`
+- **Example:**
+  ```erb
+  <%# BAD - hardcoded text %>
+  <h1>Welcome</h1>
+  <button>Save Changes</button>
+
+  <%# GOOD - using i18n %>
+  <h1><%= t('welcome.title') %></h1>
+  <button><%= t('common.save_changes') %></button>
+  ```
+
 ### Testing
 
 - RSpec for all tests with FactoryBot for fixtures
