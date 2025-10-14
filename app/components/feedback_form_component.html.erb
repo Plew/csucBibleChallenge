@@ -1,6 +1,6 @@
 <div class="px-1 py-2">
-    <h1 class="text-2xl font-bold mb-3 px-2">Send Feedback</h1>
-    <p class="text-base-content/70 mb-4 px-2">Help us improve by reporting bugs or suggesting new features!</p>
+    <h1 class="text-2xl font-bold mb-3 px-2"><%= t('feedback.title') %></h1>
+    <p class="text-base-content/70 mb-4 px-2"><%= t('feedback.subtitle') %></p>
 
     <%= form_with model: feedback, url: form_url, local: true, class: "space-y-3" do |form| %>
       <% if feedback.errors.any? %>
@@ -15,50 +15,50 @@
 
       <div class="card bg-base-100 shadow-xl mx-1">
         <div class="card-body px-3 py-4">
-          <h2 class="card-title mb-3">Feedback Details</h2>
-          
+          <h2 class="card-title mb-3"><%= t('feedback.feedback_details') %></h2>
+
           <div class="form-control w-full">
-            <%= form.label :category, "Type of Feedback", class: "label" %>
-            <%= form.select :category, 
-                options_for_select(category_options, feedback.category), 
-                { prompt: "Select a category..." }, 
+            <%= form.label :category, t('feedback.type_label'), class: "label" %>
+            <%= form.select :category,
+                options_for_select(category_options, feedback.category),
+                { prompt: t('feedback.type_placeholder') },
                 { class: "select select-bordered w-full" } %>
           </div>
 
           <div class="form-control w-full">
-            <%= form.label :subject, "Subject", class: "label" %>
-            <%= form.text_field :subject, 
-                class: "input input-bordered w-full", 
-                placeholder: "Brief description of your feedback",
+            <%= form.label :subject, t('feedback.subject_label'), class: "label" %>
+            <%= form.text_field :subject,
+                class: "input input-bordered w-full",
+                placeholder: t('feedback.subject_placeholder'),
                 maxlength: 255 %>
           </div>
 
           <div class="form-control w-full">
-            <%= form.label :message, "Description", class: "label" %>
-            <%= form.text_area :message, 
-                class: "textarea textarea-bordered w-full h-32", 
-                placeholder: "Please provide details about the issue or suggestion...",
+            <%= form.label :message, t('feedback.description_label'), class: "label" %>
+            <%= form.text_area :message,
+                class: "textarea textarea-bordered w-full h-32",
+                placeholder: t('feedback.description_placeholder'),
                 maxlength: 2000 %>
             <div class="label">
-              <span class="label-text-alt">Maximum 2000 characters</span>
+              <span class="label-text-alt"><%= t('feedback.max_characters') %></span>
             </div>
           </div>
 
           <div class="form-control w-full">
-            <%= form.label :screenshot, "Screenshot (Optional)", class: "label" %>
-            <%= form.file_field :screenshot, 
+            <%= form.label :screenshot, t('feedback.screenshot_label'), class: "label" %>
+            <%= form.file_field :screenshot,
                 class: "file-input file-input-bordered w-full",
                 accept: "image/jpeg,image/png,image/gif,image/webp" %>
             <div class="label">
-              <span class="label-text-alt">Upload an image to help illustrate the issue (JPEG, PNG, GIF, or WebP, max 5MB)</span>
+              <span class="label-text-alt"><%= t('feedback.screenshot_help') %></span>
             </div>
           </div>
         </div>
       </div>
 
       <div class="flex flex-col gap-2 mt-4 mx-1">
-        <%= form.submit "Submit Feedback", class: "btn btn-primary w-full" %>
-        <%= link_to "Cancel", cancel_url, class: "btn btn-ghost w-full" %>
+        <%= form.submit t('feedback.submit'), class: "btn btn-primary w-full" %>
+        <%= link_to t('common.cancel'), cancel_url, class: "btn btn-ghost w-full" %>
       </div>
     <% end %>
 </div>

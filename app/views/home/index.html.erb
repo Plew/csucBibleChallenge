@@ -1,17 +1,17 @@
 <div class="min-h-screen flex flex-col justify-start items-center px-4 pt-16">
   <div class="max-w-md w-full text-center">
     <p class="text-lg text-base-content/80 mb-12 leading-relaxed">
-      Join a Bible reading challenge and read one chapter a day, with friends.
+      <%= t('home.tagline') %>
     </p>
 
     <div class="space-y-4 mb-12">
-      <%= link_to "Log In", new_user_session_path, class: "btn btn-primary btn-lg w-full" %>
-      <%= link_to "Sign Up", new_user_registration_path, class: "btn btn-outline btn-lg w-full" %>
+      <%= link_to t('navigation.log_in'), new_user_session_path, class: "btn btn-primary btn-lg w-full" %>
+      <%= link_to t('navigation.sign_up'), new_user_registration_path, class: "btn btn-outline btn-lg w-full" %>
     </div>
 
     <% if @challenges.present? %>
       <div class="text-left">
-        <h2 class="text-base font-semibold mb-4 text-center">Active Challenges</h2>
+        <h2 class="text-base font-semibold mb-4 text-center"><%= t('home.active_challenges') %></h2>
         <%= render 'challenges/challenge_list', challenges: @challenges %>
       </div>
     <% end %>
