@@ -51,7 +51,8 @@
       "Bash(xargs kill:*)",
       "Bash(lsof:*)",
       "mcp__linear-server__get_issue",
-      "Bash(git worktree:*)"
+      "Bash(git worktree:*)",
+      "Bash(chmod:*)"
     ],
     "deny": []
   }
