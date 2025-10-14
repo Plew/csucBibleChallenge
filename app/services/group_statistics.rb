@@ -23,7 +23,7 @@ class GroupStatistics
     group_user_ids = group.users.pluck(:id)
     completed_count = UserReading.where(user_id: group_user_ids, reading_id: reading.id).count
     return 0 if group_user_ids.empty?
-    (completed_count.to_f / group_user_ids.size * 100).round
+    (completed_count.to_f / group_user_ids.size * 100).round(2)
   end
 
   # Longest streak where every member completed the reading

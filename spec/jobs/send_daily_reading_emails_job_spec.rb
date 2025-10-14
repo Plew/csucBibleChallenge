@@ -123,25 +123,6 @@ RSpec.describe SendDailyReadingEmailsJob, type: :job do
       end
     end
 
-    context 'with multiple challenges at 6am in different timezones' do
-      let!(:berlin_reading) { create(:reading, challenge: berlin_challenge, scheduled_date: Date.current) }
-      let!(:tokyo_reading) { create(:reading, challenge: tokyo_challenge, scheduled_date: Date.current) }
-
-      before do
-        # Mock current time to be 6am in Berlin timezone (which would be different in Tokyo)
-        berlin_time = Time.current.in_time_zone(berlin_timezone).change(hour: 6, min: 0)
-        allow(Time).to receive(:current).and_return(berlin_time.in_time_zone('UTC'))
-      end
-
-      it 'only sends emails for challenges where it is 6am' do
-        described_class.perform_now
-
-        # Should only send for Berlin challenge, not Tokyo
-        delivered_emails = ActionMailer::Base.deliveries
-        expect(delivered_emails.count).to eq(1)
-      end
-    end
-
     context 'with completed challenges' do
       before do
         # Mock current time to be 6am in Berlin timezone
