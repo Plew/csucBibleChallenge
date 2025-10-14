@@ -61,6 +61,12 @@ This is a Rails 8 application for managing Bible reading challenges. Users can j
   ```
   Note: Use `update_attribute` to bypass validations that require current password
 
+- **Run jobs in production:**
+  ```bash
+  kamal app exec --roles=web 'bin/rails runner "JobClassName.perform_now"'
+  ```
+  Important: `kamal app exec` runs on both web and job containers by default, which can cause duplicate execution (e.g., sending duplicate emails). Always specify `--roles=web` or `--roles=job` to run the command only once.
+
 ## Architecture
 
 ### API Structure
@@ -149,3 +155,4 @@ note that kamal deploy could be a background task so that you can finish this ta
 - do not run the rails server directly always use bin/dev.  one reason it may not work is that you need to remove the old pid file
 - any time i want to show an avatar, use avatar_image_tag in application_helper.rb
 - I would prefer you don't do a kamal deploy ever unless explicitly asked to do so.
+- whenever i say check this in production or do something in production, I mean the running production app that you would access via kamal commands.
