@@ -340,6 +340,7 @@ de:
 
   # Stats
   stats:
+    personal: "Persönlich"
     personal_stats: "Persönliche Statistiken"
     personal_description: "Dein individueller Lesefortschritt und deine Erfolge"
     coming_soon: "Demnächst verfügbar"
@@ -348,6 +349,7 @@ de:
     seven_day_window: "7-Tage-Fenster"
     seven_day_snapshot: "7-Tage-Schnappschuss"
     on_schedule: "Im Zeitplan"
+    on_time_label: "Prozentsatz am vorgesehenen Tag abgeschlossen"
     no_data: "Keine Daten verfügbar"
     start_reading_message: "Beginne zu lesen, um deinen Fortschritt zu sehen!"
     leaderboard: "Bestenliste"

@@ -5,6 +5,7 @@ class StatsController < ApplicationController
 
   def index
     current_challenge = current_user.challenges.first
+    @personal_stats = cached_personal_stats(current_challenge)
     @top_readers_data = cached_top_readers(current_challenge)
     @participant_count = cached_participant_count(current_challenge)
     @top_groups_data = cached_top_groups(current_challenge)
@@ -62,5 +63,48 @@ class StatsController < ApplicationController
     Rails.cache.fetch("stats/seven_day_window/#{challenge.id}", expires_in: CACHE_EXPIRATION) do
       SevenDayWindowStatistics.call(challenge: challenge)
     end
+  end
+
+  def cached_personal_stats(challenge)
+    return {} unless challenge
+
+    Rails.cache.fetch("stats/personal/#{current_user.id}/#{challenge.id}", expires_in: CACHE_EXPIRATION) do
+      calculate_personal_stats(current_user, challenge)
+    end
+  end
+
+  def calculate_personal_stats(user, challenge)
+    current_date_in_tz = Time.current.in_time_zone(challenge.timezone).to_date
+
+    scheduled_count = challenge.readings
+                              .where('scheduled_date <= ?', current_date_in_tz)
+                              .count
+
+    completed_count = user.user_readings
+                         .joins(:reading)
+                         .where(readings: { challenge_id: challenge.id })
+                         .where('readings.scheduled_date <= ?', current_date_in_tz)
+                         .count
+
+    completion_percentage = scheduled_count.zero? ? 0 : (completed_count.to_f / scheduled_count * 100).round
+
+    # Calculate on-schedule percentage
+    completed_readings = user.user_readings
+                            .joins(:reading)
+                            .where(readings: { challenge_id: challenge.id })
+                            .where('readings.scheduled_date <= ?', current_date_in_tz)
+
+    on_schedule_count = completed_readings
+                       .where('date(user_readings.created_at) <= readings.scheduled_date')
+                       .count
+
+    on_schedule_percentage = completed_count.zero? ? 0 : (on_schedule_count.to_f / completed_count * 100).round
+
+    {
+      chapters_completed: completed_count,
+      chapters_scheduled: scheduled_count,
+      completion_percentage: completion_percentage,
+      on_schedule_percentage: on_schedule_percentage
+    }
   end
 end

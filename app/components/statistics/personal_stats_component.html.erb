@@ -1,0 +1,27 @@
+<div class="card bg-base-100 shadow-xl max-w-md mx-auto">
+  <div class="card-body p-3">
+    <h2 class="text-lg font-bold mb-3 text-center"><%= t('stats.personal') %></h2>
+
+    <div class="flex flex-col items-center gap-8">
+      <!-- Completion Percentage Radial -->
+      <div class="flex flex-col items-center">
+        <div class="radial-progress text-accent" style="--value:<%= completion_percentage %>; --size:16rem; --thickness:1rem;" aria-valuenow="<%= completion_percentage %>" role="progressbar">
+          <span class="text-3xl font-bold"><%= completion_percentage %>%</span>
+        </div>
+        <div class="text-sm text-center mt-2 opacity-70 max-w-[16rem]">
+          <%= t('stats.chapters_read', completed: chapters_completed, scheduled: chapters_scheduled) %>
+        </div>
+      </div>
+
+      <!-- On Schedule Percentage Radial -->
+      <div class="flex flex-col items-center">
+        <div class="radial-progress text-info" style="--value:<%= on_schedule_percentage %>; --size:16rem; --thickness:1rem;" aria-valuenow="<%= on_schedule_percentage %>" role="progressbar">
+          <span class="text-3xl font-bold"><%= on_schedule_percentage %>%</span>
+        </div>
+        <div class="text-sm text-center mt-2 opacity-70 max-w-[16rem]">
+          <%= t('stats.on_time_label') %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

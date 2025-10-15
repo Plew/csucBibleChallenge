@@ -1,6 +1,7 @@
 <% content_for :title, t('navigation.stats') %>
 
 <%= render StatsPageComponent.new(
+  personal_stats: @personal_stats,
   top_readers_data: @top_readers_data,
   participant_count: @participant_count,
   top_groups_data: @top_groups_data,

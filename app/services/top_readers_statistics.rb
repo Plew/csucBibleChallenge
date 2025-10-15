@@ -27,6 +27,10 @@ class TopReadersStatistics
                                    .limit(50)
                        end
 
+    # Eager load groups for the challenge to avoid N+1 queries
+    user_ids = users_with_stats.map(&:id)
+    group_names_map = build_group_names_map(user_ids)
+
     users_with_stats.map do |user|
       chapters_data = calculate_chapters_data(user)
       {
@@ -36,7 +40,8 @@ class TopReadersStatistics
         chapters_scheduled: chapters_data[:scheduled],
         completion_percentage: calculate_completion_percentage(user),
         on_schedule_percentage: calculate_on_schedule_percentage(user),
-        avatar_url: avatar_url_for(user)
+        avatar_url: avatar_url_for(user),
+        group_name: group_names_map[user.id]
       }
     end.sort_by { |user_data| -user_data[:completion_percentage] }
   end
@@ -136,6 +141,21 @@ class TopReadersStatistics
       Rails.application.routes.url_helpers.rails_blob_path(user.avatar.variant(:thumb), only_path: true)
     else
       nil
+    end
+  end
+
+  def build_group_names_map(user_ids)
+    return {} unless @challenge
+
+    # Fetch all user-group associations for this challenge in one query
+    user_group_enrollments = UserGroupEnrollment
+      .joins(:group)
+      .where(user_id: user_ids, groups: { challenge_id: @challenge.id })
+      .select('user_group_enrollments.user_id', 'groups.name as group_name')
+
+    # Build a hash mapping user_id to group_name
+    user_group_enrollments.each_with_object({}) do |enrollment, hash|
+      hash[enrollment.user_id] ||= enrollment.group_name
     end
   end
 end
