@@ -28,7 +28,7 @@ export default class extends Controller {
   setLanguage(language, saveCookie) {
     // Update the flag display
     const flags = {
-      'en': '🇺🇸',
+      'en': '🇬🇧',
       'de': '🇩🇪'
     }
     this.currentFlagTarget.textContent = flags[language]
