@@ -43,7 +43,8 @@ class TopReadersStatistics
         avatar_url: avatar_url_for(user),
         group_name: group_names_map[user.id]
       }
-    end.sort_by { |user_data| -user_data[:completion_percentage] }
+    end.reject { |user_data| user_data[:chapters_completed].zero? }
+      .sort_by { |user_data| -user_data[:completion_percentage] }
   end
 
   private

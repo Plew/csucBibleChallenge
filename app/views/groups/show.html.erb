@@ -1,7 +1,1 @@
 <%= render GroupComponent.new(group: @group, current_user: current_user, user_group: @user_group) %>
-
-<div class="container mx-auto px-4">
-  <div class="divider divider-neutral my-6"></div>
-  <h3 class="text-lg font-semibold mb-4">Other Groups</h3>
-  <%= render 'groups_list', groups: @groups.reject { |g| g.id == @group.id } %>
-</div>

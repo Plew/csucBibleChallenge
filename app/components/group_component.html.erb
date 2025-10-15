@@ -1,15 +1,7 @@
 <div class="container mx-auto px-2 py-6">
-  <% if can_join_group? %>
-    <div class="bg-base-100 rounded-lg shadow p-4 mb-2">
-      <div class="mt-2">
-        <%= button_to 'Join', join_group_path(group), method: :post, class: 'btn btn-primary btn-sm', data: { turbo: true } %>
-      </div>
-    </div>
-  <% elsif !user_group && group.closed_to_new_members %>
-    <div class="bg-base-100 rounded-lg shadow p-4 mb-2">
-      <div class="mt-2 text-sm text-warning">
-        This group is closed to new members
-      </div>
+  <% unless is_user_in_this_group? %>
+    <div class="mb-4">
+      <%= link_to t('common.back'), groups_path, class: 'link link-hover text-sm' %>
     </div>
   <% end %>
 
@@ -18,6 +10,9 @@
       <div class="flex items-center justify-between">
         <h2 class="text-xl font-bold"><%= group.name %></h2>
         <div class="flex gap-2">
+          <% if can_join_group? %>
+            <%= button_to 'Join', join_group_path(group), method: :post, class: 'btn btn-primary btn-sm', data: { turbo: true } %>
+          <% end %>
           <% if is_user_in_this_group? %>
             <button
               data-controller="share"
@@ -31,9 +26,6 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185z" />
               </svg>
             </button>
-          <% end %>
-          <% if is_group_creator? && is_user_in_this_group? %>
-            <%= link_to 'Edit', edit_group_path(group), class: 'btn btn-sm btn-ghost' %>
           <% end %>
         </div>
       </div>
@@ -71,8 +63,11 @@
   </div>
 
   <% if is_user_in_this_group? %>
-    <div class="mt-4 flex justify-end">
+    <div class="mt-4 flex justify-between items-center">
       <%= link_to 'Leave Group', leave_groups_path, method: :post, data: { turbo_method: :post, turbo_confirm: 'Are you sure you want to leave this group?' }, class: 'link link-error text-sm' %>
+      <% if is_group_creator? %>
+        <%= link_to 'Edit', edit_group_path(group), class: 'link link-hover text-sm' %>
+      <% end %>
     </div>
   <% end %>
 

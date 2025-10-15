@@ -21,7 +21,8 @@ class SevenDayWindowStatistics
         completed_days: seven_day_data[:completed_days],
         total_days: seven_day_data[:total_days]
       }
-    end.sort_by { |data| [-data[:completion_percentage], -data[:on_schedule_percentage]] }
+    end.reject { |data| data[:completed_days].zero? }
+      .sort_by { |data| [-data[:completion_percentage], -data[:on_schedule_percentage]] }
   end
 
   private
