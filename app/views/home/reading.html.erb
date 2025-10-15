@@ -20,10 +20,22 @@
         </svg>
       </a>
     </div>
-    
+
     <% if @selected_reading %>
       <% reading_is_completed = current_user.user_readings.exists?(reading_id: @selected_reading.id) %>
-      
+
+      <!-- Top "marked as read" button - only show if reading is completed -->
+      <% if reading_is_completed %>
+        <div class="flex justify-center mt-4 mb-4">
+          <button class="btn btn-outline btn-success" disabled>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+            </svg>
+            <%= t('reading.marked_as_read') %>
+          </button>
+        </div>
+      <% end %>
+
       <%= render ReadingDisplayComponent.new(title: @selected_reading_title, verses: @selected_reading_verses) %>
 
       <div class="flex justify-center mt-4 mb-8">
