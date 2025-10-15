@@ -16,6 +16,7 @@ class ChallengesController < ApplicationController
     @challenge_readings = @challenge.readings.order(:scheduled_date)
     @books_and_chapters = @challenge_readings.group_by(&:book_number).transform_values { |readings| readings.map(&:chapter_number) }
     @user_enrollment = current_user&.user_challenge_enrollments&.find_by(challenge: @challenge)
+    @groups = @challenge.groups.includes(:users).order(:name)
   end
 
   # GET /challenges/:id/summary

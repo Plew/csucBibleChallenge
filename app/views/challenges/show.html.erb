@@ -92,6 +92,55 @@
       </div>
     <% end %>
 
+    <% if @groups.any? %>
+      <div class="mb-6">
+        <div class="collapse collapse-arrow border-base-300 bg-base-200 border">
+          <input type="checkbox" id="groups-collapse">
+          <label for="groups-collapse" class="collapse-title text-xl font-medium">
+            <%= t('navigation.groups') %>: <%= @groups.count %>
+          </label>
+          <div class="collapse-content">
+            <div class="space-y-1">
+              <% @groups.each_with_index do |group, index| %>
+                <div class="bg-base-100 rounded-lg">
+                  <div class="collapse collapse-arrow">
+                    <input type="checkbox" id="group-<%= group.id %>-collapse">
+                    <label for="group-<%= group.id %>-collapse" class="collapse-title min-h-0 py-2 px-3">
+                      <div class="flex flex-col gap-1">
+                        <div class="font-medium text-sm truncate"><%= group.name %></div>
+                        <div class="flex -space-x-2 overflow-hidden">
+                          <% group.users.limit(5).each do |user| %>
+                            <%= avatar_image_tag(user, :tiny, class: 'rounded-full border-2 border-base-100') %>
+                          <% end %>
+                          <% if group.users.count > 5 %>
+                            <div class="w-8 h-8 rounded-full bg-base-300 border-2 border-base-100 flex items-center justify-center">
+                              <span class="text-xs font-medium">+<%= group.users.count - 5 %></span>
+                            </div>
+                          <% end %>
+                        </div>
+                      </div>
+                    </label>
+                    <div class="collapse-content px-3 pb-2">
+                      <div class="space-y-1">
+                        <% group.users.each do |user| %>
+                          <div class="flex items-center gap-3 px-3 py-2 bg-base-200 rounded-lg">
+                            <div>
+                              <%= avatar_image_tag(user, :tiny, class: 'rounded-full') %>
+                            </div>
+                            <div class="font-medium text-sm"><%= user.name %></div>
+                          </div>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
     <% if @challenge_readings.any? %>
       <div class="mb-6">
         <div class="collapse collapse-arrow border-base-300 bg-base-200 border">
