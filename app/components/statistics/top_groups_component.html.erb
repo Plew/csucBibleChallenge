@@ -7,6 +7,7 @@
         <% top_groups_data.each_with_index do |group_data, index| %>
           <% group = group_data[:group] %>
           <% percentage = group_data[:completion_percentage] %>
+          <% on_schedule = group_data[:on_schedule_percentage] %>
           <% size = group_data[:group_size] %>
           <% chapters = group_data[:total_chapters_read] %>
 
@@ -20,9 +21,12 @@
               </div>
             </div>
 
-            <div class="flex-shrink-0">
+            <div class="flex-shrink-0 flex gap-3 items-center">
               <div class="radial-progress text-accent" style="--value:<%= percentage %>; --size:2.5rem; --thickness:2px;" aria-valuenow="<%= percentage %>" role="progressbar">
-                <span class="text-xs font-bold"><%= percentage %>%</span>
+                <span class="text-xs font-bold"><%= percentage %></span>
+              </div>
+              <div class="radial-progress text-info" style="--value:<%= on_schedule %>; --size:2.5rem; --thickness:2px;" aria-valuenow="<%= on_schedule %>" role="progressbar">
+                <span class="text-xs font-bold"><%= on_schedule %></span>
               </div>
             </div>
           </div>

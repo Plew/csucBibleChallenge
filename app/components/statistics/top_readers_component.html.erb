@@ -8,6 +8,7 @@
           <% user = reader_data[:user] %>
           <% chapters = reader_data[:total_chapters_read] %>
           <% percentage = reader_data[:completion_percentage] %>
+          <% on_schedule = reader_data[:on_schedule_percentage] %>
 
           <div class="relative flex items-center space-x-3 p-1.5 bg-base-200 rounded">
             <div class="absolute top-0.5 left-1 text-[9px] opacity-40 leading-none"><%= index + 1 %></div>
@@ -19,9 +20,12 @@
               </div>
             </div>
 
-            <div class="flex-shrink-0">
+            <div class="flex-shrink-0 flex gap-3 items-center">
               <div class="radial-progress text-accent" style="--value:<%= percentage %>; --size:2.5rem; --thickness:2px;" aria-valuenow="<%= percentage %>" role="progressbar">
-                <span class="text-xs font-bold"><%= percentage %>%</span>
+                <span class="text-xs font-bold"><%= percentage %></span>
+              </div>
+              <div class="radial-progress text-info" style="--value:<%= on_schedule %>; --size:2.5rem; --thickness:2px;" aria-valuenow="<%= on_schedule %>" role="progressbar">
+                <span class="text-xs font-bold"><%= on_schedule %></span>
               </div>
             </div>
           </div>

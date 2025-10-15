@@ -35,6 +35,7 @@ class TopReadersStatistics
         chapters_completed: chapters_data[:completed],
         chapters_scheduled: chapters_data[:scheduled],
         completion_percentage: calculate_completion_percentage(user),
+        on_schedule_percentage: calculate_on_schedule_percentage(user),
         avatar_url: avatar_url_for(user)
       }
     end.sort_by { |user_data| -user_data[:completion_percentage] }
@@ -78,17 +79,17 @@ class TopReadersStatistics
 
     challenges_to_calculate.each do |challenge|
       current_date_in_tz = Time.current.in_time_zone(challenge.timezone).to_date
-      
+
       scheduled_count = challenge.readings
                                 .where('scheduled_date <= ?', current_date_in_tz)
                                 .count
-      
+
       completed_count = user.user_readings
                            .joins(:reading)
                            .where(readings: { challenge_id: challenge.id })
                            .where('readings.scheduled_date <= ?', current_date_in_tz)
                            .count
-      
+
       total_scheduled += scheduled_count
       total_completed += completed_count
     end
@@ -97,6 +98,37 @@ class TopReadersStatistics
       completed: total_completed,
       scheduled: total_scheduled
     }
+  end
+
+  def calculate_on_schedule_percentage(user)
+    total_completed = 0
+    total_on_schedule = 0
+
+    challenges_to_calculate = @challenge ? [@challenge] : user.challenges.includes(:readings)
+
+    challenges_to_calculate.each do |challenge|
+      current_date_in_tz = Time.current.in_time_zone(challenge.timezone).to_date
+
+      # Completed readings up to current date
+      completed_readings = user.user_readings
+                              .joins(:reading)
+                              .where(readings: { challenge_id: challenge.id })
+                              .where('readings.scheduled_date <= ?', current_date_in_tz)
+
+      completed_count = completed_readings.count
+
+      # On-schedule readings (completed on or before scheduled date)
+      on_schedule_count = completed_readings
+                         .where('date(user_readings.created_at) <= readings.scheduled_date')
+                         .count
+
+      total_completed += completed_count
+      total_on_schedule += on_schedule_count
+    end
+
+    return 0 if total_completed.zero?
+
+    (total_on_schedule.to_f / total_completed * 100).round
   end
 
   def avatar_url_for(user)

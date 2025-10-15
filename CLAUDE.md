@@ -194,3 +194,4 @@ note that kamal deploy could be a background task so that you can finish this ta
 - any time i want to show an avatar, use avatar_image_tag in application_helper.rb
 - I would prefer you don't do a kamal deploy ever unless explicitly asked to do so.
 - whenever i say check this in production or do something in production, I mean the running production app that you would access via kamal commands.
+- don't test any work with playwright unless I specifically mention it

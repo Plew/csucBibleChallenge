@@ -17,12 +17,13 @@
             <div class="flex gap-4 items-center">
               <div class="text-center flex-shrink-0">
                 <div class="radial-progress text-success text-sm" style="--value:<%= reader[:completion_percentage] %>; --size:2.5rem; --thickness:2px;" aria-valuenow="<%= reader[:completion_percentage] %>" role="progressbar">
-                  <span class="text-xs font-bold"><%= reader[:completion_percentage] %>%</span>
+                  <span class="text-xs font-bold"><%= reader[:completion_percentage] %></span>
                 </div>
               </div>
-              <div class="text-center flex-shrink-0 w-16">
-                <div class="text-sm font-bold text-info"><%= reader[:on_schedule_percentage] %>%</div>
-                <div class="text-xs text-base-content/70"><%= t('stats.on_schedule') %></div>
+              <div class="text-center flex-shrink-0">
+                <div class="radial-progress text-info text-sm" style="--value:<%= reader[:on_schedule_percentage] %>; --size:2.5rem; --thickness:2px;" aria-valuenow="<%= reader[:on_schedule_percentage] %>" role="progressbar">
+                  <span class="text-xs font-bold"><%= reader[:on_schedule_percentage] %></span>
+                </div>
               </div>
             </div>
           </div>

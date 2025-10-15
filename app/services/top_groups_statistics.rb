@@ -17,6 +17,7 @@ class TopGroupsStatistics
       {
         group: group,
         completion_percentage: group_stats.completion_percentage,
+        on_schedule_percentage: group_stats.on_schedule_percentage,
         group_size: group_stats.group_size,
         total_chapters_read: group_stats.total_chapters_read
       }
