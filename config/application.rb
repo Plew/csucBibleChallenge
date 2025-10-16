@@ -38,5 +38,10 @@ module Irmbi
 
     # Fix Rails 8.1 timezone deprecation warning
     config.active_support.to_time_preserves_timezone = :zone
+
+    # Configure ActiveStorage to process uploads asynchronously
+    config.active_storage.queues.analysis = :default
+    config.active_storage.queues.purge = :default
+    config.active_storage.queues.mirror = :default
   end
 end

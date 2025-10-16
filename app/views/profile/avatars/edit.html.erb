@@ -16,7 +16,7 @@
             <% if @user.avatar.attached? %>
               <div class="avatar mb-2">
                 <div class="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                  <%= image_tag @user.avatar.variant(:thumb) %>
+                  <%= image_tag @user.avatar.variant(:xlarge).processed %>
                 </div>
               </div>
               <p class="text-sm text-base-content/70 mb-2"><%= t('profile.current_avatar') %></p>

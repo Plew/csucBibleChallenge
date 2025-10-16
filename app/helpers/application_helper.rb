@@ -55,11 +55,11 @@ module ApplicationHelper
       variant =
         case size_key.to_sym
         when :tiny
-          user.avatar.variant(:thumb)
+          user.avatar.variant(:thumb).processed
         when :large
-          user.avatar.variant(:large)
+          user.avatar.variant(:large).processed
         else
-          user.avatar.variant(:medium)
+          user.avatar.variant(:medium).processed
         end
       image_tag(variant, options)
     else

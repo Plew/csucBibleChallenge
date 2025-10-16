@@ -3,8 +3,10 @@ class User < ApplicationRecord
 
   has_secure_password
   has_one_attached :avatar do |attachable|
-    attachable.variant :thumb, resize_to_limit: [100, 100]
-    attachable.variant :medium, resize_to_limit: [300, 300]
+    attachable.variant :thumb, resize_to_limit: [48, 48], preprocessed: true     # 24x24 display * 2 for retina
+    attachable.variant :medium, resize_to_limit: [72, 72], preprocessed: true    # 36x36 display * 2 for retina
+    attachable.variant :large, resize_to_limit: [96, 96], preprocessed: true     # 48x48 display * 2 for retina
+    attachable.variant :xlarge, resize_to_limit: [500, 500], preprocessed: true  # For profile pages, modals, etc.
   end
 
   has_many :user_challenge_enrollments, dependent: :destroy
