@@ -6,7 +6,7 @@
 # It does not simulate user reading completions since the challenge hasn't started yet.
 
 class FakeMunichFuture
-  CHALLENGE_NAME = 'Munich Fall Reading Challenge'.freeze
+  CHALLENGE_NAME = 'Munich Fall Reading Challenge (Future)'.freeze
   UNIQUE_SUFFIX = Time.current.to_i.to_s[-6..-1] # Last 6 digits of timestamp
   GROUP_NAMES = %w[Sauerkraut Bratwurst Pretzel Schnitzel].freeze
   GERMAN_NAMES = [

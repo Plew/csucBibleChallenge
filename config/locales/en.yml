@@ -346,7 +346,7 @@ en:
   groups:
     create_or_join_message: "When you create or join a group, the others in the group can see your checkins. This helps with accountability."
     create_group: "Create a group"
-    join_group: "Join a group"
+    join_group: "Join this group"
     create_new: "Create a New Group"
     edit_group: "Edit Group"
     group_name: "Group Name"
@@ -377,6 +377,10 @@ en:
     invite_step_2: "Send the key to the person you want to invite"
     invite_step_3: "They can use the key to join this group"
     other_groups: "Other Groups"
+    create_new_group: "Create Group"
+    cancel_create: "Cancel"
+    name_placeholder: "Enter group name"
+    my_group: "My Group"
 
   # Group chat
   group_chat:

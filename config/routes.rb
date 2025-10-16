@@ -48,6 +48,12 @@ Rails.application.routes.draw do
   # Challenges UI
   resources :challenges, only: [:index, :show] do # Add :show, :new, :create, etc. as needed for UI
     resources :user_challenge_enrollments, only: [:create], as: :enrollments # POST challenges/:challenge_id/enrollments
+    resources :groups, only: [:create], controller: 'challenge_groups' do
+      member do
+        post :join
+        post :leave
+      end
+    end
     member do
       get :summary
     end

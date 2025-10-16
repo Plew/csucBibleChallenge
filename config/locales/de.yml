@@ -291,7 +291,7 @@ de:
   groups:
     create_or_join_message: "Wenn du eine Gruppe erstellst oder ihr beitrittst, können die anderen in der Gruppe deine Check-ins sehen. Dies hilft bei der Rechenschaftspflicht."
     create_group: "Eine Gruppe erstellen"
-    join_group: "Einer Gruppe beitreten"
+    join_group: "Dieser Gruppe beitreten"
     create_new: "Neue Gruppe erstellen"
     edit_group: "Gruppe bearbeiten"
     group_name: "Gruppenname"
@@ -322,6 +322,10 @@ de:
     invite_step_2: "Sende den Schlüssel an die Person, die du einladen möchtest"
     invite_step_3: "Sie können den Schlüssel verwenden, um dieser Gruppe beizutreten"
     other_groups: "Andere Gruppen"
+    create_new_group: "Gruppe erstellen"
+    cancel_create: "Abbrechen"
+    name_placeholder: "Gruppennamen eingeben"
+    my_group: "Meine Gruppe"
 
   # Group chat
   group_chat:
