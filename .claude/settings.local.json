@@ -52,7 +52,9 @@
       "Bash(lsof:*)",
       "mcp__linear-server__get_issue",
       "Bash(git worktree:*)",
-      "Bash(chmod:*)"
+      "Bash(chmod:*)",
+      "Bash(kamal app logs:*)",
+      "Bash(kamal app details:*)"
     ],
     "deny": []
   }
