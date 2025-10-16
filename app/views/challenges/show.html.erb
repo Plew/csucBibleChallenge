@@ -73,8 +73,8 @@
       <div class="mb-6">
         <div class="collapse collapse-arrow border-base-300 bg-base-200 border">
           <input type="checkbox" id="participants-collapse">
-          <label for="participants-collapse" class="collapse-title text-xl font-medium">
-            <%= t('challenges.participants') %>: <%= @user_count %>
+          <label for="participants-collapse" class="collapse-title text-xl font-medium flex items-center gap-2 pr-12">
+            <span class="truncate"><%= t('challenges.participants') %>: <%= @user_count %></span>
           </label>
           <div class="collapse-content">
             <div class="space-y-1">
@@ -96,8 +96,8 @@
       <div class="mb-6">
         <div class="collapse collapse-arrow border-base-300 bg-base-200 border">
           <input type="checkbox" id="groups-collapse">
-          <label for="groups-collapse" class="collapse-title text-xl font-medium">
-            <%= t('navigation.groups') %>: <%= @groups.count %>
+          <label for="groups-collapse" class="collapse-title text-xl font-medium flex items-center gap-2 pr-12">
+            <span class="truncate"><%= t('navigation.groups') %>: <%= @groups.count %></span>
           </label>
           <div class="collapse-content">
             <div class="space-y-2">
@@ -106,18 +106,18 @@
                 <div class="bg-base-100 rounded-lg <%= 'ring-2 ring-primary' if is_user_group %>">
                   <div class="collapse collapse-arrow">
                     <input type="checkbox" id="group-<%= group.id %>-collapse">
-                    <label for="group-<%= group.id %>-collapse" class="collapse-title min-h-0 py-2 px-3">
-                      <div class="flex flex-col gap-1">
+                    <label for="group-<%= group.id %>-collapse" class="collapse-title min-h-0 py-2 px-3 pr-12">
+                      <div class="flex flex-col gap-1 min-w-0">
                         <div class="font-medium text-sm truncate"><%= group.name %></div>
                         <% if group.motto.present? %>
                           <div class="text-xs text-base-content/70 italic truncate"><%= group.motto %></div>
                         <% end %>
-                        <div class="flex -space-x-2 overflow-hidden">
+                        <div class="flex -space-x-2 overflow-hidden max-w-full">
                           <% group.users.limit(5).each do |user| %>
                             <%= avatar_image_tag(user, :tiny, class: 'rounded-full border-2 border-base-100') %>
                           <% end %>
                           <% if group.users.count > 5 %>
-                            <div class="w-8 h-8 rounded-full bg-base-300 border-2 border-base-100 flex items-center justify-center">
+                            <div class="w-8 h-8 rounded-full bg-base-300 border-2 border-base-100 flex items-center justify-center flex-shrink-0">
                               <span class="text-xs font-medium">+<%= group.users.count - 5 %></span>
                             </div>
                           <% end %>
