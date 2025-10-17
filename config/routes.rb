@@ -95,6 +95,11 @@ Rails.application.routes.draw do
     # Challenge transfer routes
     get 'change_challenge', to: 'challenge_transfers#new', as: :change_challenge
     post 'change_challenge', to: 'challenge_transfers#create'
+
+    # 7 Day Winner routes
+    get 'seven_day_winner', to: 'seven_day_winner#index', as: :seven_day_winner
+    post 'seven_day_winner/participants', to: 'seven_day_winner#participants', as: :seven_day_winner_participants
+    get 'seven_day_winner/draw', to: 'seven_day_winner#draw', as: :seven_day_winner_draw
   end
 
   namespace :api do

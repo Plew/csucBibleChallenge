@@ -236,6 +236,22 @@ de:
     admin_status_label: "Admin-Status:"
     search_placeholder: "Nach E-Mail oder Benutzer-ID suchen..."
     search_users: "Suchen"
+    seven_day_winner:
+      title: "7-Tage-Gewinner"
+      select_challenge: "Challenge auswählen"
+      challenge_label: "Challenge"
+      choose_challenge: "Challenge wählen..."
+      participants_title: "Teilnehmer auswählen"
+      participants_description: "Diese Teilnehmer haben 100% Abschluss im 7-Tage-Schnappschuss"
+      select_all: "Alle auswählen"
+      select_none: "Keine auswählen"
+      next: "Weiter"
+      no_participants: "Keine perfekten Teilnehmer"
+      no_participants_message: "Keine Teilnehmer haben 100% Abschluss im 7-Tage-Fenster für diese Challenge erreicht"
+      draw_title: "Gewinnerziehung"
+      start: "Start!"
+      winner: "GEWINNER"
+      no_users_selected: "Keine Benutzer ausgewählt. Bitte gehe zurück und wähle Teilnehmer aus."
 
   # Feedback
   feedback:
@@ -364,6 +380,7 @@ de:
     top_groups: "Top-Gruppen"
     no_groups: "Noch keine Gruppen verfügbar"
     top_groups_message: "Erstelle oder tritt einer Gruppe bei, um Gruppenrankings zu sehen!"
+    completion: "Abschluss"
 
   # Profile
   profile:

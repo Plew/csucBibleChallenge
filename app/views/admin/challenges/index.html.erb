@@ -2,6 +2,7 @@
   <div class="flex justify-between items-center mb-8">
     <h1 class="text-3xl font-bold">Manage Challenges</h1>
     <div class="space-x-2">
+      <%= link_to t('admin.seven_day_winner.title'), admin_seven_day_winner_path, class: "btn btn-accent" %>
       <%= link_to "Change Challenge", admin_change_challenge_path, class: "btn btn-secondary" %>
       <%= link_to "Admin Dashboard", admin_root_path, class: "btn btn-outline" %>
       <%= link_to "New Challenge", new_admin_challenge_path, class: "btn btn-primary" %>

@@ -291,6 +291,22 @@ en:
     admin_status_label: "Admin Status:"
     search_placeholder: "Search by email or user ID..."
     search_users: "Search"
+    seven_day_winner:
+      title: "7 Day Winner"
+      select_challenge: "Select Challenge"
+      challenge_label: "Challenge"
+      choose_challenge: "Choose a challenge..."
+      participants_title: "Select Participants"
+      participants_description: "These participants have 100% completion in the 7-day snapshot"
+      select_all: "Select All"
+      select_none: "Select None"
+      next: "Next"
+      no_participants: "No Perfect Participants"
+      no_participants_message: "No participants have achieved 100% completion in the 7-day window for this challenge"
+      draw_title: "Winner Drawing"
+      start: "Start!"
+      winner: "WINNER"
+      no_users_selected: "No users selected. Please go back and select participants."
 
   # Feedback
   feedback:
@@ -419,6 +435,7 @@ en:
     top_groups: "Top Groups"
     no_groups: "No groups available yet"
     top_groups_message: "Create or join a group to see group rankings!"
+    completion: "Completion"
 
   # Profile
   profile:

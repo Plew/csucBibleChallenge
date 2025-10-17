@@ -1,0 +1,53 @@
+<div class="container mx-auto px-4 py-8" data-controller="winner-draw">
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-3xl font-bold"><%= t('admin.seven_day_winner.draw_title') %></h1>
+    <%= link_to t('common.back'), admin_seven_day_winner_path, class: "btn btn-outline" %>
+  </div>
+
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body">
+      <h2 class="card-title mb-4"><%= @challenge.title %></h2>
+
+      <% if @users.any? %>
+        <!-- Start button -->
+        <div class="text-center mb-6">
+          <button type="button"
+                  data-action="click->winner-draw#startElimination"
+                  data-winner-draw-target="startButton"
+                  class="btn btn-primary btn-lg">
+            <%= t('admin.seven_day_winner.start') %>
+          </button>
+        </div>
+
+        <!-- Cards container - using grid to fit all cards without scrolling -->
+        <div class="grid gap-2"
+             style="grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));"
+             data-winner-draw-target="cardsContainer">
+          <% @users.each do |user| %>
+            <div class="card bg-base-200 shadow compact transition-all duration-300"
+                 data-winner-draw-target="card"
+                 data-user-id="<%= user.id %>">
+              <div class="card-body p-2 items-center">
+                <%= avatar_image_tag(user, :medium, class: "mb-1") %>
+                <p class="text-xs font-medium text-center truncate w-full"><%= user.name %></p>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+        <!-- Winner announcement (hidden initially) -->
+        <div class="hidden mt-6 text-center" data-winner-draw-target="winnerAnnouncement">
+          <div class="text-4xl font-bold text-primary mb-2">🎉 <%= t('admin.seven_day_winner.winner') %> 🎉</div>
+          <div class="flex justify-center items-center gap-4">
+            <%= avatar_image_tag(@users.first, :large, class: "hidden", data: { winner_draw_target: "winnerAvatar" }) if @users.any? %>
+            <div class="text-2xl font-semibold" data-winner-draw-target="winnerName"></div>
+          </div>
+        </div>
+      <% else %>
+        <div class="text-center py-8 text-base-content/70">
+          <div class="text-lg"><%= t('admin.seven_day_winner.no_users_selected') %></div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
