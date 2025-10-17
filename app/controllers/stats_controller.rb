@@ -34,7 +34,7 @@ class StatsController < ApplicationController
   private
 
   def cached_top_readers(challenge)
-    return TopReadersStatistics.call(challenge: nil) unless challenge
+    return [] unless challenge
 
     Rails.cache.fetch("stats/top_readers/#{challenge.id}", expires_in: CACHE_EXPIRATION) do
       TopReadersStatistics.call(challenge: challenge)
@@ -50,7 +50,7 @@ class StatsController < ApplicationController
   end
 
   def cached_top_groups(challenge)
-    return TopGroupsStatistics.call(challenge: nil) unless challenge
+    return [] unless challenge
 
     Rails.cache.fetch("stats/top_groups/#{challenge.id}", expires_in: CACHE_EXPIRATION) do
       TopGroupsStatistics.call(challenge: challenge)
@@ -58,7 +58,7 @@ class StatsController < ApplicationController
   end
 
   def cached_seven_day_window(challenge)
-    return SevenDayWindowStatistics.call(challenge: nil) unless challenge
+    return [] unless challenge
 
     Rails.cache.fetch("stats/seven_day_window/#{challenge.id}", expires_in: CACHE_EXPIRATION) do
       SevenDayWindowStatistics.call(challenge: challenge)
