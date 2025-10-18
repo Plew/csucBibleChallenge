@@ -38,10 +38,11 @@
     </div>
 
     <ul class="list bg-base-100 rounded-box">
-      <li class="p-4 pb-2 text-xs opacity-60 tracking-wide">
-        <%= is_user_in_this_group? ? "Your Group Members" : "Group Members" %>
+      <li class="p-4 pb-2 text-xs opacity-60 tracking-wide flex items-center justify-between">
+        <span><%= is_user_in_this_group? ? "Your Group Members" : "Group Members" %></span>
+        <span class="mr-2">Read Today?</span>
       </li>
-      <% 
+      <%
         enrollments = group.user_group_enrollments.includes(:user)
         if is_user_in_this_group?
           current_user_enrollment = enrollments.find { |e| e.user == current_user }
@@ -56,6 +57,9 @@
           <div><%= avatar_image_tag(enrollment.user, :tiny, class: 'size-10 rounded-full') %></div>
           <div class="flex-1 min-w-0">
             <div class="truncate"><%= enrollment.user.username %></div>
+          </div>
+          <div class="flex-shrink-0">
+            <input type="checkbox" <%= 'checked' if has_read_today?(enrollment.user) %> class="checkbox checkbox-success checkbox-sm pointer-events-none" />
           </div>
         </li>
       <% end %>
