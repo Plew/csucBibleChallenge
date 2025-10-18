@@ -1,20 +1,15 @@
 <div class="bg-base-100 rounded-lg shadow p-2">
-  <div class="max-h-64 overflow-y-auto mb-2 text-sm">
+  <div class="mb-2 text-sm">
     <div id="verse-chat-messages-<%= verse_id %>">
       <% if messages.any? %>
         <% messages.each do |message| %>
-          <div class="chat chat-start">
-            <div class="chat-image avatar">
-              <div class="w-8 rounded-full">
-                <% if message[:user].respond_to?(:avatar) %>
-                  <%= avatar_image_tag(message[:user], :tiny, class: 'rounded-full') %>
-                <% else %>
-                  <%= image_tag(Avatarro.image(message[:user].username), size: '24x24', class: 'rounded-full') %>
-                <% end %>
-              </div>
+          <div class="chat chat-start mb-3">
+            <div class="chat-header text-xs">
+              <span class="text-primary opacity-80"><%= message[:user].username %></span>
+              <time class="text-xs opacity-50"><%= time_ago_in_words(message[:created_at]) %> ago</time>
             </div>
-            <div class="chat-bubble text-sm">
-              <%= simple_format(h(message[:content])) %>
+            <div class="chat-bubble text-sm py-1 px-2 min-h-0">
+              <%= simple_format(h(message[:content]), class: 'm-0') %>
             </div>
           </div>
         <% end %>
