@@ -36,7 +36,11 @@
         </div>
       <% end %>
 
-      <%= render ReadingDisplayComponent.new(title: @selected_reading_title, verses: @selected_reading_verses) %>
+      <% if @reading_is_completed %>
+        <%= render InteractiveReadingDisplayComponent.new(title: @selected_reading_title, verses: @selected_reading_verses, current_user: current_user) %>
+      <% else %>
+        <%= render ReadingDisplayComponent.new(title: @selected_reading_title, verses: @selected_reading_verses) %>
+      <% end %>
 
       <div class="flex justify-center mt-4 mb-8">
         <% if reading_is_completed %>

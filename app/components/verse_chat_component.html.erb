@@ -1,0 +1,48 @@
+<div class="bg-base-100 rounded-lg shadow p-2">
+  <div class="max-h-64 overflow-y-auto mb-2 text-sm">
+    <div id="verse-chat-messages-<%= verse_id %>">
+      <% if messages.any? %>
+        <% messages.each do |message| %>
+          <div class="chat chat-start">
+            <div class="chat-image avatar">
+              <div class="w-8 rounded-full">
+                <% if message[:user].respond_to?(:avatar) %>
+                  <%= avatar_image_tag(message[:user], :tiny, class: 'rounded-full') %>
+                <% else %>
+                  <%= image_tag(Avatarro.image(message[:user].username), size: '24x24', class: 'rounded-full') %>
+                <% end %>
+              </div>
+            </div>
+            <div class="chat-bubble text-sm">
+              <%= simple_format(h(message[:content])) %>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <% if current_user %>
+    <%= tag.turbo_frame id: "verse-new-message-form-#{verse_id}" do %>
+      <%= form_with url: verse_verse_messages_path(verse_id),
+                    method: :post,
+                    scope: :verse_message,
+                    data: { turbo: true },
+                    class: "flex gap-2 items-center px-2" do |form| %>
+        <%= form.text_area :content,
+                          placeholder: "Type your message...",
+                          rows: 2,
+                          class: "textarea textarea-bordered textarea-sm flex-1 resize-none text-sm",
+                          required: true %>
+        <%= form.submit "Send",
+                       class: "btn btn-primary btn-sm" %>
+      <% end %>
+    <% end %>
+  <% else %>
+    <!-- Show disabled form if no current_user (for Lookbook preview) -->
+    <div class="flex gap-2 items-center px-2">
+      <textarea placeholder="Type your message..." rows="2" class="textarea textarea-bordered textarea-sm flex-1 resize-none text-sm" disabled></textarea>
+      <button class="btn btn-primary btn-sm" disabled>Send</button>
+    </div>
+  <% end %>
+</div>

@@ -144,4 +144,8 @@ Rails.application.routes.draw do
       post :leave
     end
   end
+
+  resources :verses, only: [] do
+    resources :verse_messages, only: [:index, :create], path: 'messages'
+  end
 end

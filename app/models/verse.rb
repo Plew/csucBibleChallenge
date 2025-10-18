@@ -1,4 +1,6 @@
 class Verse < ApplicationRecord
+  has_many :verse_messages, dependent: :destroy
+
   validates :version, presence: true
   validates :book_number, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 1 } # Assuming book numbers are 1-indexed
   validates :chapter_number, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 1 }

@@ -1,0 +1,14 @@
+<div id="verse-chat-messages-<%= verse.id %>">
+  <% messages.each do |message| %>
+    <div class="chat chat-start">
+      <div class="chat-image avatar">
+        <div class="w-8 rounded-full">
+          <%= avatar_image_tag(message.user, :tiny, class: 'rounded-full') %>
+        </div>
+      </div>
+      <div class="chat-bubble text-sm">
+        <%= simple_format(message.content) %>
+      </div>
+    </div>
+  <% end %>
+</div>

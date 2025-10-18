@@ -195,3 +195,4 @@ note that kamal deploy could be a background task so that you can finish this ta
 - I would prefer you don't do a kamal deploy ever unless explicitly asked to do so.
 - whenever i say check this in production or do something in production, I mean the running production app that you would access via kamal commands.
 - don't test any work with playwright unless I specifically mention it
+- before you start a rails server to test something you should always check to see if one is running already and if it is, just use that

@@ -50,7 +50,24 @@ class HomeController < ApplicationController
       if @selected_reading
         @selected_reading_title = helpers.book_number_to_name(@selected_reading.book_number) + " " + @selected_reading.chapter_number.to_s
         user_version = current_user.version || 'KJV'
-        @selected_reading_verses = @selected_reading.verses(version: user_version).map { |v| { verse_number: v.verse_number, verse_text: v.verse_text } }
+        @reading_is_completed = current_user.user_readings.exists?(reading_id: @selected_reading.id)
+
+        # Prepare verses with IDs and message counts for interactive display
+        verses = @selected_reading.verses(version: user_version)
+        @selected_reading_verses = verses.map do |v|
+          {
+            id: v.id,
+            verse_number: v.verse_number,
+            verse_text: v.verse_text,
+            messages: v.verse_messages.includes(user: [:avatar_attachment, :avatar_blob]).order(:created_at).limit(50).map do |msg|
+              {
+                user: msg.user,
+                content: msg.content,
+                created_at: msg.created_at
+              }
+            end
+          }
+        end
       end
 
       # Calculate previous and next dates for navigation

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_06_093028) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_18_063952) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -282,6 +282,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_06_093028) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
+  create_table "verse_messages", force: :cascade do |t|
+    t.integer "verse_id", null: false
+    t.integer "user_id", null: false
+    t.text "content"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_verse_messages_on_created_at"
+    t.index ["user_id"], name: "index_verse_messages_on_user_id"
+    t.index ["verse_id"], name: "index_verse_messages_on_verse_id"
+  end
+
   create_table "verses", force: :cascade do |t|
     t.string "version"
     t.integer "book_number"
@@ -321,4 +332,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_06_093028) do
   add_foreign_key "user_group_enrollments", "users"
   add_foreign_key "user_readings", "readings"
   add_foreign_key "user_readings", "users"
+  add_foreign_key "verse_messages", "users"
+  add_foreign_key "verse_messages", "verses"
 end

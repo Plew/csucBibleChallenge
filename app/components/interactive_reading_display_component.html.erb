@@ -1,0 +1,36 @@
+<div class="bg-base-100 shadow-xl w-full rounded-none">
+  <div>
+    <h2 class="text-lg font-bold mb-2 text-center"><%= title.presence || 'Untitled Reading' %></h2>
+    <div class="prose max-w-none bg-base-200 p-4 px-6 rounded-md">
+      <% if verses.any? %>
+        <% verses.each do |verse| %>
+          <details class="mb-2">
+            <summary class="text-lg text-base-content cursor-pointer hover:bg-base-300 p-2 rounded list-none">
+              <div class="flex items-start justify-between">
+                <span class="flex-1">
+                  <span class="text-xs align-top mr-1 text-base-content/60"><%= verse[:verse_number] %></span>
+                  <%= verse[:verse_text] %>
+                </span>
+                <% message_count = (verse[:messages] || []).length %>
+                <% if message_count > 0 %>
+                  <span class="badge badge-primary badge-sm ml-2 flex-shrink-0"><%= message_count %></span>
+                <% else %>
+                  <span class="text-base-content/40 ml-2 flex-shrink-0">...</span>
+                <% end %>
+              </div>
+            </summary>
+            <div class="mt-2">
+              <%= render VerseChatComponent.new(
+                verse: verse,
+                current_user: current_user,
+                messages: verse[:messages] || []
+              ) %>
+            </div>
+          </details>
+        <% end %>
+      <% else %>
+        <p><em>No verses found for this reading.</em></p>
+      <% end %>
+    </div>
+  </div>
+</div>
