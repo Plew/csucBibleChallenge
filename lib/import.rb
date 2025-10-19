@@ -84,8 +84,11 @@ class Import
       # Decode HTML entities in verse text
       cleaned_verse_text = decode_html_entities(verse_text)
 
+      # Normalize version names to match user profile codes
+      normalized_version = normalize_version(version)
+
       verses << {
-        version: version,
+        version: normalized_version,
         book_number: book_number,
         chapter_number: chapter_number,
         verse_number: verse_number,
@@ -124,19 +127,29 @@ class Import
 
   private
 
+  def normalize_version(csv_version)
+    # Map CSV version names to standardized version codes used in user profiles
+    case csv_version
+    when 'SCHL2000'
+      'SCHL2000'
+    else
+      csv_version
+    end
+  end
+
   def decode_html_entities(text)
     return text if text.blank?
-    
+
     # Decode specific HTML entities found in the CSV
     text = text.gsub('&ldquo;', '"')  # left double quotation mark
-    text = text.gsub('&rdquo;', '"')  # right double quotation mark  
+    text = text.gsub('&rdquo;', '"')  # right double quotation mark
     text = text.gsub('&lsquo;', "'")  # left single quotation mark
     text = text.gsub('&rsquo;', "'")  # right single quotation mark
     text = text.gsub('&quot;', '"')   # quotation mark
     text = text.gsub('&amp;', '&')    # ampersand
     text = text.gsub('&lt;', '<')     # less than
     text = text.gsub('&gt;', '>')     # greater than
-    
+
     text
   end
 
