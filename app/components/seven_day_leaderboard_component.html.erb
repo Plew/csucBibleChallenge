@@ -1,39 +1,43 @@
-<div class="bg-base-100 rounded-lg shadow p-2">
-  <h2 class="text-lg font-bold mb-2 text-center"><%= t('stats.seven_day_snapshot') %></h2>
+<div class="collapse collapse-arrow border-base-300 bg-base-200 border">
+  <input type="checkbox" id="seven-day-collapse">
+  <label for="seven-day-collapse" class="collapse-title text-xl font-medium flex items-center gap-2 pr-12">
+    <span class="truncate"><%= t('stats.seven_day_snapshot') %>: <%= t('stats.reader_count', count: reader_count) %></span>
+  </label>
+  <div class="collapse-content">
+    <% if leaderboard_data.any? %>
+      <div class="space-y-1">
+        <% leaderboard_data.each_with_index do |reader, index| %>
+          <div class="relative flex items-center justify-between px-3 py-2 bg-base-100 rounded-lg">
+            <div class="absolute top-0.5 left-1 text-[9px] opacity-40 leading-none"><%= index + 1 %></div>
 
-  <% if leaderboard_data.any? %>
-    <div class="space-y-1">
-      <% leaderboard_data.each_with_index do |reader, index| %>
-        <div class="relative flex items-center justify-between px-3 py-2 bg-base-200 rounded-lg">
-          <div class="absolute top-0.5 left-1 text-[9px] opacity-40 leading-none"><%= index + 1 %></div>
-
-          <div class="flex items-center gap-3 flex-grow min-w-0">
-            <div class="min-w-0">
-              <div class="font-medium truncate"><%= reader[:name] %></div>
-            </div>
-          </div>
-
-          <div class="text-right flex-shrink-0">
-            <div class="flex gap-4 items-center">
-              <div class="text-center flex-shrink-0">
-                <div class="radial-progress text-success text-sm" style="--value:<%= reader[:completion_percentage] %>; --size:2.5rem; --thickness:2px;" aria-valuenow="<%= reader[:completion_percentage] %>" role="progressbar">
-                  <span class="text-xs font-bold"><%= reader[:completion_percentage] %></span>
-                </div>
-              </div>
-              <div class="text-center flex-shrink-0">
-                <div class="radial-progress text-info text-sm" style="--value:<%= reader[:on_schedule_percentage] %>; --size:2.5rem; --thickness:2px;" aria-valuenow="<%= reader[:on_schedule_percentage] %>" role="progressbar">
-                  <span class="text-xs font-bold"><%= reader[:on_schedule_percentage] %></span>
-                </div>
+            <div class="flex items-center gap-3 flex-grow min-w-0">
+              <div class="min-w-0">
+                <div class="font-medium truncate"><%= reader[:name] %></div>
               </div>
             </div>
+
+            <div class="text-right flex-shrink-0">
+              <div class="flex gap-4 items-center">
+                <div class="text-center flex-shrink-0">
+                  <div class="radial-progress text-success text-sm" style="--value:<%= reader[:completion_percentage] %>; --size:2.5rem; --thickness:2px;" aria-valuenow="<%= reader[:completion_percentage] %>" role="progressbar">
+                    <span class="text-xs font-bold"><%= reader[:completion_percentage] %></span>
+                  </div>
+                </div>
+                <div class="text-center flex-shrink-0">
+                  <div class="radial-progress text-info text-sm" style="--value:<%= reader[:on_schedule_percentage] %>; --size:2.5rem; --thickness:2px;" aria-valuenow="<%= reader[:on_schedule_percentage] %>" role="progressbar">
+                    <span class="text-xs font-bold"><%= reader[:on_schedule_percentage] %></span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      <% end %>
-    </div>
-  <% else %>
-    <div class="text-center py-8 text-base-content/70">
-      <div class="text-lg mb-2"><%= t('stats.no_data') %></div>
-      <div class="text-sm"><%= t('stats.start_reading_message') %></div>
-    </div>
-  <% end %>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="text-center py-8 text-base-content/70">
+        <div class="text-lg mb-2"><%= t('stats.no_data') %></div>
+        <div class="text-sm"><%= t('stats.start_reading_message') %></div>
+      </div>
+    <% end %>
+  </div>
 </div>

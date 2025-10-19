@@ -13,6 +13,10 @@ class Statistics::TopReadersComponent < ViewComponent::Base
     top_readers_data.any?
   end
 
+  def reader_count
+    top_readers_data.length
+  end
+
   def avatar_fallback_initials(user)
     user.username.first.upcase
   end

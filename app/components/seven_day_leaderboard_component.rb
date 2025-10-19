@@ -8,4 +8,8 @@ class SevenDayLeaderboardComponent < ViewComponent::Base
   private
 
   attr_reader :leaderboard_data
+
+  def reader_count
+    leaderboard_data.length
+  end
 end

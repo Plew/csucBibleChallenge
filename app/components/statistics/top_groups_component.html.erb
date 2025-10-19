@@ -1,7 +1,9 @@
-<div class="card bg-base-100 shadow-xl">
-  <div class="card-body p-2">
-    <h2 class="text-lg font-bold mb-2 text-center"><%= t('stats.top_groups') %></h2>
-
+<div class="collapse collapse-arrow border-base-300 bg-base-200 border">
+  <input type="checkbox" id="top-groups-collapse">
+  <label for="top-groups-collapse" class="collapse-title text-xl font-medium flex items-center gap-2 pr-12">
+    <span class="truncate"><%= t('stats.top_groups') %>: <%= t('stats.group_count', count: group_count) %></span>
+  </label>
+  <div class="collapse-content">
     <% if has_groups? %>
       <div class="space-y-1">
         <% top_groups_data.each_with_index do |group_data, index| %>
@@ -11,7 +13,7 @@
           <% size = group_data[:group_size] %>
           <% chapters = group_data[:total_chapters_read] %>
 
-          <div class="relative flex items-center space-x-3 p-1.5 bg-base-200 rounded">
+          <div class="relative flex items-center space-x-3 p-1.5 bg-base-100 rounded">
             <div class="absolute top-0.5 left-1 text-[9px] opacity-40 leading-none"><%= index + 1 %></div>
 
             <div class="flex-grow min-w-0">

@@ -12,4 +12,8 @@ class Statistics::TopGroupsComponent < ViewComponent::Base
   def has_groups?
     top_groups_data.any?
   end
+
+  def group_count
+    top_groups_data.length
+  end
 end
