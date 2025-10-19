@@ -1,5 +1,5 @@
 <%= form_with model: message,
-              url: verse_verse_messages_path(verse),
+              url: reading_verse_messages_path(reading, verse_number: verse_number),
               method: :post,
               local: false,
               class: "flex gap-2 items-center px-2" do |form| %>

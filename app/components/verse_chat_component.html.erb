@@ -1,6 +1,6 @@
 <div class="bg-base-100 rounded-lg shadow p-2">
   <div class="mb-2 text-sm">
-    <div id="verse-chat-messages-<%= verse_id %>">
+    <div id="verse-chat-messages-<%= chat_id %>">
       <% if messages.any? %>
         <% messages.each do |message| %>
           <div class="chat chat-start mb-3">
@@ -18,8 +18,8 @@
   </div>
 
   <% if current_user %>
-    <%= tag.turbo_frame id: "verse-new-message-form-#{verse_id}" do %>
-      <%= form_with url: verse_verse_messages_path(verse_id),
+    <%= tag.turbo_frame id: "verse-new-message-form-#{chat_id}" do %>
+      <%= form_with url: reading_verse_messages_path(reading_id, verse_number: verse_number),
                     method: :post,
                     scope: :verse_message,
                     data: { turbo: true },

@@ -52,14 +52,18 @@ class HomeController < ApplicationController
         user_version = current_user.version || 'KJV'
         @reading_is_completed = current_user.user_readings.exists?(reading_id: @selected_reading.id)
 
-        # Prepare verses with IDs and message counts for interactive display
+        # Prepare verses with reading_id and message counts for interactive display
         verses = @selected_reading.verses(version: user_version)
         @selected_reading_verses = verses.map do |v|
           {
-            id: v.id,
+            reading_id: @selected_reading.id,
             verse_number: v.verse_number,
             verse_text: v.verse_text,
-            messages: v.verse_messages.includes(user: [:avatar_attachment, :avatar_blob]).order(:created_at).limit(50).map do |msg|
+            messages: VerseMessage.for_verse(@selected_reading.id, v.verse_number)
+                                  .includes(user: [:avatar_attachment, :avatar_blob])
+                                  .order(:created_at)
+                                  .limit(50)
+                                  .map do |msg|
               {
                 user: msg.user,
                 content: msg.content,

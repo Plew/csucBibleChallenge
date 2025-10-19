@@ -21,7 +21,8 @@
             </summary>
             <div class="mt-2">
               <%= render VerseChatComponent.new(
-                verse: verse,
+                reading_id: verse[:reading_id],
+                verse_number: verse[:verse_number],
                 current_user: current_user,
                 messages: verse[:messages] || []
               ) %>

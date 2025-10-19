@@ -3,18 +3,19 @@
 class VerseChatComponent < ViewComponent::Base
   include ApplicationHelper
 
-  def initialize(verse:, current_user: nil, messages: [])
-    @verse = verse
+  def initialize(reading_id:, verse_number:, current_user: nil, messages: [])
+    @reading_id = reading_id
+    @verse_number = verse_number
     @current_user = current_user
     @messages = messages
   end
 
   private
 
-  attr_reader :verse, :current_user, :messages
+  attr_reader :reading_id, :verse_number, :current_user, :messages
 
-  def verse_id
-    verse.is_a?(Hash) ? verse[:id] : verse.id
+  def chat_id
+    "#{reading_id}-#{verse_number}"
   end
 
   def new_message
