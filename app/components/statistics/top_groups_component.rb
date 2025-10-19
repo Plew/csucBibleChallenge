@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Statistics::TopGroupsComponent < ViewComponent::Base
+  include ApplicationHelper
+
   def initialize(top_groups_data:)
     @top_groups_data = top_groups_data
   end

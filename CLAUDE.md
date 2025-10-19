@@ -196,3 +196,4 @@ note that kamal deploy could be a background task so that you can finish this ta
 - whenever i say check this in production or do something in production, I mean the running production app that you would access via kamal commands.
 - don't test any work with playwright unless I specifically mention it
 - before you start a rails server to test something you should always check to see if one is running already and if it is, just use that
+- make sure to always include ApplicationHelper in any view component so that we have access to helper methods in the views for that component

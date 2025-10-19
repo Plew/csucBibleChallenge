@@ -11,8 +11,9 @@ class TopGroupsStatistics
 
   def call
     groups_scope = @challenge ? @challenge.groups : Group.joins(:challenge)
-    
-    groups_scope.includes(:users, challenge: :readings).map do |group|
+
+    # Eager load users with their avatars for expandable group lists
+    groups_scope.includes(users: { avatar_attachment: :blob }, challenge: :readings).map do |group|
       group_stats = GroupStatistics.new(group)
       {
         group: group,
