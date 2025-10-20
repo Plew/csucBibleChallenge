@@ -146,7 +146,9 @@ class Import
     text = text.gsub('&lsquo;', "'")  # left single quotation mark
     text = text.gsub('&rsquo;', "'")  # right single quotation mark
     text = text.gsub('&quot;', '"')   # quotation mark
-    text = text.gsub('&amp;', '&')    # ampersand
+    text = text.gsub('&mdash;', '—')  # em dash
+    text = text.gsub('&ndash;', '–')  # en dash
+    text = text.gsub('&amp;', '&')    # ampersand (must be last to avoid double-decoding)
     text = text.gsub('&lt;', '<')     # less than
     text = text.gsub('&gt;', '>')     # greater than
 
