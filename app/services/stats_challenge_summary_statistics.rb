@@ -19,17 +19,18 @@ class StatsChallengeSummaryStatistics
     current_date_in_tz = Time.current.in_time_zone(challenge.timezone).to_date
 
     UserReading.joins(:reading)
-               .where(readings: { challenge_id: challenge.id })
-               .where('DATE(user_readings.created_at) = ?', current_date_in_tz)
+               .where(readings: { challenge_id: challenge.id, scheduled_date: current_date_in_tz })
                .count
   end
 
   def first_reader_today
     current_date_in_tz = Time.current.in_time_zone(challenge.timezone).to_date
+    today_start = current_date_in_tz.in_time_zone(challenge.timezone).beginning_of_day
+    today_end = current_date_in_tz.in_time_zone(challenge.timezone).end_of_day
 
     first_reading = UserReading.joins(:reading)
-                               .where(readings: { challenge_id: challenge.id })
-                               .where('DATE(user_readings.created_at) = ?', current_date_in_tz)
+                               .where(readings: { challenge_id: challenge.id, scheduled_date: current_date_in_tz })
+                               .where('user_readings.created_at >= ? AND user_readings.created_at <= ?', today_start, today_end)
                                .order('user_readings.created_at ASC')
                                .first
 
@@ -38,23 +39,27 @@ class StatsChallengeSummaryStatistics
 
   def first_reader_today_time
     current_date_in_tz = Time.current.in_time_zone(challenge.timezone).to_date
+    today_start = current_date_in_tz.in_time_zone(challenge.timezone).beginning_of_day
+    today_end = current_date_in_tz.in_time_zone(challenge.timezone).end_of_day
 
     first_reading = UserReading.joins(:reading)
-                               .where(readings: { challenge_id: challenge.id })
-                               .where('DATE(user_readings.created_at) = ?', current_date_in_tz)
+                               .where(readings: { challenge_id: challenge.id, scheduled_date: current_date_in_tz })
+                               .where('user_readings.created_at >= ? AND user_readings.created_at <= ?', today_start, today_end)
                                .order('user_readings.created_at ASC')
                                .first
 
-    first_reading&.created_at
+    first_reading&.created_at&.in_time_zone(challenge.timezone)
   end
 
   def last_10_readers
     current_date_in_tz = Time.current.in_time_zone(challenge.timezone).to_date
+    today_start = current_date_in_tz.in_time_zone(challenge.timezone).beginning_of_day
+    today_end = current_date_in_tz.in_time_zone(challenge.timezone).end_of_day
 
-    # Get the most recent reading for each unique user today
+    # Get the most recent reading for each unique user for today's scheduled reading completed today
     user_readings = UserReading.joins(:reading, :user)
-                               .where(readings: { challenge_id: challenge.id })
-                               .where('DATE(user_readings.created_at) = ?', current_date_in_tz)
+                               .where(readings: { challenge_id: challenge.id, scheduled_date: current_date_in_tz })
+                               .where('user_readings.created_at >= ? AND user_readings.created_at <= ?', today_start, today_end)
                                .select('user_readings.*, MAX(user_readings.created_at) as latest_reading')
                                .group('user_readings.user_id')
                                .order('latest_reading DESC')
