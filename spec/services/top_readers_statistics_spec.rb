@@ -64,6 +64,21 @@ RSpec.describe TopReadersStatistics, type: :service do
         expect(result[2][:user]).to eq(user2)
       end
 
+      it 'filters out users with less than 50% completion' do
+        # Create a user with less than 50% completion
+        user4 = create(:user)
+        create(:user_challenge_enrollment, user: user4, challenge: challenge)
+        readings.first(4).each do |reading|
+          create(:user_reading, user: user4, reading: reading, completed_on: reading.scheduled_date)
+        end
+
+        result = described_class.call(challenge: challenge)
+
+        # Should only include users with 50%+ completion
+        expect(result.map { |r| r[:user] }).not_to include(user4)
+        expect(result.length).to eq(3)
+      end
+
       it 'calculates correct completion percentages' do
         result = described_class.call(challenge: challenge)
 
@@ -95,6 +110,7 @@ RSpec.describe TopReadersStatistics, type: :service do
       let!(:enrollment) { create(:user_challenge_enrollment, user: user, challenge: challenge) }
 
       it 'calculates 100% when all readings completed on schedule' do
+        # Complete at least 50% (5 out of 10) all on schedule
         readings.first(5).each do |reading|
           create(:user_reading, user: user, reading: reading, completed_on: reading.scheduled_date, created_at: reading.scheduled_date)
         end
@@ -104,20 +120,24 @@ RSpec.describe TopReadersStatistics, type: :service do
       end
 
       it 'calculates correct percentage when some readings are late' do
-        # Complete 3 on time
-        readings.first(3).each do |reading|
-          create(:user_reading, user: user, reading: reading, completed_on: reading.scheduled_date, created_at: reading.scheduled_date)
+        # Complete 6 total (60%, above 50% threshold) - 3 on time and 3 late
+        readings.first(6).each_with_index do |reading, index|
+          if index < 3
+            # First 3 on time
+            create(:user_reading, user: user, reading: reading, completed_on: reading.scheduled_date, created_at: reading.scheduled_date)
+          else
+            # Last 3 late
+            create(:user_reading, user: user, reading: reading, completed_on: reading.scheduled_date + 2.days, created_at: reading.scheduled_date + 2.days)
+          end
         end
 
-        # Complete 1 late
-        create(:user_reading, user: user, reading: readings[3], completed_on: readings[3].scheduled_date + 2.days, created_at: readings[3].scheduled_date + 2.days)
-
         result = described_class.call(challenge: challenge)
-        expect(result[0][:on_schedule_percentage]).to eq(75) # 3 out of 4
+        expect(result[0][:on_schedule_percentage]).to eq(50) # 3 out of 6
       end
 
       it 'returns 0 when all readings are late' do
-        readings.first(2).each do |reading|
+        # Complete at least 50% (5 out of 10) but all late
+        readings.first(5).each do |reading|
           create(:user_reading, user: user, reading: reading, completed_on: reading.scheduled_date + 1.day, created_at: reading.scheduled_date + 1.day)
         end
 
@@ -133,13 +153,15 @@ RSpec.describe TopReadersStatistics, type: :service do
       end
 
       before do
-        # Have all 60 users complete at least one reading
+        # Have all 60 users complete at least 50% (5 readings)
         users.each do |user|
-          create(:user_reading, user: user, reading: readings.first, completed_on: readings.first.scheduled_date)
+          readings.first(5).each do |reading|
+            create(:user_reading, user: user, reading: reading, completed_on: reading.scheduled_date)
+          end
         end
       end
 
-      it 'returns all users who have completed readings' do
+      it 'returns all users who have completed readings with 50%+ completion' do
         result = described_class.call(challenge: challenge)
         expect(result.length).to eq(60)
       end
@@ -152,7 +174,10 @@ RSpec.describe TopReadersStatistics, type: :service do
       let!(:group_enrollment) { create(:user_group_enrollment, user: user, group: group) }
 
       before do
-        create(:user_reading, user: user, reading: readings.first, completed_on: readings.first.scheduled_date)
+        # Complete at least 50% (5 readings)
+        readings.first(5).each do |reading|
+          create(:user_reading, user: user, reading: reading, completed_on: reading.scheduled_date)
+        end
       end
 
       it 'includes group name for users in groups' do
@@ -166,7 +191,10 @@ RSpec.describe TopReadersStatistics, type: :service do
       let!(:enrollment) { create(:user_challenge_enrollment, user: user, challenge: challenge) }
 
       before do
-        create(:user_reading, user: user, reading: readings.first, completed_on: readings.first.scheduled_date)
+        # Complete at least 50% (5 readings)
+        readings.first(5).each do |reading|
+          create(:user_reading, user: user, reading: reading, completed_on: reading.scheduled_date)
+        end
       end
 
       it 'returns nil group_name for users not in groups' do
@@ -180,7 +208,10 @@ RSpec.describe TopReadersStatistics, type: :service do
       let!(:enrollment) { create(:user_challenge_enrollment, user: user, challenge: challenge) }
 
       before do
-        create(:user_reading, user: user, reading: readings.first, completed_on: readings.first.scheduled_date)
+        # Complete at least 50% (5 readings)
+        readings.first(5).each do |reading|
+          create(:user_reading, user: user, reading: reading, completed_on: reading.scheduled_date)
+        end
       end
 
       it 'includes avatar_url key in results' do
