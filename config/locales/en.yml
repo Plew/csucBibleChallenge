@@ -305,7 +305,9 @@ en:
       no_participants_message: "No participants have achieved 100% completion in the 7-day window for this challenge"
       draw_title: "Winner Drawing"
       start: "Start!"
+      selecting: "Selecting..."
       winner: "WINNER"
+      is_the_winner: "is the winner!"
       no_users_selected: "No users selected. Please go back and select participants."
 
   # Feedback

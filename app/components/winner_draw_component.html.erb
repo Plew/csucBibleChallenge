@@ -1,0 +1,64 @@
+<div class="card bg-base-100 shadow-xl" data-controller="winner-draw">
+  <div class="card-body">
+    <h2 class="card-title mb-4"><%= challenge.title %></h2>
+
+    <% if users.any? %>
+      <!-- Start button -->
+      <div class="text-center mb-6">
+        <button type="button"
+                data-action="click->winner-draw#startElimination"
+                data-winner-draw-target="startButton"
+                class="btn btn-primary btn-lg">
+          <%= t('admin.seven_day_winner.start') %>
+        </button>
+      </div>
+
+      <!-- Avatars container - two piles side by side -->
+      <div class="flex gap-4 justify-center" data-winner-draw-target="cardsContainer">
+        <!-- Left pile -->
+        <div class="flex-1 flex flex-wrap gap-2 justify-center p-4 rounded-lg transition-all duration-300"
+             data-winner-draw-target="leftPile">
+          <% users.each_with_index do |user, index| %>
+            <% if index.even? %>
+              <div class="transition-all duration-300"
+                   data-winner-draw-target="card"
+                   data-user-id="<%= user.id %>"
+                   data-user-name="<%= user.name %>">
+                <%= avatar_image_tag(user, :xxlarge) %>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+
+        <!-- Right pile -->
+        <div class="flex-1 flex flex-wrap gap-2 justify-center p-4 rounded-lg transition-all duration-300"
+             data-winner-draw-target="rightPile">
+          <% users.each_with_index do |user, index| %>
+            <% if index.odd? %>
+              <div class="transition-all duration-300"
+                   data-winner-draw-target="card"
+                   data-user-id="<%= user.id %>"
+                   data-user-name="<%= user.name %>">
+                <%= avatar_image_tag(user, :xxlarge) %>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Winner announcement (hidden initially) - Full screen overlay -->
+      <div class="hidden fixed inset-0 bg-base-100 z-50 flex items-center justify-center" data-winner-draw-target="winnerAnnouncement">
+        <div class="text-center px-4">
+          <div class="text-6xl mb-8">🎉 🎊 🥳 ⭐ 🏆</div>
+          <div class="text-5xl md:text-7xl font-bold text-primary mb-4" data-winner-draw-target="winnerName"></div>
+          <div class="text-3xl md:text-5xl font-semibold"><%= t('admin.seven_day_winner.is_the_winner') %></div>
+          <div class="text-6xl mt-8">🎉 🎊 🥳 ⭐ 🏆</div>
+        </div>
+      </div>
+    <% else %>
+      <div class="text-center py-8 text-base-content/70">
+        <div class="text-lg"><%= t('admin.seven_day_winner.no_users_selected') %></div>
+      </div>
+    <% end %>
+  </div>
+</div>

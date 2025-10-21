@@ -26,7 +26,7 @@ module ApplicationHelper
   # Generates an image tag for a user's avatar using Avatarro.
   #
   # @param user [Object] The user object. Must respond to `username`.
-  # @param size_key [Symbol] The desired avatar size. Accepted values: `:tiny`, `:medium`, `:large`. Defaults to `:medium`.
+  # @param size_key [Symbol] The desired avatar size. Accepted values: `:tiny`, `:medium`, `:large`, `:xlarge`, `:xxlarge`. Defaults to `:medium`.
   # @param html_options [Hash] Additional HTML options for the `image_tag` helper.
   # @return [String] An HTML image tag for the avatar, or an empty string if the user or username is blank.
   #
@@ -44,7 +44,9 @@ module ApplicationHelper
     sizes = {
       tiny: '24x24',
       medium: '36x36',
-      large: '48x48'
+      large: '48x48',
+      xlarge: '64x64',
+      xxlarge: '96x96'
     }
 
     # Default to medium size if an invalid key is provided
@@ -58,6 +60,10 @@ module ApplicationHelper
           user.avatar.variant(:thumb).processed
         when :large
           user.avatar.variant(:large).processed
+        when :xlarge
+          user.avatar.variant(:xlarge).processed
+        when :xxlarge
+          user.avatar.variant(:xxlarge).processed
         else
           user.avatar.variant(:medium).processed
         end

@@ -250,7 +250,9 @@ de:
       no_participants_message: "Keine Teilnehmer haben 100% Abschluss im 7-Tage-Fenster für diese Challenge erreicht"
       draw_title: "Gewinnerziehung"
       start: "Start!"
+      selecting: "Auswahl läuft..."
       winner: "GEWINNER"
+      is_the_winner: "ist der Gewinner!"
       no_users_selected: "Keine Benutzer ausgewählt. Bitte gehe zurück und wähle Teilnehmer aus."
 
   # Feedback
