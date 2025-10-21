@@ -1,13 +1,10 @@
 <div id="verse-chat-messages-<%= reading.id %>-<%= verse_number %>">
   <% messages.each do |message| %>
-    <div class="chat chat-start mb-3">
-      <div class="chat-header text-xs">
-        <span class="text-primary opacity-80"><%= message.user.username %></span>
-        <time class="text-xs opacity-50"><%= time_ago_in_words(message.created_at) %> ago</time>
-      </div>
-      <div class="chat-bubble text-sm py-1 px-2 min-h-0">
-        <%= simple_format(h(message.content), class: 'm-0') %>
-      </div>
-    </div>
+    <%= render VerseMessageComponent.new(
+      message: message,
+      current_user: current_user,
+      reading: reading,
+      verse_number: verse_number
+    ) %>
   <% end %>
 </div>

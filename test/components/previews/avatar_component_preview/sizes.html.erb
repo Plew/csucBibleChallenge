@@ -1,0 +1,46 @@
+<div class="p-8 space-y-6">
+  <h2 class="text-2xl font-bold mb-4">Avatar Sizes</h2>
+
+  <div class="space-y-6">
+    <div class="flex items-center gap-4">
+      <div class="w-32 text-sm font-semibold">Tiny (24x24)</div>
+      <%= render(AvatarComponent.new(user: user, size: :tiny)) %>
+      <div class="text-sm text-gray-600">Used for small UI elements, lists</div>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <div class="w-32 text-sm font-semibold">Medium (36x36)</div>
+      <%= render(AvatarComponent.new(user: user, size: :medium)) %>
+      <div class="text-sm text-gray-600">Default size for most use cases</div>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <div class="w-32 text-sm font-semibold">Large (48x48)</div>
+      <%= render(AvatarComponent.new(user: user, size: :large)) %>
+      <div class="text-sm text-gray-600">Used for cards and navigation</div>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <div class="w-32 text-sm font-semibold">XLarge (64x64)</div>
+      <%= render(AvatarComponent.new(user: user, size: :xlarge)) %>
+      <div class="text-sm text-gray-600">Used for profile pages, headers</div>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <div class="w-32 text-sm font-semibold">XXLarge (96x96)</div>
+      <%= render(AvatarComponent.new(user: user, size: :xxlarge)) %>
+      <div class="text-sm text-gray-600">Used for prominent profile displays</div>
+    </div>
+  </div>
+
+  <div class="mt-8 p-4 bg-base-200 rounded-lg">
+    <h3 class="font-semibold mb-2">Usage Examples</h3>
+    <div class="space-y-2 text-sm font-mono">
+      <div>&lt;%= render(AvatarComponent.new(user: current_user, size: :tiny)) %&gt;</div>
+      <div>&lt;%= render(AvatarComponent.new(user: current_user, size: :medium)) %&gt;</div>
+      <div>&lt;%= render(AvatarComponent.new(user: current_user, size: :large)) %&gt;</div>
+      <div>&lt;%= render(AvatarComponent.new(user: current_user, size: :xlarge)) %&gt;</div>
+      <div>&lt;%= render(AvatarComponent.new(user: current_user, size: :xxlarge)) %&gt;</div>
+    </div>
+  </div>
+</div>

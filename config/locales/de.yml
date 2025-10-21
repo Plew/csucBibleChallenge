@@ -360,6 +360,10 @@ de:
     untitled: "Lesung ohne Titel"
     no_verses: "Keine Verse für diese Lesung gefunden."
 
+  # Verse messages
+  verse_messages:
+    delete_confirmation: "Bist du sicher, dass du diesen Kommentar löschen möchtest?"
+
   # Stats
   stats:
     personal: "Persönlich"

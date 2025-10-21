@@ -21,4 +21,8 @@ class VerseChatComponent < ViewComponent::Base
   def new_message
     @new_message ||= VerseMessage.new
   end
+
+  def reading
+    @reading ||= Reading.find(reading_id)
+  end
 end

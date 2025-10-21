@@ -197,3 +197,5 @@ note that kamal deploy could be a background task so that you can finish this ta
 - don't test any work with playwright unless I specifically mention it
 - before you start a rails server to test something you should always check to see if one is running already and if it is, just use that
 - make sure to always include ApplicationHelper in any view component so that we have access to helper methods in the views for that component
+- the seven day winner page is located at app/controllers/admin/seven_day_winner_controller.rb
+- whenever we want to render avatars we use the AvatarComponent

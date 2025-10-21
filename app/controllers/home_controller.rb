@@ -63,13 +63,6 @@ class HomeController < ApplicationController
                                   .includes(user: [:avatar_attachment, :avatar_blob])
                                   .order(:created_at)
                                   .limit(50)
-                                  .map do |msg|
-              {
-                user: msg.user,
-                content: msg.content,
-                created_at: msg.created_at
-              }
-            end
           }
         end
       end

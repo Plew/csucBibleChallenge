@@ -35,6 +35,29 @@ class VerseMessagesController < ApplicationController
     end
   end
 
+  def destroy
+    @message = VerseMessage.find(params[:id])
+
+    # Only allow users to delete their own messages
+    unless @message.user_id == current_user.id
+      head :forbidden
+      return
+    end
+
+    @message.destroy
+
+    @messages = VerseMessage.for_verse(@reading.id, @verse_number)
+                            .includes(user: [:avatar_attachment, :avatar_blob])
+                            .order(:created_at)
+                            .limit(50)
+
+    render turbo_stream: turbo_stream.replace(
+      "verse-chat-messages-#{@reading.id}-#{@verse_number}",
+      partial: "verse_messages/messages",
+      locals: { messages: @messages, current_user: current_user, reading: @reading, verse_number: @verse_number }
+    )
+  end
+
   private
 
   def set_reading_and_verse
