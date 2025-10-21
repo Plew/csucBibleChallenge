@@ -434,6 +434,7 @@ en:
     no_data: "No data available"
     start_reading_message: "Start reading to see your progress!"
     leaderboard: "Leaderboard"
+    over_50_percent: "over 50%"
     reader_count:
       one: "%{count} reader"
       other: "%{count} readers"

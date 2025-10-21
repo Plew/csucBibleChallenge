@@ -379,6 +379,7 @@ de:
     no_data: "Keine Daten verfügbar"
     start_reading_message: "Beginne zu lesen, um deinen Fortschritt zu sehen!"
     leaderboard: "Bestenliste"
+    over_50_percent: "über 50%"
     reader_count:
       one: "%{count} Leser"
       other: "%{count} Leser"

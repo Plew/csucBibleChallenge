@@ -39,6 +39,7 @@ class TopReadersStatistics
         group_name: group_names_map[user.id]
       }
     end.reject { |user_data| user_data[:chapters_completed].zero? }
+      .select { |user_data| user_data[:completion_percentage] >= 50 }
       .sort_by { |user_data| -user_data[:completion_percentage] }
   end
 

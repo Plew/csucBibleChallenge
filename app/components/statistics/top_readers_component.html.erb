@@ -1,7 +1,7 @@
 <div class="collapse collapse-arrow border-base-300 bg-base-200 border">
   <input type="checkbox" id="leaderboard-collapse">
   <label for="leaderboard-collapse" class="collapse-title text-xl font-medium flex items-center gap-2 pr-12">
-    <span class="truncate"><%= t('stats.leaderboard') %>: <%= t('stats.reader_count', count: reader_count) %></span>
+    <span class="truncate"><%= t('stats.leaderboard') %> (<%= t('stats.over_50_percent') %>)</span>
   </label>
   <div class="collapse-content">
     <% if has_readers? %>
