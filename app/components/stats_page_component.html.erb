@@ -1,5 +1,12 @@
 <div class="px-2 py-3">
   <div class="space-y-6">
+    <!-- Challenge Summary -->
+    <% if challenge && challenge_summary_stats %>
+      <div>
+        <%= render StatsChallengeSummaryComponent.new(challenge: challenge, statistics: challenge_summary_stats) %>
+      </div>
+    <% end %>
+
     <!-- Personal Stats -->
     <div>
       <%= render Statistics::PersonalStatsComponent.new(user_stats: personal_stats) %>

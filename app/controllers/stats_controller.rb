@@ -5,6 +5,8 @@ class StatsController < ApplicationController
 
   def index
     current_challenge = current_user.challenges.first
+    @challenge = current_challenge
+    @challenge_summary_stats = cached_challenge_summary_stats(current_challenge)
     @personal_stats = cached_personal_stats(current_challenge)
     @top_readers_data = cached_top_readers(current_challenge)
     @participant_count = cached_participant_count(current_challenge)
@@ -62,6 +64,14 @@ class StatsController < ApplicationController
 
     Rails.cache.fetch("stats/seven_day_window/#{challenge.id}", expires_in: CACHE_EXPIRATION) do
       SevenDayWindowStatistics.call(challenge: challenge)
+    end
+  end
+
+  def cached_challenge_summary_stats(challenge)
+    return nil unless challenge
+
+    Rails.cache.fetch("stats/challenge_summary/#{challenge.id}", expires_in: CACHE_EXPIRATION) do
+      StatsChallengeSummaryStatistics.new(challenge)
     end
   end
 

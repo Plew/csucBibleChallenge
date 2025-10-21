@@ -1,6 +1,8 @@
 <% content_for :title, t('navigation.stats') %>
 
 <%= render StatsPageComponent.new(
+  challenge: @challenge,
+  challenge_summary_stats: @challenge_summary_stats,
   personal_stats: @personal_stats,
   top_readers_data: @top_readers_data,
   participant_count: @participant_count,

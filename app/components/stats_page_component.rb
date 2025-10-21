@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 class StatsPageComponent < ViewComponent::Base
-  def initialize(personal_stats:, top_readers_data:, participant_count:, top_groups_data:, seven_day_leaderboard_data:)
+  def initialize(challenge:, challenge_summary_stats:, personal_stats:, top_readers_data:, participant_count:, top_groups_data:, seven_day_leaderboard_data:)
+    @challenge = challenge
+    @challenge_summary_stats = challenge_summary_stats
     @personal_stats = personal_stats
     @top_readers_data = top_readers_data
     @participant_count = participant_count
@@ -11,5 +13,5 @@ class StatsPageComponent < ViewComponent::Base
 
   private
 
-  attr_reader :personal_stats, :top_readers_data, :participant_count, :top_groups_data, :seven_day_leaderboard_data
+  attr_reader :challenge, :challenge_summary_stats, :personal_stats, :top_readers_data, :participant_count, :top_groups_data, :seven_day_leaderboard_data
 end
