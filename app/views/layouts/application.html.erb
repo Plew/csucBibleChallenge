@@ -69,6 +69,7 @@
             <% if current_user.admin? %>
               <%= link_to t('navigation.create_challenge'), new_admin_challenge_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
               <%= link_to t('navigation.manage_feedback'), admin_feedbacks_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
+              <%= link_to t('navigation.seven_day_win'), admin_seven_day_winner_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
             <% end %>
             <%= link_to t('navigation.faq'), faq_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
             <%= link_to t('navigation.settings'), account_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>

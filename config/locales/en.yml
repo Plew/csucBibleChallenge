@@ -171,6 +171,7 @@ en:
     group: "Group"
     create_challenge: "Create Challenge"
     manage_feedback: "Manage Feedback"
+    seven_day_win: "7 Day Win"
     settings: "Settings"
     send_feedback: "Send Feedback"
     log_out: "Log Out"
