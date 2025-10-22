@@ -88,6 +88,7 @@ Rails.application.routes.draw do
     resources :users, only: [:index, :show] do
       member do
         patch :reset_password
+        patch :update_password
       end
     end
     resources :feedbacks, only: [:index, :show, :destroy]

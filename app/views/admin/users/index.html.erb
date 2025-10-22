@@ -28,7 +28,9 @@
           <thead>
             <tr>
               <th>ID</th>
+              <th>Username</th>
               <th>Email</th>
+              <th>Challenge</th>
               <th>Admin</th>
               <th>Created</th>
               <th>Actions</th>
@@ -38,7 +40,17 @@
             <% @users.each do |user| %>
               <tr>
                 <td><%= user.id %></td>
-                <td class="font-semibold"><%= user.email %></td>
+                <td class="font-semibold"><%= user.username %></td>
+                <td><%= user.email %></td>
+                <td>
+                  <% if user.challenges.any? %>
+                    <% user.challenges.each do |challenge| %>
+                      <div class="badge badge-primary badge-sm mb-1"><%= challenge.name %></div>
+                    <% end %>
+                  <% else %>
+                    <span class="text-gray-400">None</span>
+                  <% end %>
+                </td>
                 <td>
                   <% if user.admin? %>
                     <span class="badge badge-error">Admin</span>
@@ -46,15 +58,10 @@
                     <span class="badge badge-ghost">User</span>
                   <% end %>
                 </td>
-                <td><%= user.created_at.strftime("%B %d, %Y") %></td>
+                <td><%= user.created_at.strftime("%b %d, %Y") %></td>
                 <td>
                   <div class="join">
                     <%= link_to "View", admin_user_path(user), class: "btn btn-sm btn-info join-item" %>
-                    <%= link_to "Reset Password", 
-                        reset_password_admin_user_path(user), 
-                        method: :patch,
-                        data: { confirm: "Are you sure you want to reset #{user.email}'s password?" },
-                        class: "btn btn-sm btn-warning join-item" %>
                   </div>
                 </td>
               </tr>
