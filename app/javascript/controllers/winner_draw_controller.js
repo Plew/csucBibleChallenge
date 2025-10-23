@@ -35,13 +35,13 @@ export default class extends Controller {
     if (leftCards.length === 0 || rightCards.length === 0) {
       await this.redistributeCards(leftCards, rightCards)
       // Restart elimination with redistributed cards
-      await this.wait(1000)
+      await this.wait(500)
       this.eliminateNext()
       return
     }
 
-    // Alternate selector between left and right for 5 seconds
-    await this.alternateSelector(5000)
+    // Alternate selector between left and right for 2.5 seconds
+    await this.alternateSelector(2500)
 
     // Randomly choose which pile to eliminate (50/50 chance)
     const eliminateLeft = Math.random() < 0.5
@@ -52,8 +52,8 @@ export default class extends Controller {
     // Highlight the selected pile
     pileElement.classList.add('ring-4', 'ring-error', 'bg-error/10')
 
-    // Wait 1 second before scattering
-    await this.wait(1000)
+    // Wait 0.5 seconds before scattering
+    await this.wait(500)
 
     // Scatter the eliminated cards in all directions
     await this.scatterCards(pileToEliminate)
@@ -65,13 +65,13 @@ export default class extends Controller {
     pileElement.classList.remove('ring-4', 'ring-error', 'bg-error/10')
 
     // Wait before redistributing
-    await this.wait(500)
+    await this.wait(250)
 
     // Redistribute remaining cards into two piles
     await this.redistributeCards(eliminateLeft ? [] : leftCards, eliminateLeft ? rightCards : [])
 
-    // Wait 2 seconds before next round
-    await this.wait(2000)
+    // Wait 1 second before next round
+    await this.wait(1000)
 
     // Continue with next elimination
     this.eliminateNext()
@@ -82,9 +82,9 @@ export default class extends Controller {
     let isLeft = true
     let switchCount = 0
 
-    // Start fast (100ms) and gradually slow down over 5 seconds
-    const minInterval = 100  // Start at 100ms
-    const maxInterval = 800  // End at 800ms
+    // Start fast (50ms) and gradually slow down
+    const minInterval = 50   // Start at 50ms
+    const maxInterval = 400  // End at 400ms
 
     while (Date.now() - startTime < duration) {
       // Calculate progress (0 to 1)
@@ -125,13 +125,13 @@ export default class extends Controller {
       const dx = Math.cos(angle * Math.PI / 180) * distance
       const dy = Math.sin(angle * Math.PI / 180) * distance
 
-      card.style.transition = 'all 3s ease-out' // Much slower: 3 seconds
+      card.style.transition = 'all 1.5s ease-out' // 1.5 seconds
       card.style.transform = `translate(${dx}px, ${dy}px) rotate(${rotation}deg)`
       card.style.opacity = '0'
     })
 
     // Wait for scatter animation to complete
-    await this.wait(3000)
+    await this.wait(1500)
   }
 
   async redistributeCards(leftCards, rightCards) {
@@ -187,11 +187,11 @@ export default class extends Controller {
       card.offsetHeight
 
       // Animate to new position
-      card.style.transition = 'all 1s ease-out'
+      card.style.transition = 'all 0.5s ease-out'
       card.style.transform = 'none'
     })
 
-    await this.wait(1000)
+    await this.wait(500)
   }
 
   showWinner(winnerCard) {
