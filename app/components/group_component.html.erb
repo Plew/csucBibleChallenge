@@ -37,6 +37,35 @@
       <% end %>
     </div>
 
+    <!-- Reading History Graphs for Each Member -->
+    <div class="mb-4 space-y-3">
+      <%
+        enrollments = group.user_group_enrollments.includes(:user)
+        if is_user_in_this_group?
+          current_user_enrollment = enrollments.find { |e| e.user == current_user }
+          other_enrollments = enrollments.reject { |e| e.user == current_user }
+          sorted_enrollments_for_graphs = [current_user_enrollment, *other_enrollments].compact
+        else
+          sorted_enrollments_for_graphs = enrollments
+        end
+      %>
+      <% sorted_enrollments_for_graphs.each do |enrollment| %>
+        <div class="flex items-center gap-3">
+          <div class="flex-shrink-0">
+            <%= avatar_image_tag(enrollment.user, :tiny, class: 'size-8 rounded-full') %>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="text-sm font-medium mb-1"><%= enrollment.user.username %></div>
+            <%= render ReadingHistoryGraphComponent.new(
+              total_days: total_challenge_days,
+              completed_days: completed_days_for_user(enrollment.user),
+              start_date: challenge_start_date
+            ) %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
     <ul class="list bg-base-100 rounded-box">
       <li class="p-4 pb-2 text-xs opacity-60 tracking-wide flex items-center justify-between">
         <span><%= is_user_in_this_group? ? "Your Group Members" : "Group Members" %></span>
