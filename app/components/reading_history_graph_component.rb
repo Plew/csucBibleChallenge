@@ -3,7 +3,7 @@
 class ReadingHistoryGraphComponent < ViewComponent::Base
   include ApplicationHelper
 
-  def initialize(total_days:, completed_days: [], start_date: nil)
+  def initialize(total_days:, completed_days: [], start_date: nil, current_day: nil)
     @total_days = total_days
     # completed_days is now an array of hashes: [{day: 0, on_time: true}, ...]
     # Convert to a hash for quick lookup: {day_number => on_time_boolean}
@@ -11,6 +11,7 @@ class ReadingHistoryGraphComponent < ViewComponent::Base
       hash[day_info[:day]] = day_info[:on_time]
     end
     @start_date = start_date || Date.today
+    @current_day = current_day
   end
 
   def days
@@ -19,13 +20,14 @@ class ReadingHistoryGraphComponent < ViewComponent::Base
         number: day_number,
         date: @start_date + day_number.days,
         completed: @completed_days_map.key?(day_number),
-        on_time: @completed_days_map[day_number]
+        on_time: @completed_days_map[day_number],
+        is_current: @current_day == day_number
       }
     end
   end
 
   def day_class(day)
-    base_classes = "w-3 h-3 rounded-sm transition-colors duration-200"
+    base_classes = "w-3 h-3 rounded-sm transition-colors duration-200 relative cursor-pointer"
 
     if day[:completed]
       if day[:on_time]

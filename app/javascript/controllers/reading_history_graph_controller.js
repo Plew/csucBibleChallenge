@@ -1,12 +1,25 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["day"]
+  static targets = ["daySquare"]
 
-  showToast(event) {
+  handleClick(event) {
     const dayElement = event.currentTarget
     const dayInfo = dayElement.dataset.dayInfo
 
+    // Remove highlight from all squares
+    this.daySquareTargets.forEach(square => {
+      square.classList.remove('ring-2', 'ring-primary', 'ring-offset-1')
+    })
+
+    // Add highlight to clicked square
+    dayElement.classList.add('ring-2', 'ring-primary', 'ring-offset-1')
+
+    // Show toast
+    this.showToast(dayInfo)
+  }
+
+  showToast(dayInfo) {
     // Create toast container if it doesn't exist
     let toastContainer = document.getElementById('reading-graph-toast')
     if (!toastContainer) {

@@ -2,12 +2,18 @@
   <div class="flex flex-wrap gap-1">
     <% days.each do |day| %>
       <div
-        class="<%= day_class(day) %> tooltip tooltip-top cursor-pointer"
+        class="<%= day_class(day) %>"
         style="<%= day_style(day) %>"
-        data-tip="<%= tooltip_text(day) %>"
         data-day-info="<%= tooltip_text(day) %>"
-        data-action="click->reading-history-graph#showToast"
-      ></div>
+        data-action="click->reading-history-graph#handleClick"
+        data-reading-history-graph-target="daySquare"
+      >
+        <% if day[:is_current] %>
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div class="w-1 h-1 bg-white rounded-full"></div>
+          </div>
+        <% end %>
+      </div>
     <% end %>
   </div>
 </div>

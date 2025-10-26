@@ -60,7 +60,8 @@
             <%= render ReadingHistoryGraphComponent.new(
               total_days: total_challenge_days,
               completed_days: completed_days_for_user(enrollment.user),
-              start_date: challenge_start_date
+              start_date: challenge_start_date,
+              current_day: current_day_number
             ) %>
           </div>
           <div class="flex-shrink-0">

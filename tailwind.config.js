@@ -14,7 +14,19 @@ module.exports = {
     'bg-success',
     'bg-base-300',
     'bg-transparent',
-    'border-2'
+    'border-2',
+    'ring-2',
+    'ring-primary',
+    'ring-offset-1',
+    'w-1',
+    'h-1',
+    'bg-white',
+    'rounded-full',
+    'absolute',
+    'inset-0',
+    'flex',
+    'items-center',
+    'justify-center'
   ],
   theme: {
     extend: {

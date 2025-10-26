@@ -76,4 +76,9 @@ class GroupComponent < ViewComponent::Base
       { day: day_number, on_time: on_time }
     end
   end
+
+  def current_day_number
+    # Calculate the day number based on today's date in the challenge timezone
+    (today_in_challenge_timezone - challenge_start_date).to_i
+  end
 end
