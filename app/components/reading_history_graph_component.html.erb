@@ -1,0 +1,12 @@
+<div class="reading-history-graph" data-controller="reading-history-graph">
+  <div class="flex flex-wrap gap-1">
+    <% days.each do |day| %>
+      <div
+        class="<%= day_class(day) %> tooltip tooltip-top cursor-pointer"
+        data-tip="<%= tooltip_text(day) %>"
+        data-day-info="<%= tooltip_text(day) %>"
+        data-action="click->reading-history-graph#showToast"
+      ></div>
+    <% end %>
+  </div>
+</div>

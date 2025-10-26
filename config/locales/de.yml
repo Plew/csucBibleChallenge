@@ -115,6 +115,9 @@ de:
     member_one: "Mitglied"
     member_other: "Mitglieder"
     ago: "her"
+    day: "Tag"
+    completed: "Abgeschlossen"
+    not_completed: "Nicht abgeschlossen"
 
   # Time units
   time:

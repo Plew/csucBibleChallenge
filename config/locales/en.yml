@@ -148,6 +148,9 @@ en:
     member_one: "member"
     member_other: "members"
     ago: "ago"
+    day: "Day"
+    completed: "Completed"
+    not_completed: "Not completed"
 
   # Time units
   time:
