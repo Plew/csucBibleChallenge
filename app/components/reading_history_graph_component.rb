@@ -5,7 +5,11 @@ class ReadingHistoryGraphComponent < ViewComponent::Base
 
   def initialize(total_days:, completed_days: [], start_date: nil)
     @total_days = total_days
-    @completed_days = completed_days.to_set
+    # completed_days is now an array of hashes: [{day: 0, on_time: true}, ...]
+    # Convert to a hash for quick lookup: {day_number => on_time_boolean}
+    @completed_days_map = completed_days.each_with_object({}) do |day_info, hash|
+      hash[day_info[:day]] = day_info[:on_time]
+    end
     @start_date = start_date || Date.today
   end
 
@@ -14,7 +18,8 @@ class ReadingHistoryGraphComponent < ViewComponent::Base
       {
         number: day_number,
         date: @start_date + day_number.days,
-        completed: @completed_days.include?(day_number)
+        completed: @completed_days_map.key?(day_number),
+        on_time: @completed_days_map[day_number]
       }
     end
   end
@@ -23,14 +28,25 @@ class ReadingHistoryGraphComponent < ViewComponent::Base
     base_classes = "w-3 h-3 rounded-sm transition-colors duration-200"
 
     if day[:completed]
-      "#{base_classes} bg-success"
+      if day[:on_time]
+        # Completed on time: solid green
+        "#{base_classes} bg-success"
+      else
+        # Completed late: outlined green
+        "#{base_classes} border-2 border-success bg-transparent"
+      end
     else
+      # Not completed: gray
       "#{base_classes} bg-base-300"
     end
   end
 
   def tooltip_text(day)
-    status = day[:completed] ? t('common.completed') : t('common.not_completed')
+    if day[:completed]
+      status = day[:on_time] ? t('common.completed_on_time') : t('common.completed_late')
+    else
+      status = t('common.not_completed')
+    end
     "#{t('common.day')} #{day[:number] + 1}: #{day[:date].strftime('%b %d, %Y')} - #{status}"
   end
 end

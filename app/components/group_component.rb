@@ -58,14 +58,22 @@ class GroupComponent < ViewComponent::Base
     # Get all readings for the challenge with their scheduled dates
     challenge_readings = group.challenge.readings.select(:id, :scheduled_date).index_by(&:id)
 
-    # Get completed reading IDs for this user
-    completed_reading_ids = user.user_readings
+    # Get completed readings with their completion dates
+    completed_readings = user.user_readings
       .where(reading_id: challenge_readings.keys)
-      .pluck(:reading_id)
-      .to_set
+      .pluck(:reading_id, :completed_on)
 
-    # Calculate which day numbers (0-based) have been completed
-    challenge_readings.select { |id, _| completed_reading_ids.include?(id) }
-                      .map { |_, reading| (reading.scheduled_date - challenge_start_date).to_i }
+    # For each completed reading, determine day number and if it was on time
+    # "On time" means completed_on matches the scheduled_date (both in challenge timezone)
+    completed_readings.map do |reading_id, completed_on|
+      reading = challenge_readings[reading_id]
+      day_number = (reading.scheduled_date - challenge_start_date).to_i
+
+      # Both dates should already be Date objects, so we can compare directly
+      # The scheduled_date is stored as a Date, and completed_on is stored as a Date
+      on_time = (completed_on == reading.scheduled_date)
+
+      { day: day_number, on_time: on_time }
+    end
   end
 end

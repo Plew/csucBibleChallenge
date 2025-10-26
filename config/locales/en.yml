@@ -150,6 +150,8 @@ en:
     ago: "ago"
     day: "Day"
     completed: "Completed"
+    completed_on_time: "Completed on time"
+    completed_late: "Completed late"
     not_completed: "Not completed"
 
   # Time units

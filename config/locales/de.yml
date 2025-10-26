@@ -117,6 +117,8 @@ de:
     ago: "her"
     day: "Tag"
     completed: "Abgeschlossen"
+    completed_on_time: "Pünktlich abgeschlossen"
+    completed_late: "Verspätet abgeschlossen"
     not_completed: "Nicht abgeschlossen"
 
   # Time units
