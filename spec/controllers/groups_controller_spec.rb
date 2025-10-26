@@ -117,4 +117,93 @@ RSpec.describe GroupsController, type: :controller do
       end
     end
   end
+
+  describe 'GET #confirm_remove_member' do
+    let(:creator_group) { create(:group, challenge: challenge, creator: user) }
+    let(:member) { create(:user) }
+    let!(:member_enrollment) { create(:user_group_enrollment, user: member, group: creator_group) }
+
+    context 'when user is the group creator' do
+      it 'renders the confirm_remove_member template' do
+        get :confirm_remove_member, params: { id: creator_group.id, member_id: member.id }
+        expect(response).to render_template(:confirm_remove_member)
+      end
+
+      it 'assigns the member to @member' do
+        get :confirm_remove_member, params: { id: creator_group.id, member_id: member.id }
+        expect(assigns(:member)).to eq(member)
+      end
+    end
+
+    context 'when user is not the group creator' do
+      let(:other_group) { create(:group, challenge: challenge) }
+
+      it 'redirects with alert message' do
+        get :confirm_remove_member, params: { id: other_group.id, member_id: member.id }
+        expect(response).to redirect_to(group_path(other_group))
+      end
+    end
+
+    context 'when trying to remove self' do
+      it 'redirects to edit page with alert' do
+        get :confirm_remove_member, params: { id: creator_group.id, member_id: user.id }
+        expect(response).to redirect_to(edit_group_path(creator_group))
+        expect(flash[:alert]).to include('cannot remove yourself')
+      end
+    end
+  end
+
+  describe 'DELETE #remove_member' do
+    let(:creator_group) { create(:group, challenge: challenge, creator: user) }
+    let(:member) { create(:user) }
+    let!(:member_enrollment) { create(:user_group_enrollment, user: member, group: creator_group) }
+
+    context 'when user is the group creator' do
+      it 'removes the member from the group' do
+        expect {
+          delete :remove_member, params: { id: creator_group.id, member_id: member.id }
+        }.to change { creator_group.users.count }.by(-1)
+      end
+
+      it 'redirects to edit group page' do
+        delete :remove_member, params: { id: creator_group.id, member_id: member.id }
+        expect(response).to redirect_to(edit_group_path(creator_group))
+      end
+
+      it 'shows success notice' do
+        delete :remove_member, params: { id: creator_group.id, member_id: member.id }
+        expect(flash[:notice]).to eq(I18n.t('groups.member_removed'))
+      end
+    end
+
+    context 'when user is not the group creator' do
+      let(:other_group) { create(:group, challenge: challenge) }
+
+      it 'does not remove the member' do
+        expect {
+          delete :remove_member, params: { id: other_group.id, member_id: member.id }
+        }.not_to change { other_group.users.count }
+      end
+
+      it 'redirects with alert message' do
+        delete :remove_member, params: { id: other_group.id, member_id: member.id }
+        expect(response).to redirect_to(group_path(other_group))
+      end
+    end
+
+    context 'when trying to remove self' do
+      it 'does not remove the creator' do
+        creator_enrollment = create(:user_group_enrollment, user: user, group: creator_group)
+        expect {
+          delete :remove_member, params: { id: creator_group.id, member_id: user.id }
+        }.not_to change { creator_group.users.count }
+      end
+
+      it 'redirects to edit page with alert' do
+        delete :remove_member, params: { id: creator_group.id, member_id: user.id }
+        expect(response).to redirect_to(edit_group_path(creator_group))
+        expect(flash[:alert]).to include('cannot remove yourself')
+      end
+    end
+  end
 end

@@ -120,6 +120,7 @@ class GroupsController < ApplicationController
       redirect_to group_path(@group), alert: 'Only the group creator can edit this group.'
       return
     end
+    @members = @group.users.includes(:avatar_attachment, :avatar_blob).where.not(id: current_user.id)
   end
 
   # PATCH /groups/:id
@@ -135,6 +136,42 @@ class GroupsController < ApplicationController
     else
       render :edit, status: :unprocessable_content
     end
+  end
+
+  # GET /groups/:id/members/:member_id/confirm_remove
+  def confirm_remove_member
+    @group = @challenge.groups.find(params[:id])
+    unless @group.creator == current_user
+      redirect_to group_path(@group), alert: t('groups.only_creator_can_edit')
+      return
+    end
+
+    if params[:member_id].to_i == current_user.id
+      redirect_to edit_group_path(@group), alert: 'You cannot remove yourself. Use Leave Group instead.'
+      return
+    end
+
+    @member = @group.users.find(params[:member_id])
+  end
+
+  # DELETE /groups/:id/members/:member_id
+  def remove_member
+    @group = @challenge.groups.find(params[:id])
+    unless @group.creator == current_user
+      redirect_to group_path(@group), alert: t('groups.only_creator_can_edit')
+      return
+    end
+
+    if params[:member_id].to_i == current_user.id
+      redirect_to edit_group_path(@group), alert: 'You cannot remove yourself. Use Leave Group instead.'
+      return
+    end
+
+    member = @group.users.find(params[:member_id])
+    enrollment = UserGroupEnrollment.find_by(user: member, group: @group)
+    enrollment&.destroy
+
+    redirect_to edit_group_path(@group), notice: t('groups.member_removed')
   end
 
   private

@@ -148,6 +148,8 @@ Rails.application.routes.draw do
       post :join
       get :confirm_destroy
       post :destroy_and_leave
+      get 'members/:member_id/confirm_remove', to: 'groups#confirm_remove_member', as: :confirm_remove_member
+      delete 'members/:member_id', to: 'groups#remove_member', as: :remove_member
     end
     collection do
       post :leave

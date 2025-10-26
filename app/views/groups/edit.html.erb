@@ -1,37 +1,59 @@
-<div class="max-w-md mx-auto mt-8 p-6 bg-base-100 rounded-lg shadow">
-  <h2 class="text-xl font-bold mb-4">Edit Group</h2>
+<div class="max-w-md mx-auto mt-8 px-4 space-y-6">
+  <div class="p-6 bg-base-100 rounded-lg shadow">
+    <h2 class="text-xl font-bold mb-4"><%= t('groups.edit_group') %></h2>
 
-  <%= form_with model: @group, url: group_path(@group), method: :patch, data: { turbo: true }, class: 'space-y-4' do |f| %>
-    <% if @group.errors.any? %>
-      <div class="alert alert-error mb-4">
-        <ul class="list-disc list-inside text-sm">
-          <% @group.errors.full_messages.each do |msg| %>
-            <li><%= msg %></li>
-          <% end %>
-        </ul>
+    <%= form_with model: @group, url: group_path(@group), method: :patch, data: { turbo: true }, class: 'space-y-4' do |f| %>
+      <% if @group.errors.any? %>
+        <div class="alert alert-error mb-4">
+          <ul class="list-disc list-inside text-sm">
+            <% @group.errors.full_messages.each do |msg| %>
+              <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div>
+        <%= f.label :name, t('groups.group_name'), class: 'block font-semibold mb-1' %>
+        <%= f.text_field :name, class: 'input input-bordered w-full', required: true %>
+      </div>
+
+      <div>
+        <%= f.label :motto, t('groups.group_motto'), class: 'block font-semibold mb-1' %>
+        <%= f.text_field :motto, class: 'input input-bordered w-full', placeholder: t('groups.motto_placeholder') %>
+      </div>
+
+      <div class="form-control">
+        <label class="label cursor-pointer justify-start gap-3">
+          <%= f.check_box :closed_to_new_members, class: "checkbox" %>
+          <span class="label-text"><%= t('groups.closed_to_new') %></span>
+        </label>
+      </div>
+
+      <div class="flex gap-2 justify-center">
+        <%= f.submit t('groups.update_group'), class: 'btn btn-primary' %>
+        <%= link_to t('common.cancel'), group_path(@group), class: 'btn btn-ghost' %>
       </div>
     <% end %>
+  </div>
 
-    <div>
-      <%= f.label :name, 'Group Name', class: 'block font-semibold mb-1' %>
-      <%= f.text_field :name, class: 'input input-bordered w-full', required: true %>
-    </div>
+  <% if @members.any? %>
+    <div class="p-6 bg-base-100 rounded-lg shadow">
+      <h3 class="text-lg font-bold mb-4"><%= t('groups.members') %></h3>
 
-    <div>
-      <%= f.label :motto, 'Group Motto', class: 'block font-semibold mb-1' %>
-      <%= f.text_field :motto, class: 'input input-bordered w-full', placeholder: 'Optional: Add a group motto or tagline' %>
-    </div>
-
-    <div class="form-control">
-      <label class="label cursor-pointer justify-start gap-3">
-        <%= f.check_box :closed_to_new_members, class: "checkbox" %>
-        <span class="label-text">No one else can join this group</span>
-      </label>
-    </div>
-
-    <div class="flex gap-2 justify-center">
-      <%= f.submit 'Update Group', class: 'btn btn-primary' %>
-      <%= link_to 'Cancel', group_path(@group), class: 'btn btn-ghost' %>
+      <div class="space-y-2">
+        <% @members.each do |member| %>
+          <div class="flex items-center justify-between p-3 bg-base-200 rounded">
+            <div class="flex items-center gap-3">
+              <%= render AvatarComponent.new(user: member, size: 'sm') %>
+              <span class="font-medium"><%= member.name %></span>
+            </div>
+            <%= link_to t('groups.remove_member'),
+                confirm_remove_member_group_path(@group, member_id: member.id),
+                class: 'btn btn-sm btn-error btn-outline' %>
+          </div>
+        <% end %>
+      </div>
     </div>
   <% end %>
 </div> 
