@@ -9,6 +9,12 @@ module.exports = {
     './app/components/**/*.{erb,haml,html,slim}'
   ],
   safelist: [
+    'w-3',
+    'h-3',
+    'bg-success',
+    'bg-base-300',
+    'bg-transparent',
+    'border-2'
   ],
   theme: {
     extend: {
