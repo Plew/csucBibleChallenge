@@ -97,10 +97,18 @@ Rails.application.routes.draw do
     get 'change_challenge', to: 'challenge_transfers#new', as: :change_challenge
     post 'change_challenge', to: 'challenge_transfers#create'
 
-    # 7 Day Winner routes
-    get 'seven_day_winner', to: 'seven_day_winner#index', as: :seven_day_winner
-    post 'seven_day_winner/participants', to: 'seven_day_winner#participants', as: :seven_day_winner_participants
+    # 7 Day Winner routes (admin-only draw endpoint)
     get 'seven_day_winner/draw', to: 'seven_day_winner#draw', as: :seven_day_winner_draw
+  end
+
+  # 7 Day Lobby routes (available to all users)
+  resources :challenges, only: [] do
+    resource :seven_day_lobby, only: [:show], path: 'seven_day_win' do
+      post :join, on: :member
+      delete :leave, on: :member
+      post :start, on: :member
+      delete :clear_lobby, on: :member
+    end
   end
 
   namespace :api do

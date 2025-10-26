@@ -310,6 +310,31 @@ en:
       winner: "WINNER"
       is_the_winner: "is the winner!"
       no_users_selected: "No users selected. Please go back and select participants."
+      pacman_mode: "Pac-Man Chase Mode"
+      pacman_instructions: "Watch as participants (ghosts) try to escape through the maze. Pac-Man appears after 5 seconds and chases them down. Each ghost caught makes Pac-Man faster. The last survivor wins!"
+
+  # Seven Day Lobby
+  seven_day_lobby:
+    title: "7 Day Win"
+    description: "Join the 7 Day Win lobby to compete with others who have achieved 100% completion in the last 7 days."
+    join_button: "Join Lobby"
+    leave_button: "Leave Lobby"
+    start_button: "Start Winner Drawing"
+    clear_lobby_button: "Clear Lobby"
+    participants_in_lobby: "Participants in Lobby"
+    no_participants_yet: "No participants in the lobby yet. Be the first to join!"
+    qualification_required: "You need 100% completion in the last 7 days to join the lobby."
+    not_qualified: "You must have 100% completion in the last 7 days to join the lobby."
+    joined_successfully: "You have joined the lobby successfully!"
+    join_failed: "Failed to join the lobby. Please try again."
+    left_successfully: "You have left the lobby."
+    leave_failed: "Failed to leave the lobby. Please try again."
+    no_participants: "No participants in the lobby. Cannot start the drawing."
+    must_be_enrolled: "You must be enrolled in this challenge to access the lobby."
+    admin_only: "Only administrators can start the winner drawing."
+    start_confirmation: "Are you sure you want to start the winner drawing with these participants?"
+    lobby_cleared: "The lobby has been cleared successfully."
+    clear_lobby_confirmation: "Are you sure you want to remove all participants from the lobby?"
 
   # Feedback
   feedback:

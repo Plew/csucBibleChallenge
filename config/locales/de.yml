@@ -255,6 +255,31 @@ de:
       winner: "GEWINNER"
       is_the_winner: "ist der Gewinner!"
       no_users_selected: "Keine Benutzer ausgewählt. Bitte gehe zurück und wähle Teilnehmer aus."
+      pacman_mode: "Pac-Man-Verfolgungsmodus"
+      pacman_instructions: "Beobachten Sie, wie die Teilnehmer (Geister) versuchen, durch das Labyrinth zu entkommen. Pac-Man erscheint nach 5 Sekunden und jagt sie. Jeder gefangene Geist macht Pac-Man schneller. Der letzte Überlebende gewinnt!"
+
+  # Seven Day Lobby
+  seven_day_lobby:
+    title: "7-Tage-Gewinn"
+    description: "Tritt der 7-Tage-Gewinn-Lobby bei, um mit anderen zu konkurrieren, die in den letzten 7 Tagen 100% Abschluss erreicht haben."
+    join_button: "Lobby beitreten"
+    leave_button: "Lobby verlassen"
+    start_button: "Gewinnerziehung starten"
+    clear_lobby_button: "Lobby leeren"
+    participants_in_lobby: "Teilnehmer in der Lobby"
+    no_participants_yet: "Noch keine Teilnehmer in der Lobby. Sei der Erste, der beitritt!"
+    qualification_required: "Du benötigst 100% Abschluss in den letzten 7 Tagen, um der Lobby beizutreten."
+    not_qualified: "Du musst 100% Abschluss in den letzten 7 Tagen haben, um der Lobby beizutreten."
+    joined_successfully: "Du bist der Lobby erfolgreich beigetreten!"
+    join_failed: "Beitritt zur Lobby fehlgeschlagen. Bitte versuche es erneut."
+    left_successfully: "Du hast die Lobby verlassen."
+    leave_failed: "Verlassen der Lobby fehlgeschlagen. Bitte versuche es erneut."
+    no_participants: "Keine Teilnehmer in der Lobby. Die Ziehung kann nicht gestartet werden."
+    must_be_enrolled: "Du musst in dieser Challenge eingeschrieben sein, um auf die Lobby zuzugreifen."
+    admin_only: "Nur Administratoren können die Gewinnerziehung starten."
+    start_confirmation: "Bist du sicher, dass du die Gewinnerziehung mit diesen Teilnehmern starten möchtest?"
+    lobby_cleared: "Die Lobby wurde erfolgreich geleert."
+    clear_lobby_confirmation: "Bist du sicher, dass du alle Teilnehmer aus der Lobby entfernen möchtest?"
 
   # Feedback
   feedback:

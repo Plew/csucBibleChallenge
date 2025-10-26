@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_19_061337) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_24_043927) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -111,6 +111,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_19_061337) do
     t.integer "book_number"
     t.integer "chapter_number"
     t.index ["challenge_id"], name: "index_readings_on_challenge_id"
+  end
+
+  create_table "seven_day_lobbies", force: :cascade do |t|
+    t.integer "challenge_id", null: false
+    t.integer "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["challenge_id", "user_id"], name: "index_seven_day_lobbies_on_challenge_id_and_user_id", unique: true
+    t.index ["challenge_id"], name: "index_seven_day_lobbies_on_challenge_id"
+    t.index ["user_id"], name: "index_seven_day_lobbies_on_user_id"
   end
 
   create_table "solid_queue_blocked_executions", force: :cascade do |t|

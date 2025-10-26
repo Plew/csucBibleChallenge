@@ -1,0 +1,75 @@
+<div class="px-2 py-4 max-w-2xl mx-auto">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold"><%= t('seven_day_lobby.title') %></h1>
+    <%= link_to t('common.back'), challenges_path, class: "btn btn-sm btn-outline" %>
+  </div>
+
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body p-4">
+      <h2 class="card-title text-lg"><%= @challenge.title %></h2>
+      <p class="text-sm text-base-content/70 mb-4">
+        <%= t('seven_day_lobby.description') %>
+      </p>
+
+      <%# Join/Leave button %>
+      <% if @user_qualifies %>
+        <div class="mb-6">
+          <% if @user_in_lobby %>
+            <%= button_to t('seven_day_lobby.leave_button'),
+                          leave_challenge_seven_day_lobby_path(@challenge),
+                          method: :delete,
+                          class: "btn btn-warning w-full",
+                          data: { turbo: false } %>
+          <% else %>
+            <%= button_to t('seven_day_lobby.join_button'),
+                          join_challenge_seven_day_lobby_path(@challenge),
+                          method: :post,
+                          class: "btn btn-primary w-full",
+                          data: { turbo: false } %>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="alert alert-info mb-6">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          <span class="text-sm"><%= t('seven_day_lobby.qualification_required') %></span>
+        </div>
+      <% end %>
+
+      <%# Lobby participants %>
+      <div>
+        <h3 class="font-bold mb-3 text-base"><%= t('seven_day_lobby.participants_in_lobby') %></h3>
+
+        <% if @lobby_participants.any? %>
+          <div class="space-y-2 mb-4">
+            <% @lobby_participants.each do |participant| %>
+              <div class="flex items-center gap-3 p-2 bg-base-200 rounded-lg">
+                <%= render AvatarComponent.new(user: participant, size: :tiny) %>
+                <span class="font-medium"><%= participant.name %></span>
+              </div>
+            <% end %>
+          </div>
+
+          <%# Admin buttons %>
+          <% if current_user.admin? %>
+            <div class="mt-6 pt-4 border-t border-base-300 space-y-2">
+              <%= button_to t('seven_day_lobby.start_button'),
+                            start_challenge_seven_day_lobby_path(@challenge),
+                            method: :post,
+                            class: "btn btn-success w-full",
+                            data: { turbo: false, confirm: t('seven_day_lobby.start_confirmation') } %>
+              <%= button_to t('seven_day_lobby.clear_lobby_button'),
+                            clear_lobby_challenge_seven_day_lobby_path(@challenge),
+                            method: :delete,
+                            class: "btn btn-error btn-outline w-full",
+                            data: { turbo: false, confirm: t('seven_day_lobby.clear_lobby_confirmation') } %>
+            </div>
+          <% end %>
+        <% else %>
+          <div class="text-center py-6 text-base-content/70">
+            <p class="text-sm"><%= t('seven_day_lobby.no_participants_yet') %></p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
