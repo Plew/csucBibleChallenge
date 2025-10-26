@@ -3,6 +3,7 @@
     <% days.each do |day| %>
       <div
         class="<%= day_class(day) %> tooltip tooltip-top cursor-pointer"
+        style="<%= day_style(day) %>"
         data-tip="<%= tooltip_text(day) %>"
         data-day-info="<%= tooltip_text(day) %>"
         data-action="click->reading-history-graph#showToast"

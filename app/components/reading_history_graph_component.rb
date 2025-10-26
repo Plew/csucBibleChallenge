@@ -32,12 +32,20 @@ class ReadingHistoryGraphComponent < ViewComponent::Base
         # Completed on time: solid green
         "#{base_classes} bg-success"
       else
-        # Completed late: outlined green
-        "#{base_classes} border-2 border-success bg-transparent"
+        # Completed late: outlined - class without color
+        "#{base_classes} border-2 bg-transparent"
       end
     else
       # Not completed: gray
       "#{base_classes} bg-base-300"
+    end
+  end
+
+  def day_style(day)
+    # For late readings, set border color to match the success color exactly
+    if day[:completed] && !day[:on_time]
+      # Get the CSS variable for success color from DaisyUI
+      "border-color: oklch(var(--su));"
     end
   end
 
