@@ -1,7 +1,7 @@
 <% if can_chat? %>
   <div class="bg-base-100 rounded-lg shadow p-4 mt-6">
-    <h3 class="text-lg font-semibold mb-4">Group Chat</h3>
-    
+    <h3 class="text-lg font-semibold mb-4"><%= t('group_chat.title') %></h3>
+
     <div id="chat-messages" class="max-h-96 overflow-y-auto mb-4">
       <% if messages.any? %>
         <% messages.each do |message| %>
@@ -13,7 +13,7 @@
             </div>
             <div class="chat-header">
               <%= message.user.username %>
-              <time class="text-xs opacity-50"><%= time_ago_in_words(message.created_at) %> ago</time>
+              <time class="text-xs opacity-50"><%= time_ago_in_words(message.created_at) %> <%= t('common.ago') %></time>
             </div>
             <div class="chat-bubble <%= message.user == current_user ? 'chat-bubble-primary' : '' %>">
               <%= simple_format(h(message.content)) %>
@@ -22,24 +22,24 @@
         <% end %>
       <% else %>
         <div class="text-center text-gray-500 py-8">
-          No messages yet. Start the conversation!
+          <%= t('group_chat.no_messages') %>
         </div>
       <% end %>
     </div>
 
     <%= turbo_frame_tag "new-message-form" do %>
-      <%= form_with model: [group, new_message], 
+      <%= form_with model: [group, new_message],
                     url: group_group_messages_path(group),
                     method: :post,
                     local: false,
                     data: { turbo_frame: "chat-messages" },
                     class: "flex gap-2" do |form| %>
-        <%= form.text_area :content, 
-                          placeholder: "Type your message...",
+        <%= form.text_area :content,
+                          placeholder: t('group_chat.type_placeholder'),
                           rows: 2,
                           class: "textarea textarea-bordered flex-1 resize-none",
                           required: true %>
-        <%= form.submit "Send", 
+        <%= form.submit t('group_chat.send'),
                        class: "btn btn-primary btn-sm self-end" %>
       <% end %>
     <% end %>
