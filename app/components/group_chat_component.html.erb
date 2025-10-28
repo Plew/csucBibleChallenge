@@ -2,7 +2,24 @@
   <div class="bg-base-100 rounded-lg shadow p-4 mt-6">
     <h3 class="text-lg font-semibold mb-4"><%= t('group_chat.title') %></h3>
 
-    <div id="chat-messages" class="max-h-96 overflow-y-auto mb-4 space-y-1">
+    <%= turbo_frame_tag "new-message-form" do %>
+      <%= form_with model: [group, new_message],
+                    url: group_group_messages_path(group),
+                    method: :post,
+                    local: false,
+                    data: { turbo_frame: "chat-messages" },
+                    class: "flex gap-2 mb-4 items-center" do |form| %>
+        <%= form.text_area :content,
+                          placeholder: t('group_chat.type_placeholder'),
+                          rows: 2,
+                          class: "textarea textarea-bordered flex-1 resize-none",
+                          required: true %>
+        <%= form.submit t('group_chat.send'),
+                       class: "btn btn-primary btn-sm" %>
+      <% end %>
+    <% end %>
+
+    <div id="chat-messages" class="max-h-96 overflow-y-auto space-y-1">
       <% if messages.any? %>
         <% messages.each do |message| %>
           <div class="chat <%= message.user == current_user ? 'chat-end' : 'chat-start' %>">
@@ -26,22 +43,5 @@
         </div>
       <% end %>
     </div>
-
-    <%= turbo_frame_tag "new-message-form" do %>
-      <%= form_with model: [group, new_message],
-                    url: group_group_messages_path(group),
-                    method: :post,
-                    local: false,
-                    data: { turbo_frame: "chat-messages" },
-                    class: "flex gap-2" do |form| %>
-        <%= form.text_area :content,
-                          placeholder: t('group_chat.type_placeholder'),
-                          rows: 2,
-                          class: "textarea textarea-bordered flex-1 resize-none",
-                          required: true %>
-        <%= form.submit t('group_chat.send'),
-                       class: "btn btn-primary btn-sm self-end" %>
-      <% end %>
-    <% end %>
   </div>
 <% end %>
