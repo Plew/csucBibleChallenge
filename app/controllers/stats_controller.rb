@@ -17,6 +17,7 @@ class StatsController < ApplicationController
     @participant_count = cached_participant_count(current_challenge)
     @top_groups_data = cached_top_groups(current_challenge)
     @seven_day_leaderboard_data = cached_seven_day_window(current_challenge)
+    @most_commented_verse_stats = cached_most_commented_verse_stats(current_challenge)
   end
 
   def challenge
@@ -91,6 +92,14 @@ class StatsController < ApplicationController
 
     Rails.cache.fetch(cache_key, expires_in: CACHE_EXPIRATION) do
       calculate_personal_stats(current_user, challenge)
+    end
+  end
+
+  def cached_most_commented_verse_stats(challenge)
+    return nil unless challenge
+
+    Rails.cache.fetch("stats/most_commented_verse/#{challenge.id}", expires_in: CACHE_EXPIRATION) do
+      MostCommentedVerseStatistics.new(challenge)
     end
   end
 

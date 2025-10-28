@@ -18,6 +18,13 @@
       </div>
     <% end %>
 
+    <!-- Most Commented Verse Today -->
+    <% if challenge && most_commented_verse_stats %>
+      <div>
+        <%= render MostCommentedVerseComponent.new(challenge: challenge, statistics: most_commented_verse_stats) %>
+      </div>
+    <% end %>
+
     <!-- Personal Stats -->
     <div>
       <%= render Statistics::PersonalStatsComponent.new(
