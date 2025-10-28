@@ -54,6 +54,36 @@
     </div>
   </div>
 
+  <% if @challenge_enrollments.any? %>
+    <div class="card bg-base-100 shadow-xl mb-4">
+      <div class="card-body p-4">
+        <h2 class="card-title text-lg mb-3">Reading Progress</h2>
+
+        <div class="space-y-4">
+          <% @challenge_enrollments.each do |enrollment| %>
+            <% challenge = enrollment.challenge %>
+            <div class="border-b border-base-300 last:border-b-0 pb-4 last:pb-0">
+              <h3 class="font-semibold text-sm mb-2"><%= challenge.name %></h3>
+              <div class="text-xs text-base-content/60 mb-2">
+                <%= challenge.start_date.strftime("%b %d, %Y") %> - <%= challenge.end_date.strftime("%b %d, %Y") %>
+                (<%= challenge.timezone %>)
+              </div>
+              <%= render ReadingHistoryGraphComponent.new(
+                total_days: challenge.readings.count,
+                completed_days: completed_days_for_user_challenge(@user, challenge),
+                start_date: challenge.start_date,
+                current_day: current_day_number_for_challenge(challenge)
+              ) %>
+              <div class="text-xs text-base-content/60 mt-2">
+                <%= completed_days_for_user_challenge(@user, challenge).count %> / <%= challenge.readings.count %> days completed
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
   <div class="card bg-base-100 shadow-xl mb-4">
     <div class="card-body p-4">
       <h2 class="card-title text-lg">Change Password</h2>
