@@ -55,6 +55,9 @@ class HomeController < ApplicationController
         # Prepare verses with reading_id and message counts for interactive display
         verses = @selected_reading.verses(version: user_version)
         @selected_reading_verses = verses.map do |v|
+          verse_likes = @selected_reading.verse_likes.where(verse_number: v.verse_number)
+          user_liked = verse_likes.exists?(user_id: current_user.id)
+
           {
             reading_id: @selected_reading.id,
             verse_number: v.verse_number,
@@ -62,7 +65,9 @@ class HomeController < ApplicationController
             messages: VerseMessage.for_verse(@selected_reading.id, v.verse_number)
                                   .includes(user: [ :avatar_attachment, :avatar_blob ])
                                   .order(:created_at)
-                                  .limit(50)
+                                  .limit(50),
+            like_count: verse_likes.count,
+            user_liked: user_liked
           }
         end
       end

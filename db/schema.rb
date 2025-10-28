@@ -304,11 +304,11 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_14_063941) do
   end
 
   create_table "verse_likes", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.integer "reading_id", null: false
-    t.datetime "updated_at", null: false
     t.integer "user_id", null: false
+    t.integer "reading_id", null: false
     t.integer "verse_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["reading_id"], name: "index_verse_likes_on_reading_id"
     t.index ["user_id", "reading_id", "verse_number"], name: "index_verse_likes_on_user_reading_verse", unique: true
     t.index ["user_id"], name: "index_verse_likes_on_user_id"

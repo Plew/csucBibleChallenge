@@ -11,12 +11,24 @@
                   <span class="text-xs align-top mr-1 text-base-content/60"><%= verse[:verse_number] %></span>
                   <%= verse[:verse_text] %>
                 </span>
-                <% message_count = (verse[:messages] || []).length %>
-                <% if message_count > 0 %>
-                  <span class="badge badge-primary badge-sm ml-2 flex-shrink-0"><%= message_count %></span>
-                <% else %>
-                  <span class="text-base-content/40 ml-2 flex-shrink-0">...</span>
-                <% end %>
+                <div class="flex items-center gap-2 ml-2 flex-shrink-0">
+                  <% message_count = (verse[:messages] || []).length %>
+                  <% if message_count > 0 %>
+                    <span class="badge badge-primary badge-sm"><%= message_count %></span>
+                  <% else %>
+                    <span class="text-base-content/40">...</span>
+                  <% end %>
+
+                  <div class="flex items-center gap-1"
+                       data-controller="verse-like"
+                       data-verse-like-reading-id-value="<%= verse[:reading_id] %>"
+                       data-verse-like-verse-number-value="<%= verse[:verse_number] %>"
+                       data-verse-like-liked-value="<%= verse[:user_liked] || false %>"
+                       data-action="touchstart->verse-like#startPress touchend->verse-like#endPress touchcancel->verse-like#cancelPress mousedown->verse-like#startPress mouseup->verse-like#endPress mouseleave->verse-like#cancelPress">
+                    <span data-verse-like-target="heart" class="text-sm transition-transform cursor-pointer select-none"></span>
+                    <span data-verse-like-target="count" class="text-xs text-base-content/60 <%= verse[:like_count] && verse[:like_count] > 0 ? '' : 'hidden' %>"><%= verse[:like_count] || 0 %></span>
+                  </div>
+                </div>
               </div>
             </summary>
             <div class="mt-2">

@@ -17,6 +17,7 @@ class User < ApplicationRecord
   has_many :completed_readings, through: :user_readings, source: :reading
   has_many :user_group_enrollments, dependent: :destroy
   has_many :groups, through: :user_group_enrollments
+  has_many :verse_likes, dependent: :destroy
 
   attr_accessor :current_password, :skip_current_password_validation
 

@@ -29,7 +29,9 @@ module.exports = {
     'inset-0',
     'flex',
     'items-center',
-    'justify-center'
+    'justify-center',
+    'scale-125',
+    'text-red-500'
   ],
   theme: {
     extend: {

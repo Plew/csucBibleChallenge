@@ -162,5 +162,6 @@ Rails.application.routes.draw do
   # URL pattern: /readings/:reading_id/verse_messages?verse_number=X
   resources :readings, only: [] do
     resources :verse_messages, only: [ :index, :create, :destroy ], path: "verse_messages"
+    resources :verse_likes, only: [ :create, :destroy ], path: "verse_likes"
   end
 end
