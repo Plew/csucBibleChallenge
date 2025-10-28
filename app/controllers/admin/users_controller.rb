@@ -13,7 +13,7 @@ class Admin::UsersController < Admin::BaseController
     @user_readings = @user.user_readings
                           .includes(reading: :challenge)
                           .order('user_readings.completed_on DESC')
-    @challenge_enrollments = @user.challenge_enrollments.includes(:challenge)
+    @challenge_enrollments = @user.user_challenge_enrollments.includes(:challenge)
   end
 
   def reset_password
