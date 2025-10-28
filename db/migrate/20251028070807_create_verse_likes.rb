@@ -8,6 +8,6 @@ class CreateVerseLikes < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :verse_likes, [:user_id, :reading_id, :verse_number], unique: true, name: 'index_verse_likes_on_user_reading_verse'
+    add_index :verse_likes, [ :user_id, :reading_id, :verse_number ], unique: true, name: 'index_verse_likes_on_user_reading_verse'
   end
 end

@@ -20,7 +20,7 @@ class VerseLikesController < ApplicationController
         like_count: @reading.verse_likes.where(verse_number: @verse_number).count
       }
     else
-      render json: { error: 'Failed to like verse' }, status: :unprocessable_entity
+      render json: { error: "Failed to like verse" }, status: :unprocessable_entity
     end
   end
 
