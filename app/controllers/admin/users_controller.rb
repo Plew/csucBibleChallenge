@@ -3,9 +3,21 @@ class Admin::UsersController < Admin::BaseController
 
   def index
     @users = User.includes(:challenges).order(created_at: :desc)
+    @challenges = Challenge.order(:name)
 
     if params[:search].present?
       @users = @users.where("email LIKE ? OR username LIKE ? OR id = ?", "%#{params[:search]}%", "%#{params[:search]}%", params[:search].to_i)
+    end
+
+    if params[:challenge_id].present?
+      @users = @users.joins(:user_challenge_enrollments)
+                     .where(user_challenge_enrollments: { challenge_id: params[:challenge_id] })
+                     .distinct
+    end
+
+    respond_to do |format|
+      format.html
+      format.csv { send_data generate_csv(@users), filename: "users-#{Date.today}.csv" }
     end
   end
 
@@ -45,5 +57,26 @@ class Admin::UsersController < Admin::BaseController
 
   def set_user
     @user = User.find(params[:id])
+  end
+
+  def generate_csv(users)
+    require 'csv'
+
+    CSV.generate(headers: true) do |csv|
+      csv << ['ID', 'Username', 'Email', 'Admin', 'Version', 'Daily Email', 'Created At', 'Challenges']
+
+      users.each do |user|
+        csv << [
+          user.id,
+          user.username,
+          user.email,
+          user.admin?,
+          user.version,
+          user.daily_email,
+          user.created_at,
+          user.challenges.map(&:name).join(', ')
+        ]
+      end
+    end
   end
 end

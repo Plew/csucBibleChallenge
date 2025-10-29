@@ -297,6 +297,7 @@ en:
     admin_status_label: "Admin Status:"
     search_placeholder: "Search by email or user ID..."
     search_users: "Search"
+    export_csv: "Export CSV"
     seven_day_winner:
       title: "7 Day Winner"
       select_challenge: "Select Challenge"

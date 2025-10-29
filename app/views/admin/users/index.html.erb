@@ -1,19 +1,30 @@
 <div class="container mx-auto px-4 py-8">
   <div class="flex justify-between items-center mb-8">
     <h1 class="text-3xl font-bold">Manage Users</h1>
-    <%= link_to "Admin Dashboard", admin_root_path, class: "btn btn-outline" %>
+    <div class="flex gap-2">
+      <%= link_to t('admin.export_csv'), admin_users_path(format: :csv, search: params[:search], challenge_id: params[:challenge_id]), class: "btn btn-success" %>
+      <%= link_to "Admin Dashboard", admin_root_path, class: "btn btn-outline" %>
+    </div>
   </div>
 
   <div class="card bg-base-100 shadow-xl mb-6">
     <div class="card-body">
-      <%= form_with url: admin_users_path, method: :get, local: true, class: "flex gap-4" do |form| %>
-        <div class="form-control flex-1">
-          <%= form.text_field :search, 
-                value: params[:search], 
-                placeholder: "Search by email or user ID...", 
-                class: "input input-bordered w-full" %>
+      <%= form_with url: admin_users_path, method: :get, local: true, class: "flex flex-col gap-4" do |form| %>
+        <div class="flex gap-4">
+          <div class="form-control flex-1">
+            <%= form.text_field :search,
+                  value: params[:search],
+                  placeholder: "Search by email or user ID...",
+                  class: "input input-bordered w-full" %>
+          </div>
+          <div class="form-control flex-1">
+            <%= form.select :challenge_id,
+                  options_for_select([['All Challenges', '']] + @challenges.map { |c| [c.name, c.id] }, params[:challenge_id]),
+                  {},
+                  { class: "select select-bordered w-full", onchange: "this.form.submit()" } %>
+          </div>
         </div>
-        <div>
+        <div class="flex gap-2">
           <%= form.submit "Search", class: "btn btn-primary" %>
           <%= link_to "Clear", admin_users_path, class: "btn btn-outline" %>
         </div>

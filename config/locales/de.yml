@@ -242,6 +242,7 @@ de:
     admin_status_label: "Admin-Status:"
     search_placeholder: "Nach E-Mail oder Benutzer-ID suchen..."
     search_users: "Suchen"
+    export_csv: "CSV exportieren"
     seven_day_winner:
       title: "7-Tage-Gewinner"
       select_challenge: "Challenge auswählen"
