@@ -16,7 +16,8 @@ class TopReadersStatistics
                            .left_joins(:user_readings)
                            .select(
                              'users.*',
-                             'COUNT(user_readings.id) as total_chapters_read'
+                             'COUNT(user_readings.id) as total_chapters_read',
+                             'MAX(user_readings.created_at) as most_recent_reading_at'
                            )
                            .where(challenges: { id: @challenge.id })
                            .where.not(challenges: { timezone: nil })
@@ -28,6 +29,7 @@ class TopReadersStatistics
 
     users_with_stats.map do |user|
       chapters_data = calculate_chapters_data(user)
+      most_recent_reading = parse_timestamp(user.most_recent_reading_at)
       {
         user: user,
         total_chapters_read: user.total_chapters_read.to_i,
@@ -36,14 +38,22 @@ class TopReadersStatistics
         completion_percentage: calculate_completion_percentage(user),
         on_schedule_percentage: calculate_on_schedule_percentage(user),
         avatar_url: avatar_url_for(user),
-        group_name: group_names_map[user.id]
+        group_name: group_names_map[user.id],
+        most_recent_reading_at: most_recent_reading
       }
     end.reject { |user_data| user_data[:chapters_completed].zero? }
       .select { |user_data| user_data[:completion_percentage] >= 50 }
-      .sort_by { |user_data| -user_data[:completion_percentage] }
+      .sort_by { |user_data| [-user_data[:completion_percentage], -(user_data[:most_recent_reading_at]&.to_i || 0)] }
   end
 
   private
+
+  def parse_timestamp(timestamp)
+    return nil if timestamp.nil?
+
+    # Handle both string and Time objects
+    timestamp.is_a?(String) ? Time.zone.parse(timestamp) : timestamp
+  end
 
   def calculate_completion_percentage(user)
     current_date_in_tz = Time.current.in_time_zone(@challenge.timezone).to_date

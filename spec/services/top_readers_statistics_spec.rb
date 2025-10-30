@@ -243,5 +243,61 @@ RSpec.describe TopReadersStatistics, type: :service do
         expect(result[0][:chapters_completed]).to eq(5)
       end
     end
+
+    context 'sorting with tiebreaker by most recent reading' do
+      let!(:user1) { create(:user) }
+      let!(:user2) { create(:user) }
+      let!(:user3) { create(:user) }
+      let!(:enrollment1) { create(:user_challenge_enrollment, user: user1, challenge: challenge) }
+      let!(:enrollment2) { create(:user_challenge_enrollment, user: user2, challenge: challenge) }
+      let!(:enrollment3) { create(:user_challenge_enrollment, user: user3, challenge: challenge) }
+
+      before do
+        # All three users have 70% completion (7 out of 10 readings)
+        # but different most recent reading timestamps
+
+        # user1: most recent reading 3 days ago
+        readings.first(7).each_with_index do |reading, index|
+          created_at = index < 6 ? 5.days.ago : 3.days.ago
+          create(:user_reading, user: user1, reading: reading, completed_on: reading.scheduled_date, created_at: created_at)
+        end
+
+        # user2: most recent reading 1 day ago (should be first in tiebreaker)
+        readings.first(7).each_with_index do |reading, index|
+          created_at = index < 6 ? 5.days.ago : 1.day.ago
+          create(:user_reading, user: user2, reading: reading, completed_on: reading.scheduled_date, created_at: created_at)
+        end
+
+        # user3: most recent reading 2 days ago (should be second in tiebreaker)
+        readings.first(7).each_with_index do |reading, index|
+          created_at = index < 6 ? 5.days.ago : 2.days.ago
+          create(:user_reading, user: user3, reading: reading, completed_on: reading.scheduled_date, created_at: created_at)
+        end
+      end
+
+      it 'sorts users with same completion percentage by most recent reading timestamp' do
+        result = described_class.call(challenge: challenge)
+
+        expect(result.length).to eq(3)
+
+        # All should have 70% completion
+        expect(result[0][:completion_percentage]).to eq(70)
+        expect(result[1][:completion_percentage]).to eq(70)
+        expect(result[2][:completion_percentage]).to eq(70)
+
+        # Should be sorted by most recent reading: user2 (1 day), user3 (2 days), user1 (3 days)
+        expect(result[0][:user]).to eq(user2)
+        expect(result[1][:user]).to eq(user3)
+        expect(result[2][:user]).to eq(user1)
+      end
+
+      it 'includes most_recent_reading_at in the result' do
+        result = described_class.call(challenge: challenge)
+
+        expect(result[0]).to have_key(:most_recent_reading_at)
+        expect(result[0][:most_recent_reading_at]).to be_present
+        expect(result[0][:most_recent_reading_at]).to be_a(ActiveSupport::TimeWithZone)
+      end
+    end
   end
 end
