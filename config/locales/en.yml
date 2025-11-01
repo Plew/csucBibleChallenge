@@ -168,6 +168,7 @@ en:
     groups: "Groups"
     about: "About"
     faq: "FAQ"
+    statistics_update: "Statistics Update"
     language: "Language"
     english: "English"
     german: "Deutsch"
@@ -606,6 +607,16 @@ en:
     bible_versions_answer: "We support multiple Bible versions. You can select your preferred version in your profile settings."
     how_groups_work: "How do groups work?"
     how_groups_work_answer: "Groups are optional communities within challenges where you can encourage each other and share your progress. You can join existing groups or create your own."
+
+  # Statistics Update
+  statistics_update:
+    title: "Upcoming Statistics Change"
+    intro: "We are going to change how one of our statistics is calculated."
+    current_calculation: "The \"On Time Percentage\" currently measures how many of your *entered* readings were completed on the correct day. It ignores any day without an entered reading. What this means is that you could read one day out of five, and still have this stat be 100% because the four days you skipped are not included in the calculation."
+    why_wrong: "This is wrong; it does not really capture the meaning of this statistic. Basically if you did not complete the reading for a day, you also implicitly did not complete it on time! So we need to adjust this statistic."
+    completion_note: "This won't affect the completion percentage (the green circle) which is the most important statistic."
+    change_description: "The new on time statistic will change in the following way: if you read one chapter on the correct day, and did not read the next day at all, the current on time percentage would be 100%. Going forward this would drop to 50% because by missing a day, you also did not read on time."
+    closing: "I hope this makes sense."
 
   # Countdown
   countdown:

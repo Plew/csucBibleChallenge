@@ -131,6 +131,7 @@ Rails.application.routes.draw do
   end
 
   get 'faq', to: 'pages#faq'
+  get 'statistics_update', to: 'static_pages#statistics_update', as: :statistics_update
   get 'stats', to: 'stats#index'
   get 'stats/challenge', to: 'stats#challenge', as: :stats_challenge
   get 'stats/group', to: 'stats#group', as: :stats_group

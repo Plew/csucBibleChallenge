@@ -6,6 +6,7 @@ de:
     groups: "Gruppen"
     about: "Über uns"
     faq: "FAQ"
+    statistics_update: "Statistik-Update"
     language: "Sprache"
     english: "English"
     german: "Deutsch"
@@ -551,6 +552,16 @@ de:
     bible_versions_answer: "Wir unterstützen mehrere Bibelübersetzungen. Du kannst deine bevorzugte Version in deinen Profileinstellungen auswählen."
     how_groups_work: "Wie funktionieren Gruppen?"
     how_groups_work_answer: "Gruppen sind optionale Gemeinschaften innerhalb von Challenges, in denen ihr euch gegenseitig ermutigen und euren Fortschritt teilen könnt. Du kannst bestehenden Gruppen beitreten oder deine eigene erstellen."
+
+  # Statistics Update
+  statistics_update:
+    title: "Bevorstehende Statistikänderung"
+    intro: "Wir werden ändern, wie eine unserer Statistiken berechnet wird."
+    current_calculation: "Der \"Pünktlichkeitsprozentsatz\" misst derzeit, wie viele deiner *eingetragenen* Lesungen am richtigen Tag abgeschlossen wurden. Er ignoriert jeden Tag ohne eingetragene Lesung. Das bedeutet, dass du an einem von fünf Tagen lesen könntest und diese Statistik trotzdem 100% beträgt, weil die vier übersprungenen Tage nicht in die Berechnung einbezogen werden."
+    why_wrong: "Das ist falsch; es erfasst nicht wirklich die Bedeutung dieser Statistik. Grundsätzlich hast du, wenn du die Lesung für einen Tag nicht abgeschlossen hast, sie auch implizit nicht pünktlich abgeschlossen! Daher müssen wir diese Statistik anpassen."
+    completion_note: "Dies wird den Abschlussprozentsatz (der grüne Kreis) nicht beeinflussen, welcher die wichtigste Statistik ist."
+    change_description: "Die neue Pünktlichkeitsstatistik wird sich wie folgt ändern: Wenn du ein Kapitel am richtigen Tag gelesen hast und am nächsten Tag überhaupt nicht gelesen hast, würde der aktuelle Pünktlichkeitsprozentsatz 100% betragen. In Zukunft würde dies auf 50% sinken, weil du durch das Verpassen eines Tages auch nicht pünktlich gelesen hast."
+    closing: "Ich hoffe, das macht Sinn."
 
   # Countdown
   countdown:
