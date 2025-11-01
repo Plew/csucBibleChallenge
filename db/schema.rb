@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_24_043927) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_01_064603) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -50,6 +50,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_24_043927) do
     t.string "invitation_token"
     t.text "description"
     t.boolean "hidden", default: false, null: false
+    t.text "message_of_the_day"
     t.index ["creator_id"], name: "index_challenges_on_creator_id"
     t.index ["invitation_token"], name: "index_challenges_on_invitation_token", unique: true
   end
@@ -292,6 +293,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_24_043927) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
+  create_table "verse_likes", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "reading_id", null: false
+    t.integer "verse_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["reading_id"], name: "index_verse_likes_on_reading_id"
+    t.index ["user_id", "reading_id", "verse_number"], name: "index_verse_likes_on_user_reading_verse", unique: true
+    t.index ["user_id"], name: "index_verse_likes_on_user_id"
+  end
+
   create_table "verse_messages", force: :cascade do |t|
     t.integer "user_id", null: false
     t.text "content"
@@ -344,6 +356,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_24_043927) do
   add_foreign_key "user_group_enrollments", "users"
   add_foreign_key "user_readings", "readings"
   add_foreign_key "user_readings", "users"
+  add_foreign_key "verse_likes", "readings"
+  add_foreign_key "verse_likes", "users"
   add_foreign_key "verse_messages", "readings"
   add_foreign_key "verse_messages", "users"
 end

@@ -64,7 +64,7 @@ class Admin::ChallengesController < Admin::BaseController
   private
 
   def challenge_params
-    params.require(:challenge).permit(:title, :name, :description, :start_date, :timezone, :hidden)
+    params.require(:challenge).permit(:title, :name, :description, :start_date, :timezone, :hidden, :message_of_the_day)
   end
 
   def set_challenge

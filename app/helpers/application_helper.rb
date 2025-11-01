@@ -274,4 +274,34 @@ module ApplicationHelper
     # Sort alphabetically for better UX
     options.sort_by(&:first)
   end
+
+  # Converts URLs in text to clickable links
+  #
+  # @param text [String] The text containing URLs
+  # @param html_options [Hash] HTML options to apply to the links (e.g., class, target)
+  # @return [String] HTML-safe text with URLs converted to links
+  #
+  # @example
+  #   linkify_urls("Check out https://example.com for more info")
+  #   linkify_urls("Visit https://example.com", class: 'link link-primary')
+  def linkify_urls(text, html_options = {})
+    return '' if text.blank?
+
+    # Regex to match URLs (http, https, and www)
+    url_regex = %r{
+      (https?://[^\s<]+)  # Match http:// or https:// followed by non-whitespace
+      |
+      (www\.[^\s<]+)      # Match www. followed by non-whitespace
+    }x
+
+    text.gsub(url_regex) do |url|
+      # Add http:// to www. links
+      href = url.start_with?('www.') ? "http://#{url}" : url
+
+      # Build HTML attributes
+      attrs = html_options.map { |k, v| "#{k}=\"#{ERB::Util.html_escape(v)}\"" }.join(' ')
+
+      "<a href=\"#{ERB::Util.html_escape(href)}\" #{attrs}>#{ERB::Util.html_escape(url)}</a>"
+    end.html_safe
+  end
 end

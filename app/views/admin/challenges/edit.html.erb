@@ -38,6 +38,17 @@
         </div>
 
         <div class="form-control">
+          <%= form.label :message_of_the_day, class: "label" %>
+          <span class="label-text">Message of the Day (shown on stats page)</span>
+          <%= form.text_area :message_of_the_day, class: "textarea textarea-bordered h-24", rows: 3, placeholder: "Optional message to display to all challenge members..." %>
+          <div class="label">
+            <span class="label-text-alt text-xs">
+              This message will appear at the top of the stats page for all challenge members
+            </span>
+          </div>
+        </div>
+
+        <div class="form-control">
           <%= form.label :start_date, class: "label" %>
           <span class="label-text">Start Date</span>
           <%= form.date_field :start_date, class: "input input-bordered w-full" %>

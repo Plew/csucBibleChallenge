@@ -1,5 +1,16 @@
 <div class="px-2 py-3">
   <div class="space-y-6">
+    <!-- Message of the Day -->
+    <% if challenge&.message_of_the_day.present? %>
+      <div class="mx-4">
+        <div class="card bg-base-100">
+          <div class="card-body px-2 sm:px-4 py-2 sm:py-3">
+            <div class="text-base whitespace-pre-wrap"><%= simple_format(linkify_urls(challenge.message_of_the_day, class: 'link link-primary'), {}, sanitize: false) %></div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
     <!-- Challenge Summary -->
     <% if challenge && challenge_summary_stats %>
       <div>
