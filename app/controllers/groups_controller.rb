@@ -111,6 +111,38 @@ class GroupsController < ApplicationController
     @groups = @challenge.groups.order(:name)
                   .includes(user_group_enrollments: { user: [ :avatar_attachment, :avatar_blob ] })
                   .to_a
+
+    # Calculate group statistics
+    group_stats = GroupStatistics.new(@group)
+    group_user_ids = @group.users.pluck(:id)
+    current_date = Time.current.in_time_zone(@challenge.timezone).to_date
+
+    # Total possible chapters = number of scheduled readings × number of members
+    total_scheduled = @challenge.readings.where('scheduled_date <= ?', current_date).count
+    total_possible = total_scheduled * group_user_ids.count
+
+    # Total completed chapters across all group members
+    total_completed = UserReading.where(user_id: group_user_ids)
+                                  .joins(:reading)
+                                  .where(readings: { challenge_id: @challenge.id })
+                                  .where('readings.scheduled_date <= ?', current_date)
+                                  .count
+
+    # Total on-time chapters across all group members
+    total_on_time = UserReading.where(user_id: group_user_ids)
+                                .joins(:reading)
+                                .where(readings: { challenge_id: @challenge.id })
+                                .where('readings.scheduled_date <= ?', current_date)
+                                .where('DATE(user_readings.completed_on) = readings.scheduled_date')
+                                .count
+
+    @group_stats = {
+      completion_percentage: group_stats.completion_percentage,
+      on_schedule_percentage: group_stats.on_schedule_percentage,
+      total_completed: total_completed,
+      total_possible: total_possible,
+      total_on_time: total_on_time
+    }
   end
 
   # GET /groups/:id/edit

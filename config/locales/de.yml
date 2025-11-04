@@ -424,6 +424,8 @@ de:
       other: "%{count} Leser"
     chapters_read: "%{completed}/%{scheduled} gelesene Kapitel"
     chapters_read_suffix: "gelesene Kapitel"
+    chapters_read_short: "Fertigstellung"
+    on_time_short: "Pünktlich"
     no_reading_data: "Noch keine Lesedaten verfügbar"
     leaderboard_message: "Beginne zu lesen, um in der Bestenliste zu erscheinen!"
     top_groups: "Top-Gruppen"

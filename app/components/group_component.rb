@@ -1,15 +1,16 @@
 class GroupComponent < ViewComponent::Base
   include ApplicationHelper
 
-  def initialize(group:, current_user:, user_group:)
+  def initialize(group:, current_user:, user_group:, group_stats: nil)
     @group = group
     @current_user = current_user
     @user_group = user_group
+    @group_stats = group_stats
   end
 
   private
 
-  attr_reader :group, :current_user, :user_group
+  attr_reader :group, :current_user, :user_group, :group_stats
 
   def can_join_group?
     !user_group && !group.closed_to_new_members

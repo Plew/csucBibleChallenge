@@ -37,6 +37,37 @@
       <% end %>
     </div>
 
+    <!-- Group Statistics -->
+    <% if group_stats %>
+      <div class="flex justify-around gap-8 mb-4 py-3 px-4">
+        <!-- Completion Percentage -->
+        <div class="flex flex-col items-center">
+          <div class="radial-progress text-accent" style="--value:<%= group_stats[:completion_percentage] %>; --size:7rem; --thickness:0.5rem;" aria-valuenow="<%= group_stats[:completion_percentage] %>" role="progressbar">
+            <span class="text-xl font-bold"><%= group_stats[:completion_percentage] %>%</span>
+          </div>
+          <div class="text-xs text-center mt-1 opacity-70">
+            <%= t('stats.chapters_read_short') %>
+          </div>
+          <div class="text-xs text-center mt-0.5 font-semibold opacity-80">
+            <%= group_stats[:total_completed] %>/<%= group_stats[:total_possible] %>
+          </div>
+        </div>
+
+        <!-- On Schedule Percentage -->
+        <div class="flex flex-col items-center">
+          <div class="radial-progress text-info" style="--value:<%= group_stats[:on_schedule_percentage] %>; --size:7rem; --thickness:0.5rem;" aria-valuenow="<%= group_stats[:on_schedule_percentage] %>" role="progressbar">
+            <span class="text-xl font-bold"><%= group_stats[:on_schedule_percentage] %>%</span>
+          </div>
+          <div class="text-xs text-center mt-1 opacity-70">
+            <%= t('stats.on_time_short') %>
+          </div>
+          <div class="text-xs text-center mt-0.5 font-semibold opacity-80">
+            <%= group_stats[:total_on_time] %>/<%= group_stats[:total_possible] %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
     <ul class="list bg-base-100 rounded-box">
       <li class="p-4 pb-2 text-xs opacity-60 tracking-wide flex items-center justify-between">
         <span><%= is_user_in_this_group? ? "Your Group Members" : "Group Members" %></span>
