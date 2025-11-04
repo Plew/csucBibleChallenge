@@ -246,51 +246,82 @@ RSpec.describe TopReadersStatistics, type: :service do
       end
     end
 
-    context 'sorting with tiebreaker by most recent reading' do
+    context 'sorting with tiebreaker by on-time percentage then most recent reading' do
       let!(:user1) { create(:user) }
       let!(:user2) { create(:user) }
       let!(:user3) { create(:user) }
+      let!(:user4) { create(:user) }
       let!(:enrollment1) { create(:user_challenge_enrollment, user: user1, challenge: challenge) }
       let!(:enrollment2) { create(:user_challenge_enrollment, user: user2, challenge: challenge) }
       let!(:enrollment3) { create(:user_challenge_enrollment, user: user3, challenge: challenge) }
+      let!(:enrollment4) { create(:user_challenge_enrollment, user: user4, challenge: challenge) }
 
       before do
-        # All three users have 70% completion (7 out of 10 readings)
-        # but different most recent reading timestamps
+        # All four users have 70% completion (7 out of 10 readings)
+        # but different on-time percentages and most recent reading timestamps
+        # Note: on-time percentage is calculated as (on_schedule_count / total_scheduled) * 100
 
-        # user1: most recent reading 3 days ago
-        readings.first(7).each_with_index do |reading, index|
-          created_at = index < 6 ? 5.days.ago : 3.days.ago
-          create(:user_reading, user: user1, reading: reading, completed_on: reading.scheduled_date, created_at: created_at)
+        # user1: 70% on-time (7 on time out of 10 scheduled = 70%)
+        readings.first(7).each do |reading|
+          create(:user_reading, user: user1, reading: reading, completed_on: reading.scheduled_date, created_at: reading.scheduled_date)
         end
 
-        # user2: most recent reading 1 day ago (should be first in tiebreaker)
+        # user2: 40% on-time (4 on time out of 10 scheduled = 40%), most recent reading 1 day ago
         readings.first(7).each_with_index do |reading, index|
-          created_at = index < 6 ? 5.days.ago : 1.day.ago
-          create(:user_reading, user: user2, reading: reading, completed_on: reading.scheduled_date, created_at: created_at)
+          if index < 4
+            create(:user_reading, user: user2, reading: reading, completed_on: reading.scheduled_date, created_at: reading.scheduled_date)
+          else
+            created_at = index == 6 ? 1.day.ago : (reading.scheduled_date + 2.days)
+            create(:user_reading, user: user2, reading: reading, completed_on: reading.scheduled_date + 2.days, created_at: created_at)
+          end
         end
 
-        # user3: most recent reading 2 days ago (should be second in tiebreaker)
+        # user3: 40% on-time (4 on time out of 10 scheduled = 40%), most recent reading 3 days ago
         readings.first(7).each_with_index do |reading, index|
-          created_at = index < 6 ? 5.days.ago : 2.days.ago
-          create(:user_reading, user: user3, reading: reading, completed_on: reading.scheduled_date, created_at: created_at)
+          if index < 4
+            create(:user_reading, user: user3, reading: reading, completed_on: reading.scheduled_date, created_at: reading.scheduled_date)
+          else
+            created_at = index == 6 ? 3.days.ago : (reading.scheduled_date + 2.days)
+            create(:user_reading, user: user3, reading: reading, completed_on: reading.scheduled_date + 2.days, created_at: created_at)
+          end
+        end
+
+        # user4: 20% on-time (2 on time out of 10 scheduled = 20%)
+        readings.first(7).each_with_index do |reading, index|
+          if index < 2
+            create(:user_reading, user: user4, reading: reading, completed_on: reading.scheduled_date, created_at: reading.scheduled_date)
+          else
+            create(:user_reading, user: user4, reading: reading, completed_on: reading.scheduled_date + 2.days, created_at: reading.scheduled_date + 2.days)
+          end
         end
       end
 
-      it 'sorts users with same completion percentage by most recent reading timestamp' do
+      it 'sorts users first by completion percentage, then by on-time percentage, then by most recent reading' do
         result = described_class.call(challenge: challenge)
 
-        expect(result.length).to eq(3)
+        expect(result.length).to eq(4)
 
         # All should have 70% completion
         expect(result[0][:completion_percentage]).to eq(70)
         expect(result[1][:completion_percentage]).to eq(70)
         expect(result[2][:completion_percentage]).to eq(70)
+        expect(result[3][:completion_percentage]).to eq(70)
 
-        # Should be sorted by most recent reading: user2 (1 day), user3 (2 days), user1 (3 days)
-        expect(result[0][:user]).to eq(user2)
-        expect(result[1][:user]).to eq(user3)
-        expect(result[2][:user]).to eq(user1)
+        # Should be sorted by on-time percentage first, then by most recent reading
+        # user1: 70% on-time (7/10)
+        # user2: 40% on-time (4/10), most recent 1 day ago
+        # user3: 40% on-time (4/10), most recent 3 days ago
+        # user4: 20% on-time (2/10)
+        expect(result[0][:user]).to eq(user1)
+        expect(result[1][:user]).to eq(user2)
+        expect(result[2][:user]).to eq(user3)
+        expect(result[3][:user]).to eq(user4)
+
+        # Verify on-time percentages
+        expect(result[0][:on_schedule_percentage]).to eq(70)
+        expect(result[1][:on_schedule_percentage]).to eq(40)
+        expect(result[2][:on_schedule_percentage]).to eq(40)
+        expect(result[3][:on_schedule_percentage]).to eq(20)
       end
 
       it 'includes most_recent_reading_at in the result' do

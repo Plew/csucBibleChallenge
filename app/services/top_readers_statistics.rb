@@ -43,7 +43,7 @@ class TopReadersStatistics
       }
     end.reject { |user_data| user_data[:chapters_completed].zero? }
       .select { |user_data| user_data[:completion_percentage] >= 50 }
-      .sort_by { |user_data| [-user_data[:completion_percentage], -(user_data[:most_recent_reading_at]&.to_i || 0)] }
+      .sort_by { |user_data| [-user_data[:completion_percentage], -user_data[:on_schedule_percentage], -(user_data[:most_recent_reading_at]&.to_i || 0)] }
   end
 
   private
