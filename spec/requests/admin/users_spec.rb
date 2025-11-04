@@ -47,8 +47,8 @@ RSpec.describe "Admin::Users", type: :request do
     before { login_via_session(admin_user) }
 
     describe "GET /admin/users" do
-      let!(:user1) { create(:user, email: 'user1@example.com', admin: false) }
-      let!(:user2) { create(:user, email: 'user2@example.com', admin: true) }
+      let!(:user1) { create(:user, email: 'searchable1@example.com', username: 'searchable1', admin: false) }
+      let!(:user2) { create(:user, email: 'searchable2@example.com', username: 'searchable2', admin: true) }
 
       it "returns http success" do
         get admin_users_path
@@ -57,8 +57,8 @@ RSpec.describe "Admin::Users", type: :request do
 
       it "displays all users" do
         get admin_users_path
-        expect(response.body).to include('user1@example.com')
-        expect(response.body).to include('user2@example.com')
+        expect(response.body).to include('searchable1@example.com')
+        expect(response.body).to include('searchable2@example.com')
       end
 
       it "shows admin badges correctly" do
@@ -69,14 +69,14 @@ RSpec.describe "Admin::Users", type: :request do
 
       context "with search parameter" do
         it "filters users by email" do
-          get admin_users_path, params: { search: 'user1' }
-          expect(response.body).to include('user1@example.com')
-          expect(response.body).not_to include('user2@example.com')
+          get admin_users_path, params: { search: 'searchable1' }
+          expect(response.body).to include('searchable1@example.com')
+          expect(response.body).not_to include('searchable2@example.com')
         end
 
         it "filters users by ID" do
           get admin_users_path, params: { search: user1.id.to_s }
-          expect(response.body).to include('user1@example.com')
+          expect(response.body).to include('searchable1@example.com')
           # user2 may still appear due to pagination or other users, so just check that user1 is included
         end
       end

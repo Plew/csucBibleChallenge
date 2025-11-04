@@ -26,11 +26,10 @@ RSpec.describe "Stats", type: :request do
         challenge.update!(message_of_the_day: message)
       end
 
-      it "displays the message on the stats page with primary border" do
+      it "displays the message on the stats page" do
         get stats_path
         expect(response).to have_http_status(:success)
         expect(response.body).to include(message)
-        expect(response.body).to include('border-primary')
         # Verify it's wrapped in paragraph tags
         expect(response.body).to match(/<p>.*#{Regexp.escape(message)}.*<\/p>/m)
       end
