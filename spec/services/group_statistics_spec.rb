@@ -100,4 +100,59 @@ RSpec.describe GroupStatistics, type: :service do
       expect(subject.completion_percentage).to eq(40)
     end
   end
+
+  describe '#on_schedule_percentage' do
+    it 'returns 0 if no one completed any readings' do
+      expect(subject.on_schedule_percentage).to eq(0)
+    end
+
+    it 'returns 100 if all users completed all readings on schedule' do
+      readings.each do |reading|
+        users.each { |user| create(:user_reading, user: user, reading: reading, completed_on: reading.scheduled_date) }
+      end
+      expect(subject.on_schedule_percentage).to eq(100)
+    end
+
+    it 'returns 0 if all users completed all readings late' do
+      readings.each do |reading|
+        users.each { |user| create(:user_reading, user: user, reading: reading, completed_on: reading.scheduled_date + 1.day) }
+      end
+      expect(subject.on_schedule_percentage).to eq(0)
+    end
+
+    it 'calculates average percentage across mixed user performance' do
+      # User 1: 3 on-schedule out of 5 = 60%
+      readings.first(3).each { |r| create(:user_reading, user: users[0], reading: r, completed_on: r.scheduled_date) }
+
+      # User 2: 2 on-schedule out of 5 = 40%
+      readings.first(2).each { |r| create(:user_reading, user: users[1], reading: r, completed_on: r.scheduled_date) }
+
+      # User 3: 0 on-schedule out of 5 = 0%
+      # (no readings)
+
+      # Average: (60 + 40 + 0) / 3 = 33.33, rounded to 33
+      expect(subject.on_schedule_percentage).to eq(33)
+    end
+
+    it 'returns 0 for empty group' do
+      empty_group = create(:group, challenge: challenge)
+      stat = described_class.new(empty_group)
+      expect(stat.on_schedule_percentage).to eq(0)
+    end
+
+    it 'uses batch calculation (avoids N+1 queries)' do
+      # Add some data
+      readings.first(2).each do |reading|
+        users.each { |user| create(:user_reading, user: user, reading: reading, completed_on: reading.scheduled_date) }
+      end
+
+      # Expect batch_percentages to be called (not individual calculations)
+      expect(OnScheduleStatistic).to receive(:batch_percentages).with(
+        match_array(users.map(&:id)),
+        challenge
+      ).and_call_original
+
+      subject.on_schedule_percentage
+    end
+  end
 end 

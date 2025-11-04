@@ -86,11 +86,12 @@ RSpec.describe UserStatistics, type: :service do
       expect(subject.on_schedule_percentage).to eq(0)
     end
 
-    it 'returns 100 if all completed readings were on schedule' do
+    it 'returns 30% if 3 out of 10 scheduled readings were completed on schedule' do
       readings.first(3).each do |reading|
         create(:user_reading, user: user, reading: reading, completed_on: reading.scheduled_date)
       end
-      expect(subject.on_schedule_percentage).to eq(100.0)
+      # 3 on-schedule out of 10 total scheduled = 30%
+      expect(subject.on_schedule_percentage).to eq(30.0)
     end
 
     it 'returns correct percentage for mixed on/off schedule readings' do
@@ -99,8 +100,9 @@ RSpec.describe UserStatistics, type: :service do
         create(:user_reading, user: user, reading: reading, completed_on: reading.scheduled_date)
       end
       create(:user_reading, user: user, reading: readings[3], completed_on: readings[3].scheduled_date + 1.day)
-      
-      expect(subject.on_schedule_percentage).to eq(75.0)
+
+      # 3 on-schedule out of 10 total scheduled = 30%
+      expect(subject.on_schedule_percentage).to eq(30.0)
     end
   end
 end 

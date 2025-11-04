@@ -83,8 +83,28 @@ RSpec.describe OnScheduleStatistic, type: :service do
         # Leave remaining 5 readings incomplete
       end
 
-      it 'returns 60% (3 on-schedule out of 5 total completed)' do
-        expect(subject.percentage).to eq(60.0)
+      it 'returns 30% (3 on-schedule out of 10 total scheduled)' do
+        expect(subject.percentage).to eq(30.0)
+      end
+    end
+
+    context 'ticket ELE-8 scenario: read on time then skip days' do
+      before do
+        # Complete only the first reading on schedule
+        create(:user_reading,
+          user: user,
+          reading: readings.first,
+          completed_on: readings.first.scheduled_date
+        )
+
+        # Skip the next 2 readings (days 2 and 3) - they are scheduled but not completed
+        # This tests the specific scenario from the ticket
+      end
+
+      it 'returns 10% (1 on-schedule out of 10 total scheduled), not 100%' do
+        # Before the fix, this would have been 100% (1 on-schedule / 1 completed)
+        # After the fix, it's 10% (1 on-schedule / 10 scheduled)
+        expect(subject.percentage).to eq(10.0)
       end
     end
 
@@ -105,8 +125,8 @@ RSpec.describe OnScheduleStatistic, type: :service do
         )
       end
 
-      it 'returns 50% (1 on-schedule out of 2 total completed)' do
-        expect(subject.percentage).to eq(50.0)
+      it 'returns 10% (1 on-schedule out of 10 total scheduled)' do
+        expect(subject.percentage).to eq(10.0)
       end
     end
 
@@ -136,7 +156,8 @@ RSpec.describe OnScheduleStatistic, type: :service do
       end
 
       it 'correctly handles timezone when determining if reading was on schedule' do
-        expect(subject.percentage).to eq(100.0)
+        # 1 on-schedule out of 3 total scheduled readings
+        expect(subject.percentage).to eq(33.33)
       end
     end
   end
@@ -216,7 +237,8 @@ RSpec.describe OnScheduleStatistic, type: :service do
       it 'only counts readings for the specified challenge' do
         expect(subject.total_completed_count).to eq(1)
         expect(subject.on_schedule_count).to eq(1)
-        expect(subject.percentage).to eq(100.0)
+        # 1 on-schedule out of 10 total scheduled readings for the main challenge
+        expect(subject.percentage).to eq(10.0)
       end
     end
 
@@ -230,6 +252,116 @@ RSpec.describe OnScheduleStatistic, type: :service do
       it 'counts the reading only once' do
         expect(subject.total_completed_count).to eq(1)
         expect(subject.on_schedule_count).to eq(1)
+      end
+    end
+  end
+
+  describe '.batch_percentages' do
+    let(:user1) { create(:user) }
+    let(:user2) { create(:user) }
+    let(:user3) { create(:user) }
+    let!(:enrollment1) { create(:user_challenge_enrollment, user: user1, challenge: challenge) }
+    let!(:enrollment2) { create(:user_challenge_enrollment, user: user2, challenge: challenge) }
+    let!(:enrollment3) { create(:user_challenge_enrollment, user: user3, challenge: challenge) }
+
+    context 'with empty user list' do
+      it 'returns empty hash' do
+        result = described_class.batch_percentages([], challenge)
+        expect(result).to eq({})
+      end
+    end
+
+    context 'with no readings scheduled' do
+      let(:empty_challenge) { create(:challenge, start_date: Date.current + 10, end_date: Date.current + 20) }
+      let!(:empty_enrollment) { create(:user_challenge_enrollment, user: user1, challenge: empty_challenge) }
+
+      it 'returns 0 for all users' do
+        result = described_class.batch_percentages([user1.id], empty_challenge)
+        expect(result).to eq({ user1.id => 0.0 })
+      end
+    end
+
+    context 'with mixed user performance' do
+      before do
+        # User 1: Complete 3 readings on schedule
+        readings.first(3).each do |reading|
+          create(:user_reading, user: user1, reading: reading, completed_on: reading.scheduled_date)
+        end
+
+        # User 2: Complete 5 readings, but only 2 on schedule
+        readings.first(2).each do |reading|
+          create(:user_reading, user: user2, reading: reading, completed_on: reading.scheduled_date)
+        end
+        readings[2..4].each do |reading|
+          create(:user_reading, user: user2, reading: reading, completed_on: reading.scheduled_date + 1.day)
+        end
+
+        # User 3: No readings completed
+      end
+
+      it 'calculates correct percentages for all users in one query' do
+        result = described_class.batch_percentages([user1.id, user2.id, user3.id], challenge)
+
+        expect(result[user1.id]).to eq(30.0)  # 3 on-schedule out of 10 total
+        expect(result[user2.id]).to eq(20.0)  # 2 on-schedule out of 10 total
+        expect(result[user3.id]).to eq(0.0)   # 0 on-schedule out of 10 total
+      end
+
+      it 'matches individual OnScheduleStatistic calculations' do
+        batch_result = described_class.batch_percentages([user1.id, user2.id], challenge)
+        individual_user1 = described_class.new(user1, challenge).percentage
+        individual_user2 = described_class.new(user2, challenge).percentage
+
+        expect(batch_result[user1.id]).to eq(individual_user1)
+        expect(batch_result[user2.id]).to eq(individual_user2)
+      end
+    end
+
+    context 'with all users completing all readings on schedule' do
+      before do
+        [user1, user2, user3].each do |user|
+          readings.each do |reading|
+            create(:user_reading, user: user, reading: reading, completed_on: reading.scheduled_date)
+          end
+        end
+      end
+
+      it 'returns 100% for all users' do
+        result = described_class.batch_percentages([user1.id, user2.id, user3.id], challenge)
+
+        expect(result[user1.id]).to eq(100.0)
+        expect(result[user2.id]).to eq(100.0)
+        expect(result[user3.id]).to eq(100.0)
+      end
+    end
+
+    context 'with all users completing all readings late' do
+      before do
+        [user1, user2].each do |user|
+          readings.each do |reading|
+            create(:user_reading, user: user, reading: reading, completed_on: reading.scheduled_date + 1.day)
+          end
+        end
+      end
+
+      it 'returns 0% for all users' do
+        result = described_class.batch_percentages([user1.id, user2.id], challenge)
+
+        expect(result[user1.id]).to eq(0.0)
+        expect(result[user2.id]).to eq(0.0)
+      end
+    end
+
+    context 'with single user' do
+      before do
+        readings.first(5).each do |reading|
+          create(:user_reading, user: user1, reading: reading, completed_on: reading.scheduled_date)
+        end
+      end
+
+      it 'works correctly for single user' do
+        result = described_class.batch_percentages([user1.id], challenge)
+        expect(result[user1.id]).to eq(50.0)  # 5 out of 10
       end
     end
   end
@@ -253,9 +385,9 @@ RSpec.describe OnScheduleStatistic, type: :service do
       # UserStatistics completion rate should show overall completion
       expect(user_stats.completion_rate).to eq(60.0) # 6 out of 10 readings
 
-      # OnSchedule should show adherence to schedule among completed
+      # OnSchedule should show adherence to schedule among all scheduled readings
       on_schedule_stats = described_class.new(user, challenge)
-      expect(on_schedule_stats.percentage).to eq(66.67) # 4 on-schedule out of 6 completed, rounded to 2 decimal places
+      expect(on_schedule_stats.percentage).to eq(40.0) # 4 on-schedule out of 10 total scheduled, rounded to 2 decimal places
     end
   end
 end

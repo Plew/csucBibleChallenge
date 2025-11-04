@@ -93,24 +93,7 @@ class TopReadersStatistics
   end
 
   def calculate_on_schedule_percentage(user)
-    current_date_in_tz = Time.current.in_time_zone(@challenge.timezone).to_date
-
-    # Completed readings up to current date
-    completed_readings = user.user_readings
-                            .joins(:reading)
-                            .where(readings: { challenge_id: @challenge.id })
-                            .where('readings.scheduled_date <= ?', current_date_in_tz)
-
-    completed_count = completed_readings.count
-
-    return 0 if completed_count.zero?
-
-    # On-schedule readings (completed on or before scheduled date)
-    on_schedule_count = completed_readings
-                       .where('date(user_readings.created_at) <= readings.scheduled_date')
-                       .count
-
-    (on_schedule_count.to_f / completed_count * 100).round
+    OnScheduleStatistic.new(user, @challenge).percentage.round
   end
 
   def avatar_url_for(user)

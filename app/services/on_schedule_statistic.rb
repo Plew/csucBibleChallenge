@@ -8,19 +8,60 @@ class OnScheduleStatistic
     @challenge = challenge
   end
 
-  # Percentage of completed readings that were completed on their scheduled date
-  # Considers the challenge's timezone when determining if reading was "on schedule"
-  def percentage
-    return 0 if total_completed_count.zero?
+  # Batch calculation for multiple users (avoids N+1 queries)
+  # Returns hash: { user_id => percentage }
+  def self.batch_percentages(user_ids, challenge)
+    return {} if user_ids.empty?
 
-    (on_schedule_count.to_f / total_completed_count * 100).round(2)
+    current_date = Time.current.in_time_zone(challenge.timezone).to_date
+
+    # Get total scheduled readings (same for all users)
+    total_scheduled = challenge.readings
+                              .where('scheduled_date <= ?', current_date)
+                              .count
+
+    return user_ids.index_with { 0.0 } if total_scheduled.zero?
+
+    # Single query to get on-schedule counts for all users
+    results = User.joins("LEFT JOIN user_readings ON user_readings.user_id = users.id")
+                  .joins("LEFT JOIN readings ON readings.id = user_readings.reading_id
+                          AND readings.challenge_id = #{challenge.id}
+                          AND DATE(user_readings.completed_on) = readings.scheduled_date
+                          AND readings.scheduled_date <= '#{current_date}'")
+                  .where(id: user_ids)
+                  .group('users.id')
+                  .select('users.id', 'COUNT(DISTINCT readings.id) as on_schedule_count')
+
+    # Build hash of percentages
+    percentages = {}
+    results.each do |result|
+      on_schedule_count = result.on_schedule_count
+      percentages[result.id] = (on_schedule_count.to_f / total_scheduled * 100).round(2)
+    end
+
+    # Fill in 0.0 for users not in results (no on-schedule readings)
+    user_ids.each do |user_id|
+      percentages[user_id] ||= 0.0
+    end
+
+    percentages
   end
 
-  # Count of readings completed on their scheduled date
+  # Percentage of scheduled readings (up to current date) that were completed on time
+  # Considers the challenge's timezone when determining if reading was "on schedule"
+  # If a user skips a day, it counts as not being on time (denominator includes all scheduled readings)
+  def percentage
+    return 0 if scheduled_readings_to_date.zero?
+
+    (on_schedule_count.to_f / scheduled_readings_to_date * 100).round(2)
+  end
+
+  # Count of readings completed on their scheduled date (only for readings scheduled up to current date)
   def on_schedule_count
     user_readings_for_challenge
       .joins(:reading)
       .where("DATE(user_readings.completed_on) = readings.scheduled_date")
+      .where('readings.scheduled_date <= ?', current_date_in_challenge_timezone)
       .count
   end
 
@@ -29,11 +70,22 @@ class OnScheduleStatistic
     user_readings_for_challenge.count
   end
 
+  # Count of readings scheduled up to the current date (in challenge timezone)
+  def scheduled_readings_to_date
+    challenge.readings
+            .where('scheduled_date <= ?', current_date_in_challenge_timezone)
+            .count
+  end
+
   private
 
   def user_readings_for_challenge
     user.user_readings
         .joins(:reading)
         .where(readings: { challenge_id: challenge.id })
+  end
+
+  def current_date_in_challenge_timezone
+    Time.current.in_time_zone(challenge.timezone).to_date
   end
 end

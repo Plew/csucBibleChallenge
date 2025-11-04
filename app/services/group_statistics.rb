@@ -66,29 +66,14 @@ class GroupStatistics
   end
 
   def on_schedule_percentage
-    group_user_ids = group.users.pluck(:id)
+    group_users = group.users
     challenge = group.challenge
-    return 0 if group_user_ids.empty?
+    return 0 if group_users.empty?
 
-    # Calculate average on-schedule percentage across all group members
-    on_schedule_percentages = group_user_ids.map do |user_id|
-      # Get all completed readings for this user in the challenge
-      completed_readings = UserReading.where(user_id: user_id)
-                                     .joins(:reading)
-                                     .where(readings: { challenge_id: challenge.id })
-                                     .where('readings.scheduled_date <= ?', Date.current)
+    # Calculate average on-schedule percentage across all group members using batch query
+    user_ids = group_users.pluck(:id)
+    percentages_by_user = OnScheduleStatistic.batch_percentages(user_ids, challenge)
 
-      completed_count = completed_readings.count
-      next 0 if completed_count.zero?
-
-      # Count readings completed on or before scheduled date
-      on_schedule_count = completed_readings
-                         .where('date(user_readings.created_at) <= readings.scheduled_date')
-                         .count
-
-      (on_schedule_count.to_f / completed_count * 100)
-    end
-
-    (on_schedule_percentages.sum / group_user_ids.size).round
+    (percentages_by_user.values.sum / group_users.size).round
   end
 end 

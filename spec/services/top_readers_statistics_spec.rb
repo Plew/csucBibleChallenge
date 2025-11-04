@@ -109,14 +109,15 @@ RSpec.describe TopReadersStatistics, type: :service do
       let!(:user) { create(:user) }
       let!(:enrollment) { create(:user_challenge_enrollment, user: user, challenge: challenge) }
 
-      it 'calculates 100% when all readings completed on schedule' do
+      it 'calculates 50% when 5 out of 10 readings completed on schedule' do
         # Complete at least 50% (5 out of 10) all on schedule
         readings.first(5).each do |reading|
           create(:user_reading, user: user, reading: reading, completed_on: reading.scheduled_date, created_at: reading.scheduled_date)
         end
 
         result = described_class.call(challenge: challenge)
-        expect(result[0][:on_schedule_percentage]).to eq(100)
+        # 5 on-schedule out of 10 total scheduled = 50%
+        expect(result[0][:on_schedule_percentage]).to eq(50)
       end
 
       it 'calculates correct percentage when some readings are late' do
@@ -132,7 +133,8 @@ RSpec.describe TopReadersStatistics, type: :service do
         end
 
         result = described_class.call(challenge: challenge)
-        expect(result[0][:on_schedule_percentage]).to eq(50) # 3 out of 6
+        # 3 on-schedule out of 10 total scheduled = 30%
+        expect(result[0][:on_schedule_percentage]).to eq(30)
       end
 
       it 'returns 0 when all readings are late' do
