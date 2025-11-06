@@ -232,7 +232,7 @@ GEM
       activesupport (>= 7.0.0)
       rack
       railties (>= 7.0.0)
-    pry (0.14.2)
+    pry (0.15.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
     psych (5.1.2)
@@ -446,7 +446,7 @@ DEPENDENCIES
   listen
   lookbook (>= 2.3.2)
   propshaft
-  pry (~> 0.14.2)
+  pry (~> 0.15.2)
   puma (>= 5.0)
   rails (~> 8.0.1)
   redis (>= 4.0.1)
