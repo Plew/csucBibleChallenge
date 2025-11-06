@@ -7,9 +7,9 @@ class Profile::PasswordsController < Profile::BaseController
   # PATCH /profile/password
   def update
     @user = current_user
-    
+
     if @user.update(password_params)
-      redirect_to edit_profile_password_path, notice: 'Password updated successfully.'
+      redirect_to edit_profile_password_path, notice: "Password updated successfully."
     else
       render :edit, status: :unprocessable_content
     end

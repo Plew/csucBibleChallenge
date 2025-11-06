@@ -155,4 +155,4 @@ RSpec.describe GroupStatistics, type: :service do
       subject.on_schedule_percentage
     end
   end
-end 
+end

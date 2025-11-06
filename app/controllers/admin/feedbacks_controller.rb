@@ -1,7 +1,7 @@
 class Admin::FeedbacksController < ApplicationController
   before_action :require_login
   before_action :require_admin
-  before_action :set_feedback, only: [:show, :destroy]
+  before_action :set_feedback, only: [ :show, :destroy ]
 
   def index
     @feedbacks = Feedback.includes(:user)
@@ -10,8 +10,8 @@ class Admin::FeedbacksController < ApplicationController
 
     if params[:search].present?
       @feedbacks = @feedbacks.where(
-        "subject ILIKE ? OR message ILIKE ?", 
-        "%#{params[:search]}%", 
+        "subject ILIKE ? OR message ILIKE ?",
+        "%#{params[:search]}%",
         "%#{params[:search]}%"
       )
     end
@@ -26,7 +26,7 @@ class Admin::FeedbacksController < ApplicationController
 
   def destroy
     @feedback.destroy
-    redirect_to admin_feedbacks_path, notice: 'Feedback has been deleted.'
+    redirect_to admin_feedbacks_path, notice: "Feedback has been deleted."
   end
 
   private
@@ -36,6 +36,6 @@ class Admin::FeedbacksController < ApplicationController
   end
 
   def require_admin
-    redirect_to root_path, alert: 'Access denied.' unless current_user&.admin?
+    redirect_to root_path, alert: "Access denied." unless current_user&.admin?
   end
 end

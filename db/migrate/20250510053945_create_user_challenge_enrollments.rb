@@ -7,6 +7,6 @@ class CreateUserChallengeEnrollments < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :user_challenge_enrollments, [:user_id, :challenge_id], unique: true, name: 'index_user_challenge_enrollments_on_user_and_challenge'
+    add_index :user_challenge_enrollments, [ :user_id, :challenge_id ], unique: true, name: 'index_user_challenge_enrollments_on_user_and_challenge'
   end
 end

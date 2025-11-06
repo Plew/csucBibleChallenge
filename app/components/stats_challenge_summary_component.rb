@@ -16,7 +16,7 @@ class StatsChallengeSummaryComponent < ViewComponent::Base
     return 0 unless challenge.start_date && challenge.end_date
 
     total_days = (challenge.end_date - challenge.start_date).to_i + 1
-    days_elapsed = [(Date.current - challenge.start_date).to_i + 1, 0].max
+    days_elapsed = [ (Date.current - challenge.start_date).to_i + 1, 0 ].max
 
     return 100 if days_elapsed >= total_days
     return 0 if days_elapsed <= 0
@@ -38,42 +38,42 @@ class StatsChallengeSummaryComponent < ViewComponent::Base
     current_date = Date.current
 
     if current_date < challenge.start_date
-      'upcoming'
+      "upcoming"
     elsif current_date > challenge.end_date
-      'completed'
+      "completed"
     else
-      'active'
+      "active"
     end
   end
 
   def status_badge_class
     case challenge_status
-    when 'upcoming'
-      'badge-info'
-    when 'active'
-      'badge-success'
-    when 'completed'
-      'badge-neutral'
+    when "upcoming"
+      "badge-info"
+    when "active"
+      "badge-success"
+    when "completed"
+      "badge-neutral"
     end
   end
 
   def status_text
     case challenge_status
-    when 'upcoming'
+    when "upcoming"
       "Starts in #{pluralize(days_until_start, 'day')}"
-    when 'active'
+    when "active"
       "#{pluralize(days_remaining, 'day')} remaining"
-    when 'completed'
-      'Challenge completed'
+    when "completed"
+      "Challenge completed"
     end
   end
 
   def formatted_start_date
-    challenge.start_date.strftime('%b %d, %Y')
+    challenge.start_date.strftime("%b %d, %Y")
   end
 
   def formatted_end_date
-    challenge.end_date.strftime('%b %d, %Y')
+    challenge.end_date.strftime("%b %d, %Y")
   end
 
   def total_duration_days
@@ -81,13 +81,13 @@ class StatsChallengeSummaryComponent < ViewComponent::Base
   end
 
   def first_reader_username
-    statistics.first_reader_today&.username || 'None yet'
+    statistics.first_reader_today&.username || "None yet"
   end
 
   def first_reader_time_formatted
     if statistics.respond_to?(:first_reader_today_time) && statistics.first_reader_today_time
       time = statistics.first_reader_today_time
-      formatted_time = time.in_time_zone(challenge.timezone).strftime('%H:%M')
+      formatted_time = time.in_time_zone(challenge.timezone).strftime("%H:%M")
       "(#{formatted_time})"
     else
       ""

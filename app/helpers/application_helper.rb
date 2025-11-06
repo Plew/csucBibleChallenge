@@ -39,14 +39,14 @@ module ApplicationHelper
   # @example Specifying a large size with additional CSS class
   #   avatar_image_tag(@user, :large, class: 'rounded-full ring ring-primary')
   def avatar_image_tag(user, size_key = :medium, html_options = {})
-    return '' unless user&.username.present?
+    return "" unless user&.username.present?
 
     sizes = {
-      tiny: '24x24',
-      medium: '36x36',
-      large: '48x48',
-      xlarge: '64x64',
-      xxlarge: '96x96'
+      tiny: "24x24",
+      medium: "36x36",
+      large: "48x48",
+      xlarge: "64x64",
+      xxlarge: "96x96"
     }
 
     # Default to medium size if an invalid key is provided
@@ -82,7 +82,7 @@ module ApplicationHelper
   #   markdown("**Bold text** and [a link](https://example.com)")
   #   markdown("Check out this video: [youtube:dQw4w9WgXcQ]")
   def markdown(text)
-    return '' if text.blank?
+    return "" if text.blank?
 
     # First, replace YouTube shortcodes with placeholder tokens to protect them from markdown processing
     youtube_placeholders = {}
@@ -102,7 +102,7 @@ module ApplicationHelper
     options = {
       filter_html: true,
       hard_wrap: true,
-      link_attributes: { target: '_blank', rel: 'noopener noreferrer' },
+      link_attributes: { target: "_blank", rel: "noopener noreferrer" },
       no_styles: true
     }
 
@@ -164,15 +164,15 @@ module ApplicationHelper
     return nil if identifier.blank?
 
     # If it looks like a URL, parse it
-    if identifier.include?('youtube.com') || identifier.include?('youtu.be')
+    if identifier.include?("youtube.com") || identifier.include?("youtu.be")
       uri = URI.parse(identifier) rescue nil
       return nil unless uri
 
-      if uri.host&.include?('youtube.com')
+      if uri.host&.include?("youtube.com")
         # Extract from ?v= parameter
-        params = CGI.parse(uri.query || '')
-        params['v']&.first
-      elsif uri.host&.include?('youtu.be')
+        params = CGI.parse(uri.query || "")
+        params["v"]&.first
+      elsif uri.host&.include?("youtu.be")
         # Extract from path
         uri.path[1..]
       end
@@ -207,10 +207,10 @@ module ApplicationHelper
   def sanitize_with_youtube(html)
     # Use Rails sanitize with custom scrubber for YouTube iframes
     scrubber = Loofah::Scrubber.new do |node|
-      if node.name == 'iframe'
+      if node.name == "iframe"
         # Only allow iframes from YouTube
-        src = node['src']
-        if src && (src.start_with?('https://www.youtube-nocookie.com/embed/', 'https://www.youtube.com/embed/'))
+        src = node["src"]
+        if src && (src.start_with?("https://www.youtube-nocookie.com/embed/", "https://www.youtube.com/embed/"))
           # Keep the iframe and its safe attributes
           node.attributes.each do |name, attr|
             unless %w[src frameborder allow allowfullscreen class].include?(name)
@@ -222,7 +222,7 @@ module ApplicationHelper
           node.remove
           Loofah::Scrubber::STOP
         end
-      elsif node.name == 'div'
+      elsif node.name == "div"
         # Allow divs with class and style (for video wrapper)
         node.attributes.each do |name, attr|
           unless %w[class style].include?(name)
@@ -232,7 +232,7 @@ module ApplicationHelper
         Loofah::Scrubber::CONTINUE
       elsif %w[p br strong em a ul ol li blockquote code pre h1 h2 h3 h4 h5 h6].include?(node.name)
         # Standard allowed tags
-        if node.name == 'a'
+        if node.name == "a"
           # Only keep href, target, rel for links
           node.attributes.each do |name, attr|
             unless %w[href target rel].include?(name)
@@ -263,12 +263,12 @@ module ApplicationHelper
   #   timezone_options_for_select
   #   # => [["Abu Dhabi", "Abu Dhabi"], ["America/New_York", "America/New_York"], ..., ["Munich", "Berlin"]]
   def timezone_options_for_select
-    options = ActiveSupport::TimeZone.all.map { |tz| [tz.name, tz.name] }
+    options = ActiveSupport::TimeZone.all.map { |tz| [ tz.name, tz.name ] }
 
     # Add Munich as an option that maps to Berlin timezone
-    berlin_tz = ActiveSupport::TimeZone['Berlin']
+    berlin_tz = ActiveSupport::TimeZone["Berlin"]
     if berlin_tz
-      options << ['Munich', berlin_tz.name]
+      options << [ "Munich", berlin_tz.name ]
     end
 
     # Sort alphabetically for better UX
@@ -285,7 +285,7 @@ module ApplicationHelper
   #   linkify_urls("Check out https://example.com for more info")
   #   linkify_urls("Visit https://example.com", class: 'link link-primary')
   def linkify_urls(text, html_options = {})
-    return '' if text.blank?
+    return "" if text.blank?
 
     # Regex to match URLs (http, https, and www)
     url_regex = %r{
@@ -296,10 +296,10 @@ module ApplicationHelper
 
     text.gsub(url_regex) do |url|
       # Add http:// to www. links
-      href = url.start_with?('www.') ? "http://#{url}" : url
+      href = url.start_with?("www.") ? "http://#{url}" : url
 
       # Build HTML attributes
-      attrs = html_options.map { |k, v| "#{k}=\"#{ERB::Util.html_escape(v)}\"" }.join(' ')
+      attrs = html_options.map { |k, v| "#{k}=\"#{ERB::Util.html_escape(v)}\"" }.join(" ")
 
       "<a href=\"#{ERB::Util.html_escape(href)}\" #{attrs}>#{ERB::Util.html_escape(url)}</a>"
     end.html_safe

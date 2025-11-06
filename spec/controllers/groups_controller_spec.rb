@@ -23,7 +23,7 @@ RSpec.describe GroupsController, type: :controller do
         group # Ensure the let group is created
         group2 = create(:group, challenge: challenge)
         get :index
-        expect(assigns(:groups)).to match_array([group, group2])
+        expect(assigns(:groups)).to match_array([ group, group2 ])
       end
     end
 

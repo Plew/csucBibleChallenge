@@ -1,13 +1,13 @@
 class UserChallengeEnrollmentsController < ApplicationController
   before_action :require_login
-  before_action :set_challenge, only: [:create]
-  before_action :set_user_challenge_enrollment, only: [:destroy]
+  before_action :set_challenge, only: [ :create ]
+  before_action :set_user_challenge_enrollment, only: [ :destroy ]
 
   # POST /challenges/:challenge_id/user_challenge_enrollments
   def create
     # Ensure user is not already in a challenge if we strictly enforce one challenge at a time via UI
     if current_user.challenges.any?
-      redirect_to root_path, alert: 'You are already enrolled in a challenge. Leave your current challenge to join a new one.'
+      redirect_to root_path, alert: "You are already enrolled in a challenge. Leave your current challenge to join a new one."
       return
     end
 
@@ -36,7 +36,7 @@ class UserChallengeEnrollmentsController < ApplicationController
       redirect_to challenges_path
     else
       # This case should ideally not be reachable if buttons are only shown to the correct user
-      redirect_to challenges_path, alert: 'You are not authorized to perform this action.'
+      redirect_to challenges_path, alert: "You are not authorized to perform this action."
     end
   end
 
@@ -45,12 +45,12 @@ class UserChallengeEnrollmentsController < ApplicationController
   def set_challenge
     @challenge = Challenge.find(params[:challenge_id])
   rescue ActiveRecord::RecordNotFound
-    redirect_to root_path, alert: 'Challenge not found.'
+    redirect_to root_path, alert: "Challenge not found."
   end
 
   def set_user_challenge_enrollment
     @enrollment = UserChallengeEnrollment.find(params[:id])
   rescue ActiveRecord::RecordNotFound
-    redirect_to root_path, alert: 'Enrollment not found.'
+    redirect_to root_path, alert: "Enrollment not found."
   end
-end 
+end

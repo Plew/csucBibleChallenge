@@ -42,7 +42,7 @@ RSpec.describe "User Registration with Challenge Invitation", type: :request do
     it "handles signup without invitation token (normal flow)" do
       user_params = {
         username: "normaluser",
-        email: "normal@example.com", 
+        email: "normal@example.com",
         password: "password123",
         password_confirmation: "password123"
       }
@@ -63,7 +63,7 @@ RSpec.describe "User Registration with Challenge Invitation", type: :request do
       user_params = {
         username: "testuser",
         email: "test@example.com",
-        password: "password123", 
+        password: "password123",
         password_confirmation: "password123"
       }
 
@@ -77,7 +77,7 @@ RSpec.describe "User Registration with Challenge Invitation", type: :request do
     end
 
     it "handles enrollment failure when challenge not found" do
-      # Visit invitation page 
+      # Visit invitation page
       get challenge_invitation_path(challenge.invitation_token)
       expect(session[:challenge_invitation_token]).to eq(challenge.invitation_token)
 
@@ -95,7 +95,7 @@ RSpec.describe "User Registration with Challenge Invitation", type: :request do
         post users_path, params: { user: user_params }
       }.to change(User, :count).by(1)
         .and change(UserChallengeEnrollment, :count).by(0)
-      
+
       # Token should be cleared even if enrollment fails
       expect(session[:challenge_invitation_token]).to be_nil
       expect(response).to redirect_to(root_path)

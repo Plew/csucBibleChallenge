@@ -24,7 +24,7 @@ RSpec.describe UserChallengeStats do
 
     context 'when some readings are completed' do
       let!(:readings) { create_list(:reading, 10, challenge: challenge) }
-      
+
       before do
         # Complete 3 out of 10 readings
         3.times do |i|
@@ -39,7 +39,7 @@ RSpec.describe UserChallengeStats do
 
     context 'when all readings are completed' do
       let!(:readings) { create_list(:reading, 5, challenge: challenge) }
-      
+
       before do
         readings.each do |reading|
           create(:user_reading, user: user, reading: reading)
@@ -55,13 +55,13 @@ RSpec.describe UserChallengeStats do
       let(:other_challenge) { create(:challenge) }
       let!(:challenge_readings) { create_list(:reading, 5, challenge: challenge) }
       let!(:other_readings) { create_list(:reading, 3, challenge: other_challenge) }
-      
+
       before do
         # Complete 2 readings from the target challenge
         2.times do |i|
           create(:user_reading, user: user, reading: challenge_readings[i])
         end
-        
+
         # Complete all readings from other challenge (should not affect calculation)
         other_readings.each do |reading|
           create(:user_reading, user: user, reading: reading)
@@ -98,7 +98,7 @@ RSpec.describe UserChallengeStats do
     context 'when some readings scheduled to date are completed' do
       let!(:past_readings) { create_list(:reading, 4, challenge: challenge, scheduled_date: Date.current - 1.day) }
       let!(:future_readings) { create_list(:reading, 6, challenge: challenge, scheduled_date: Date.current + 1.day) }
-      
+
       before do
         # Complete 2 out of 4 past readings
         2.times do |i|
@@ -114,7 +114,7 @@ RSpec.describe UserChallengeStats do
     context 'when all readings scheduled to date are completed' do
       let!(:past_readings) { create_list(:reading, 3, challenge: challenge, scheduled_date: Date.current - 1.day) }
       let!(:future_readings) { create_list(:reading, 7, challenge: challenge, scheduled_date: Date.current + 1.day) }
-      
+
       before do
         past_readings.each do |reading|
           create(:user_reading, user: user, reading: reading)
@@ -128,7 +128,7 @@ RSpec.describe UserChallengeStats do
 
     context 'with timezone considerations' do
       let(:challenge) { create(:challenge, timezone: 'Eastern Time (US & Canada)') }
-      
+
       before do
         # Create a reading for "today" in the challenge timezone
         current_date_in_ny = Time.current.in_time_zone('Eastern Time (US & Canada)').to_date
@@ -153,7 +153,7 @@ RSpec.describe UserChallengeStats do
 
     context 'with fractional percentages' do
       let!(:readings) { create_list(:reading, 3, challenge: challenge) }
-      
+
       before do
         create(:user_reading, user: user, reading: readings.first)
       end

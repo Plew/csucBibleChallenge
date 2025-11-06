@@ -105,4 +105,4 @@ RSpec.describe UserStatistics, type: :service do
       expect(subject.on_schedule_percentage).to eq(30.0)
     end
   end
-end 
+end

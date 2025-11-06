@@ -9,7 +9,7 @@ class GroupsController < ApplicationController
       redirect_to group_path(@user_group)
       return
     end
-    
+
     @groups = @challenge.groups.order(:name)
                   .includes(user_group_enrollments: { user: [ :avatar_attachment, :avatar_blob ] })
                   .to_a
@@ -18,7 +18,7 @@ class GroupsController < ApplicationController
   # GET /groups/new
   def new
     if current_user.groups.where(challenge_id: @challenge.id).exists?
-      redirect_to groups_path, alert: 'You are already in a group.'
+      redirect_to groups_path, alert: "You are already in a group."
       return
     end
     @group = @challenge.groups.new
@@ -27,7 +27,7 @@ class GroupsController < ApplicationController
   # POST /groups
   def create
     if current_user.groups.where(challenge_id: @challenge.id).exists?
-      redirect_to groups_path, alert: 'You are already in a group.'
+      redirect_to groups_path, alert: "You are already in a group."
       return
     end
     @group = @challenge.groups.new(group_params.merge(creator: current_user))
@@ -43,13 +43,13 @@ class GroupsController < ApplicationController
   def confirm_destroy
     @group = @challenge.groups.find(params[:id])
     unless @group.creator == current_user
-      redirect_to groups_path, alert: 'Only the group creator can perform this action.'
+      redirect_to groups_path, alert: "Only the group creator can perform this action."
       return
     end
     @other_members = @group.user_group_enrollments.where.not(user_id: current_user.id)
     unless @other_members.exists?
-      redirect_to groups_path, alert: 'No other members to remove.'
-      return
+      redirect_to groups_path, alert: "No other members to remove."
+      nil
     end
   end
 
@@ -57,7 +57,7 @@ class GroupsController < ApplicationController
   def leave
     @user_group = current_user.groups.where(challenge_id: @challenge.id).first
     unless @user_group
-      redirect_to groups_path, alert: 'You are not in a group.'
+      redirect_to groups_path, alert: "You are not in a group."
       return
     end
     group = @user_group
@@ -80,11 +80,11 @@ class GroupsController < ApplicationController
   def join
     group = @challenge.groups.find(params[:id])
     if current_user.groups.where(challenge_id: @challenge.id).exists?
-      redirect_to groups_path, alert: 'You are already in a group.'
+      redirect_to groups_path, alert: "You are already in a group."
       return
     end
     if group.closed_to_new_members
-      redirect_to groups_path, alert: 'This group is closed to new members.'
+      redirect_to groups_path, alert: "This group is closed to new members."
       return
     end
     UserGroupEnrollment.create!(user: current_user, group: group)
@@ -97,16 +97,16 @@ class GroupsController < ApplicationController
   def destroy_and_leave
     group = @challenge.groups.find(params[:id])
     unless group.creator == current_user
-      redirect_to groups_path, alert: 'Only the group creator can perform this action.'
+      redirect_to groups_path, alert: "Only the group creator can perform this action."
       return
     end
     group.destroy
-    redirect_to groups_path, notice: 'Group and all memberships have been deleted.'
+    redirect_to groups_path, notice: "Group and all memberships have been deleted."
   end
 
   # GET /groups/:id
   def show
-    @group = @challenge.groups.includes(user_group_enrollments: { user: [:avatar_attachment, :avatar_blob, :user_readings] }).find(params[:id])
+    @group = @challenge.groups.includes(user_group_enrollments: { user: [ :avatar_attachment, :avatar_blob, :user_readings ] }).find(params[:id])
     @user_group = current_user.groups.where(challenge_id: @challenge.id).first
     @groups = @challenge.groups.order(:name)
                   .includes(user_group_enrollments: { user: [ :avatar_attachment, :avatar_blob ] })
@@ -118,22 +118,22 @@ class GroupsController < ApplicationController
     current_date = Time.current.in_time_zone(@challenge.timezone).to_date
 
     # Total possible chapters = number of scheduled readings × number of members
-    total_scheduled = @challenge.readings.where('scheduled_date <= ?', current_date).count
+    total_scheduled = @challenge.readings.where("scheduled_date <= ?", current_date).count
     total_possible = total_scheduled * group_user_ids.count
 
     # Total completed chapters across all group members
     total_completed = UserReading.where(user_id: group_user_ids)
                                   .joins(:reading)
                                   .where(readings: { challenge_id: @challenge.id })
-                                  .where('readings.scheduled_date <= ?', current_date)
+                                  .where("readings.scheduled_date <= ?", current_date)
                                   .count
 
     # Total on-time chapters across all group members
     total_on_time = UserReading.where(user_id: group_user_ids)
                                 .joins(:reading)
                                 .where(readings: { challenge_id: @challenge.id })
-                                .where('readings.scheduled_date <= ?', current_date)
-                                .where('DATE(user_readings.completed_on) = readings.scheduled_date')
+                                .where("readings.scheduled_date <= ?", current_date)
+                                .where("DATE(user_readings.completed_on) = readings.scheduled_date")
                                 .count
 
     @group_stats = {
@@ -149,7 +149,7 @@ class GroupsController < ApplicationController
   def edit
     @group = @challenge.groups.find(params[:id])
     unless @group.creator == current_user
-      redirect_to group_path(@group), alert: 'Only the group creator can edit this group.'
+      redirect_to group_path(@group), alert: "Only the group creator can edit this group."
       return
     end
     @members = @group.users.includes(:avatar_attachment, :avatar_blob).where.not(id: current_user.id)
@@ -159,12 +159,12 @@ class GroupsController < ApplicationController
   def update
     @group = @challenge.groups.find(params[:id])
     unless @group.creator == current_user
-      redirect_to group_path(@group), alert: 'Only the group creator can edit this group.'
+      redirect_to group_path(@group), alert: "Only the group creator can edit this group."
       return
     end
 
     if @group.update(group_params)
-      redirect_to group_path(@group), notice: 'Group updated successfully.'
+      redirect_to group_path(@group), notice: "Group updated successfully."
     else
       render :edit, status: :unprocessable_content
     end
@@ -174,12 +174,12 @@ class GroupsController < ApplicationController
   def confirm_remove_member
     @group = @challenge.groups.find(params[:id])
     unless @group.creator == current_user
-      redirect_to group_path(@group), alert: t('groups.only_creator_can_edit')
+      redirect_to group_path(@group), alert: t("groups.only_creator_can_edit")
       return
     end
 
     if params[:member_id].to_i == current_user.id
-      redirect_to edit_group_path(@group), alert: 'You cannot remove yourself. Use Leave Group instead.'
+      redirect_to edit_group_path(@group), alert: "You cannot remove yourself. Use Leave Group instead."
       return
     end
 
@@ -190,12 +190,12 @@ class GroupsController < ApplicationController
   def remove_member
     @group = @challenge.groups.find(params[:id])
     unless @group.creator == current_user
-      redirect_to group_path(@group), alert: t('groups.only_creator_can_edit')
+      redirect_to group_path(@group), alert: t("groups.only_creator_can_edit")
       return
     end
 
     if params[:member_id].to_i == current_user.id
-      redirect_to edit_group_path(@group), alert: 'You cannot remove yourself. Use Leave Group instead.'
+      redirect_to edit_group_path(@group), alert: "You cannot remove yourself. Use Leave Group instead."
       return
     end
 
@@ -203,7 +203,7 @@ class GroupsController < ApplicationController
     enrollment = UserGroupEnrollment.find_by(user: member, group: @group)
     enrollment&.destroy
 
-    redirect_to edit_group_path(@group), notice: t('groups.member_removed')
+    redirect_to edit_group_path(@group), notice: t("groups.member_removed")
   end
 
   private
@@ -211,7 +211,7 @@ class GroupsController < ApplicationController
   def set_enrollment_and_challenge
     @enrollment = current_user.user_challenge_enrollments.last
     unless @enrollment
-      redirect_to root_path, alert: 'You must be enrolled in a challenge to view groups.'
+      redirect_to root_path, alert: "You must be enrolled in a challenge to view groups."
       return
     end
     @challenge = @enrollment.challenge
@@ -220,4 +220,4 @@ class GroupsController < ApplicationController
   def group_params
     params.require(:group).permit(:name, :closed_to_new_members, :motto)
   end
-end 
+end

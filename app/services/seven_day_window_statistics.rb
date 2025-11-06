@@ -22,7 +22,7 @@ class SevenDayWindowStatistics
         total_days: seven_day_data[:total_days]
       }
     end.select { |data| data[:completion_percentage] == 100 }
-      .sort_by { |data| [-data[:on_schedule_percentage]] }
+      .sort_by { |data| [ -data[:on_schedule_percentage] ] }
   end
 
   private
@@ -37,8 +37,8 @@ class SevenDayWindowStatistics
   end
 
   def calculate_seven_day_data(user)
-    challenges_to_calculate = @challenge ? [@challenge] : user.challenges.includes(:readings)
-    
+    challenges_to_calculate = @challenge ? [ @challenge ] : user.challenges.includes(:readings)
+
     total_scheduled_7_days = 0
     total_completed_7_days = 0
     total_on_schedule_7_days = 0
@@ -46,26 +46,26 @@ class SevenDayWindowStatistics
     challenges_to_calculate.each do |challenge|
       current_date_in_tz = Time.current.in_time_zone(challenge.timezone).to_date
       seven_days_ago = current_date_in_tz - 6.days # Including today = 7 days
-      
+
       # Readings scheduled in the 7-day window
       scheduled_readings = challenge.readings
                                   .where(scheduled_date: seven_days_ago..current_date_in_tz)
-      
+
       scheduled_count = scheduled_readings.count
-      
+
       # Completed readings in the 7-day window
       completed_readings = user.user_readings
                               .joins(:reading)
                               .where(readings: { challenge_id: challenge.id })
                               .where(readings: { scheduled_date: seven_days_ago..current_date_in_tz })
-      
+
       completed_count = completed_readings.count
-      
+
       # On-schedule readings (completed on or before scheduled date)
       on_schedule_count = completed_readings
-                         .where('date(user_readings.created_at) <= readings.scheduled_date')
+                         .where("date(user_readings.created_at) <= readings.scheduled_date")
                          .count
-      
+
       total_scheduled_7_days += scheduled_count
       total_completed_7_days += completed_count
       total_on_schedule_7_days += on_schedule_count
@@ -73,15 +73,15 @@ class SevenDayWindowStatistics
 
     completion_percentage = if total_scheduled_7_days.zero?
                            0
-                         else
+    else
                            (total_completed_7_days.to_f / total_scheduled_7_days * 100).round
-                         end
+    end
 
     on_schedule_percentage = if total_scheduled_7_days.zero?
                             0
-                          else
+    else
                             (total_on_schedule_7_days.to_f / total_scheduled_7_days * 100).round
-                          end
+    end
 
     {
       completion_percentage: completion_percentage,

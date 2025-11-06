@@ -72,7 +72,7 @@ RSpec.describe Profile::EnrollmentsController, type: :controller do
           # Note: This tests the current implementation which gets .first
           # The actual behavior depends on the default ordering of user_challenge_enrollments
           assigned_enrollment = assigns(:user_enrollment)
-          expect([first_enrollment, second_enrollment]).to include(assigned_enrollment)
+          expect([ first_enrollment, second_enrollment ]).to include(assigned_enrollment)
         end
       end
     end
@@ -139,7 +139,7 @@ RSpec.describe Profile::EnrollmentsController, type: :controller do
 
         it 'only deletes the specified enrollment' do
           delete :destroy, params: { id: first_enrollment.id }
-          
+
           expect { first_enrollment.reload }.to raise_error(ActiveRecord::RecordNotFound)
           expect { second_enrollment.reload }.not_to raise_error
         end
@@ -165,13 +165,13 @@ RSpec.describe Profile::EnrollmentsController, type: :controller do
 
   context 'security and edge cases' do
     let(:other_user) { create(:user) }
-    
+
     before { session[:user_id] = user.id }
 
     it 'only shows current user enrollments in index' do
       user_enrollment
       other_enrollment = create(:user_challenge_enrollment, user: other_user, challenge: challenge)
-      
+
       get :index
       assigned_enrollment = assigns(:user_enrollment)
       expect(assigned_enrollment).to eq(user_enrollment)
@@ -180,7 +180,7 @@ RSpec.describe Profile::EnrollmentsController, type: :controller do
 
     it 'cannot delete enrollments through parameter manipulation' do
       other_enrollment = create(:user_challenge_enrollment, user: other_user, challenge: challenge)
-      
+
       expect {
         expect {
           delete :destroy, params: { id: other_enrollment.id }

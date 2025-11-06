@@ -76,7 +76,7 @@ RSpec.describe Challenge, type: :model do
       it 'ensures token uniqueness' do
         existing_challenge = FactoryBot.create(:challenge)
         allow(SecureRandom).to receive(:alphanumeric).and_return(existing_challenge.invitation_token, 'ABC123')
-        
+
         challenge.generate_invitation_token
         expect(challenge.invitation_token).to eq('ABC123')
       end
@@ -113,7 +113,7 @@ RSpec.describe Challenge, type: :model do
       expect { challenge.destroy }
         .to change(Challenge, :count).by(-1)
         .and change(UserChallengeEnrollment, :count).by(-1)
-        .and change(Reading, :count).by(-1) 
+        .and change(Reading, :count).by(-1)
         .and change(Group, :count).by(-1)
         .and change(UserReading, :count).by(-1)
     end

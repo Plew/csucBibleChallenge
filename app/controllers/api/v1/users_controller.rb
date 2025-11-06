@@ -4,7 +4,7 @@ class Api::V1::UsersController < Api::BaseController
     user = User.new(user_params)
 
     if user.save
-      render json: user, status: :created, except: [:password_digest]
+      render json: user, status: :created, except: [ :password_digest ]
     else
       render json: { errors: user.errors.full_messages }, status: :unprocessable_content
     end

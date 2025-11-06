@@ -3,4 +3,4 @@ class UserGroupEnrollment < ApplicationRecord
   belongs_to :group
 
   validates :user_id, uniqueness: { scope: :group_id }
-end 
+end

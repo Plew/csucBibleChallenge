@@ -37,7 +37,7 @@ RSpec.describe ChallengeStatistics, type: :service do
       readings.first(2).each { |reading| create(:user_reading, user: users[1], reading: reading, completed_on: reading.scheduled_date) }
       create(:user_reading, user: users[2], reading: readings.first, completed_on: readings.first.scheduled_date)
       result = subject.top_participants_by_completion(3)
-      expect(result.map(&:first)).to eq([users[0], users[1], users[2]])
+      expect(result.map(&:first)).to eq([ users[0], users[1], users[2] ])
     end
   end
 
@@ -48,7 +48,7 @@ RSpec.describe ChallengeStatistics, type: :service do
       readings.first(2).each { |reading| create(:user_reading, user: users[1], reading: reading, completed_on: reading.scheduled_date) }
       create(:user_reading, user: users[2], reading: readings.first, completed_on: readings.first.scheduled_date)
       result = subject.top_participants_by_streak(3)
-      expect(result.map(&:first)).to eq([users[0], users[1], users[2]])
+      expect(result.map(&:first)).to eq([ users[0], users[1], users[2] ])
     end
   end
-end 
+end

@@ -36,7 +36,7 @@ RSpec.describe ProfileController, type: :controller do
   context 'with user who has challenges' do
     let(:challenge) { create(:challenge) }
     let(:user_enrollment) { create(:user_challenge_enrollment, user: user, challenge: challenge) }
-    
+
     before do
       user_enrollment
       session[:user_id] = user.id
@@ -57,7 +57,7 @@ RSpec.describe ProfileController, type: :controller do
     let(:reading) { create(:reading, challenge: challenge) }
     let(:user_enrollment) { create(:user_challenge_enrollment, user: user, challenge: challenge) }
     let!(:user_reading) { create(:user_reading, user: user, reading: reading) }
-    
+
     before do
       user_enrollment
       session[:user_id] = user.id
@@ -75,7 +75,7 @@ RSpec.describe ProfileController, type: :controller do
 
   context 'security considerations' do
     let(:other_user) { create(:user) }
-    
+
     before { session[:user_id] = user.id }
 
     it 'only shows current user data, not other users' do

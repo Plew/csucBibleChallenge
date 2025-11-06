@@ -51,7 +51,7 @@ class SessionsController < ApplicationController
         redirect_to challenges_path
       end
     else
-      flash.now[:alert] = 'Invalid email/username or password combination'
+      flash.now[:alert] = "Invalid email/username or password combination"
       render :new, status: :unprocessable_content
     end
   end
@@ -59,6 +59,6 @@ class SessionsController < ApplicationController
   # DELETE /users/sign_out
   def destroy
     log_out # Always clear session, even if invalid
-    redirect_to root_url, notice: 'Logged out!'
+    redirect_to root_url, notice: "Logged out!"
   end
-end 
+end

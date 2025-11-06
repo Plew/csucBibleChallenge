@@ -73,10 +73,10 @@ RSpec.describe Profile::EmailPreferencesController, type: :controller do
       it 'only updates the current user' do
         other_user.update_columns(daily_email: true)
         patch :update, params: { user: { daily_email: false } }
-        
+
         user.reload
         other_user.reload
-        
+
         expect(user.daily_email).to be_falsey
         expect(other_user.daily_email).to be_truthy
       end

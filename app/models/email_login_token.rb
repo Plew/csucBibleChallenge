@@ -8,7 +8,7 @@ class EmailLoginToken < ApplicationRecord
   before_validation :generate_token, on: :create
 
   scope :unused, -> { where(clicked_at: nil) }
-  scope :recent, -> { where('created_at > ?', 24.hours.ago) }
+  scope :recent, -> { where("created_at > ?", 24.hours.ago) }
 
   def mark_as_clicked!
     update!(clicked_at: Time.current)

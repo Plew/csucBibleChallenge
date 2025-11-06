@@ -14,7 +14,7 @@ RSpec.describe GroupChallengeStats do
 
     context 'when group has members but no readings' do
       let!(:users) { create_list(:user, 3) }
-      
+
       before do
         users.each { |user| create(:user_group_enrollment, user: user, group: group) }
       end
@@ -27,7 +27,7 @@ RSpec.describe GroupChallengeStats do
     context 'when group has members and readings but no completions' do
       let!(:users) { create_list(:user, 3) }
       let!(:readings) { create_list(:reading, 5, challenge: challenge) }
-      
+
       before do
         users.each { |user| create(:user_group_enrollment, user: user, group: group) }
       end
@@ -40,16 +40,16 @@ RSpec.describe GroupChallengeStats do
     context 'when some members have completed some readings' do
       let!(:users) { create_list(:user, 3) }
       let!(:readings) { create_list(:reading, 4, challenge: challenge) }
-      
+
       before do
         users.each { |user| create(:user_group_enrollment, user: user, group: group) }
-        
+
         # User 1 completes 2 readings
         2.times { |i| create(:user_reading, user: users[0], reading: readings[i]) }
-        
+
         # User 2 completes 1 reading
         create(:user_reading, user: users[1], reading: readings[0])
-        
+
         # User 3 completes 0 readings
         # Total: 3 completions out of 12 possible (3 users × 4 readings)
       end
@@ -62,10 +62,10 @@ RSpec.describe GroupChallengeStats do
     context 'when all members have completed all readings' do
       let!(:users) { create_list(:user, 2) }
       let!(:readings) { create_list(:reading, 3, challenge: challenge) }
-      
+
       before do
         users.each { |user| create(:user_group_enrollment, user: user, group: group) }
-        
+
         users.each do |user|
           readings.each do |reading|
             create(:user_reading, user: user, reading: reading)
@@ -83,13 +83,13 @@ RSpec.describe GroupChallengeStats do
       let!(:users) { create_list(:user, 2) }
       let!(:challenge_readings) { create_list(:reading, 3, challenge: challenge) }
       let!(:other_readings) { create_list(:reading, 2, challenge: other_challenge) }
-      
+
       before do
         users.each { |user| create(:user_group_enrollment, user: user, group: group) }
-        
+
         # Complete 1 reading from target challenge for user 1
         create(:user_reading, user: users[0], reading: challenge_readings[0])
-        
+
         # Complete all readings from other challenge for both users (should not affect calculation)
         users.each do |user|
           other_readings.each do |reading|
@@ -108,17 +108,17 @@ RSpec.describe GroupChallengeStats do
       let!(:users) { create_list(:user, 2) }
       let!(:other_user) { create(:user) }
       let!(:readings) { create_list(:reading, 2, challenge: challenge) }
-      
+
       before do
         # Add users to both groups
         users.each do |user|
           create(:user_group_enrollment, user: user, group: group)
           create(:user_group_enrollment, user: user, group: other_group)
         end
-        
+
         # Add other_user only to other_group
         create(:user_group_enrollment, user: other_user, group: other_group)
-        
+
         # Complete readings
         users.each { |user| create(:user_reading, user: user, reading: readings[0]) }
         create(:user_reading, user: other_user, reading: readings[0])
@@ -133,7 +133,7 @@ RSpec.describe GroupChallengeStats do
   describe '#on_track_percentage' do
     context 'when there are no readings scheduled to date' do
       let!(:users) { create_list(:user, 2) }
-      
+
       before do
         users.each { |user| create(:user_group_enrollment, user: user, group: group) }
         create(:reading, challenge: challenge, scheduled_date: Date.current + 1.day)
@@ -146,7 +146,7 @@ RSpec.describe GroupChallengeStats do
 
     context 'when there are readings scheduled but none completed' do
       let!(:users) { create_list(:user, 2) }
-      
+
       before do
         users.each { |user| create(:user_group_enrollment, user: user, group: group) }
         create_list(:reading, 3, challenge: challenge, scheduled_date: Date.current - 1.day)
@@ -161,14 +161,14 @@ RSpec.describe GroupChallengeStats do
       let!(:users) { create_list(:user, 2) }
       let!(:past_readings) { create_list(:reading, 3, challenge: challenge, scheduled_date: Date.current - 1.day) }
       let!(:future_readings) { create_list(:reading, 2, challenge: challenge, scheduled_date: Date.current + 1.day) }
-      
+
       before do
         users.each { |user| create(:user_group_enrollment, user: user, group: group) }
-        
+
         # Complete 2 past readings for user 1, 1 past reading for user 2
         2.times { |i| create(:user_reading, user: users[0], reading: past_readings[i]) }
         create(:user_reading, user: users[1], reading: past_readings[0])
-        
+
         # Total: 3 completions out of 6 possible (2 users × 3 past readings)
       end
 
@@ -181,10 +181,10 @@ RSpec.describe GroupChallengeStats do
       let!(:users) { create_list(:user, 2) }
       let!(:past_readings) { create_list(:reading, 2, challenge: challenge, scheduled_date: Date.current - 1.day) }
       let!(:future_readings) { create_list(:reading, 3, challenge: challenge, scheduled_date: Date.current + 1.day) }
-      
+
       before do
         users.each { |user| create(:user_group_enrollment, user: user, group: group) }
-        
+
         users.each do |user|
           past_readings.each do |reading|
             create(:user_reading, user: user, reading: reading)
@@ -200,10 +200,10 @@ RSpec.describe GroupChallengeStats do
     context 'with timezone considerations' do
       let(:challenge) { create(:challenge, timezone: 'Eastern Time (US & Canada)') }
       let!(:users) { create_list(:user, 2) }
-      
+
       before do
         users.each { |user| create(:user_group_enrollment, user: user, group: group) }
-        
+
         # Create a reading for "today" in the challenge timezone
         current_date_et = Time.current.in_time_zone('Eastern Time (US & Canada)').to_date
         create(:reading, challenge: challenge, scheduled_date: current_date_et)
@@ -219,10 +219,10 @@ RSpec.describe GroupChallengeStats do
     context 'with fractional percentages' do
       let!(:users) { create_list(:user, 3) }
       let!(:readings) { create_list(:reading, 2, challenge: challenge) }
-      
+
       before do
         users.each { |user| create(:user_group_enrollment, user: user, group: group) }
-        
+
         # Complete 1 reading for 1 user = 1 out of 6 possible
         create(:user_reading, user: users[0], reading: readings[0])
       end
@@ -238,7 +238,7 @@ RSpec.describe GroupChallengeStats do
       let(:different_stats) { described_class.new(different_group, challenge) }
       let!(:users) { create_list(:user, 2) }
       let!(:readings) { create_list(:reading, 2, challenge: challenge) }
-      
+
       before do
         users.each { |user| create(:user_group_enrollment, user: user, group: different_group) }
         users.each { |user| create(:user_reading, user: user, reading: readings[0]) }
@@ -254,10 +254,10 @@ RSpec.describe GroupChallengeStats do
     context 'with many group members and readings' do
       let!(:users) { create_list(:user, 10) }
       let!(:readings) { create_list(:reading, 20, challenge: challenge) }
-      
+
       before do
         users.each { |user| create(:user_group_enrollment, user: user, group: group) }
-        
+
         # Complete some readings
         users.first(5).each do |user|
           readings.first(10).each do |reading|

@@ -61,13 +61,13 @@ RSpec.describe ChallengeInvitationsController, type: :controller do
           before do
             allow_any_instance_of(UserChallengeEnrollment).to receive(:save).and_return(false)
             allow_any_instance_of(UserChallengeEnrollment).to receive(:errors).and_return(
-              double(full_messages: ['Some error occurred'])
+              double(full_messages: [ 'Some error occurred' ])
             )
           end
 
           it 'redirects to root with error message' do
             get :show, params: { token: challenge.invitation_token }
-            
+
             expect(response).to redirect_to(root_path)
             expect(flash[:alert]).to include('Could not join challenge')
           end
@@ -78,7 +78,7 @@ RSpec.describe ChallengeInvitationsController, type: :controller do
     context 'with invalid invitation token' do
       it 'redirects to root with alert' do
         get :show, params: { token: 'INVALID' }
-        
+
         expect(response).to redirect_to(root_path)
         expect(flash[:alert]).to eq('Invalid invitation link.')
       end

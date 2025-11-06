@@ -12,7 +12,7 @@ class ChallengeInvitationsController < ApplicationController
 
       # Check if user is in any other challenge (one challenge at a time rule)
       if current_user.challenges.any?
-        redirect_to root_path, alert: 'You are already enrolled in a challenge. Leave your current challenge to join a new one.'
+        redirect_to root_path, alert: "You are already enrolled in a challenge. Leave your current challenge to join a new one."
         return
       end
 
@@ -35,7 +35,7 @@ class ChallengeInvitationsController < ApplicationController
   def set_challenge_by_token
     @challenge = Challenge.find_by(invitation_token: params[:token])
     unless @challenge
-      redirect_to root_path, alert: 'Invalid invitation link.'
+      redirect_to root_path, alert: "Invalid invitation link."
     end
   end
 end

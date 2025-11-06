@@ -17,15 +17,15 @@ class ChallengeStatistics
 
   def top_participants_by_completion(limit = 10)
     challenge.users
-      .map { |user| [user, UserStatistics.new(user, challenge).completion_rate] }
+      .map { |user| [ user, UserStatistics.new(user, challenge).completion_rate ] }
       .sort_by { |_, rate| -rate }
       .first(limit)
   end
 
   def top_participants_by_streak(limit = 10)
     challenge.users
-      .map { |user| [user, UserStatistics.new(user, challenge).longest_streak] }
+      .map { |user| [ user, UserStatistics.new(user, challenge).longest_streak ] }
       .sort_by { |_, streak| -streak }
       .first(limit)
   end
-end 
+end

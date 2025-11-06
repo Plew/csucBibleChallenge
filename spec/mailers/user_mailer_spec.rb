@@ -12,8 +12,8 @@ RSpec.describe UserMailer, type: :mailer do
 
     it "renders the headers" do
       expect(mail.subject).to eq("Password Reset - CSM Bible Challenge")
-      expect(mail.to).to eq(["to@example.org"])
-      expect(mail.from).to eq(["noreply@mail.csmbiblechallenge.com"])
+      expect(mail.to).to eq([ "to@example.org" ])
+      expect(mail.from).to eq([ "noreply@mail.csmbiblechallenge.com" ])
     end
 
     it "renders the body" do
@@ -30,8 +30,8 @@ RSpec.describe UserMailer, type: :mailer do
 
     it "renders the headers" do
       expect(mail.subject).to eq("Bible Reading: Romans 7")
-      expect(mail.to).to eq(["reader@example.org"])
-      expect(mail.from).to eq(["noreply@mail.csmbiblechallenge.com"])
+      expect(mail.to).to eq([ "reader@example.org" ])
+      expect(mail.from).to eq([ "noreply@mail.csmbiblechallenge.com" ])
     end
 
     it "includes the user's name in the body" do
@@ -59,5 +59,4 @@ RSpec.describe UserMailer, type: :mailer do
       expect(mail.body.encoded).not_to match(/verse_text/)
     end
   end
-
 end

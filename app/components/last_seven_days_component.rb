@@ -14,4 +14,4 @@ class LastSevenDaysComponent < ViewComponent::Base
       }
     end
   end
-end 
+end

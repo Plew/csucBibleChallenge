@@ -1,6 +1,6 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: 'noreply@mail.csmbiblechallenge.com'
-  layout 'mailer'
+  default from: "noreply@mail.csmbiblechallenge.com"
+  layout "mailer"
 
   helper_method :unsubscribe_url_for
 
@@ -9,4 +9,3 @@ class ApplicationMailer < ActionMailer::Base
     unsubscribe_url(token)
   end
 end
-

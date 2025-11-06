@@ -26,10 +26,10 @@ class ChallengeFormComponent < ViewComponent::Base
   end
 
   def old_testament_books
-    bible_books.select { |book| book[:testament] == 'old' }
+    bible_books.select { |book| book[:testament] == "old" }
   end
 
   def new_testament_books
-    bible_books.select { |book| book[:testament] == 'new' }
+    bible_books.select { |book| book[:testament] == "new" }
   end
 end

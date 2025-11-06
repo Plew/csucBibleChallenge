@@ -1,8 +1,8 @@
 class Api::V1::UserReadingsController < Api::BaseController
-  before_action :set_reading, only: [:create] # For nested routes
-  before_action :set_user_reading_by_id, only: [:destroy_by_id] # For DELETE /user_readings/:id
-  before_action :set_reading_for_destroy, only: [:destroy]
-  before_action :set_user_reading_by_reading, only: [:destroy] # For DELETE /readings/:reading_id/user_reading
+  before_action :set_reading, only: [ :create ] # For nested routes
+  before_action :set_user_reading_by_id, only: [ :destroy_by_id ] # For DELETE /user_readings/:id
+  before_action :set_reading_for_destroy, only: [ :destroy ]
+  before_action :set_user_reading_by_reading, only: [ :destroy ] # For DELETE /readings/:reading_id/user_reading
 
   # GET /api/v1/user_readings
   # Lists UserReadings for the current_user
@@ -16,14 +16,14 @@ class Api::V1::UserReadingsController < Api::BaseController
   def create
     challenge = @reading.challenge
     unless challenge&.timezone.present?
-      return render json: { errors: ["Challenge timezone not set for this reading."] }, status: :unprocessable_content
+      return render json: { errors: [ "Challenge timezone not set for this reading." ] }, status: :unprocessable_content
     end
 
     current_date_in_challenge_tz = Time.current.in_time_zone(challenge.timezone).to_date
     scheduled_date = @reading.scheduled_date
 
     if current_date_in_challenge_tz < scheduled_date
-      return render json: { errors: ["Cannot mark readings for future dates. This reading is scheduled for #{scheduled_date}. Current date in timezone is #{current_date_in_challenge_tz}."] }, status: :forbidden
+      return render json: { errors: [ "Cannot mark readings for future dates. This reading is scheduled for #{scheduled_date}. Current date in timezone is #{current_date_in_challenge_tz}." ] }, status: :forbidden
     end
 
     @user_reading = UserReading.new(user: current_user, reading: @reading, completed_on: current_date_in_challenge_tz)
@@ -34,7 +34,7 @@ class Api::V1::UserReadingsController < Api::BaseController
       # Check if the error is due to uniqueness constraint
       if @user_reading.errors[:user_id].any? { |e| e.include?("has already marked this reading") }
         existing_reading = UserReading.find_by(user: current_user, reading: @reading)
-        render json: { errors: ["You have already marked this reading."], user_reading: existing_reading }, status: :conflict
+        render json: { errors: [ "You have already marked this reading." ], user_reading: existing_reading }, status: :conflict
       else
         render json: { errors: @user_reading.errors.full_messages }, status: :unprocessable_content
       end
@@ -48,14 +48,14 @@ class Api::V1::UserReadingsController < Api::BaseController
     # Timezone validation for un-checking
     challenge = @user_reading.reading.challenge # @user_reading is set by before_action
     unless challenge&.timezone.present?
-      return render json: { errors: ["Challenge timezone not set for this reading."] }, status: :unprocessable_content
+      return render json: { errors: [ "Challenge timezone not set for this reading." ] }, status: :unprocessable_content
     end
 
     current_date_in_challenge_tz = Time.current.in_time_zone(challenge.timezone).to_date
     scheduled_date = @user_reading.reading.scheduled_date
 
     unless current_date_in_challenge_tz == scheduled_date
-      return render json: { errors: ["Un-checking is only allowed on the scheduled date of the reading (#{scheduled_date}) in the challenge's timezone (#{challenge.timezone}). Current date in timezone is #{current_date_in_challenge_tz}."] }, status: :forbidden
+      return render json: { errors: [ "Un-checking is only allowed on the scheduled date of the reading (#{scheduled_date}) in the challenge's timezone (#{challenge.timezone}). Current date in timezone is #{current_date_in_challenge_tz}." ] }, status: :forbidden
     end
 
     @user_reading.destroy # @user_reading is set by set_user_reading_by_reading
@@ -68,10 +68,10 @@ class Api::V1::UserReadingsController < Api::BaseController
   def create_legacy
     # Ensure user and reading exist before attempting to create the join record
     user = User.find_by(id: user_reading_params[:user_id])
-    return render json: { errors: ["User not found"] }, status: :not_found unless user
+    return render json: { errors: [ "User not found" ] }, status: :not_found unless user
 
     reading = Reading.find_by(id: user_reading_params[:reading_id])
-    return render json: { errors: ["Reading not found"] }, status: :not_found unless reading
+    return render json: { errors: [ "Reading not found" ] }, status: :not_found unless reading
 
     # Potentially add timezone validation here if this route is still used for user check-ins
     # For now, assumes it might be an admin or different type of operation
@@ -81,7 +81,7 @@ class Api::V1::UserReadingsController < Api::BaseController
     # If this is a user check-in, it should respect the challenge timezone and reading date.
     # completed_on should probably be required in params or derived carefully.
     unless user_reading_params[:completed_on]
-        return render json: { errors: ["completed_on is required for this action"] }, status: :unprocessable_content
+        return render json: { errors: [ "completed_on is required for this action" ] }, status: :unprocessable_content
     end
 
 
@@ -113,12 +113,12 @@ class Api::V1::UserReadingsController < Api::BaseController
 
   def set_reading
     @reading = Reading.find_by(id: params[:reading_id])
-    render json: { errors: ["Reading not found"] }, status: :not_found unless @reading
+    render json: { errors: [ "Reading not found" ] }, status: :not_found unless @reading
   end
 
   def set_reading_for_destroy
     @reading = Reading.find_by(id: params[:reading_id])
-    render json: { errors: ["Reading not found"] }, status: :not_found unless @reading
+    render json: { errors: [ "Reading not found" ] }, status: :not_found unless @reading
   end
 
   def set_user_reading_by_id

@@ -35,7 +35,7 @@ RSpec.describe "Challenge Invitations", type: :request do
     context "with invalid invitation token" do
       it "redirects to root with error message" do
         get challenge_invitation_path("INVALID")
-        
+
         expect(response).to redirect_to(root_path)
         follow_redirect!
         expect(response.body).to include("Invalid invitation link")

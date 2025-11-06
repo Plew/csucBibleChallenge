@@ -175,7 +175,7 @@ RSpec.describe SessionsController, type: :controller do
 
     context 'when already logged in' do
       let(:other_user) { create(:user) }
-      
+
       before { session[:user_id] = other_user.id }
 
       it 'overwrites the existing session with new user' do
@@ -233,7 +233,7 @@ RSpec.describe SessionsController, type: :controller do
         expect {
           delete :destroy
         }.not_to raise_error
-        
+
         expect(session[:user_id]).to be_nil
       end
     end

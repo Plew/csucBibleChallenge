@@ -1,44 +1,44 @@
-require 'csv'
-require 'cgi'
+require "csv"
+require "cgi"
 
 class Import
   FILE_PATHS = [
-    Rails.root.join('db', 'texts', 'lubbock_texts.csv'),
-    Rails.root.join('db', 'texts', 'elberfelder_2006.csv'),
-    Rails.root.join('db', 'texts', 'schlachter_2000.csv')
+    Rails.root.join("db", "texts", "lubbock_texts.csv"),
+    Rails.root.join("db", "texts", "elberfelder_2006.csv"),
+    Rails.root.join("db", "texts", "schlachter_2000.csv")
   ]
 
   # Map book names to book numbers based on ApplicationHelper.book_number_to_name
   # Includes both "First/Second" and "1/2" naming formats from CSV
   BOOK_NAME_TO_NUMBER = {
-    'Genesis' => 1, 'Exodus' => 2, 'Leviticus' => 3, 'Numbers' => 4, 'Deuteronomy' => 5,
-    'Joshua' => 6, 'Judges' => 7, 'Ruth' => 8, 'First Samuel' => 9, 'Second Samuel' => 10,
-    'First Kings' => 11, 'Second Kings' => 12, 'First Chronicles' => 13, 'Second Chronicles' => 14,
-    'Ezra' => 15, 'Nehemiah' => 16, 'Esther' => 17, 'Job' => 18, 'Psalms' => 19,
-    'Proverbs' => 20, 'Ecclesiastes' => 21, 'Song of Songs' => 22, 'Song of Solomon' => 22, 'Isaiah' => 23, 'Jeremiah' => 24,
-    'Lamentations' => 25, 'Ezekiel' => 26, 'Daniel' => 27, 'Hosea' => 28, 'Joel' => 29,
-    'Amos' => 30, 'Obadiah' => 31, 'Jonah' => 32, 'Micah' => 33, 'Nahum' => 34,
-    'Habakkuk' => 35, 'Zephaniah' => 36, 'Haggai' => 37, 'Zechariah' => 38, 'Malachi' => 39,
-    'Matthew' => 40, 'Mark' => 41, 'Luke' => 42, 'John' => 43, 'Acts' => 44,
-    'Romans' => 45, 'Galatians' => 48, 'Ephesians' => 49, 'Philippians' => 50, 'Colossians' => 51,
-    'Titus' => 56, 'Philemon' => 57, 'Hebrews' => 58, 'James' => 59, 'Jude' => 65, 'Revelation' => 66,
-    
+    "Genesis" => 1, "Exodus" => 2, "Leviticus" => 3, "Numbers" => 4, "Deuteronomy" => 5,
+    "Joshua" => 6, "Judges" => 7, "Ruth" => 8, "First Samuel" => 9, "Second Samuel" => 10,
+    "First Kings" => 11, "Second Kings" => 12, "First Chronicles" => 13, "Second Chronicles" => 14,
+    "Ezra" => 15, "Nehemiah" => 16, "Esther" => 17, "Job" => 18, "Psalms" => 19,
+    "Proverbs" => 20, "Ecclesiastes" => 21, "Song of Songs" => 22, "Song of Solomon" => 22, "Isaiah" => 23, "Jeremiah" => 24,
+    "Lamentations" => 25, "Ezekiel" => 26, "Daniel" => 27, "Hosea" => 28, "Joel" => 29,
+    "Amos" => 30, "Obadiah" => 31, "Jonah" => 32, "Micah" => 33, "Nahum" => 34,
+    "Habakkuk" => 35, "Zephaniah" => 36, "Haggai" => 37, "Zechariah" => 38, "Malachi" => 39,
+    "Matthew" => 40, "Mark" => 41, "Luke" => 42, "John" => 43, "Acts" => 44,
+    "Romans" => 45, "Galatians" => 48, "Ephesians" => 49, "Philippians" => 50, "Colossians" => 51,
+    "Titus" => 56, "Philemon" => 57, "Hebrews" => 58, "James" => 59, "Jude" => 65, "Revelation" => 66,
+
     # Numbered books - "First/Second" format
-    'First Corinthians' => 46, 'Second Corinthians' => 47,
-    'First Thessalonians' => 52, 'Second Thessalonians' => 53,
-    'First Timothy' => 54, 'Second Timothy' => 55,
-    'First Peter' => 60, 'Second Peter' => 61,
-    'First John' => 62, 'Second John' => 63, 'Third John' => 64,
-    
+    "First Corinthians" => 46, "Second Corinthians" => 47,
+    "First Thessalonians" => 52, "Second Thessalonians" => 53,
+    "First Timothy" => 54, "Second Timothy" => 55,
+    "First Peter" => 60, "Second Peter" => 61,
+    "First John" => 62, "Second John" => 63, "Third John" => 64,
+
     # Numbered books - "1/2/3" format (from CSV)
-    '1 Samuel' => 9, '2 Samuel' => 10,
-    '1 Kings' => 11, '2 Kings' => 12,
-    '1 Chronicles' => 13, '2 Chronicles' => 14,
-    '1 Corinthians' => 46, '2 Corinthians' => 47,
-    '1 Thessalonians' => 52, '2 Thessalonians' => 53,
-    '1 Timothy' => 54, '2 Timothy' => 55,
-    '1 Peter' => 60, '2 Peter' => 61,
-    '1 John' => 62, '2 John' => 63, '3 John' => 64
+    "1 Samuel" => 9, "2 Samuel" => 10,
+    "1 Kings" => 11, "2 Kings" => 12,
+    "1 Chronicles" => 13, "2 Chronicles" => 14,
+    "1 Corinthians" => 46, "2 Corinthians" => 47,
+    "1 Thessalonians" => 52, "2 Thessalonians" => 53,
+    "1 Timothy" => 54, "2 Timothy" => 55,
+    "1 Peter" => 60, "2 Peter" => 61,
+    "1 John" => 62, "2 John" => 63, "3 John" => 64
   }.freeze
 
   def self.call
@@ -52,26 +52,26 @@ class Import
 
     FILE_PATHS.each do |file_path|
       next unless File.exist?(file_path)
-      
+
       line_count = 0
       skipped_count = 0
-      
+
       Rails.logger.info "Starting import from #{file_path}"
 
-      CSV.foreach(file_path, headers: true, col_sep: ';', liberal_parsing: true, encoding: 'UTF-8:UTF-8', invalid: :replace, undef: :replace, replace: '') do |row|
+      CSV.foreach(file_path, headers: true, col_sep: ";", liberal_parsing: true, encoding: "UTF-8:UTF-8", invalid: :replace, undef: :replace, replace: "") do |row|
       line_count += 1
-      
+
       # Parse CSV columns: TextID, Version, NT_Book, NT_Chapter, NT_Verse, VerseBreak, VerseText
-      text_id = row[0]&.strip&.tr('"', '')
-      version = row[1]&.strip&.tr('"', '')
-      book_name = row[2]&.strip&.tr('"', '')
-      chapter_number = row[3]&.strip&.tr('"', '')&.to_i
-      verse_number = row[4]&.strip&.tr('"', '')&.to_i
-      verse_break = row[5]&.strip&.tr('"', '')
-      verse_text = row[6]&.strip&.tr('"', '')
+      text_id = row[0]&.strip&.tr('"', "")
+      version = row[1]&.strip&.tr('"', "")
+      book_name = row[2]&.strip&.tr('"', "")
+      chapter_number = row[3]&.strip&.tr('"', "")&.to_i
+      verse_number = row[4]&.strip&.tr('"', "")&.to_i
+      verse_break = row[5]&.strip&.tr('"', "")
+      verse_text = row[6]&.strip&.tr('"', "")
 
       # Skip header row or invalid rows
-      next if text_id == 'TextID' || version.blank? || book_name.blank? || verse_text.blank?
+      next if text_id == "TextID" || version.blank? || book_name.blank? || verse_text.blank?
 
       # Get book number from mapping
       book_number = BOOK_NAME_TO_NUMBER[book_name]
@@ -106,7 +106,7 @@ class Import
 
       total_line_count += line_count
       total_skipped_count += skipped_count
-      
+
       Rails.logger.info "Successfully processed #{line_count} lines from #{file_path}"
       Rails.logger.info "Skipped #{skipped_count} lines due to unknown book names." if skipped_count > 0
     end
@@ -130,8 +130,8 @@ class Import
   def normalize_version(csv_version)
     # Map CSV version names to standardized version codes used in user profiles
     case csv_version
-    when 'SCHL2000'
-      'SCHL2000'
+    when "SCHL2000"
+      "SCHL2000"
     else
       csv_version
     end
@@ -141,16 +141,16 @@ class Import
     return text if text.blank?
 
     # Decode specific HTML entities found in the CSV
-    text = text.gsub('&ldquo;', '"')  # left double quotation mark
-    text = text.gsub('&rdquo;', '"')  # right double quotation mark
-    text = text.gsub('&lsquo;', "'")  # left single quotation mark
-    text = text.gsub('&rsquo;', "'")  # right single quotation mark
-    text = text.gsub('&quot;', '"')   # quotation mark
-    text = text.gsub('&mdash;', '—')  # em dash
-    text = text.gsub('&ndash;', '–')  # en dash
-    text = text.gsub('&amp;', '&')    # ampersand (must be last to avoid double-decoding)
-    text = text.gsub('&lt;', '<')     # less than
-    text = text.gsub('&gt;', '>')     # greater than
+    text = text.gsub("&ldquo;", '"')  # left double quotation mark
+    text = text.gsub("&rdquo;", '"')  # right double quotation mark
+    text = text.gsub("&lsquo;", "'")  # left single quotation mark
+    text = text.gsub("&rsquo;", "'")  # right single quotation mark
+    text = text.gsub("&quot;", '"')   # quotation mark
+    text = text.gsub("&mdash;", "—")  # em dash
+    text = text.gsub("&ndash;", "–")  # en dash
+    text = text.gsub("&amp;", "&")    # ampersand (must be last to avoid double-decoding)
+    text = text.gsub("&lt;", "<")     # less than
+    text = text.gsub("&gt;", ">")     # greater than
 
     text
   end
@@ -162,7 +162,7 @@ class Import
 
     # Build lookup keys for existing verses
     lookup_keys = verses.map do |v|
-      [v[:version], v[:book_number], v[:chapter_number], v[:verse_number]]
+      [ v[:version], v[:book_number], v[:chapter_number], v[:verse_number] ]
     end
 
     # Query existing verses in one go
@@ -171,17 +171,17 @@ class Import
       book_number: lookup_keys.map { |k| k[1] }.uniq,
       chapter_number: lookup_keys.map { |k| k[2] }.uniq,
       verse_number: lookup_keys.map { |k| k[3] }.uniq
-    ).index_by { |v| [v.version, v.book_number, v.chapter_number, v.verse_number] }
+    ).index_by { |v| [ v.version, v.book_number, v.chapter_number, v.verse_number ] }
 
     new_verses = []
     verses_to_update = []
 
     verses.each do |verse_attrs|
-      lookup_key = [verse_attrs[:version], verse_attrs[:book_number], 
-                   verse_attrs[:chapter_number], verse_attrs[:verse_number]]
-      
+      lookup_key = [ verse_attrs[:version], verse_attrs[:book_number],
+                   verse_attrs[:chapter_number], verse_attrs[:verse_number] ]
+
       existing_verse = existing_verses[lookup_key]
-      
+
       if existing_verse
         # Check if verse text has changed
         if existing_verse.verse_text != verse_attrs[:verse_text]

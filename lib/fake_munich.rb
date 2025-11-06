@@ -5,48 +5,48 @@
 # It also simulates user reading completions for experimentation.
 
 class FakeMunich
-  CHALLENGE_NAME = 'Munich Fall Reading Challenge'.freeze
+  CHALLENGE_NAME = "Munich Fall Reading Challenge".freeze
   UNIQUE_SUFFIX = Time.current.to_i.to_s[-6..-1] # Last 6 digits of timestamp
   GROUP_NAMES = %w[Sauerkraut Bratwurst Pretzel Schnitzel].freeze
   GERMAN_NAMES = [
-    ['Lukas', 'Müller'],
-    ['Anna', 'Schmidt'],
-    ['Max', 'Schneider'],
-    ['Sophie', 'Fischer'],
-    ['Leon', 'Weber'],
-    ['Mia', 'Meyer'],
-    ['Ben', 'Wagner'],
-    ['Emma', 'Becker'],
-    ['Paul', 'Hoffmann'],
-    ['Laura', 'Schäfer'],
-    ['Tim', 'Keller'],
-    ['Johanna', 'Krüger'],
-    ['Felix', 'Baumann'],
-    ['Clara', 'Wolf'],
-    ['Julian', 'Koch'],
-    ['Nina', 'Voigt'],
-    ['Moritz', 'Hartmann'],
-    ['Lena', 'Zimmermann'],
-    ['Fabian', 'Brandt'],
-    ['Sarah', 'Krause']
+    [ "Lukas", "Müller" ],
+    [ "Anna", "Schmidt" ],
+    [ "Max", "Schneider" ],
+    [ "Sophie", "Fischer" ],
+    [ "Leon", "Weber" ],
+    [ "Mia", "Meyer" ],
+    [ "Ben", "Wagner" ],
+    [ "Emma", "Becker" ],
+    [ "Paul", "Hoffmann" ],
+    [ "Laura", "Schäfer" ],
+    [ "Tim", "Keller" ],
+    [ "Johanna", "Krüger" ],
+    [ "Felix", "Baumann" ],
+    [ "Clara", "Wolf" ],
+    [ "Julian", "Koch" ],
+    [ "Nina", "Voigt" ],
+    [ "Moritz", "Hartmann" ],
+    [ "Lena", "Zimmermann" ],
+    [ "Fabian", "Brandt" ],
+    [ "Sarah", "Krause" ]
   ].freeze
   BOOK_NUMBER = 43 # John
   CHAPTER_COUNT = 21
-  USER_PASSWORD = 'password123'.freeze
+  USER_PASSWORD = "password123".freeze
 
   def self.generate!
     new.generate!
   end
 
   def generate!
-    puts 'Resetting fake Munich challenge data...'
+    puts "Resetting fake Munich challenge data..."
     delete_existing_data
-    puts 'Creating challenge, groups, readings, users, and enrollments...'
+    puts "Creating challenge, groups, readings, users, and enrollments..."
     create_challenge_and_groups_and_users
     create_readings
     create_enrollments_and_group_memberships
     simulate_user_readings
-    puts 'Fake Munich challenge data generated.'
+    puts "Fake Munich challenge data generated."
   end
 
   private
@@ -56,7 +56,7 @@ class FakeMunich
     return unless challenge
 
     # Wrap in transaction and temporarily disable foreign key checks for SQLite
-    ActiveRecord::Base.connection.execute('PRAGMA foreign_keys = OFF')
+    ActiveRecord::Base.connection.execute("PRAGMA foreign_keys = OFF")
 
     begin
       ActiveRecord::Base.transaction do
@@ -85,7 +85,7 @@ class FakeMunich
       end
     ensure
       # Re-enable foreign key checks
-      ActiveRecord::Base.connection.execute('PRAGMA foreign_keys = ON')
+      ActiveRecord::Base.connection.execute("PRAGMA foreign_keys = ON")
     end
   end
 
@@ -101,16 +101,16 @@ class FakeMunich
       email: email,
       password: USER_PASSWORD
     )
-    
+
     @challenge = Challenge.create!(
       name: CHALLENGE_NAME,
       start_date: Date.today - 7,
       end_date: Date.today - 7 + 3.months,
-      timezone: 'Berlin',
+      timezone: "Berlin",
       creator: challenge_creator
     )
     # Create remaining users and attach avatars (skip first user who is already the challenge creator)
-    @users = [challenge_creator] + GERMAN_NAMES[1..-1].each_with_index.map do |(first, last), idx|
+    @users = [ challenge_creator ] + GERMAN_NAMES[1..-1].each_with_index.map do |(first, last), idx|
       ascii_first = I18n.transliterate(first.downcase)
       ascii_last = I18n.transliterate(last.downcase)
       email = "#{ascii_first}.#{ascii_last}.#{UNIQUE_SUFFIX}@example.com"
@@ -119,24 +119,24 @@ class FakeMunich
         email: email,
         password: USER_PASSWORD
       )
-      avatar_path = Rails.root.join('db', 'fixtures', 'avatars', "#{idx + 2}.jpg")
+      avatar_path = Rails.root.join("db", "fixtures", "avatars", "#{idx + 2}.jpg")
       if File.exist?(avatar_path)
         user.avatar.attach(
           io: File.open(avatar_path),
           filename: "#{idx + 2}.jpg",
-          content_type: 'image/jpeg'
+          content_type: "image/jpeg"
         )
       end
       user
     end
-    
+
     # Add avatar to challenge creator
-    avatar_path = Rails.root.join('db', 'fixtures', 'avatars', "1.jpg")
+    avatar_path = Rails.root.join("db", "fixtures", "avatars", "1.jpg")
     if File.exist?(avatar_path)
       challenge_creator.avatar.attach(
         io: File.open(avatar_path),
         filename: "1.jpg",
-        content_type: 'image/jpeg'
+        content_type: "image/jpeg"
       )
     end
     # Assign each group a unique creator from the users
@@ -195,4 +195,4 @@ class FakeMunich
       "#{ascii_first}.#{ascii_last}.#{UNIQUE_SUFFIX}@example.com"
     end
   end
-end 
+end

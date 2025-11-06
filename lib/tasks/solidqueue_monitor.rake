@@ -66,7 +66,7 @@ namespace :solidqueue do
   end
 
   desc "Show details for a specific job type"
-  task :job_details, [:job_class] => :environment do |t, args|
+  task :job_details, [ :job_class ] => :environment do |t, args|
     job_class = args[:job_class] || "SendDailyReadingEmailsJob"
 
     puts "\n=== Details for #{job_class} ==="
@@ -98,7 +98,7 @@ namespace :solidqueue do
   end
 
   desc "Check why emails weren't sent for a specific challenge"
-  task :debug_email_sending, [:challenge_name] => :environment do |t, args|
+  task :debug_email_sending, [ :challenge_name ] => :environment do |t, args|
     challenge_name = args[:challenge_name] || "Sample Email Challenge"
 
     puts "\n=== Debugging Email Sending for '#{challenge_name}' ==="

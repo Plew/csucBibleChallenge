@@ -6,4 +6,4 @@ class CopyButtonComponent < ViewComponent::Base
   private
 
   attr_reader :text
-end 
+end

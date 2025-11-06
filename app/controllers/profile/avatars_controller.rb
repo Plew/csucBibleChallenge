@@ -7,9 +7,9 @@ class Profile::AvatarsController < Profile::BaseController
   # PATCH /profile/avatar
   def update
     @user = current_user
-    
+
     if @user.update(avatar_params)
-      redirect_to edit_profile_avatar_path, notice: 'Avatar updated successfully.'
+      redirect_to edit_profile_avatar_path, notice: "Avatar updated successfully."
     else
       render :edit, status: :unprocessable_content
     end

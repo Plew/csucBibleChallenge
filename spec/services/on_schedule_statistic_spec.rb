@@ -276,7 +276,7 @@ RSpec.describe OnScheduleStatistic, type: :service do
       let!(:empty_enrollment) { create(:user_challenge_enrollment, user: user1, challenge: empty_challenge) }
 
       it 'returns 0 for all users' do
-        result = described_class.batch_percentages([user1.id], empty_challenge)
+        result = described_class.batch_percentages([ user1.id ], empty_challenge)
         expect(result).to eq({ user1.id => 0.0 })
       end
     end
@@ -300,7 +300,7 @@ RSpec.describe OnScheduleStatistic, type: :service do
       end
 
       it 'calculates correct percentages for all users in one query' do
-        result = described_class.batch_percentages([user1.id, user2.id, user3.id], challenge)
+        result = described_class.batch_percentages([ user1.id, user2.id, user3.id ], challenge)
 
         expect(result[user1.id]).to eq(30.0)  # 3 on-schedule out of 10 total
         expect(result[user2.id]).to eq(20.0)  # 2 on-schedule out of 10 total
@@ -308,7 +308,7 @@ RSpec.describe OnScheduleStatistic, type: :service do
       end
 
       it 'matches individual OnScheduleStatistic calculations' do
-        batch_result = described_class.batch_percentages([user1.id, user2.id], challenge)
+        batch_result = described_class.batch_percentages([ user1.id, user2.id ], challenge)
         individual_user1 = described_class.new(user1, challenge).percentage
         individual_user2 = described_class.new(user2, challenge).percentage
 
@@ -319,7 +319,7 @@ RSpec.describe OnScheduleStatistic, type: :service do
 
     context 'with all users completing all readings on schedule' do
       before do
-        [user1, user2, user3].each do |user|
+        [ user1, user2, user3 ].each do |user|
           readings.each do |reading|
             create(:user_reading, user: user, reading: reading, completed_on: reading.scheduled_date)
           end
@@ -327,7 +327,7 @@ RSpec.describe OnScheduleStatistic, type: :service do
       end
 
       it 'returns 100% for all users' do
-        result = described_class.batch_percentages([user1.id, user2.id, user3.id], challenge)
+        result = described_class.batch_percentages([ user1.id, user2.id, user3.id ], challenge)
 
         expect(result[user1.id]).to eq(100.0)
         expect(result[user2.id]).to eq(100.0)
@@ -337,7 +337,7 @@ RSpec.describe OnScheduleStatistic, type: :service do
 
     context 'with all users completing all readings late' do
       before do
-        [user1, user2].each do |user|
+        [ user1, user2 ].each do |user|
           readings.each do |reading|
             create(:user_reading, user: user, reading: reading, completed_on: reading.scheduled_date + 1.day)
           end
@@ -345,7 +345,7 @@ RSpec.describe OnScheduleStatistic, type: :service do
       end
 
       it 'returns 0% for all users' do
-        result = described_class.batch_percentages([user1.id, user2.id], challenge)
+        result = described_class.batch_percentages([ user1.id, user2.id ], challenge)
 
         expect(result[user1.id]).to eq(0.0)
         expect(result[user2.id]).to eq(0.0)
@@ -360,7 +360,7 @@ RSpec.describe OnScheduleStatistic, type: :service do
       end
 
       it 'works correctly for single user' do
-        result = described_class.batch_percentages([user1.id], challenge)
+        result = described_class.batch_percentages([ user1.id ], challenge)
         expect(result[user1.id]).to eq(50.0)  # 5 out of 10
       end
     end

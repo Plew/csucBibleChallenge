@@ -39,7 +39,7 @@ class GroupStatistics
       completed_count = UserReading.where(user_id: group_user_ids, reading_id: reading.id).count
       if completed_count == group_user_ids.size && group_user_ids.size > 0
         current_streak += 1
-        max_streak = [max_streak, current_streak].max
+        max_streak = [ max_streak, current_streak ].max
       else
         current_streak = 0
       end
@@ -56,10 +56,10 @@ class GroupStatistics
     group_user_ids = group.users.pluck(:id)
     challenge = group.challenge
     return 0 if group_user_ids.empty?
-    total_readings = challenge.readings.where('scheduled_date <= ?', Date.current).count
+    total_readings = challenge.readings.where("scheduled_date <= ?", Date.current).count
     return 0 if total_readings.zero?
     percentages = group_user_ids.map do |user_id|
-      completed = UserReading.where(user_id: user_id).joins(:reading).where(readings: { challenge_id: challenge.id }).where('readings.scheduled_date <= ?', Date.current).count
+      completed = UserReading.where(user_id: user_id).joins(:reading).where(readings: { challenge_id: challenge.id }).where("readings.scheduled_date <= ?", Date.current).count
       (completed.to_f / total_readings * 100)
     end
     (percentages.sum / group_user_ids.size).round
@@ -76,4 +76,4 @@ class GroupStatistics
 
     (percentages_by_user.values.sum / group_users.size).round
   end
-end 
+end
