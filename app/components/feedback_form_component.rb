@@ -13,7 +13,7 @@ class FeedbackFormComponent < ViewComponent::Base
 
   def category_options
     Feedback.categories.map do |key, value|
-      [I18n.t("feedback.categories.#{key}"), key]
+      [ I18n.t("feedback.categories.#{key}"), key ]
     end
   end
 end

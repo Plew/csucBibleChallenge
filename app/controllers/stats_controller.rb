@@ -87,13 +87,13 @@ class StatsController < ApplicationController
     current_date_in_tz = Time.current.in_time_zone(challenge.timezone).to_date
 
     scheduled_count = challenge.readings
-                              .where('scheduled_date <= ?', current_date_in_tz)
+                              .where("scheduled_date <= ?", current_date_in_tz)
                               .count
 
     completed_count = user.user_readings
                          .joins(:reading)
                          .where(readings: { challenge_id: challenge.id })
-                         .where('readings.scheduled_date <= ?', current_date_in_tz)
+                         .where("readings.scheduled_date <= ?", current_date_in_tz)
                          .count
 
     completion_percentage = scheduled_count.zero? ? 0 : (completed_count.to_f / scheduled_count * 100).round
@@ -102,10 +102,10 @@ class StatsController < ApplicationController
     completed_readings = user.user_readings
                             .joins(:reading)
                             .where(readings: { challenge_id: challenge.id })
-                            .where('readings.scheduled_date <= ?', current_date_in_tz)
+                            .where("readings.scheduled_date <= ?", current_date_in_tz)
 
     on_schedule_count = completed_readings
-                       .where('date(user_readings.created_at) <= readings.scheduled_date')
+                       .where("date(user_readings.created_at) <= readings.scheduled_date")
                        .count
 
     on_schedule_percentage = completed_count.zero? ? 0 : (on_schedule_count.to_f / completed_count * 100).round

@@ -50,7 +50,7 @@ class ReadingHistoryGraphComponentPreview < ViewComponent::Preview
   # 30 day challenge with high completion
   def thirty_days_high
     # Complete first 3 weeks, skip some days in week 4
-    completed_day_numbers = (0..20).to_a + [22, 24, 26, 28]
+    completed_day_numbers = (0..20).to_a + [ 22, 24, 26, 28 ]
     completed_days = completed_day_numbers.map do |day|
       { day: day, on_time: day < 22 || day.even? } # Some late completions
     end
@@ -66,7 +66,7 @@ class ReadingHistoryGraphComponentPreview < ViewComponent::Preview
   # 30 day challenge with low completion
   def thirty_days_low
     # Complete only a few scattered days
-    completed_day_numbers = [0, 1, 5, 8, 12, 15, 20, 22, 28]
+    completed_day_numbers = [ 0, 1, 5, 8, 12, 15, 20, 22, 28 ]
     completed_days = completed_day_numbers.map do |day|
       { day: day, on_time: rand < 0.7 } # 70% on time
     end
@@ -82,7 +82,7 @@ class ReadingHistoryGraphComponentPreview < ViewComponent::Preview
   # 60 day challenge with streaks
   def sixty_days_streaks
     # Create some streaks with gaps
-    completed_day_numbers = (0..9).to_a + (15..24).to_a + (30..44).to_a + [50, 52, 54, 56, 58]
+    completed_day_numbers = (0..9).to_a + (15..24).to_a + (30..44).to_a + [ 50, 52, 54, 56, 58 ]
     completed_days = completed_day_numbers.map do |day|
       { day: day, on_time: rand < 0.85 } # 85% on time
     end
@@ -127,7 +127,7 @@ class ReadingHistoryGraphComponentPreview < ViewComponent::Preview
 
   # Just started - only first day completed
   def just_started
-    completed_days = [{ day: 0, on_time: true }]
+    completed_days = [ { day: 0, on_time: true } ]
     render(ReadingHistoryGraphComponent.new(
       total_days: 30,
       completed_days: completed_days,

@@ -8,7 +8,7 @@ class Admin::ChallengeTransfersController < Admin::BaseController
     to_challenge = Challenge.find(params[:to_challenge_id])
 
     if params[:from_challenge_id] == params[:to_challenge_id]
-      redirect_to admin_change_challenge_path, alert: 'Cannot transfer to the same challenge.'
+      redirect_to admin_change_challenge_path, alert: "Cannot transfer to the same challenge."
       return
     end
 

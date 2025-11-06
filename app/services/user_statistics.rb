@@ -10,9 +10,9 @@ class UserStatistics
 
   # Percentage of readings completed by the user up to the current date
   def completion_rate
-    total_readings = challenge.readings.where('scheduled_date <= ?', Date.current).count
+    total_readings = challenge.readings.where("scheduled_date <= ?", Date.current).count
     return 0 if total_readings.zero?
-    completed = user.user_readings.joins(:reading).where(readings: { challenge_id: challenge.id }).where('readings.scheduled_date <= ?', Date.current).count
+    completed = user.user_readings.joins(:reading).where(readings: { challenge_id: challenge.id }).where("readings.scheduled_date <= ?", Date.current).count
     (completed.to_f / total_readings * 100).round(2)
   end
 
@@ -28,7 +28,7 @@ class UserStatistics
       else
         current_streak = 1
       end
-      max_streak = [max_streak, current_streak].max
+      max_streak = [ max_streak, current_streak ].max
       prev_date = date
     end
     max_streak
@@ -63,6 +63,6 @@ class UserStatistics
   end
 
   def last_activity_date
-    [last_check_in_date, last_login_date].compact.max
+    [ last_check_in_date, last_login_date ].compact.max
   end
-end 
+end

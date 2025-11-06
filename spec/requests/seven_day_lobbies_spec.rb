@@ -166,7 +166,7 @@ RSpec.describe 'SevenDayLobbies', type: :request do
         post start_challenge_seven_day_lobby_path(challenge)
         expect(response).to redirect_to(admin_seven_day_winner_draw_path(
           challenge_id: challenge.id,
-          user_ids: [participant1.id, participant2.id]
+          user_ids: [ participant1.id, participant2.id ]
         ))
       end
 

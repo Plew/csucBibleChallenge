@@ -30,8 +30,8 @@ class StatsChallengeSummaryStatistics
 
     first_reading = UserReading.joins(:reading)
                                .where(readings: { challenge_id: challenge.id, scheduled_date: current_date_in_tz })
-                               .where('user_readings.created_at >= ? AND user_readings.created_at <= ?', today_start, today_end)
-                               .order('user_readings.created_at ASC')
+                               .where("user_readings.created_at >= ? AND user_readings.created_at <= ?", today_start, today_end)
+                               .order("user_readings.created_at ASC")
                                .first
 
     first_reading&.user
@@ -44,8 +44,8 @@ class StatsChallengeSummaryStatistics
 
     first_reading = UserReading.joins(:reading)
                                .where(readings: { challenge_id: challenge.id, scheduled_date: current_date_in_tz })
-                               .where('user_readings.created_at >= ? AND user_readings.created_at <= ?', today_start, today_end)
-                               .order('user_readings.created_at ASC')
+                               .where("user_readings.created_at >= ? AND user_readings.created_at <= ?", today_start, today_end)
+                               .order("user_readings.created_at ASC")
                                .first
 
     first_reading&.created_at&.in_time_zone(challenge.timezone)
@@ -59,10 +59,10 @@ class StatsChallengeSummaryStatistics
     # Get the most recent reading for each unique user for today's scheduled reading completed today
     user_readings = UserReading.joins(:reading, :user)
                                .where(readings: { challenge_id: challenge.id, scheduled_date: current_date_in_tz })
-                               .where('user_readings.created_at >= ? AND user_readings.created_at <= ?', today_start, today_end)
-                               .select('user_readings.*, MAX(user_readings.created_at) as latest_reading')
-                               .group('user_readings.user_id')
-                               .order('latest_reading DESC')
+                               .where("user_readings.created_at >= ? AND user_readings.created_at <= ?", today_start, today_end)
+                               .select("user_readings.*, MAX(user_readings.created_at) as latest_reading")
+                               .group("user_readings.user_id")
+                               .order("latest_reading DESC")
                                .limit(10)
 
     user_readings.map do |user_reading|

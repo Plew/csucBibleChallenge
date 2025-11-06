@@ -8,11 +8,11 @@ class CheckInComponent < ViewComponent::Base
   end
 
   def previous_date
-    (@active_date - 1).strftime('%Y-%m-%d')
+    (@active_date - 1).strftime("%Y-%m-%d")
   end
 
   def next_date
-    (@active_date + 1).strftime('%Y-%m-%d')
+    (@active_date + 1).strftime("%Y-%m-%d")
   end
 
   def hide_next?
@@ -24,7 +24,7 @@ class CheckInComponent < ViewComponent::Base
   end
 
   def display_date
-    @active_date.strftime('%A, %b %-d')
+    @active_date.strftime("%A, %b %-d")
   end
 
   private

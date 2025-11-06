@@ -8,7 +8,7 @@ class FeedbacksController < ApplicationController
     @feedback.user = current_user if logged_in?
 
     if @feedback.save
-      redirect_to feedback_path(@feedback), notice: 'Thank you for your feedback! We appreciate you taking the time to help improve our app.'
+      redirect_to feedback_path(@feedback), notice: "Thank you for your feedback! We appreciate you taking the time to help improve our app."
     else
       render :new, status: :unprocessable_content
     end
@@ -16,10 +16,10 @@ class FeedbacksController < ApplicationController
 
   def show
     @feedback = Feedback.find(params[:id])
-    
+
     # Allow users to view their own feedback or admin to view any
     unless can_view_feedback?(@feedback)
-      redirect_to root_path, alert: 'Access denied.'
+      redirect_to root_path, alert: "Access denied."
     end
   end
 

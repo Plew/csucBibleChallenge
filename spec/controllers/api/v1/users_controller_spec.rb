@@ -43,7 +43,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
       it 'returns JSON response with user data' do
         post :create, params: { user: valid_attributes }
         json_response = JSON.parse(response.body)
-        
+
         expect(json_response['username']).to eq('testuser')
         expect(json_response['email']).to eq('test@example.com')
         expect(json_response['id']).to be_present
@@ -52,7 +52,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
       it 'excludes password_digest from response' do
         post :create, params: { user: valid_attributes }
         json_response = JSON.parse(response.body)
-        
+
         expect(json_response).not_to have_key('password_digest')
         expect(json_response).not_to have_key('password')
       end
@@ -60,7 +60,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
       it 'includes timestamps in response' do
         post :create, params: { user: valid_attributes }
         json_response = JSON.parse(response.body)
-        
+
         expect(json_response['created_at']).to be_present
         expect(json_response['updated_at']).to be_present
       end
@@ -81,7 +81,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
       it 'returns JSON with error messages' do
         post :create, params: { user: invalid_attributes }
         json_response = JSON.parse(response.body)
-        
+
         expect(json_response).to have_key('errors')
         expect(json_response['errors']).to be_an(Array)
         expect(json_response['errors']).not_to be_empty
@@ -90,7 +90,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
       it 'includes specific validation errors' do
         post :create, params: { user: invalid_attributes }
         json_response = JSON.parse(response.body)
-        
+
         error_messages = json_response['errors']
         expect(error_messages).to include(match(/Username can't be blank/))
         expect(error_messages).to include(match(/Password confirmation doesn't match/))
@@ -122,7 +122,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
       it 'returns error about email uniqueness' do
         post :create, params: { user: duplicate_email_attributes }
         json_response = JSON.parse(response.body)
-        
+
         error_messages = json_response['errors']
         expect(error_messages).to include(match(/Email has already been taken/))
       end
@@ -148,7 +148,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
       it 'returns error about username uniqueness' do
         post :create, params: { user: duplicate_username_attributes }
         json_response = JSON.parse(response.body)
-        
+
         error_messages = json_response['errors']
         expect(error_messages).to include(match(/Username has already been taken/))
       end
@@ -164,7 +164,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 
         post :create, params: { user: malicious_attributes }
         user = User.last
-        
+
         expect(user.admin).to be_falsey
         expect(user.id).not_to eq(123)
         expect(user.created_at).not_to eq(1.year.ago.to_date)
@@ -173,7 +173,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
       it 'creates user with only permitted attributes' do
         post :create, params: { user: valid_attributes }
         user = User.last
-        
+
         expect(user.username).to eq('testuser')
         expect(user.email).to eq('test@example.com')
         expect(user.authenticate('password123')).to be_truthy
@@ -193,10 +193,10 @@ RSpec.describe Api::V1::UsersController, type: :controller do
         attributes_with_empty_confirmation = valid_attributes.merge(
           password_confirmation: ''
         )
-        
+
         post :create, params: { user: attributes_with_empty_confirmation }
         expect(response).to have_http_status(:unprocessable_content)
-        
+
         json_response = JSON.parse(response.body)
         expect(json_response['errors']).to include(match(/Password confirmation doesn't match/))
       end
@@ -206,7 +206,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
         attributes_with_long_username = valid_attributes.merge(
           username: long_username
         )
-        
+
         post :create, params: { user: attributes_with_long_username }
         # Behavior depends on User model validations
         # This test documents the current behavior
@@ -216,7 +216,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
         invalid_email_attributes = valid_attributes.merge(
           email: 'not_an_email'
         )
-        
+
         post :create, params: { user: invalid_email_attributes }
         expect(response).to have_http_status(:unprocessable_content)
       end

@@ -10,13 +10,13 @@ class ChallengeSummaryComponent < ViewComponent::Base
 
   def challenge_progress_percentage
     return 0 unless challenge.start_date && challenge.end_date
-    
+
     total_days = (challenge.end_date - challenge.start_date).to_i + 1
-    days_elapsed = [(Date.current - challenge.start_date).to_i + 1, 0].max
-    
+    days_elapsed = [ (Date.current - challenge.start_date).to_i + 1, 0 ].max
+
     return 100 if days_elapsed >= total_days
     return 0 if days_elapsed <= 0
-    
+
     ((days_elapsed.to_f / total_days) * 100).round(1)
   end
 
@@ -32,48 +32,48 @@ class ChallengeSummaryComponent < ViewComponent::Base
 
   def challenge_status
     current_date = Date.current
-    
+
     if current_date < challenge.start_date
-      'upcoming'
+      "upcoming"
     elsif current_date > challenge.end_date
-      'completed'
+      "completed"
     else
-      'active'
+      "active"
     end
   end
 
   def status_badge_class
     case challenge_status
-    when 'upcoming'
-      'badge-info'
-    when 'active'
-      'badge-success'
-    when 'completed'
-      'badge-neutral'
+    when "upcoming"
+      "badge-info"
+    when "active"
+      "badge-success"
+    when "completed"
+      "badge-neutral"
     end
   end
 
   def status_text
     case challenge_status
-    when 'upcoming'
+    when "upcoming"
       "Starts in #{pluralize(days_until_start, 'day')}"
-    when 'active'
+    when "active"
       "#{pluralize(days_remaining, 'day')} remaining"
-    when 'completed'
-      'Challenge completed'
+    when "completed"
+      "Challenge completed"
     end
   end
 
   def formatted_start_date
-    challenge.start_date.strftime('%b %d, %Y')
+    challenge.start_date.strftime("%b %d, %Y")
   end
 
   def formatted_end_date
-    challenge.end_date.strftime('%b %d, %Y')
+    challenge.end_date.strftime("%b %d, %Y")
   end
 
   def created_at_formatted
-    challenge.created_at.strftime('%b %d, %Y')
+    challenge.created_at.strftime("%b %d, %Y")
   end
 
   def pluralize(count, singular, plural = nil)

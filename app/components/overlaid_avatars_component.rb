@@ -2,7 +2,7 @@
 
 class OverlaidAvatarsComponent < ViewComponent::Base
   include ApplicationHelper
-  
+
   def initialize(users:, max_avatars: 5, size: :tiny)
     @users = users
     @max_avatars = max_avatars
@@ -18,7 +18,7 @@ class OverlaidAvatarsComponent < ViewComponent::Base
   end
 
   def extra_count
-    @extra_count ||= [users.size - shown_users.size, 0].max
+    @extra_count ||= [ users.size - shown_users.size, 0 ].max
   end
 
   def has_extra_users?
@@ -28,7 +28,7 @@ class OverlaidAvatarsComponent < ViewComponent::Base
   def avatar_container_width
     avatar_width = 32
     overlap = 24
-    
+
     if max_avatars == 1
       avatar_width
     else

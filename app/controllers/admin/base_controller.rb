@@ -8,9 +8,9 @@ class Admin::BaseController < ApplicationController
       redirect_to new_user_session_path
       return
     end
-    
+
     unless current_user.admin?
-      redirect_to root_path, alert: 'Access denied.'
+      redirect_to root_path, alert: "Access denied."
     end
   end
 end

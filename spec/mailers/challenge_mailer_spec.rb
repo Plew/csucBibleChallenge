@@ -6,7 +6,7 @@ RSpec.describe ChallengeMailer, type: :mailer do
     let(:participant1) { create(:user, email: "participant1@example.com") }
     let(:participant2) { create(:user, email: "participant2@example.com") }
     let(:challenge) do
-      create(:challenge, 
+      create(:challenge,
         creator: creator,
         name: "Test Challenge",
         start_date: 1.week.ago,
@@ -23,8 +23,8 @@ RSpec.describe ChallengeMailer, type: :mailer do
 
     it "renders the headers" do
       expect(mail.subject).to eq("Daily Summary: Test Challenge")
-      expect(mail.to).to eq(["creator@example.com"])
-      expect(mail.from).to eq(["noreply@mail.csmbiblechallenge.com"])
+      expect(mail.to).to eq([ "creator@example.com" ])
+      expect(mail.from).to eq([ "noreply@mail.csmbiblechallenge.com" ])
     end
 
     it "renders the body" do

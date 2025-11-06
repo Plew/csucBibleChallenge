@@ -4,8 +4,8 @@ class DateCircleComponentPreview < ViewComponent::Preview
   def default
     render DateCircleComponent.new(
       date: Date.current,
-      day_of_week: Date.current.strftime('%a'),
-      month_day: Date.current.strftime('%b %-d'),
+      day_of_week: Date.current.strftime("%a"),
+      month_day: Date.current.strftime("%b %-d"),
       completed: false,
       selected: false,
       has_reading: true
@@ -16,8 +16,8 @@ class DateCircleComponentPreview < ViewComponent::Preview
     today = Date.current
     render DateCircleComponent.new(
       date: today,
-      day_of_week: today.strftime('%a'),
-      month_day: today.strftime('%b %-d'),
+      day_of_week: today.strftime("%a"),
+      month_day: today.strftime("%b %-d"),
       completed: false,
       selected: true,
       has_reading: true
@@ -28,8 +28,8 @@ class DateCircleComponentPreview < ViewComponent::Preview
     yesterday = Date.current - 1.day
     render DateCircleComponent.new(
       date: yesterday,
-      day_of_week: yesterday.strftime('%a'),
-      month_day: yesterday.strftime('%b %-d'),
+      day_of_week: yesterday.strftime("%a"),
+      month_day: yesterday.strftime("%b %-d"),
       completed: true,
       selected: false,
       has_reading: true
@@ -40,8 +40,8 @@ class DateCircleComponentPreview < ViewComponent::Preview
     today = Date.current
     render DateCircleComponent.new(
       date: today,
-      day_of_week: today.strftime('%a'),
-      month_day: today.strftime('%b %-d'),
+      day_of_week: today.strftime("%a"),
+      month_day: today.strftime("%b %-d"),
       completed: true,
       selected: true,
       has_reading: true
@@ -52,8 +52,8 @@ class DateCircleComponentPreview < ViewComponent::Preview
     future_date = Date.current + 10.days
     render DateCircleComponent.new(
       date: future_date,
-      day_of_week: future_date.strftime('%a'),
-      month_day: future_date.strftime('%b %-d'),
+      day_of_week: future_date.strftime("%a"),
+      month_day: future_date.strftime("%b %-d"),
       completed: false,
       selected: false,
       has_reading: false
@@ -64,8 +64,8 @@ class DateCircleComponentPreview < ViewComponent::Preview
     future_date = Date.current + 5.days
     render DateCircleComponent.new(
       date: future_date,
-      day_of_week: future_date.strftime('%a'),
-      month_day: future_date.strftime('%b %-d'),
+      day_of_week: future_date.strftime("%a"),
+      month_day: future_date.strftime("%b %-d"),
       completed: false,
       selected: true,
       has_reading: false
@@ -77,8 +77,8 @@ class DateCircleComponentPreview < ViewComponent::Preview
     cross_month_date = Date.new(2025, 9, 1) - 2.days # Aug 30
     render DateCircleComponent.new(
       date: cross_month_date,
-      day_of_week: cross_month_date.strftime('%a'),
-      month_day: cross_month_date.strftime('%b %-d'),
+      day_of_week: cross_month_date.strftime("%a"),
+      month_day: cross_month_date.strftime("%b %-d"),
       completed: true,
       selected: false,
       has_reading: true
@@ -90,8 +90,8 @@ class DateCircleComponentPreview < ViewComponent::Preview
     saturday = Date.current.beginning_of_week(:monday) + 5.days
     render DateCircleComponent.new(
       date: saturday,
-      day_of_week: saturday.strftime('%a'),
-      month_day: saturday.strftime('%b %-d'),
+      day_of_week: saturday.strftime("%a"),
+      month_day: saturday.strftime("%b %-d"),
       completed: false,
       selected: false,
       has_reading: true
@@ -102,8 +102,8 @@ class DateCircleComponentPreview < ViewComponent::Preview
     monday = Date.current.beginning_of_week(:monday)
     render DateCircleComponent.new(
       date: monday,
-      day_of_week: monday.strftime('%a'),
-      month_day: monday.strftime('%b %-d'),
+      day_of_week: monday.strftime("%a"),
+      month_day: monday.strftime("%b %-d"),
       completed: true,
       selected: false,
       has_reading: true

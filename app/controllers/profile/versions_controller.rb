@@ -7,9 +7,9 @@ class Profile::VersionsController < Profile::BaseController
   # PATCH /profile/version
   def update
     @user = current_user
-    
+
     if @user.update(version_params)
-      redirect_to edit_profile_version_path, notice: 'Bible version updated successfully.'
+      redirect_to edit_profile_version_path, notice: "Bible version updated successfully."
     else
       render :edit, status: :unprocessable_content
     end

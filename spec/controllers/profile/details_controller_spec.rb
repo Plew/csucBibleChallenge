@@ -99,7 +99,7 @@ RSpec.describe Profile::DetailsController, type: :controller do
 
       context 'with avatar upload' do
         let(:avatar_file) { fixture_file_upload('test_avatar.png', 'image/png') }
-        
+
         it 'updates the user with avatar' do
           patch :update, params: { user: { username: user.username, avatar: avatar_file } }
           user.reload
@@ -109,8 +109,8 @@ RSpec.describe Profile::DetailsController, type: :controller do
 
       context 'parameter filtering' do
         it 'only permits allowed parameters' do
-          patch :update, params: { 
-            user: { 
+          patch :update, params: {
+            user: {
               username: 'allowed',
               version: 'ESV',
               avatar: nil,

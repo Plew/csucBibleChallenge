@@ -5,7 +5,7 @@ class VerseMessagesController < ApplicationController
 
   def index
     @messages = VerseMessage.for_verse(@reading.id, @verse_number)
-                            .includes(user: [:avatar_attachment, :avatar_blob])
+                            .includes(user: [ :avatar_attachment, :avatar_blob ])
                             .order(:created_at)
                             .limit(50)
 
@@ -22,7 +22,7 @@ class VerseMessagesController < ApplicationController
 
     if @message.save
       @messages = VerseMessage.for_verse(@reading.id, @verse_number)
-                              .includes(user: [:avatar_attachment, :avatar_blob])
+                              .includes(user: [ :avatar_attachment, :avatar_blob ])
                               .order(:created_at)
                               .limit(50)
 
@@ -47,7 +47,7 @@ class VerseMessagesController < ApplicationController
     @message.destroy
 
     @messages = VerseMessage.for_verse(@reading.id, @verse_number)
-                            .includes(user: [:avatar_attachment, :avatar_blob])
+                            .includes(user: [ :avatar_attachment, :avatar_blob ])
                             .order(:created_at)
                             .limit(50)
 
@@ -67,7 +67,7 @@ class VerseMessagesController < ApplicationController
 
   def ensure_reading_completed
     unless current_user.user_readings.exists?(reading_id: @reading.id)
-      redirect_to reading_path, alert: 'You must complete the reading before participating in verse discussions.'
+      redirect_to reading_path, alert: "You must complete the reading before participating in verse discussions."
     end
   end
 

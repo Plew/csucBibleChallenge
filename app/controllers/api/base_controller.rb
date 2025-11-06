@@ -20,4 +20,4 @@ class Api::BaseController < ActionController::API
   def record_not_found(error)
     render json: { error: error.message }, status: :not_found
   end
-end 
+end

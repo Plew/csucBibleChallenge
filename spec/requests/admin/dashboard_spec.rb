@@ -45,7 +45,7 @@ RSpec.describe "Admin::Dashboard", type: :request do
       end
 
       it "shows users count" do
-        get admin_root_path  
+        get admin_root_path
         # Total users = admin_user + regular_user = 2
         expect(response.body).to include("2")
       end
@@ -53,7 +53,7 @@ RSpec.describe "Admin::Dashboard", type: :request do
       it "displays recent challenges" do
         get admin_root_path
         expect(response.body).to include("Challenge 1")
-        expect(response.body).to include("Challenge 2") 
+        expect(response.body).to include("Challenge 2")
       end
 
       it "shows hidden status badges" do

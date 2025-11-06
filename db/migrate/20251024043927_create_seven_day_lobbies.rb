@@ -7,7 +7,7 @@ class CreateSevenDayLobbies < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :seven_day_lobbies, [:challenge_id, :user_id], unique: true
+    add_index :seven_day_lobbies, [ :challenge_id, :user_id ], unique: true
     add_index :seven_day_lobbies, :challenge_id
     add_index :seven_day_lobbies, :user_id
   end

@@ -8,7 +8,7 @@ class GroupInvitationsController < ApplicationController
       unless current_user.challenges.include?(@group.challenge)
         # Check if user is in any other challenge (one challenge at a time rule)
         if current_user.challenges.any?
-          redirect_to root_path, alert: 'You are already enrolled in a different challenge. Leave your current challenge to join this one.'
+          redirect_to root_path, alert: "You are already enrolled in a different challenge. Leave your current challenge to join this one."
           return
         end
 
@@ -45,7 +45,7 @@ class GroupInvitationsController < ApplicationController
   def set_group_by_token
     @group = Group.find_by(token: params[:token])
     unless @group
-      redirect_to root_path, alert: 'Invalid group invitation link.'
+      redirect_to root_path, alert: "Invalid group invitation link."
     end
   end
 end

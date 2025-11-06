@@ -97,7 +97,7 @@ RSpec.describe "Admin::Challenges", type: :request do
       let(:valid_attributes) do
         {
           title: "Updated Challenge Title",
-          description: "Updated description", 
+          description: "Updated description",
           hidden: true
         }
       end
@@ -190,7 +190,7 @@ RSpec.describe "Admin::Challenges", type: :request do
           start_date: Date.current.to_s,
           timezone: 'UTC'
         },
-        selected_books: ['40', '41'] # Matthew and Mark
+        selected_books: [ '40', '41' ] # Matthew and Mark
       }
     end
 
@@ -339,5 +339,4 @@ RSpec.describe "Admin::Challenges", type: :request do
       end
     end
   end
-
 end

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class CheckboxComponentPreview < ViewComponent::Preview
-
   def unchecked_enabled
     render(CheckboxComponent.new(checked: false, disabled: false))
   end
@@ -21,5 +20,4 @@ class CheckboxComponentPreview < ViewComponent::Preview
   def checked_disabled
     render(CheckboxComponent.new(checked: true, disabled: true))
   end
-
 end

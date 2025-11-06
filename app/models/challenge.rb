@@ -1,5 +1,5 @@
 class Challenge < ApplicationRecord
-  belongs_to :creator, class_name: 'User'
+  belongs_to :creator, class_name: "User"
   has_many :user_challenge_enrollments, dependent: :destroy
   has_many :users, through: :user_challenge_enrollments
   has_many :readings, dependent: :destroy
@@ -14,8 +14,8 @@ class Challenge < ApplicationRecord
 
   before_create :generate_invitation_token
 
-  scope :active, -> { where('start_date <= ? AND end_date >= ?', Date.current, Date.current) }
-  
+  scope :active, -> { where("start_date <= ? AND end_date >= ?", Date.current, Date.current) }
+
   alias_attribute :title, :name
 
   def generate_invitation_token
@@ -31,7 +31,7 @@ class Challenge < ApplicationRecord
   end
 
   def join_url
-    Rails.application.routes.url_helpers.challenge_invitation_url(invitation_token, host: ENV.fetch('APP_HOST', 'localhost:3000'))
+    Rails.application.routes.url_helpers.challenge_invitation_url(invitation_token, host: ENV.fetch("APP_HOST", "localhost:3000"))
   end
 
   private

@@ -1,5 +1,5 @@
 class Api::V1::ChallengesController < Api::BaseController
-  before_action :set_challenge, only: [:show]
+  before_action :set_challenge, only: [ :show ]
 
   # GET /api/v1/challenges
   def index
@@ -28,7 +28,7 @@ class Api::V1::ChallengesController < Api::BaseController
   def set_challenge
     @challenge = Challenge.find(params[:id])
   rescue ActiveRecord::RecordNotFound
-    render json: { error: 'Challenge not found' }, status: :not_found
+    render json: { error: "Challenge not found" }, status: :not_found
   end
 
   def challenge_params

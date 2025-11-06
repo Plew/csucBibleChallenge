@@ -32,4 +32,4 @@ class UserReadingsController < ApplicationController
     # Preserve the selected date when redirecting
     redirect_to params[:date].present? ? root_path(date: params[:date]) : root_path
   end
-end 
+end

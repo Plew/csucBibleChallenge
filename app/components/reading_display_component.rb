@@ -5,4 +5,4 @@ class ReadingDisplayComponent < ViewComponent::Base
     @title = title
     @verses = verses
   end
-end 
+end

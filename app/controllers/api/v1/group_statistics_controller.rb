@@ -8,7 +8,7 @@ module Api
       def pie_data
         day = params[:day].presence || Date.current
         pie_data = PieDataFromGroupDay.new(@group, day).pie_chart_data
-        
+
         render json: { data: pie_data }
       rescue StandardError => e
         render json: { error: e.message }, status: :unprocessable_content
@@ -19,8 +19,8 @@ module Api
       def set_group
         @group = current_user.groups.find(params[:id])
       rescue ActiveRecord::RecordNotFound
-        render json: { error: 'Group not found' }, status: :not_found
+        render json: { error: "Group not found" }, status: :not_found
       end
     end
   end
-end 
+end

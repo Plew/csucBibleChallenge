@@ -11,12 +11,12 @@ RSpec.describe Profile::PasswordsController, type: :controller do
       end
 
       it 'redirects to login for update action' do
-        patch :update, params: { 
-          user: { 
+        patch :update, params: {
+          user: {
             current_password: 'current_password',
             password: 'new_password',
             password_confirmation: 'new_password'
-          } 
+          }
         }
         expect(response).to redirect_to(new_user_session_path)
       end
@@ -176,8 +176,8 @@ RSpec.describe Profile::PasswordsController, type: :controller do
 
       context 'parameter filtering' do
         it 'only permits password-related parameters' do
-          patch :update, params: { 
-            user: { 
+          patch :update, params: {
+            user: {
               current_password: 'current_password',
               password: 'new_password123',
               password_confirmation: 'new_password123',

@@ -1,5 +1,5 @@
 class Admin::UsersController < Admin::BaseController
-  before_action :set_user, only: [:show, :reset_password, :update_password]
+  before_action :set_user, only: [ :show, :reset_password, :update_password ]
 
   def index
     @users = User.includes(:challenges).order(created_at: :desc)
@@ -24,7 +24,7 @@ class Admin::UsersController < Admin::BaseController
   def show
     @user_readings = @user.user_readings
                           .includes(reading: :challenge)
-                          .order('user_readings.completed_on DESC')
+                          .order("user_readings.completed_on DESC")
     @challenge_enrollments = @user.user_challenge_enrollments.includes(:challenge)
   end
 
@@ -60,10 +60,10 @@ class Admin::UsersController < Admin::BaseController
   end
 
   def generate_csv(users)
-    require 'csv'
+    require "csv"
 
     CSV.generate(headers: true) do |csv|
-      csv << ['ID', 'Username', 'Email', 'Admin', 'Version', 'Daily Email', 'Created At', 'Challenges']
+      csv << [ "ID", "Username", "Email", "Admin", "Version", "Daily Email", "Created At", "Challenges" ]
 
       users.each do |user|
         csv << [
@@ -74,7 +74,7 @@ class Admin::UsersController < Admin::BaseController
           user.version,
           user.daily_email,
           user.created_at,
-          user.challenges.map(&:name).join(', ')
+          user.challenges.map(&:name).join(", ")
         ]
       end
     end

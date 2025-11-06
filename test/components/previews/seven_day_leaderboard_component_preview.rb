@@ -13,7 +13,7 @@ class SevenDayLeaderboardComponentPreview < ViewComponent::Preview
 
   def single_reader
     render SevenDayLeaderboardComponent.new(
-      leaderboard_data: [sample_leaderboard_data.first]
+      leaderboard_data: [ sample_leaderboard_data.first ]
     )
   end
 

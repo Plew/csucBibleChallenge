@@ -1,9 +1,8 @@
 class ChallengesController < ApplicationController
-
   # GET /challenges
   def index
     # Show simple list of active and upcoming challenges
-    @challenges = Challenge.where('end_date >= ? AND hidden = ?', Date.current, false)
+    @challenges = Challenge.where("end_date >= ? AND hidden = ?", Date.current, false)
   end
 
   # GET /challenges/:id
@@ -23,7 +22,7 @@ class ChallengesController < ApplicationController
     # Sort groups with user's group first
     all_groups = @challenge.groups.includes(:users).order(:name)
     @groups = if @user_group
-      [all_groups.find { |g| g.id == @user_group.id }].compact + all_groups.where.not(id: @user_group.id)
+      [ all_groups.find { |g| g.id == @user_group.id } ].compact + all_groups.where.not(id: @user_group.id)
     else
       all_groups
     end
@@ -33,4 +32,4 @@ class ChallengesController < ApplicationController
   def summary
     @challenge = Challenge.find(params[:id])
   end
-end 
+end

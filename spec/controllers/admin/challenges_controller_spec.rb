@@ -66,7 +66,7 @@ RSpec.describe Admin::ChallengesController, type: :controller do
           start_date: Date.current,
           timezone: 'UTC'
         },
-        selected_books: ['40', '41'] # Matthew and Mark
+        selected_books: [ '40', '41' ] # Matthew and Mark
       }
     end
 
@@ -135,11 +135,11 @@ RSpec.describe Admin::ChallengesController, type: :controller do
     context 'with no selected books' do
       it 'creates challenge but no readings' do
         params = valid_params.tap { |p| p.delete(:selected_books) }
-        
+
         expect {
           post :create, params: params
         }.to change(Challenge, :count).by(1)
-        
+
         expect(Reading.count).to eq(0)
       end
     end
@@ -147,7 +147,7 @@ RSpec.describe Admin::ChallengesController, type: :controller do
 
   describe 'GET #delete_confirmation' do
     let(:challenge) { create(:challenge, creator: admin_user) }
-    
+
     context 'when user is the challenge creator' do
       before { session[:user_id] = admin_user.id }
 

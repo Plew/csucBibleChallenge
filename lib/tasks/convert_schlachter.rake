@@ -1,11 +1,11 @@
-require 'nokogiri'
-require 'csv'
+require "nokogiri"
+require "csv"
 
 namespace :convert_schlachter do
   desc "Convert Schlachter XML to CSV format for Import"
   task xml_to_csv: :environment do
-    xml_path = Rails.root.join('db', 'fixtures', 'de_schlachter.xml')
-    csv_path = Rails.root.join('db', 'texts', 'schlachter_2000.csv')
+    xml_path = Rails.root.join("db", "fixtures", "de_schlachter.xml")
+    csv_path = Rails.root.join("db", "texts", "schlachter_2000.csv")
 
     unless File.exist?(xml_path)
       puts "Error: XML file not found at #{xml_path}"
@@ -21,40 +21,40 @@ namespace :convert_schlachter do
     # Book name mapping from XML to Import format
     # Most names match, but we need to ensure consistency
     book_name_mapping = {
-      'Song of Solomon' => 'Song of Songs'  # Only difference
+      "Song of Solomon" => "Song of Songs"  # Only difference
     }
 
     puts "Converting to CSV..."
     verse_count = 0
 
-    CSV.open(csv_path, 'w', col_sep: ';', encoding: 'UTF-8') do |csv|
+    CSV.open(csv_path, "w", col_sep: ";", encoding: "UTF-8") do |csv|
       # Write header
-      csv << ['TextID', 'Version', 'NT_Book', 'NT_Chapter', 'NT_Verse', 'VerseBreak', 'VerseText']
+      csv << [ "TextID", "Version", "NT_Book", "NT_Chapter", "NT_Verse", "VerseBreak", "VerseText" ]
 
       text_id = 1
 
       # Iterate through books
-      doc.xpath('//b').each do |book|
-        book_name = book['n']
+      doc.xpath("//b").each do |book|
+        book_name = book["n"]
         # Map to Import format if needed
         import_book_name = book_name_mapping[book_name] || book_name
 
         # Iterate through chapters
-        book.xpath('./c').each do |chapter|
-          chapter_num = chapter['n'].to_i
+        book.xpath("./c").each do |chapter|
+          chapter_num = chapter["n"].to_i
 
           # Iterate through verses
-          chapter.xpath('./v').each do |verse|
-            verse_num = verse['n'].to_i
+          chapter.xpath("./v").each do |verse|
+            verse_num = verse["n"].to_i
             verse_text = verse.text.strip
 
             csv << [
               text_id,
-              'SCHL2000',
+              "SCHL2000",
               import_book_name,
               chapter_num,
               verse_num,
-              'No',
+              "No",
               verse_text
             ]
 

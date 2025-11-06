@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class ChapterChatComponentPreview < ViewComponent::Preview
-
   def default
     group = create_sample_group
     current_user = group.users.first
@@ -86,7 +85,7 @@ class ChapterChatComponentPreview < ViewComponent::Preview
     )
 
     # Mock associations
-    group.define_singleton_method(:users) { [creator, member] }
+    group.define_singleton_method(:users) { [ creator, member ] }
     group.define_singleton_method(:group_messages) do
       @group_messages ||= Class.new do
         def initialize
@@ -113,7 +112,7 @@ class ChapterChatComponentPreview < ViewComponent::Preview
 
         def method_missing(method, *args, &block)
           # Return self for chainable ActiveRecord methods, or the array for others
-          if [:includes, :order, :where, :joins].include?(method)
+          if [ :includes, :order, :where, :joins ].include?(method)
             self
           else
             @created_messages.send(method, *args, &block)

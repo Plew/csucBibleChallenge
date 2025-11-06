@@ -14,7 +14,7 @@ class ChapterChatComponent < ViewComponent::Base
 
   def messages
     @messages ||= group.group_messages
-                      .includes(user: [:avatar_attachment, :avatar_blob])
+                      .includes(user: [ :avatar_attachment, :avatar_blob ])
                       .order(:created_at)
                       .limit(50)
   end

@@ -18,7 +18,7 @@ class AvatarComponentPreview < ViewComponent::Preview
     render(AvatarComponent.new(
       user: user,
       size: :large,
-      html_options: { class: 'rounded-full ring ring-primary ring-offset-2' }
+      html_options: { class: "rounded-full ring ring-primary ring-offset-2" }
     ))
   end
 
@@ -47,7 +47,7 @@ class AvatarComponentPreview < ViewComponent::Preview
 
   def create_sample_user
     OpenStruct.new(
-      username: 'sample_user',
+      username: "sample_user",
       avatar: OpenStruct.new(attached?: false)
     )
   end

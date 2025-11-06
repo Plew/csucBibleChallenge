@@ -15,4 +15,4 @@ class AddCreatorIdToGroups < ActiveRecord::Migration[7.0]
   def down
     remove_reference :groups, :creator
   end
-end 
+end

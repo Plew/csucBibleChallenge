@@ -109,20 +109,20 @@ RSpec.describe "Admin::Users", type: :request do
     describe "PATCH /admin/users/:id/reset_password" do
       it "resets user password and redirects with new password" do
         patch reset_password_admin_user_path(test_user)
-        
+
         expect(response).to redirect_to(admin_users_path)
         follow_redirect!
-        
+
         expect(response.body).to include("Password reset for #{test_user.email}")
         expect(response.body).to match(/New password: \w{12}/)
       end
 
       it "actually changes the user's password" do
         original_password_digest = test_user.password_digest
-        
+
         patch reset_password_admin_user_path(test_user)
         test_user.reload
-        
+
         expect(test_user.password_digest).not_to eq(original_password_digest)
       end
     end

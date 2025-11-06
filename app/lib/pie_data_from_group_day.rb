@@ -17,10 +17,10 @@ class PieDataFromGroupDay
 
   def pie_chart_rows
     Group.find_by_sql([
-      "SELECT 
+      "SELECT
         COALESCE(NULLIF(u.name, ''), 'Anonymous') AS name,
         c.recorded_on AS recorded_on,
-        CASE 
+        CASE
           WHEN c.id IS NOT NULL THEN 1
           ELSE 0
         END AS checked_in_value

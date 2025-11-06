@@ -5,7 +5,7 @@ class DateBarComponentPreview < ViewComponent::Preview
     render DateBarComponent.new(
       selected_date: Date.current,
       mobile: true,
-      days: generate_week_with_data(Date.current, [1, 3, 5])
+      days: generate_week_with_data(Date.current, [ 1, 3, 5 ])
     )
   end
 
@@ -31,7 +31,7 @@ class DateBarComponentPreview < ViewComponent::Preview
     render DateBarComponent.new(
       selected_date: cross_month_date,
       mobile: true,
-      days: generate_week_with_data(cross_month_date, [0, 2, 4])
+      days: generate_week_with_data(cross_month_date, [ 0, 2, 4 ])
     )
   end
 
@@ -40,7 +40,7 @@ class DateBarComponentPreview < ViewComponent::Preview
     render DateBarComponent.new(
       selected_date: past_date,
       mobile: true,
-      days: generate_week_with_data(past_date, [0, 1, 2, 3, 4]) # Weekdays completed
+      days: generate_week_with_data(past_date, [ 0, 1, 2, 3, 4 ]) # Weekdays completed
     )
   end
 
@@ -65,7 +65,7 @@ class DateBarComponentPreview < ViewComponent::Preview
     render DateBarComponent.new(
       selected_date: Date.current,
       mobile: false,
-      days: generate_week_with_data(Date.current, [1, 3, 5])
+      days: generate_week_with_data(Date.current, [ 1, 3, 5 ])
     )
   end
 
@@ -75,7 +75,7 @@ class DateBarComponentPreview < ViewComponent::Preview
     render DateBarComponent.new(
       selected_date: tuesday,
       mobile: true,
-      days: generate_week_with_data(tuesday, [0, 1, 3])
+      days: generate_week_with_data(tuesday, [ 0, 1, 3 ])
     )
   end
 
@@ -85,7 +85,7 @@ class DateBarComponentPreview < ViewComponent::Preview
     render DateBarComponent.new(
       selected_date: saturday,
       mobile: true,
-      days: generate_week_with_data(saturday, [0, 1, 2, 3, 4, 5])
+      days: generate_week_with_data(saturday, [ 0, 1, 2, 3, 4, 5 ])
     )
   end
 
@@ -94,16 +94,16 @@ class DateBarComponentPreview < ViewComponent::Preview
   def generate_week_with_data(selected_date, completed_day_indices = [])
     # Find the Monday of the week containing the selected date
     start_of_week = selected_date.beginning_of_week(:monday)
-    
+
     7.times.map do |i|
       date = start_of_week + i.days
       {
         date: date,
-        day_of_week: date.strftime('%a'),
+        day_of_week: date.strftime("%a"),
         day_of_month: date.day.to_s,
-        month_day: date.strftime('%b %-d'),
+        month_day: date.strftime("%b %-d"),
         completed: completed_day_indices.include?(i),
-        group_completion: [0, 25, 50, 75, 100, 33, 66][i % 7],
+        group_completion: [ 0, 25, 50, 75, 100, 33, 66 ][i % 7],
         has_reading: true
       }
     end
@@ -112,16 +112,16 @@ class DateBarComponentPreview < ViewComponent::Preview
   def generate_week_with_mixed_availability(selected_date)
     # Find the Monday of the week containing the selected date
     start_of_week = selected_date.beginning_of_week(:monday)
-    
+
     7.times.map do |i|
       date = start_of_week + i.days
       {
         date: date,
-        day_of_week: date.strftime('%a'),
+        day_of_week: date.strftime("%a"),
         day_of_month: date.day.to_s,
-        month_day: date.strftime('%b %-d'),
-        completed: [1, 3].include?(i),
-        group_completion: [0, 25, 50, 75, 100, 33, 66][i % 7],
+        month_day: date.strftime("%b %-d"),
+        completed: [ 1, 3 ].include?(i),
+        group_completion: [ 0, 25, 50, 75, 100, 33, 66 ][i % 7],
         has_reading: i < 5 # Monday-Friday have readings, weekend doesn't
       }
     end

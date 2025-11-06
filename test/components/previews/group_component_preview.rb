@@ -109,7 +109,7 @@ class GroupComponentPreview < ViewComponent::Preview
     )
 
     # Create additional members
-    members = [creator]
+    members = [ creator ]
     (member_count - 1).times do |i|
       members << User.new(
         id: i + 2,

@@ -10,7 +10,7 @@ class GroupChallengeStats
   def completion_percentage
     total_possible = group.users.count * total_readings
     return 0.0 if total_possible.zero?
-    
+
     completed = completed_readings_count
     (completed.to_f / total_possible * 100).round(1)
   end
@@ -19,7 +19,7 @@ class GroupChallengeStats
   def on_track_percentage
     total_possible = group.users.count * readings_to_date
     return 0.0 if total_possible.zero?
-    
+
     completed = completed_readings_to_date_count
     (completed.to_f / total_possible * 100).round(1)
   end
@@ -41,7 +41,7 @@ class GroupChallengeStats
 
   def readings_to_date
     @readings_to_date ||= challenge.readings
-      .where('scheduled_date <= ?', current_date_in_challenge_timezone)
+      .where("scheduled_date <= ?", current_date_in_challenge_timezone)
       .count
   end
 

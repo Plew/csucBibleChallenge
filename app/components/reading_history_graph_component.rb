@@ -53,9 +53,9 @@ class ReadingHistoryGraphComponent < ViewComponent::Base
 
   def tooltip_text(day)
     if day[:completed]
-      status = day[:on_time] ? t('common.completed_on_time') : t('common.completed_late')
+      status = day[:on_time] ? t("common.completed_on_time") : t("common.completed_late")
     else
-      status = t('common.not_completed')
+      status = t("common.not_completed")
     end
     "#{t('common.day')} #{day[:number] + 1}: #{day[:date].strftime('%b %d, %Y')} - #{status}"
   end

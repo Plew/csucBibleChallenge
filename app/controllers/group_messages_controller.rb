@@ -5,22 +5,22 @@ class GroupMessagesController < ApplicationController
 
   def index
     @messages = @group.group_messages
-                      .includes(user: [:avatar_attachment, :avatar_blob])
+                      .includes(user: [ :avatar_attachment, :avatar_blob ])
                       .order(:created_at)
                       .limit(50)
-    
+
     render turbo_stream: turbo_stream.replace("chat-messages", partial: "group_messages/messages", locals: { messages: @messages, current_user: current_user })
   end
 
   def create
     @message = @group.group_messages.build(message_params.merge(user: current_user))
-    
+
     if @message.save
       @messages = @group.group_messages
-                        .includes(user: [:avatar_attachment, :avatar_blob])
+                        .includes(user: [ :avatar_attachment, :avatar_blob ])
                         .order(:created_at)
                         .limit(50)
-      
+
       render turbo_stream: [
         turbo_stream.replace("chat-messages", partial: "group_messages/messages", locals: { messages: @messages, current_user: current_user }),
         turbo_stream.replace("new-message-form", partial: "group_messages/form", locals: { group: @group, message: GroupMessage.new })
@@ -39,7 +39,7 @@ class GroupMessagesController < ApplicationController
   def ensure_group_member
     enrollment = current_user.user_group_enrollments.find_by(group: @group)
     unless enrollment
-      redirect_to groups_path, alert: 'You must be a member of this group to access chat.'
+      redirect_to groups_path, alert: "You must be a member of this group to access chat."
     end
   end
 

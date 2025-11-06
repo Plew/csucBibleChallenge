@@ -10,7 +10,7 @@ class UserChallengeStats
   # If there are 100 readings and user completed 25, returns 25.0
   def completion_percentage
     return 0.0 if total_readings.zero?
-    
+
     (completed_readings_count.to_f / total_readings * 100).round(1)
   end
 
@@ -18,7 +18,7 @@ class UserChallengeStats
   # If there are 100 readings across 100 days, we're on day 50, and user completed 25, returns 50.0
   def on_track_percentage
     return 0.0 if readings_to_date.zero?
-    
+
     (completed_readings_count.to_f / readings_to_date * 100).round(1)
   end
 
@@ -37,7 +37,7 @@ class UserChallengeStats
 
   def readings_to_date
     @readings_to_date ||= challenge.readings
-      .where('scheduled_date <= ?', current_date_in_challenge_timezone)
+      .where("scheduled_date <= ?", current_date_in_challenge_timezone)
       .count
   end
 

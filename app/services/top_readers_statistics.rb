@@ -15,13 +15,13 @@ class TopReadersStatistics
     users_with_stats = User.joins(:challenges)
                            .left_joins(:user_readings)
                            .select(
-                             'users.*',
-                             'COUNT(user_readings.id) as total_chapters_read',
-                             'MAX(user_readings.created_at) as most_recent_reading_at'
+                             "users.*",
+                             "COUNT(user_readings.id) as total_chapters_read",
+                             "MAX(user_readings.created_at) as most_recent_reading_at"
                            )
                            .where(challenges: { id: @challenge.id })
                            .where.not(challenges: { timezone: nil })
-                           .group('users.id')
+                           .group("users.id")
 
     # Eager load groups for the challenge to avoid N+1 queries
     user_ids = users_with_stats.map(&:id)
@@ -43,7 +43,7 @@ class TopReadersStatistics
       }
     end.reject { |user_data| user_data[:chapters_completed].zero? }
       .select { |user_data| user_data[:completion_percentage] >= 50 }
-      .sort_by { |user_data| [-user_data[:completion_percentage], -user_data[:on_schedule_percentage], -(user_data[:most_recent_reading_at]&.to_i || 0)] }
+      .sort_by { |user_data| [ -user_data[:completion_percentage], -user_data[:on_schedule_percentage], -(user_data[:most_recent_reading_at]&.to_i || 0) ] }
   end
 
   private
@@ -59,13 +59,13 @@ class TopReadersStatistics
     current_date_in_tz = Time.current.in_time_zone(@challenge.timezone).to_date
 
     scheduled_count = @challenge.readings
-                              .where('scheduled_date <= ?', current_date_in_tz)
+                              .where("scheduled_date <= ?", current_date_in_tz)
                               .count
 
     completed_count = user.user_readings
                          .joins(:reading)
                          .where(readings: { challenge_id: @challenge.id })
-                         .where('readings.scheduled_date <= ?', current_date_in_tz)
+                         .where("readings.scheduled_date <= ?", current_date_in_tz)
                          .count
 
     return 0 if scheduled_count.zero?
@@ -77,13 +77,13 @@ class TopReadersStatistics
     current_date_in_tz = Time.current.in_time_zone(@challenge.timezone).to_date
 
     scheduled_count = @challenge.readings
-                              .where('scheduled_date <= ?', current_date_in_tz)
+                              .where("scheduled_date <= ?", current_date_in_tz)
                               .count
 
     completed_count = user.user_readings
                          .joins(:reading)
                          .where(readings: { challenge_id: @challenge.id })
-                         .where('readings.scheduled_date <= ?', current_date_in_tz)
+                         .where("readings.scheduled_date <= ?", current_date_in_tz)
                          .count
 
     {
@@ -111,7 +111,7 @@ class TopReadersStatistics
     user_group_enrollments = UserGroupEnrollment
       .joins(:group)
       .where(user_id: user_ids, groups: { challenge_id: @challenge.id })
-      .select('user_group_enrollments.user_id', 'groups.name as group_name')
+      .select("user_group_enrollments.user_id", "groups.name as group_name")
 
     # Build a hash mapping user_id to group_name
     user_group_enrollments.each_with_object({}) do |enrollment, hash|

@@ -7,9 +7,9 @@ class Profile::DetailsController < Profile::BaseController
   # PATCH /profile/details
   def update
     @user = current_user
-    
+
     if @user.update(details_params)
-      redirect_to edit_profile_details_path, notice: 'Profile details updated successfully.'
+      redirect_to edit_profile_details_path, notice: "Profile details updated successfully."
     else
       render :edit, status: :unprocessable_content
     end

@@ -1,8 +1,8 @@
 class Feedback < ApplicationRecord
   belongs_to :user, optional: true
   has_one_attached :screenshot do |attachable|
-    attachable.variant :thumb, resize_to_limit: [100, 100]
-    attachable.variant :medium, resize_to_limit: [400, 400]
+    attachable.variant :thumb, resize_to_limit: [ 100, 100 ]
+    attachable.variant :medium, resize_to_limit: [ 400, 400 ]
   end
 
   enum :category, {

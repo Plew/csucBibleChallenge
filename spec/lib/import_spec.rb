@@ -7,7 +7,6 @@ RSpec.describe Import, :slow do
   let(:integration_csv_path) { Rails.root.join('spec/fixtures/test_verses_integration.csv') }
 
   describe '.call' do
-
     context 'basic functionality' do
       before do
         stub_const('Import::FILE_PATH', basic_csv_path)
@@ -68,20 +67,20 @@ RSpec.describe Import, :slow do
     end
 
     context 'idempotent behavior' do
-      let(:temp_file) { Tempfile.new(['test_verses', '.csv']) }
-      
+      let(:temp_file) { Tempfile.new([ 'test_verses', '.csv' ]) }
+
       before do
         stub_const('Import::FILE_PATH', temp_file.path)
       end
-      
+
       after do
         temp_file.unlink
       end
-      
+
       it 'does not create duplicate verses on multiple runs' do
         temp_file.write(File.read(basic_csv_path))
         temp_file.close
-        
+
         Import.call
         expect { Import.call }.not_to change { Verse.count }
       end
@@ -89,9 +88,9 @@ RSpec.describe Import, :slow do
       it 'updates existing verses if text has changed', :slow do
         temp_file.write(File.read(basic_csv_path))
         temp_file.close
-        
+
         Import.call
-        
+
         verse = Verse.find_by(version: 'NASB', book_number: 40, chapter_number: 1, verse_number: 1)
         original_text = verse.verse_text
         original_updated_at = verse.updated_at
@@ -101,7 +100,7 @@ RSpec.describe Import, :slow do
           'The record of the genealogy of Jesus the Messiah, the son of David, the son of Abraham:',
           'UPDATED: The record of the genealogy of Jesus the Messiah, the son of David, the son of Abraham:'
         )
-        
+
         temp_file.open
         temp_file.write(updated_csv)
         temp_file.close
@@ -118,11 +117,11 @@ RSpec.describe Import, :slow do
       before do
         stub_const('Import::FILE_PATH', error_conditions_csv_path)
       end
-      
+
       it 'handles unknown book names and missing data gracefully', :slow do
         expect { Import.call }.not_to raise_error
         expect(Verse.count).to eq(2)
-        valid_verses = Verse.where(verse_text: ['Valid verse text', 'Another valid verse'])
+        valid_verses = Verse.where(verse_text: [ 'Valid verse text', 'Another valid verse' ])
         expect(valid_verses.count).to eq(2)
       end
     end
@@ -131,7 +130,7 @@ RSpec.describe Import, :slow do
       before do
         stub_const('Import::FILE_PATH', basic_csv_path)
       end
-      
+
       it 'processes data in batches' do
         # Mock upsert_verses to track batch calls
         import_instance = Import.new
@@ -152,15 +151,15 @@ RSpec.describe Import, :slow do
         stub_const('Import::FILE_PATH', integration_csv_path)
         Import.call
       end
-      
+
       it 'imports multiple versions and books correctly' do
         expect(Verse.count).to eq(20)
-        
+
         # Verify multiple versions
         expect(Verse.where(version: 'NASB').count).to be > 0
         expect(Verse.where(version: 'KJV').count).to be > 0
         expect(Verse.where(version: 'ESV').count).to be > 0
-        
+
         # Verify multiple books
         matthew_verses = Verse.where(book_number: 40)
         mark_verses = Verse.where(book_number: 41)
@@ -168,7 +167,7 @@ RSpec.describe Import, :slow do
         john_verses = Verse.where(book_number: 43)
         acts_verses = Verse.where(book_number: 44)
         romans_verses = Verse.where(book_number: 45)
-        
+
         expect(matthew_verses.count).to be > 0
         expect(mark_verses.count).to be > 0
         expect(luke_verses.count).to be > 0

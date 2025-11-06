@@ -1,14 +1,14 @@
 class User < ApplicationRecord
-  VALID_VERSIONS = ['ASV', 'ELB2006', 'ESV', 'KJV', 'NASB', 'NKJV', 'SCHL2000'].freeze
+  VALID_VERSIONS = [ "ASV", "ELB2006", "ESV", "KJV", "NASB", "NKJV", "SCHL2000" ].freeze
 
   has_secure_password
   has_one_attached :avatar do |attachable|
-    attachable.variant :thumb, resize_to_limit: [48, 48], preprocessed: true     # 24x24 display * 2 for retina
-    attachable.variant :medium, resize_to_limit: [72, 72], preprocessed: true    # 36x36 display * 2 for retina
-    attachable.variant :large, resize_to_limit: [96, 96], preprocessed: true     # 48x48 display * 2 for retina
-    attachable.variant :xlarge, resize_to_limit: [128, 128], preprocessed: true  # 64x64 display * 2 for retina
-    attachable.variant :xxlarge, resize_to_limit: [192, 192], preprocessed: true # 96x96 display * 2 for retina
-    attachable.variant :profile, resize_to_limit: [500, 500], preprocessed: true # For profile pages, modals, etc.
+    attachable.variant :thumb, resize_to_limit: [ 48, 48 ], preprocessed: true     # 24x24 display * 2 for retina
+    attachable.variant :medium, resize_to_limit: [ 72, 72 ], preprocessed: true    # 36x36 display * 2 for retina
+    attachable.variant :large, resize_to_limit: [ 96, 96 ], preprocessed: true     # 48x48 display * 2 for retina
+    attachable.variant :xlarge, resize_to_limit: [ 128, 128 ], preprocessed: true  # 64x64 display * 2 for retina
+    attachable.variant :xxlarge, resize_to_limit: [ 192, 192 ], preprocessed: true # 96x96 display * 2 for retina
+    attachable.variant :profile, resize_to_limit: [ 500, 500 ], preprocessed: true # For profile pages, modals, etc.
   end
 
   has_many :user_challenge_enrollments, dependent: :destroy
@@ -71,11 +71,11 @@ class User < ApplicationRecord
 
   def current_password_correct
     return if current_password.blank?
-    
+
     # Get the original password_digest to authenticate against
     original_user = User.find(self.id)
     unless original_user.authenticate(current_password)
-      errors.add(:current_password, 'is incorrect')
+      errors.add(:current_password, "is incorrect")
     end
   end
 end

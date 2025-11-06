@@ -5,6 +5,6 @@ class AddReadingAndVerseNumberToVerseMessages < ActiveRecord::Migration[8.0]
     add_column :verse_messages, :verse_number, :integer, null: true
 
     # Add composite index for efficient querying by reading + verse_number
-    add_index :verse_messages, [:reading_id, :verse_number]
+    add_index :verse_messages, [ :reading_id, :verse_number ]
   end
 end

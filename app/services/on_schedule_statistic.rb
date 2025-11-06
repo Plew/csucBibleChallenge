@@ -17,7 +17,7 @@ class OnScheduleStatistic
 
     # Get total scheduled readings (same for all users)
     total_scheduled = challenge.readings
-                              .where('scheduled_date <= ?', current_date)
+                              .where("scheduled_date <= ?", current_date)
                               .count
 
     return user_ids.index_with { 0.0 } if total_scheduled.zero?
@@ -29,8 +29,8 @@ class OnScheduleStatistic
                           AND DATE(user_readings.completed_on) = readings.scheduled_date
                           AND readings.scheduled_date <= '#{current_date}'")
                   .where(id: user_ids)
-                  .group('users.id')
-                  .select('users.id', 'COUNT(DISTINCT readings.id) as on_schedule_count')
+                  .group("users.id")
+                  .select("users.id", "COUNT(DISTINCT readings.id) as on_schedule_count")
 
     # Build hash of percentages
     percentages = {}
@@ -61,7 +61,7 @@ class OnScheduleStatistic
     user_readings_for_challenge
       .joins(:reading)
       .where("DATE(user_readings.completed_on) = readings.scheduled_date")
-      .where('readings.scheduled_date <= ?', current_date_in_challenge_timezone)
+      .where("readings.scheduled_date <= ?", current_date_in_challenge_timezone)
       .count
   end
 
@@ -73,7 +73,7 @@ class OnScheduleStatistic
   # Count of readings scheduled up to the current date (in challenge timezone)
   def scheduled_readings_to_date
     challenge.readings
-            .where('scheduled_date <= ?', current_date_in_challenge_timezone)
+            .where("scheduled_date <= ?", current_date_in_challenge_timezone)
             .count
   end
 

@@ -47,13 +47,13 @@ RSpec.describe Reading, type: :model do
 
     context 'when no version is specified' do
       it 'returns verses for the reading\'s book and chapter in KJV, ordered by verse_number' do
-        expect(reading.verses).to eq([verse1_kjv, verse2_kjv])
+        expect(reading.verses).to eq([ verse1_kjv, verse2_kjv ])
       end
     end
 
     context 'when a version is specified' do
       it 'returns verses for that version, book, and chapter, ordered by verse_number' do
-        expect(reading.verses(version: 'NIV')).to eq([verse1_niv])
+        expect(reading.verses(version: 'NIV')).to eq([ verse1_niv ])
       end
     end
 
@@ -73,7 +73,7 @@ RSpec.describe Reading, type: :model do
       it 'still returns them ordered by verse_number' do
         # Re-fetch verse2_kjv if its ID or creation timestamp matters for default DB order before our explicit order
         # For this test, we rely on the .order(:verse_number) in the method.
-        expect(reading.verses).to eq([verse1_kjv, verse2_kjv, verse3_kjv_earlier])
+        expect(reading.verses).to eq([ verse1_kjv, verse2_kjv, verse3_kjv_earlier ])
       end
     end
   end
