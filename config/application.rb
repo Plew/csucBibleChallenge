@@ -43,5 +43,8 @@ module Irmbi
     config.active_storage.queues.analysis = :default
     config.active_storage.queues.purge = :default
     config.active_storage.queues.mirror = :default
+
+    # Configure ViewComponent preview paths
+    config.view_component.preview_paths = ["#{Rails.root}/spec/components/previews"]
   end
 end
