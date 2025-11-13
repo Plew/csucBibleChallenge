@@ -1,0 +1,38 @@
+# Staging environment configuration
+# Inherits from config/deploy.yml and overrides specific values
+
+# Use a different service name to run alongside production
+service: reverse-staging
+
+# Use a different image tag for staging
+image: pdbradley/reverse-staging
+
+# Override servers to only run web, not background jobs (prevents emails/scheduled tasks)
+servers:
+  web:
+    - 178.156.131.96
+
+# Proxy configuration for staging domain
+proxy:
+  ssl: true
+  hosts:
+    - staging.csmbiblechallenge.com
+  app_port: 3000
+  healthcheck:
+    path: /up
+    interval: 3
+    timeout: 30
+
+# Environment variables specific to staging
+env:
+  clear:
+    APP_HOST: staging.csmbiblechallenge.com
+    JOB_CONCURRENCY: 1
+    RAILS_MAX_THREADS: 5
+  secret:
+    - RAILS_MASTER_KEY
+
+# Use different storage volumes so staging data is separate from production
+volumes:
+  - "/db/reverse-staging:/rails/sqlite"
+  - "/storage/reverse-staging:/rails/storage"
