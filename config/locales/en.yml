@@ -153,6 +153,8 @@ en:
     completed_on_time: "Completed on time"
     completed_late: "Completed late"
     not_completed: "Not completed"
+    actions: "Actions"
+    are_you_sure: "Are you sure?"
 
   # Time units
   time:
@@ -319,6 +321,20 @@ en:
       no_users_selected: "No users selected. Please go back and select participants."
       pacman_mode: "Pac-Man Chase Mode"
       pacman_instructions: "Watch as participants (ghosts) try to escape through the maze. Pac-Man appears after 5 seconds and chases them down. Each ghost caught makes Pac-Man faster. The last survivor wins!"
+    stat_windows:
+      title: "Stat Windows"
+      new: "New Stat Window"
+      edit: "Edit Stat Window"
+      name: "Name"
+      name_placeholder: "e.g. First Quarter, Week 1-4"
+      begin_date: "Begin Date"
+      begin_date_hint: "Must be on or after %{start_date}"
+      end_date: "End Date"
+      end_date_hint: "Must be on or before %{end_date}"
+      created: "Stat window was successfully created"
+      updated: "Stat window was successfully updated"
+      deleted: "Stat window was successfully deleted"
+      no_windows: "No stat windows have been created yet"
 
   # Seven Day Lobby
   seven_day_lobby:
@@ -463,6 +479,8 @@ en:
     personal: "Personal"
     personal_stats: "Personal Statistics"
     personal_description: "Your individual reading progress and achievements"
+    stat_window_label: "Statistics Date Range"
+    full_challenge: "Full Challenge"
     coming_soon: "Coming Soon"
     coming_soon_message: "Your personal statistics will be available here soon."
     back_to_stats: "← Back to Stats"

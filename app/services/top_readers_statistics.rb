@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
 class TopReadersStatistics
-  def self.call(challenge:)
-    new(challenge).call
+  def self.call(challenge:, date_range: nil)
+    new(challenge, date_range).call
   end
 
-  def initialize(challenge)
+  def initialize(challenge, date_range = nil)
     @challenge = challenge
+    @date_range = date_range
   end
 
   def call
@@ -58,15 +59,16 @@ class TopReadersStatistics
   def calculate_completion_percentage(user)
     current_date_in_tz = Time.current.in_time_zone(@challenge.timezone).to_date
 
-    scheduled_count = @challenge.readings
-                              .where("scheduled_date <= ?", current_date_in_tz)
-                              .count
+    scheduled_query = @challenge.readings.where("scheduled_date <= ?", current_date_in_tz)
+    scheduled_query = scheduled_query.where(scheduled_date: @date_range) if @date_range
+    scheduled_count = scheduled_query.count
 
-    completed_count = user.user_readings
+    completed_query = user.user_readings
                          .joins(:reading)
                          .where(readings: { challenge_id: @challenge.id })
                          .where("readings.scheduled_date <= ?", current_date_in_tz)
-                         .count
+    completed_query = completed_query.where(readings: { scheduled_date: @date_range }) if @date_range
+    completed_count = completed_query.count
 
     return 0 if scheduled_count.zero?
 
@@ -76,15 +78,16 @@ class TopReadersStatistics
   def calculate_chapters_data(user)
     current_date_in_tz = Time.current.in_time_zone(@challenge.timezone).to_date
 
-    scheduled_count = @challenge.readings
-                              .where("scheduled_date <= ?", current_date_in_tz)
-                              .count
+    scheduled_query = @challenge.readings.where("scheduled_date <= ?", current_date_in_tz)
+    scheduled_query = scheduled_query.where(scheduled_date: @date_range) if @date_range
+    scheduled_count = scheduled_query.count
 
-    completed_count = user.user_readings
+    completed_query = user.user_readings
                          .joins(:reading)
                          .where(readings: { challenge_id: @challenge.id })
                          .where("readings.scheduled_date <= ?", current_date_in_tz)
-                         .count
+    completed_query = completed_query.where(readings: { scheduled_date: @date_range }) if @date_range
+    completed_count = completed_query.count
 
     {
       completed: completed_count,
@@ -93,7 +96,7 @@ class TopReadersStatistics
   end
 
   def calculate_on_schedule_percentage(user)
-    OnScheduleStatistic.new(user, @challenge).percentage.round
+    OnScheduleStatistic.new(user, @challenge, @date_range).percentage.round
   end
 
   def avatar_url_for(user)

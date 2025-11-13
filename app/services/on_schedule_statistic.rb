@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
 class OnScheduleStatistic
-  attr_reader :user, :challenge
+  attr_reader :user, :challenge, :date_range
 
-  def initialize(user, challenge)
+  def initialize(user, challenge, date_range = nil)
     @user = user
     @challenge = challenge
+    @date_range = date_range
   end
 
   # Batch calculation for multiple users (avoids N+1 queries)
@@ -58,11 +59,12 @@ class OnScheduleStatistic
 
   # Count of readings completed on their scheduled date (only for readings scheduled up to current date)
   def on_schedule_count
-    user_readings_for_challenge
+    query = user_readings_for_challenge
       .joins(:reading)
       .where("DATE(user_readings.completed_on) = readings.scheduled_date")
       .where("readings.scheduled_date <= ?", current_date_in_challenge_timezone)
-      .count
+    query = query.where(readings: { scheduled_date: date_range }) if date_range
+    query.count
   end
 
   # Total count of completed readings for this challenge
@@ -72,9 +74,9 @@ class OnScheduleStatistic
 
   # Count of readings scheduled up to the current date (in challenge timezone)
   def scheduled_readings_to_date
-    challenge.readings
-            .where("scheduled_date <= ?", current_date_in_challenge_timezone)
-            .count
+    query = challenge.readings.where("scheduled_date <= ?", current_date_in_challenge_timezone)
+    query = query.where(scheduled_date: date_range) if date_range
+    query.count
   end
 
   private

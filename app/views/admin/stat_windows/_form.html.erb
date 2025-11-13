@@ -1,0 +1,42 @@
+<div class="card bg-base-100 shadow-xl max-w-2xl">
+  <div class="card-body">
+    <%= form_with(model: [:admin, @challenge, @stat_window], local: true, class: "space-y-4") do |form| %>
+      <% if @stat_window.errors.any? %>
+        <div class="alert alert-error">
+          <h2 class="font-bold"><%= pluralize(@stat_window.errors.count, "error") %> prohibited this stat window from being saved:</h2>
+          <ul class="list-disc list-inside">
+            <% @stat_window.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="form-control">
+        <%= form.label :title, t("admin.stat_windows.name"), class: "label" %>
+        <%= form.text_field :title, class: "input input-bordered w-full", placeholder: t("admin.stat_windows.name_placeholder") %>
+      </div>
+
+      <div class="form-control">
+        <%= form.label :begin_date, t("admin.stat_windows.begin_date"), class: "label" %>
+        <%= form.date_field :begin_date, class: "input input-bordered w-full", min: @challenge.start_date, max: @challenge.end_date %>
+        <label class="label">
+          <span class="label-text-alt"><%= t("admin.stat_windows.begin_date_hint", start_date: @challenge.start_date.strftime("%B %d, %Y")) %></span>
+        </label>
+      </div>
+
+      <div class="form-control">
+        <%= form.label :end_date, t("admin.stat_windows.end_date"), class: "label" %>
+        <%= form.date_field :end_date, class: "input input-bordered w-full", min: @challenge.start_date, max: @challenge.end_date %>
+        <label class="label">
+          <span class="label-text-alt"><%= t("admin.stat_windows.end_date_hint", end_date: @challenge.end_date.strftime("%B %d, %Y")) %></span>
+        </label>
+      </div>
+
+      <div class="card-actions justify-end mt-6">
+        <%= link_to t("common.cancel"), admin_challenge_path(@challenge), class: "btn btn-outline" %>
+        <%= form.submit t("common.save"), class: "btn btn-primary" %>
+      </div>
+    <% end %>
+  </div>
+</div>

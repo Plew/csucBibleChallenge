@@ -332,5 +332,36 @@ RSpec.describe TopReadersStatistics, type: :service do
         expect(result[0][:most_recent_reading_at]).to be_a(ActiveSupport::TimeWithZone)
       end
     end
+
+    context 'with date_range parameter' do
+      let!(:user) { create(:user) }
+      let!(:enrollment) { create(:user_challenge_enrollment, user: user, challenge: challenge) }
+      let(:date_range) { (Date.current - 14)..(Date.current - 11) }
+
+      before do
+        # Complete all 10 readings
+        readings.each do |reading|
+          create(:user_reading, user: user, reading: reading, completed_on: reading.scheduled_date)
+        end
+      end
+
+      it 'filters statistics to only include readings within the date range' do
+        # date_range covers 4 days
+        result = described_class.call(challenge: challenge, date_range: date_range)
+
+        expect(result.length).to eq(1)
+        expect(result[0][:chapters_completed]).to eq(4)
+        expect(result[0][:chapters_scheduled]).to eq(4)
+        expect(result[0][:completion_percentage]).to eq(100)
+      end
+
+      it 'returns full stats when date_range is nil' do
+        result = described_class.call(challenge: challenge, date_range: nil)
+
+        expect(result.length).to eq(1)
+        expect(result[0][:chapters_completed]).to eq(10)
+        expect(result[0][:chapters_scheduled]).to eq(10)
+      end
+    end
   end
 end

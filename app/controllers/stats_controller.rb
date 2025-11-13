@@ -6,11 +6,15 @@ class StatsController < ApplicationController
   def index
     current_challenge = current_user.challenges.first
     @challenge = current_challenge
+    @stat_window = load_stat_window(current_challenge)
+    @available_stat_windows = current_challenge&.stat_windows&.ordered || []
+    date_range = @stat_window&.date_range
+
     @challenge_summary_stats = cached_challenge_summary_stats(current_challenge)
-    @personal_stats = cached_personal_stats(current_challenge)
-    @top_readers_data = cached_top_readers(current_challenge)
+    @personal_stats = cached_personal_stats(current_challenge, date_range)
+    @top_readers_data = cached_top_readers(current_challenge, date_range)
     @participant_count = cached_participant_count(current_challenge)
-    @top_groups_data = cached_top_groups(current_challenge)
+    @top_groups_data = cached_top_groups(current_challenge, date_range)
     @seven_day_leaderboard_data = cached_seven_day_window(current_challenge)
   end
 
@@ -35,11 +39,37 @@ class StatsController < ApplicationController
 
   private
 
-  def cached_top_readers(challenge)
+  def load_stat_window(challenge)
+    return nil unless challenge
+
+    # Check if stat_window_id is in params (for URL-based selection)
+    stat_window_id = params[:stat_window_id] || cookies[:stat_window_id]
+
+    # If "full" is selected, clear the cookie and return nil
+    if stat_window_id == "full"
+      cookies.delete(:stat_window_id)
+      return nil
+    end
+
+    # Load the stat window if ID is present
+    if stat_window_id.present?
+      stat_window = challenge.stat_windows.find_by(id: stat_window_id)
+      # Store in cookie for persistence
+      cookies[:stat_window_id] = stat_window_id if stat_window
+      return stat_window
+    end
+
+    nil
+  end
+
+  def cached_top_readers(challenge, date_range = nil)
     return [] unless challenge
 
-    Rails.cache.fetch("stats/top_readers/#{challenge.id}", expires_in: CACHE_EXPIRATION) do
-      TopReadersStatistics.call(challenge: challenge)
+    cache_key = "stats/top_readers/#{challenge.id}"
+    cache_key += "/#{date_range.first}_#{date_range.last}" if date_range
+
+    Rails.cache.fetch(cache_key, expires_in: CACHE_EXPIRATION) do
+      TopReadersStatistics.call(challenge: challenge, date_range: date_range)
     end
   end
 
@@ -51,11 +81,14 @@ class StatsController < ApplicationController
     end
   end
 
-  def cached_top_groups(challenge)
+  def cached_top_groups(challenge, date_range = nil)
     return [] unless challenge
 
-    Rails.cache.fetch("stats/top_groups/#{challenge.id}", expires_in: CACHE_EXPIRATION) do
-      TopGroupsStatistics.call(challenge: challenge)
+    cache_key = "stats/top_groups/#{challenge.id}"
+    cache_key += "/#{date_range.first}_#{date_range.last}" if date_range
+
+    Rails.cache.fetch(cache_key, expires_in: CACHE_EXPIRATION) do
+      TopGroupsStatistics.call(challenge: challenge, date_range: date_range)
     end
   end
 
@@ -75,26 +108,30 @@ class StatsController < ApplicationController
     end
   end
 
-  def cached_personal_stats(challenge)
+  def cached_personal_stats(challenge, date_range = nil)
     return {} unless challenge
 
-    Rails.cache.fetch("stats/personal/#{current_user.id}/#{challenge.id}", expires_in: CACHE_EXPIRATION) do
-      calculate_personal_stats(current_user, challenge)
+    cache_key = "stats/personal/#{current_user.id}/#{challenge.id}"
+    cache_key += "/#{date_range.first}_#{date_range.last}" if date_range
+
+    Rails.cache.fetch(cache_key, expires_in: CACHE_EXPIRATION) do
+      calculate_personal_stats(current_user, challenge, date_range)
     end
   end
 
-  def calculate_personal_stats(user, challenge)
+  def calculate_personal_stats(user, challenge, date_range = nil)
     current_date_in_tz = Time.current.in_time_zone(challenge.timezone).to_date
 
-    scheduled_count = challenge.readings
-                              .where("scheduled_date <= ?", current_date_in_tz)
-                              .count
+    scheduled_query = challenge.readings.where("scheduled_date <= ?", current_date_in_tz)
+    scheduled_query = scheduled_query.where(scheduled_date: date_range) if date_range
+    scheduled_count = scheduled_query.count
 
-    completed_count = user.user_readings
+    completed_query = user.user_readings
                          .joins(:reading)
                          .where(readings: { challenge_id: challenge.id })
                          .where("readings.scheduled_date <= ?", current_date_in_tz)
-                         .count
+    completed_query = completed_query.where(readings: { scheduled_date: date_range }) if date_range
+    completed_count = completed_query.count
 
     completion_percentage = scheduled_count.zero? ? 0 : (completed_count.to_f / scheduled_count * 100).round
 
@@ -103,6 +140,7 @@ class StatsController < ApplicationController
                             .joins(:reading)
                             .where(readings: { challenge_id: challenge.id })
                             .where("readings.scheduled_date <= ?", current_date_in_tz)
+    completed_readings = completed_readings.where(readings: { scheduled_date: date_range }) if date_range
 
     on_schedule_count = completed_readings
                        .where("date(user_readings.created_at) <= readings.scheduled_date")

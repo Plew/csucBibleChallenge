@@ -121,6 +121,8 @@ de:
     completed_on_time: "Pünktlich abgeschlossen"
     completed_late: "Verspätet abgeschlossen"
     not_completed: "Nicht abgeschlossen"
+    actions: "Aktionen"
+    are_you_sure: "Sind Sie sicher?"
 
   # Time units
   time:
@@ -264,6 +266,20 @@ de:
       no_users_selected: "Keine Benutzer ausgewählt. Bitte gehe zurück und wähle Teilnehmer aus."
       pacman_mode: "Pac-Man-Verfolgungsmodus"
       pacman_instructions: "Beobachten Sie, wie die Teilnehmer (Geister) versuchen, durch das Labyrinth zu entkommen. Pac-Man erscheint nach 5 Sekunden und jagt sie. Jeder gefangene Geist macht Pac-Man schneller. Der letzte Überlebende gewinnt!"
+    stat_windows:
+      title: "Statistikfenster"
+      new: "Neues Statistikfenster"
+      edit: "Statistikfenster bearbeiten"
+      name: "Name"
+      name_placeholder: "z.B. Erstes Quartal, Woche 1-4"
+      begin_date: "Startdatum"
+      begin_date_hint: "Muss am oder nach dem %{start_date} sein"
+      end_date: "Enddatum"
+      end_date_hint: "Muss am oder vor dem %{end_date} sein"
+      created: "Statistikfenster wurde erfolgreich erstellt"
+      updated: "Statistikfenster wurde erfolgreich aktualisiert"
+      deleted: "Statistikfenster wurde erfolgreich gelöscht"
+      no_windows: "Es wurden noch keine Statistikfenster erstellt"
 
   # Seven Day Lobby
   seven_day_lobby:
@@ -408,6 +424,8 @@ de:
     personal: "Persönlich"
     personal_stats: "Persönliche Statistiken"
     personal_description: "Dein individueller Lesefortschritt und deine Erfolge"
+    stat_window_label: "Statistikzeitraum"
+    full_challenge: "Gesamte Challenge"
     coming_soon: "Demnächst verfügbar"
     coming_soon_message: "Deine persönlichen Statistiken werden bald hier verfügbar sein."
     back_to_stats: "← Zurück zu Statistiken"

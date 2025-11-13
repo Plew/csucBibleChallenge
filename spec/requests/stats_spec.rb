@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "Stats", type: :request do
   let(:user) { FactoryBot.create(:user) }
-  let(:challenge) { FactoryBot.create(:challenge) }
+  let(:challenge) { FactoryBot.create(:challenge, start_date: Date.new(2025, 1, 1), end_date: Date.new(2025, 12, 31)) }
 
   before do
     login_as user
@@ -60,6 +60,33 @@ RSpec.describe "Stats", type: :request do
         expect(response).to have_http_status(:success)
         # Check that the page renders successfully without the message
         expect(response.body).to include('Challenge Summary')
+      end
+    end
+
+    context "with stat windows" do
+      let!(:stat_window) { FactoryBot.create(:stat_window, challenge: challenge, title: "Q1 Window", begin_date: Date.new(2025, 1, 1), end_date: Date.new(2025, 3, 31)) }
+
+      it "displays the stat window selector when stat windows exist" do
+        get stats_path
+        expect(response).to have_http_status(:success)
+        expect(response.body).to include("Q1 Window")
+      end
+
+      it "uses the stat window from params" do
+        get stats_path, params: { stat_window_id: stat_window.id }
+        expect(response).to have_http_status(:success)
+        expect(response.cookies['stat_window_id']).to eq(stat_window.id.to_s)
+      end
+
+      it "uses the stat window from cookies" do
+        get stats_path, headers: { 'HTTP_COOKIE' => "stat_window_id=#{stat_window.id}" }
+        expect(response).to have_http_status(:success)
+      end
+
+      it "clears cookie when 'full' is selected" do
+        get stats_path, params: { stat_window_id: 'full' }
+        expect(response).to have_http_status(:success)
+        expect(response.cookies['stat_window_id']).to be_nil
       end
     end
   end

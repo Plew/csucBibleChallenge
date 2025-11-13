@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 class GroupStatistics
-  attr_reader :group
+  attr_reader :group, :date_range
 
-  def initialize(group)
+  def initialize(group, date_range = nil)
     @group = group
+    @date_range = date_range
   end
 
   def group_size
@@ -56,10 +57,16 @@ class GroupStatistics
     group_user_ids = group.users.pluck(:id)
     challenge = group.challenge
     return 0 if group_user_ids.empty?
-    total_readings = challenge.readings.where("scheduled_date <= ?", Date.current).count
+
+    readings_query = challenge.readings.where("scheduled_date <= ?", Date.current)
+    readings_query = readings_query.where(scheduled_date: date_range) if date_range
+    total_readings = readings_query.count
     return 0 if total_readings.zero?
+
     percentages = group_user_ids.map do |user_id|
-      completed = UserReading.where(user_id: user_id).joins(:reading).where(readings: { challenge_id: challenge.id }).where("readings.scheduled_date <= ?", Date.current).count
+      completed_query = UserReading.where(user_id: user_id).joins(:reading).where(readings: { challenge_id: challenge.id }).where("readings.scheduled_date <= ?", Date.current)
+      completed_query = completed_query.where(readings: { scheduled_date: date_range }) if date_range
+      completed = completed_query.count
       (completed.to_f / total_readings * 100)
     end
     (percentages.sum / group_user_ids.size).round
@@ -70,10 +77,18 @@ class GroupStatistics
     challenge = group.challenge
     return 0 if group_users.empty?
 
-    # Calculate average on-schedule percentage across all group members using batch query
-    user_ids = group_users.pluck(:id)
-    percentages_by_user = OnScheduleStatistic.batch_percentages(user_ids, challenge)
-
-    (percentages_by_user.values.sum / group_users.size).round
+    # Calculate average on-schedule percentage across all group members
+    if date_range
+      # Use individual calculations when date_range is present
+      percentages = group_users.map do |user|
+        OnScheduleStatistic.new(user, challenge, date_range).percentage
+      end
+      (percentages.sum / group_users.size).round
+    else
+      # Use batch query when no date_range (more efficient)
+      user_ids = group_users.pluck(:id)
+      percentages_by_user = OnScheduleStatistic.batch_percentages(user_ids, challenge)
+      (percentages_by_user.values.sum / group_users.size).round
+    end
   end
 end

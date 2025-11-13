@@ -84,6 +84,7 @@ Rails.application.routes.draw do
       member do
         get :delete_confirmation
       end
+      resources :stat_windows, only: [ :index, :new, :create, :edit, :update, :destroy ]
     end
     resources :users, only: [ :index, :show ] do
       member do

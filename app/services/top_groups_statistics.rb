@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
 class TopGroupsStatistics
-  def self.call(challenge: nil)
-    new(challenge).call
+  def self.call(challenge: nil, date_range: nil)
+    new(challenge, date_range).call
   end
 
-  def initialize(challenge = nil)
+  def initialize(challenge = nil, date_range = nil)
     @challenge = challenge
+    @date_range = date_range
   end
 
   def call
@@ -14,7 +15,7 @@ class TopGroupsStatistics
 
     # Eager load users with their avatars for expandable group lists
     groups_scope.includes(users: { avatar_attachment: :blob }, challenge: :readings).map do |group|
-      group_stats = GroupStatistics.new(group)
+      group_stats = GroupStatistics.new(group, @date_range)
       {
         group: group,
         completion_percentage: group_stats.completion_percentage,
