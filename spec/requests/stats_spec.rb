@@ -62,57 +62,5 @@ RSpec.describe "Stats", type: :request do
         expect(response.body).to include('Challenge Summary')
       end
     end
-
-    context "with sprints" do
-      let!(:sprint) { FactoryBot.create(:sprint, challenge: challenge, title: "Q1 Sprint", begin_date: Date.new(2025, 1, 1), end_date: Date.new(2025, 3, 31)) }
-
-      it "displays the sprint selector when sprints exist" do
-        get stats_path
-        expect(response).to have_http_status(:success)
-        expect(response.body).to include("Q1 Sprint")
-      end
-
-      it "uses the sprint from params" do
-        get stats_path, params: { sprint_id: sprint.id }
-        expect(response).to have_http_status(:success)
-        expect(response.cookies['sprint_id']).to eq(sprint.id.to_s)
-      end
-
-      it "persists sprint selection in cookie with proper expiration" do
-        get stats_path, params: { sprint_id: sprint.id }
-        expect(response).to have_http_status(:success)
-
-        # Verify cookie is set
-        cookie_value = response.cookies['sprint_id']
-        expect(cookie_value).to eq(sprint.id.to_s)
-
-        # Verify cookie persists on subsequent request
-        get stats_path
-        expect(response).to have_http_status(:success)
-        # The cookie should still be present
-        expect(cookies[:sprint_id]).to eq(sprint.id.to_s)
-      end
-
-      it "uses the sprint from cookies" do
-        cookies[:sprint_id] = sprint.id
-        get stats_path
-        expect(response).to have_http_status(:success)
-      end
-
-      it "clears cookie when 'full' is selected" do
-        get stats_path, params: { sprint_id: 'full' }
-        expect(response).to have_http_status(:success)
-        expect(response.cookies['sprint_id']).to be_nil
-      end
-
-      it "clears invalid sprint_id from cookie" do
-        # Set an invalid sprint ID in the cookie
-        cookies[:sprint_id] = 99999
-        get stats_path
-        expect(response).to have_http_status(:success)
-        # Cookie should be cleared since sprint doesn't exist
-        expect(response.cookies['sprint_id']).to be_nil
-      end
-    end
   end
 end

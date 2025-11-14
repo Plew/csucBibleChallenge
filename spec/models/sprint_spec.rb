@@ -41,6 +41,74 @@ RSpec.describe Sprint, type: :model do
         expect(sprint).to be_valid
       end
     end
+
+    context "overlapping date validations" do
+      let(:challenge) { create(:challenge, start_date: Date.new(2025, 1, 1), end_date: Date.new(2025, 12, 31)) }
+      let!(:existing_sprint) { create(:sprint, challenge: challenge, begin_date: Date.new(2025, 3, 1), end_date: Date.new(2025, 3, 31)) }
+
+      it "prevents creating a sprint that completely overlaps an existing sprint" do
+        overlapping_sprint = build(:sprint, challenge: challenge, begin_date: Date.new(2025, 3, 10), end_date: Date.new(2025, 3, 20))
+        expect(overlapping_sprint).not_to be_valid
+        expect(overlapping_sprint.errors[:base]).to include("Sprint dates overlap with existing sprint in this challenge")
+      end
+
+      it "prevents creating a sprint that starts before and ends during an existing sprint" do
+        overlapping_sprint = build(:sprint, challenge: challenge, begin_date: Date.new(2025, 2, 15), end_date: Date.new(2025, 3, 15))
+        expect(overlapping_sprint).not_to be_valid
+        expect(overlapping_sprint.errors[:base]).to include("Sprint dates overlap with existing sprint in this challenge")
+      end
+
+      it "prevents creating a sprint that starts during and ends after an existing sprint" do
+        overlapping_sprint = build(:sprint, challenge: challenge, begin_date: Date.new(2025, 3, 15), end_date: Date.new(2025, 4, 15))
+        expect(overlapping_sprint).not_to be_valid
+        expect(overlapping_sprint.errors[:base]).to include("Sprint dates overlap with existing sprint in this challenge")
+      end
+
+      it "prevents creating a sprint that completely contains an existing sprint" do
+        overlapping_sprint = build(:sprint, challenge: challenge, begin_date: Date.new(2025, 2, 1), end_date: Date.new(2025, 4, 30))
+        expect(overlapping_sprint).not_to be_valid
+        expect(overlapping_sprint.errors[:base]).to include("Sprint dates overlap with existing sprint in this challenge")
+      end
+
+      it "prevents creating a sprint that touches the end date of an existing sprint" do
+        touching_sprint = build(:sprint, challenge: challenge, begin_date: Date.new(2025, 3, 31), end_date: Date.new(2025, 4, 30))
+        expect(touching_sprint).not_to be_valid
+        expect(touching_sprint.errors[:base]).to include("Sprint dates overlap with existing sprint in this challenge")
+      end
+
+      it "prevents creating a sprint that touches the start date of an existing sprint" do
+        touching_sprint = build(:sprint, challenge: challenge, begin_date: Date.new(2025, 2, 1), end_date: Date.new(2025, 3, 1))
+        expect(touching_sprint).not_to be_valid
+        expect(touching_sprint.errors[:base]).to include("Sprint dates overlap with existing sprint in this challenge")
+      end
+
+      it "allows creating a sprint with gaps between existing sprints" do
+        non_overlapping_sprint = build(:sprint, challenge: challenge, begin_date: Date.new(2025, 5, 1), end_date: Date.new(2025, 5, 31))
+        expect(non_overlapping_sprint).to be_valid
+      end
+
+      it "allows creating a sprint before an existing sprint with a gap" do
+        non_overlapping_sprint = build(:sprint, challenge: challenge, begin_date: Date.new(2025, 1, 1), end_date: Date.new(2025, 2, 28))
+        expect(non_overlapping_sprint).to be_valid
+      end
+
+      it "allows updating an existing sprint without overlap errors" do
+        existing_sprint.title = "Updated Sprint Title"
+        expect(existing_sprint).to be_valid
+      end
+
+      it "allows updating an existing sprint's dates within its own range" do
+        existing_sprint.begin_date = Date.new(2025, 3, 2)
+        existing_sprint.end_date = Date.new(2025, 3, 30)
+        expect(existing_sprint).to be_valid
+      end
+
+      it "allows creating a sprint in a different challenge with same dates" do
+        other_challenge = create(:challenge, start_date: Date.new(2025, 1, 1), end_date: Date.new(2025, 12, 31))
+        same_dates_sprint = build(:sprint, challenge: other_challenge, begin_date: Date.new(2025, 3, 1), end_date: Date.new(2025, 3, 31))
+        expect(same_dates_sprint).to be_valid
+      end
+    end
   end
 
   describe "scopes" do

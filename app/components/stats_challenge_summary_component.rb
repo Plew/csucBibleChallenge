@@ -62,7 +62,7 @@ class StatsChallengeSummaryComponent < ViewComponent::Base
     when "upcoming"
       "Starts in #{pluralize(days_until_start, 'day')}"
     when "active"
-      "#{pluralize(days_remaining, 'day')} remaining"
+      "#{pluralize(days_remaining, 'day')} remaining in this challenge"
     when "completed"
       "Challenge completed"
     end
