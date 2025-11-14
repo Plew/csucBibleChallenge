@@ -74,36 +74,36 @@
     </div>
   </div>
 
-  <!-- Stat Windows Section -->
+  <!-- Sprints Section -->
   <div class="mt-8">
     <div class="card bg-base-100 shadow-xl">
       <div class="card-body">
         <div class="flex justify-between items-center mb-4">
-          <h2 class="card-title"><%= t("admin.stat_windows.title") %></h2>
-          <%= link_to t("admin.stat_windows.new"), new_admin_challenge_stat_window_path(@challenge), class: "btn btn-primary btn-sm" %>
+          <h2 class="card-title"><%= t("admin.sprints.title") %></h2>
+          <%= link_to t("admin.sprints.new"), new_admin_challenge_sprint_path(@challenge), class: "btn btn-primary btn-sm" %>
         </div>
 
-        <% if @challenge.stat_windows.any? %>
+        <% if @challenge.sprints.any? %>
           <div class="overflow-x-auto">
             <table class="table table-zebra w-full">
               <thead>
                 <tr>
-                  <th><%= t("admin.stat_windows.name") %></th>
-                  <th><%= t("admin.stat_windows.begin_date") %></th>
-                  <th><%= t("admin.stat_windows.end_date") %></th>
+                  <th><%= t("admin.sprints.name") %></th>
+                  <th><%= t("admin.sprints.begin_date") %></th>
+                  <th><%= t("admin.sprints.end_date") %></th>
                   <th><%= t("common.actions") %></th>
                 </tr>
               </thead>
               <tbody>
-                <% @challenge.stat_windows.ordered.each do |stat_window| %>
+                <% @challenge.sprints.ordered.each do |sprint| %>
                   <tr>
-                    <td><%= stat_window.title %></td>
-                    <td><%= stat_window.begin_date.strftime("%B %d, %Y") %></td>
-                    <td><%= stat_window.end_date.strftime("%B %d, %Y") %></td>
+                    <td><%= sprint.title %></td>
+                    <td><%= sprint.begin_date.strftime("%B %d, %Y") %></td>
+                    <td><%= sprint.end_date.strftime("%B %d, %Y") %></td>
                     <td>
                       <div class="flex gap-2">
-                        <%= link_to t("common.edit"), edit_admin_challenge_stat_window_path(@challenge, stat_window), class: "btn btn-sm btn-outline" %>
-                        <%= button_to t("common.delete"), admin_challenge_stat_window_path(@challenge, stat_window), method: :delete, data: { turbo_confirm: t("common.are_you_sure") }, class: "btn btn-sm btn-error btn-outline" %>
+                        <%= link_to t("common.edit"), edit_admin_challenge_sprint_path(@challenge, sprint), class: "btn btn-sm btn-outline" %>
+                        <%= button_to t("common.delete"), admin_challenge_sprint_path(@challenge, sprint), method: :delete, data: { turbo_confirm: t("common.are_you_sure") }, class: "btn btn-sm btn-error btn-outline" %>
                       </div>
                     </td>
                   </tr>
@@ -112,7 +112,7 @@
             </table>
           </div>
         <% else %>
-          <p class="text-gray-500"><%= t("admin.stat_windows.no_windows") %></p>
+          <p class="text-gray-500"><%= t("admin.sprints.no_sprints") %></p>
         <% end %>
       </div>
     </div>

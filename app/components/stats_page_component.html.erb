@@ -18,19 +18,19 @@
       </div>
     <% end %>
 
-    <!-- Stat Window Selector -->
-    <% if available_stat_windows.any? %>
+    <!-- Sprint Selector -->
+    <% if available_sprints.any? %>
       <div class="mx-4">
         <div class="card bg-base-100">
           <div class="card-body px-4 py-3">
-            <label for="stat_window_selector" class="label">
-              <span class="label-text font-semibold"><%= t("stats.stat_window_label") %></span>
+            <label for="sprint_selector" class="label">
+              <span class="label-text font-semibold"><%= t("stats.sprint_label") %></span>
             </label>
-            <select id="stat_window_selector" class="select select-bordered w-full" data-action="change->stat-window#change">
-              <option value="full" <%= "selected" unless stat_window %>><%= t("stats.full_challenge") %></option>
-              <% available_stat_windows.each do |window| %>
-                <option value="<%= window.id %>" <%= "selected" if stat_window&.id == window.id %>>
-                  <%= window.title %> (<%= window.begin_date.strftime("%b %d") %> - <%= window.end_date.strftime("%b %d, %Y") %>)
+            <select id="sprint_selector" class="select select-bordered w-full" data-action="change->sprint#change">
+              <option value="full" <%= "selected" unless sprint %>><%= t("stats.full_challenge") %></option>
+              <% available_sprints.each do |s| %>
+                <option value="<%= s.id %>" <%= "selected" if sprint&.id == s.id %>>
+                  <%= s.title %> (<%= s.begin_date.strftime("%b %d") %> - <%= s.end_date.strftime("%b %d, %Y") %>)
                 </option>
               <% end %>
             </select>

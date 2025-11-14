@@ -1,4 +1,4 @@
-class StatWindow < ApplicationRecord
+class Sprint < ApplicationRecord
   belongs_to :challenge
 
   validates :title, presence: true

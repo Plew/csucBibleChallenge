@@ -1,6 +1,6 @@
 FactoryBot.define do
-  factory :stat_window do
-    title { "Test Stat Window" }
+  factory :sprint do
+    title { "Test Sprint" }
     association :challenge
 
     transient do

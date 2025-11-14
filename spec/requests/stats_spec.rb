@@ -63,31 +63,31 @@ RSpec.describe "Stats", type: :request do
       end
     end
 
-    context "with stat windows" do
-      let!(:stat_window) { FactoryBot.create(:stat_window, challenge: challenge, title: "Q1 Window", begin_date: Date.new(2025, 1, 1), end_date: Date.new(2025, 3, 31)) }
+    context "with sprints" do
+      let!(:sprint) { FactoryBot.create(:sprint, challenge: challenge, title: "Q1 Sprint", begin_date: Date.new(2025, 1, 1), end_date: Date.new(2025, 3, 31)) }
 
-      it "displays the stat window selector when stat windows exist" do
+      it "displays the sprint selector when sprints exist" do
         get stats_path
         expect(response).to have_http_status(:success)
-        expect(response.body).to include("Q1 Window")
+        expect(response.body).to include("Q1 Sprint")
       end
 
-      it "uses the stat window from params" do
-        get stats_path, params: { stat_window_id: stat_window.id }
+      it "uses the sprint from params" do
+        get stats_path, params: { sprint_id: sprint.id }
         expect(response).to have_http_status(:success)
-        expect(response.cookies['stat_window_id']).to eq(stat_window.id.to_s)
+        expect(response.cookies['sprint_id']).to eq(sprint.id.to_s)
       end
 
-      it "uses the stat window from cookies" do
-        cookies[:stat_window_id] = stat_window.id
+      it "uses the sprint from cookies" do
+        cookies[:sprint_id] = sprint.id
         get stats_path
         expect(response).to have_http_status(:success)
       end
 
       it "clears cookie when 'full' is selected" do
-        get stats_path, params: { stat_window_id: 'full' }
+        get stats_path, params: { sprint_id: 'full' }
         expect(response).to have_http_status(:success)
-        expect(response.cookies['stat_window_id']).to be_nil
+        expect(response.cookies['sprint_id']).to be_nil
       end
     end
   end

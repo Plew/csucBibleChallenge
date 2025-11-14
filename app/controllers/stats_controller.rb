@@ -6,9 +6,9 @@ class StatsController < ApplicationController
   def index
     current_challenge = current_user.challenges.first
     @challenge = current_challenge
-    @stat_window = load_stat_window(current_challenge)
-    @available_stat_windows = current_challenge&.stat_windows&.ordered || []
-    date_range = @stat_window&.date_range
+    @sprint = load_sprint(current_challenge)
+    @available_sprints = current_challenge&.sprints&.ordered || []
+    date_range = @sprint&.date_range
 
     @challenge_summary_stats = cached_challenge_summary_stats(current_challenge)
     @personal_stats = cached_personal_stats(current_challenge, date_range)
@@ -39,24 +39,24 @@ class StatsController < ApplicationController
 
   private
 
-  def load_stat_window(challenge)
+  def load_sprint(challenge)
     return nil unless challenge
 
-    # Check if stat_window_id is in params (for URL-based selection)
-    stat_window_id = params[:stat_window_id] || cookies[:stat_window_id]
+    # Check if sprint_id is in params (for URL-based selection)
+    sprint_id = params[:sprint_id] || cookies[:sprint_id]
 
     # If "full" is selected, clear the cookie and return nil
-    if stat_window_id == "full"
-      cookies.delete(:stat_window_id)
+    if sprint_id == "full"
+      cookies.delete(:sprint_id)
       return nil
     end
 
-    # Load the stat window if ID is present
-    if stat_window_id.present?
-      stat_window = challenge.stat_windows.find_by(id: stat_window_id)
+    # Load the sprint if ID is present
+    if sprint_id.present?
+      sprint = challenge.sprints.find_by(id: sprint_id)
       # Store in cookie for persistence
-      cookies[:stat_window_id] = stat_window_id if stat_window
-      return stat_window
+      cookies[:sprint_id] = sprint_id if sprint
+      return sprint
     end
 
     nil

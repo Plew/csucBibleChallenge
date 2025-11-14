@@ -5,11 +5,11 @@ export default class extends Controller {
     const selectedValue = event.target.value
     const currentUrl = new URL(window.location)
 
-    // Update URL with stat_window_id parameter
+    // Update URL with sprint_id parameter
     if (selectedValue === "full") {
-      currentUrl.searchParams.delete("stat_window_id")
+      currentUrl.searchParams.delete("sprint_id")
     } else {
-      currentUrl.searchParams.set("stat_window_id", selectedValue)
+      currentUrl.searchParams.set("sprint_id", selectedValue)
     }
 
     // Reload the page with the new parameter
