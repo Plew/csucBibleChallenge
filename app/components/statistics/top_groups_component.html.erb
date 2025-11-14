@@ -12,6 +12,9 @@
           <% on_schedule = group_data[:on_schedule_percentage] %>
           <% size = group_data[:group_size] %>
           <% chapters = group_data[:total_chapters_read] %>
+          <% today_percentage = group_data[:today_check_in_percentage]&.round || 0 %>
+          <% today_completed = group_data[:today_members_completed] || 0 %>
+          <% today_total = group_data[:today_total_members] || 0 %>
 
           <div class="bg-base-100 rounded-lg">
             <div class="collapse">
@@ -28,14 +31,15 @@
                     <div class="text-xs opacity-70">
                       <%= pluralize(size, t('common.member_one'), t('common.member_other')) %>
                     </div>
+                    <!-- Today's check-in squares -->
+                    <div class="flex gap-0.5 mt-1">
+                      <%= render_check_in_squares(today_completed, today_total) %>
+                    </div>
                   </div>
 
-                  <div class="flex-shrink-0 flex gap-3 items-center">
-                    <div class="radial-progress text-accent" style="--value:<%= percentage %>; --size:2.5rem; --thickness:2px;" aria-valuenow="<%= percentage %>" role="progressbar">
-                      <span class="text-xs font-bold"><%= percentage %></span>
-                    </div>
-                    <div class="radial-progress text-info" style="--value:<%= on_schedule %>; --size:2.5rem; --thickness:2px;" aria-valuenow="<%= on_schedule %>" role="progressbar">
-                      <span class="text-xs font-bold"><%= on_schedule %></span>
+                  <div class="flex-shrink-0 flex items-center">
+                    <div class="radial-progress text-success" style="--value:<%= today_percentage %>; --size:2.5rem; --thickness:2px;" aria-valuenow="<%= today_percentage %>" role="progressbar">
+                      <span class="text-xs font-bold"><%= today_percentage %></span>
                     </div>
                   </div>
                 </div>

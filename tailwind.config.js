@@ -9,6 +9,10 @@ module.exports = {
     './app/components/**/*.{erb,haml,html,slim}'
   ],
   safelist: [
+    'w-1',
+    'h-1',
+    'w-2',
+    'h-2',
     'w-3',
     'h-3',
     'bg-success',
@@ -18,10 +22,9 @@ module.exports = {
     'ring-2',
     'ring-primary',
     'ring-offset-1',
-    'w-1',
-    'h-1',
     'bg-white',
     'rounded-full',
+    'rounded-sm',
     'absolute',
     'inset-0',
     'flex',
