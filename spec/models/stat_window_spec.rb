@@ -63,7 +63,7 @@ RSpec.describe StatWindow, type: :model do
     describe ".ordered" do
       it "returns stat windows ordered by begin_date ascending" do
         windows = StatWindow.ordered
-        expect(windows).to eq([window2, window1, window3])
+        expect(windows).to eq([ window2, window1, window3 ])
       end
     end
   end

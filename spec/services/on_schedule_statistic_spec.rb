@@ -131,10 +131,12 @@ RSpec.describe OnScheduleStatistic, type: :service do
     end
 
     context 'with timezone considerations' do
-      let(:pst_challenge) { create(:challenge, start_date: Date.current - 5, end_date: Date.current + 5, timezone: 'Pacific Time (US & Canada)') }
+      let(:pst_tz) { ActiveSupport::TimeZone['Pacific Time (US & Canada)'] }
+      let(:pst_current_date) { Time.current.in_time_zone(pst_tz).to_date }
+      let(:pst_challenge) { create(:challenge, start_date: pst_current_date - 5, end_date: pst_current_date + 5, timezone: 'Pacific Time (US & Canada)') }
       let!(:pst_enrollment) { create(:user_challenge_enrollment, user: user, challenge: pst_challenge) }
       let!(:pst_readings) do
-        dates = (Date.current - 2..Date.current).to_a
+        dates = (pst_current_date - 2..pst_current_date).to_a
         create_list(:reading, 3, challenge: pst_challenge).each_with_index do |reading, i|
           reading.update!(scheduled_date: dates[i])
         end
@@ -145,7 +147,6 @@ RSpec.describe OnScheduleStatistic, type: :service do
       before do
         # Simulate completing reading at 11 PM PST on scheduled date
         # This should count as on-schedule even though it might be next day in UTC
-        pst_tz = ActiveSupport::TimeZone['Pacific Time (US & Canada)']
         scheduled_time = pst_tz.parse("#{pst_readings.first.scheduled_date} 23:00:00")
 
         create(:user_reading,

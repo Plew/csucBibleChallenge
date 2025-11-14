@@ -79,7 +79,8 @@ RSpec.describe "Stats", type: :request do
       end
 
       it "uses the stat window from cookies" do
-        get stats_path, headers: { 'HTTP_COOKIE' => "stat_window_id=#{stat_window.id}" }
+        cookies[:stat_window_id] = stat_window.id
+        get stats_path
         expect(response).to have_http_status(:success)
       end
 
