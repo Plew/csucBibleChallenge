@@ -8,6 +8,7 @@ class Admin::SprintsController < Admin::BaseController
 
   def new
     @sprint = @challenge.sprints.build
+    @readings = @challenge.readings.order(:scheduled_date)
   end
 
   def create
@@ -16,17 +17,20 @@ class Admin::SprintsController < Admin::BaseController
     if @sprint.save
       redirect_to admin_challenge_sprints_path(@challenge), notice: t("admin.sprints.created")
     else
+      @readings = @challenge.readings.order(:scheduled_date)
       render :new, status: :unprocessable_entity
     end
   end
 
   def edit
+    @readings = @challenge.readings.order(:scheduled_date)
   end
 
   def update
     if @sprint.update(sprint_params)
       redirect_to admin_challenge_sprints_path(@challenge), notice: t("admin.sprints.updated")
     else
+      @readings = @challenge.readings.order(:scheduled_date)
       render :edit, status: :unprocessable_entity
     end
   end

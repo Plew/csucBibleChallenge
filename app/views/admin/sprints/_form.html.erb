@@ -1,6 +1,8 @@
-<div class="card bg-base-100 shadow-xl max-w-2xl">
-  <div class="card-body">
-    <%= form_with(model: [:admin, @challenge, @sprint], local: true, class: "space-y-4") do |form| %>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+  <!-- Sprint Form -->
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body">
+      <%= form_with(model: [:admin, @challenge, @sprint], local: true, class: "space-y-4") do |form| %>
       <% if @sprint.errors.any? %>
         <div class="alert alert-error">
           <h2 class="font-bold"><%= pluralize(@sprint.errors.count, "error") %> prohibited this sprint from being saved:</h2>
@@ -33,10 +35,38 @@
         </label>
       </div>
 
-      <div class="card-actions justify-end mt-6">
-        <%= link_to t("common.cancel"), admin_challenge_path(@challenge), class: "btn btn-outline" %>
-        <%= form.submit t("common.save"), class: "btn btn-primary" %>
+        <div class="card-actions justify-end mt-6">
+          <%= link_to t("common.cancel"), admin_challenge_path(@challenge), class: "btn btn-outline" %>
+          <%= form.submit t("common.save"), class: "btn btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Readings Schedule Reference -->
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body">
+      <h3 class="card-title text-lg"><%= t("admin.sprints.readings_schedule") %></h3>
+      <p class="text-sm text-gray-600 mb-4"><%= t("admin.sprints.readings_schedule_hint") %></p>
+
+      <div class="overflow-y-auto max-h-96">
+        <table class="table table-sm table-zebra">
+          <thead class="sticky top-0 bg-base-100">
+            <tr>
+              <th><%= t("admin.sprints.date") %></th>
+              <th><%= t("admin.sprints.reading") %></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @readings.each do |reading| %>
+              <tr>
+                <td class="text-nowrap"><%= reading.scheduled_date.strftime("%b %d, %Y") %></td>
+                <td><%= book_number_to_name(reading.book_number) %> <%= reading.chapter_number %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
       </div>
-    <% end %>
+    </div>
   </div>
 </div>

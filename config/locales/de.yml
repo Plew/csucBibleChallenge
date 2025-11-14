@@ -280,6 +280,10 @@ de:
       updated: "Sprint wurde erfolgreich aktualisiert"
       deleted: "Sprint wurde erfolgreich gelöscht"
       no_sprints: "Es wurden noch keine Sprints erstellt"
+      readings_schedule: "Leseplan"
+      readings_schedule_hint: "Nutzen Sie diesen Zeitplan als Referenz beim Festlegen Ihrer Sprint-Daten"
+      date: "Datum"
+      reading: "Lesung"
 
   # Seven Day Lobby
   seven_day_lobby:

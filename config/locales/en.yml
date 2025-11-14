@@ -335,6 +335,10 @@ en:
       updated: "Sprint was successfully updated"
       deleted: "Sprint was successfully deleted"
       no_sprints: "No sprints have been created yet"
+      readings_schedule: "Readings Schedule"
+      readings_schedule_hint: "Reference this schedule when setting your sprint dates"
+      date: "Date"
+      reading: "Reading"
 
   # Seven Day Lobby
   seven_day_lobby:
