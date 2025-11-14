@@ -31,13 +31,13 @@
                     <div class="text-xs opacity-70">
                       <%= pluralize(size, t('common.member_one'), t('common.member_other')) %>
                     </div>
-                    <!-- Today's check-in squares -->
-                    <div class="flex gap-0.5 mt-1">
-                      <%= render_check_in_squares(today_completed, today_total) %>
-                    </div>
                   </div>
 
-                  <div class="flex-shrink-0 flex items-center">
+                  <div class="flex-shrink-0 flex items-center gap-3">
+                    <!-- Today's check-in squares -->
+                    <div class="flex flex-wrap gap-0.5 max-w-[100px]">
+                      <%= render_check_in_squares(today_completed, today_total) %>
+                    </div>
                     <div class="radial-progress text-success" style="--value:<%= today_percentage %>; --size:2.5rem; --thickness:2px;" aria-valuenow="<%= today_percentage %>" role="progressbar">
                       <span class="text-xs font-bold"><%= today_percentage %></span>
                     </div>
