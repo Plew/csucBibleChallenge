@@ -98,7 +98,7 @@ RSpec.describe AddBooksToChallenge, type: :service do
 
         # Check Philemon (book 57) has only chapter 1
         philemon_readings = challenge.readings.where(book_number: 57).order(:chapter_number)
-        expect(philemon_readings.pluck(:chapter_number)).to eq([1])
+        expect(philemon_readings.pluck(:chapter_number)).to eq([ 1 ])
 
         # Check Revelation (book 66) has chapters 1-22
         revelation_readings = challenge.readings.where(book_number: 66).order(:chapter_number)
