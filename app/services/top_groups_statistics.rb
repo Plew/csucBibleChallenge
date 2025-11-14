@@ -29,7 +29,7 @@ class TopGroupsStatistics
         today_members_completed: calculate_today_members_completed(group, today),
         today_total_members: group_stats.group_size
       }
-    end.sort_by { |group_data| -group_data[:completion_percentage] }
+    end.sort_by { |group_data| -group_data[:today_check_in_percentage] }
        .first(20)
   end
 
