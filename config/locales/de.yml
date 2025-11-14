@@ -450,7 +450,7 @@ de:
     on_time_short: "Pünktlich"
     no_reading_data: "Noch keine Lesedaten verfügbar"
     leaderboard_message: "Beginne zu lesen, um in der Bestenliste zu erscheinen!"
-    top_groups: "Gruppen Check-ins Heute"
+    top_groups: "Gruppen Lesung % Heute"
     group_count:
       one: "%{count} Gruppe"
       other: "%{count} Gruppen"
