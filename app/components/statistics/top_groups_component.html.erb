@@ -35,7 +35,7 @@
 
                   <div class="flex-shrink-0 flex items-center gap-3">
                     <!-- Today's check-in squares -->
-                    <div class="flex flex-wrap gap-0.5 max-w-[100px]">
+                    <div class="flex flex-wrap gap-1 max-w-[120px]">
                       <%= render_check_in_squares(today_completed, today_total) %>
                     </div>
                     <div class="radial-progress text-success" style="--value:<%= today_percentage %>; --size:2.5rem; --thickness:2px;" aria-valuenow="<%= today_percentage %>" role="progressbar">

@@ -25,7 +25,7 @@ class Statistics::TopGroupsComponent < ViewComponent::Base
     # Render squares similar to reading history graph
     squares = (0...total).map do |i|
       filled = i < completed
-      square_class = filled ? "w-2 h-2 rounded-sm bg-success" : "w-2 h-2 rounded-sm bg-base-300"
+      square_class = filled ? "w-3 h-3 rounded-sm bg-success" : "w-3 h-3 rounded-sm border border-base-300"
       "<div class=\"#{square_class}\"></div>"
     end
 
