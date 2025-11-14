@@ -54,9 +54,14 @@ class StatsController < ApplicationController
     # Load the sprint if ID is present
     if sprint_id.present?
       sprint = challenge.sprints.find_by(id: sprint_id)
-      # Store in cookie for persistence
-      cookies[:sprint_id] = sprint_id if sprint
-      return sprint
+      if sprint
+        # Store in cookie for persistence with explicit options
+        cookies[:sprint_id] = { value: sprint_id.to_s, expires: 1.year.from_now }
+        return sprint
+      else
+        # Sprint not found, clear invalid cookie
+        cookies.delete(:sprint_id)
+      end
     end
 
     nil
