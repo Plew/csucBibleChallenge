@@ -22,15 +22,18 @@ class Statistics::TopGroupsComponent < ViewComponent::Base
   def render_check_in_squares(completed, total)
     return "" if total.zero?
 
-    # Render squares similar to reading history graph
-    squares = (0...total).map do |i|
-      filled = i < completed
-      if filled
-        "<div class=\"w-3 h-3 rounded-sm bg-success\"></div>"
-      else
-        # Use inline style to match exact success color from DaisyUI
-        "<div class=\"w-3 h-3 rounded-sm border-2 bg-transparent\" style=\"border-color: oklch(var(--su));\"></div>"
-      end
+    # Render squares with empty squares on the left, filled on the right
+    empty_count = total - completed
+    squares = []
+
+    # Add empty squares first
+    empty_count.times do
+      squares << "<div class=\"w-3 h-3 rounded-sm border-2 bg-transparent\" style=\"border-color: oklch(var(--su));\"></div>"
+    end
+
+    # Add filled squares
+    completed.times do
+      squares << "<div class=\"w-3 h-3 rounded-sm bg-success\"></div>"
     end
 
     squares.join.html_safe
