@@ -16,7 +16,7 @@ class Admin::ChallengeTransfersController < Admin::BaseController
         redirect_to admin_change_challenge_path, notice: service.success_message
       end
     else
-      redirect_to admin_change_challenge_path, alert: service.errors.join('; ')
+      redirect_to admin_change_challenge_path, alert: service.errors.join("; ")
     end
   end
 end

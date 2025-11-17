@@ -16,7 +16,7 @@ RSpec.describe Admin::ChallengeTransfersController, type: :controller do
       challenge1 = create(:challenge)
       challenge2 = create(:challenge)
       get :new
-      expect(assigns(:challenges)).to match_array([challenge1, challenge2])
+      expect(assigns(:challenges)).to match_array([ challenge1, challenge2 ])
     end
   end
 
@@ -54,7 +54,7 @@ RSpec.describe Admin::ChallengeTransfersController, type: :controller do
 
     context 'when service has errors' do
       before do
-        allow_any_instance_of(ChallengeTransferService).to receive(:errors).and_return(['Test error'])
+        allow_any_instance_of(ChallengeTransferService).to receive(:errors).and_return([ 'Test error' ])
       end
 
       it 'redirects with error message' do

@@ -85,8 +85,8 @@ RSpec.describe ChallengeTransferService do
         new_group1 = to_challenge.groups.find_by(name: 'Team Alpha')
         new_group2 = to_challenge.groups.find_by(name: 'Team Beta')
 
-        expect(new_group1.users).to match_array([user1, user2, group_creator])
-        expect(new_group2.users).to match_array([user3])
+        expect(new_group1.users).to match_array([ user1, user2, group_creator ])
+        expect(new_group2.users).to match_array([ user3 ])
       end
 
       it 'leaves old groups in the source challenge' do
@@ -126,7 +126,7 @@ RSpec.describe ChallengeTransferService do
 
       it 'skips the already enrolled user' do
         service.call
-        expect(to_challenge.users).to match_array([user1, user2])
+        expect(to_challenge.users).to match_array([ user1, user2 ])
         expect(from_challenge.reload.users).to be_empty
       end
 
@@ -187,7 +187,7 @@ RSpec.describe ChallengeTransferService do
         new_group1 = to_challenge.groups.find_by(name: 'Group 1')
         new_group2 = to_challenge.groups.find_by(name: 'Group 2')
 
-        expect(user1.reload.groups).to match_array([new_group1, new_group2])
+        expect(user1.reload.groups).to match_array([ new_group1, new_group2 ])
       end
     end
   end
@@ -215,7 +215,7 @@ RSpec.describe ChallengeTransferService do
 
     before do
       service.call
-      service.instance_variable_set(:@errors, ['Test error'])
+      service.instance_variable_set(:@errors, [ 'Test error' ])
     end
 
     it 'returns a formatted error message' do
