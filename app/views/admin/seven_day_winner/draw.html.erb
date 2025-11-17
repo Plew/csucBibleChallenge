@@ -1,4 +1,11 @@
 <div class="container mx-auto px-4 py-8">
+  <div class="text-sm breadcrumbs mb-4">
+    <ul>
+      <li><%= link_to "Admin Dashboard", admin_root_path, class: "link link-hover" %></li>
+      <li><%= t('admin.seven_day_winner.draw_title') %></li>
+    </ul>
+  </div>
+
   <div class="flex justify-between items-center mb-8">
     <h1 class="text-3xl font-bold"><%= t('admin.seven_day_winner.draw_title') %></h1>
     <%= link_to t('common.back'), challenge_seven_day_lobby_path(@challenge), class: "btn btn-outline" %>

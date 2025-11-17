@@ -1,4 +1,12 @@
 <div class="container mx-auto px-4 py-8">
+  <div class="text-sm breadcrumbs mb-4">
+    <ul>
+      <li><%= link_to "Admin Dashboard", admin_root_path, class: "link link-hover" %></li>
+      <li><%= link_to "Manage Challenges", admin_challenges_path, class: "link link-hover" %></li>
+      <li><%= @challenge.title %></li>
+    </ul>
+  </div>
+
   <div class="flex justify-between items-center mb-8">
     <h1 class="text-3xl font-bold"><%= @challenge.title %></h1>
     <div class="space-x-2">

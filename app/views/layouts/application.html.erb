@@ -87,7 +87,7 @@
 
   </div>
 
-  <% if logged_in? && current_user.challenges.any? %>
+  <% if logged_in? && current_user.challenges.any? && !controller.class.name.start_with?('Admin::') %>
     <% user_challenge = current_user.challenges.first %>
     <% if user_challenge && Date.current >= user_challenge.start_date %>
       <%= render(NavBarComponent.new) %>
