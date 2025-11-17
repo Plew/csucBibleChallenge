@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -e
+
+echo "🚀 Deploying to staging environment..."
+echo ""
+
+kamal deploy -d staging
+
+echo ""
+echo "✅ Staging deployment complete!"
