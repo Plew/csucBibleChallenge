@@ -47,6 +47,7 @@ builder:
 #
 env:
   clear:
+    RAILS_ENV: production
     APP_HOST: csmbiblechallenge.com
     JOB_CONCURRENCY: 1
     RAILS_MAX_THREADS: 5

@@ -1,0 +1,22 @@
+# Staging-specific overrides for config/deploy.yml
+# Deploy with: kamal deploy -d staging
+
+# Override proxy hosts for staging
+proxy:
+  hosts:
+    - staging.csmbiblechallenge.com
+
+# Override environment variables for staging
+env:
+  clear:
+    RAILS_ENV: staging
+    APP_HOST: staging.csmbiblechallenge.com
+    JOB_CONCURRENCY: 1
+    RAILS_MAX_THREADS: 5
+  secret:
+    - RAILS_MASTER_KEY
+
+# Use different storage paths on the same server
+volumes:
+  - "/db/reverse-staging:/rails/sqlite"
+  - "/storage/reverse-staging:/rails/storage"

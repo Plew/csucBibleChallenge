@@ -9,6 +9,9 @@
 #     priority: 2
 #     schedule: at 5am every day
 
+staging:
+  # No recurring jobs in staging to prevent emails and other automated tasks
+
 production:
   daily_challenge_summary:
     class: DailyChallengeSummaryJob
