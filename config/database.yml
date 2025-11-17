@@ -32,9 +32,19 @@ production:
   database: storage/production.sqlite3
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 10 } %>
 
+staging:
+  <<: *default
+  database: storage/staging.sqlite3
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 10 } %>
+
 queue:
   production:
     <<: *default
     database: storage/queue_production.sqlite3
+    migrations_paths: db/queue_migrate
+    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 10 } %>
+  staging:
+    <<: *default
+    database: storage/queue_staging.sqlite3
     migrations_paths: db/queue_migrate
     pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 10 } %>
