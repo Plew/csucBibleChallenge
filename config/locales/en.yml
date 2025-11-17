@@ -505,7 +505,7 @@ en:
     on_time_short: "On Time"
     no_reading_data: "No reading data available yet"
     leaderboard_message: "Start reading to appear on the leaderboard!"
-    top_groups: "Top Groups"
+    top_groups: "Group Reading % Today"
     group_count:
       one: "%{count} group"
       other: "%{count} groups"

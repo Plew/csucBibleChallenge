@@ -1,7 +1,7 @@
 <div class="collapse collapse-arrow border-base-300 bg-base-200 border">
   <input type="checkbox" id="top-groups-collapse">
   <label for="top-groups-collapse" class="collapse-title text-xl font-medium flex items-center gap-2 pr-12">
-    <span class="truncate"><%= t('stats.top_groups') %>: <%= t('stats.group_count', count: group_count) %></span>
+    <span class="truncate"><%= t('stats.top_groups') %></span>
   </label>
   <div class="collapse-content">
     <% if has_groups? %>
@@ -12,6 +12,9 @@
           <% on_schedule = group_data[:on_schedule_percentage] %>
           <% size = group_data[:group_size] %>
           <% chapters = group_data[:total_chapters_read] %>
+          <% today_percentage = group_data[:today_check_in_percentage]&.round || 0 %>
+          <% today_completed = group_data[:today_members_completed] || 0 %>
+          <% today_total = group_data[:today_total_members] || 0 %>
 
           <div class="bg-base-100 rounded-lg">
             <div class="collapse">
@@ -20,7 +23,7 @@
                 <div class="relative flex items-center space-x-3">
                   <div class="absolute top-0 left-0 text-[9px] opacity-40 leading-none"><%= index + 1 %></div>
 
-                  <div class="flex-grow min-w-0 pl-4">
+                  <div class="flex-grow min-w-0 pl-2">
                     <div class="font-medium text-base truncate"><%= group.name %></div>
                     <% if group.motto.present? %>
                       <div class="text-xs text-base-content/70 italic break-words"><%= group.motto %></div>
@@ -30,12 +33,13 @@
                     </div>
                   </div>
 
-                  <div class="flex-shrink-0 flex gap-3 items-center">
-                    <div class="radial-progress text-accent" style="--value:<%= percentage %>; --size:2.5rem; --thickness:2px;" aria-valuenow="<%= percentage %>" role="progressbar">
-                      <span class="text-xs font-bold"><%= percentage %></span>
+                  <div class="flex-shrink-0 flex items-center gap-3">
+                    <!-- Today's check-in squares -->
+                    <div class="flex flex-wrap gap-1 max-w-[120px]">
+                      <%= render_check_in_squares(today_completed, today_total) %>
                     </div>
-                    <div class="radial-progress text-info" style="--value:<%= on_schedule %>; --size:2.5rem; --thickness:2px;" aria-valuenow="<%= on_schedule %>" role="progressbar">
-                      <span class="text-xs font-bold"><%= on_schedule %></span>
+                    <div class="radial-progress text-success" style="--value:<%= today_percentage %>; --size:2.5rem; --thickness:2px;" aria-valuenow="<%= today_percentage %>" role="progressbar">
+                      <span class="text-xs font-bold"><%= today_percentage %></span>
                     </div>
                   </div>
                 </div>
