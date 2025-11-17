@@ -54,7 +54,16 @@
       "Bash(git worktree:*)",
       "Bash(chmod:*)",
       "Bash(kamal app logs:*)",
-      "Bash(kamal app details:*)"
+      "Bash(kamal app details:*)",
+      "mcp__chrome-devtools__list_pages",
+      "mcp__chrome-devtools__navigate_page",
+      "mcp__chrome-devtools__resize_page",
+      "mcp__chrome-devtools__take_snapshot",
+      "mcp__chrome-devtools__click",
+      "mcp__chrome-devtools__fill",
+      "mcp__chrome-devtools__wait_for",
+      "mcp__chrome-devtools__take_screenshot",
+      "mcp__chrome-devtools__evaluate_script"
     ],
     "deny": []
   }
