@@ -500,6 +500,8 @@ en:
     challenge_progress: "Challenge Progress"
     active_sprint: "Active Sprint"
     remaining_in_sprint: "remaining in this sprint"
+    challenge_stats: "Challenge Stats"
+    sprint_stats: "%{sprint_title} Sprint Stats"
     reader_count:
       one: "%{count} reader"
       other: "%{count} readers"

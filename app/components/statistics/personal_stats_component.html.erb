@@ -4,25 +4,64 @@
     <span class="truncate"><%= t('stats.personal') %></span>
   </label>
   <div class="collapse-content">
-    <div class="flex flex-col items-center gap-8 max-w-md mx-auto pt-4">
-      <!-- Completion Percentage Radial -->
-      <div class="flex flex-col items-center">
-        <div class="radial-progress text-accent" style="--value:<%= completion_percentage %>; --size:16rem; --thickness:1rem;" aria-valuenow="<%= completion_percentage %>" role="progressbar">
-          <span class="text-3xl font-bold"><%= completion_percentage %>%</span>
-        </div>
-        <div class="text-sm text-center mt-2 opacity-70 max-w-[16rem]">
-          <%= t('stats.chapters_read', completed: chapters_completed, scheduled: chapters_scheduled) %>
-        </div>
-      </div>
+    <div class="flex flex-col gap-6 pt-4">
+      <!-- Sprint Stats Section (only if there's an active sprint) -->
+      <% if has_active_sprint? %>
+        <div class="w-full">
+          <h3 class="text-sm font-semibold text-center mb-3 opacity-70"><%= t('stats.sprint_stats', sprint_title: current_sprint.title) %></h3>
+          <div class="flex justify-around gap-8 py-3 px-4">
+            <%= render Statistics::RadialProgressComponent.new(
+              percentage: sprint_completion_percentage,
+              label: t('stats.chapters_read_short'),
+              color: "accent"
+            ) %>
 
-      <!-- On Schedule Percentage Radial -->
-      <div class="flex flex-col items-center">
-        <div class="radial-progress text-info" style="--value:<%= on_schedule_percentage %>; --size:16rem; --thickness:1rem;" aria-valuenow="<%= on_schedule_percentage %>" role="progressbar">
-          <span class="text-3xl font-bold"><%= on_schedule_percentage %>%</span>
+            <%= render Statistics::RadialProgressComponent.new(
+              percentage: sprint_on_schedule_percentage,
+              label: t('stats.on_time_short'),
+              color: "info"
+            ) %>
+          </div>
+          <% if sprint_graph_data %>
+            <div class="px-4 mt-3">
+              <%= render ReadingHistoryGraphComponent.new(
+                total_days: sprint_graph_data[:total_days],
+                completed_days: sprint_graph_data[:completed_days],
+                start_date: sprint_graph_data[:start_date],
+                current_day: sprint_graph_data[:current_day]
+              ) %>
+            </div>
+          <% end %>
         </div>
-        <div class="text-sm text-center mt-2 opacity-70 max-w-[16rem]">
-          <%= t('stats.on_time_label') %>
+        <div class="divider my-0"></div>
+      <% end %>
+
+      <!-- Challenge Stats Section -->
+      <div class="w-full">
+        <h3 class="text-sm font-semibold text-center mb-3 opacity-70"><%= t('stats.challenge_stats') %></h3>
+        <div class="flex justify-around gap-8 py-3 px-4">
+          <%= render Statistics::RadialProgressComponent.new(
+            percentage: completion_percentage,
+            label: t('stats.chapters_read_short'),
+            color: "accent"
+          ) %>
+
+          <%= render Statistics::RadialProgressComponent.new(
+            percentage: on_schedule_percentage,
+            label: t('stats.on_time_short'),
+            color: "info"
+          ) %>
         </div>
+        <% if challenge_graph_data %>
+          <div class="px-4 mt-3">
+            <%= render ReadingHistoryGraphComponent.new(
+              total_days: challenge_graph_data[:total_days],
+              completed_days: challenge_graph_data[:completed_days],
+              start_date: challenge_graph_data[:start_date],
+              current_day: challenge_graph_data[:current_day]
+            ) %>
+          </div>
+        <% end %>
       </div>
     </div>
   </div>

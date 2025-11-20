@@ -445,6 +445,8 @@ de:
     challenge_progress: "Challenge-Fortschritt"
     active_sprint: "Aktiver Sprint"
     remaining_in_sprint: "verbleibend in diesem Sprint"
+    challenge_stats: "Challenge-Statistiken"
+    sprint_stats: "%{sprint_title} Sprint-Statistiken"
     reader_count:
       one: "%{count} Leser"
       other: "%{count} Leser"
