@@ -113,6 +113,8 @@ de:
     confirm: "Bestätigen"
     yes: "Ja"
     no: "Nein"
+    showing: "Zeigt"
+    challenge: "Challenge"
     member_one: "Mitglied"
     member_other: "Mitglieder"
     ago: "her"
@@ -446,7 +448,9 @@ de:
     active_sprint: "Aktiver Sprint"
     remaining_in_sprint: "verbleibend in diesem Sprint"
     challenge_stats: "Challenge-Statistiken"
+    challenge_stats_label: "Statistiken"
     sprint_stats: "%{sprint_title} Sprint-Statistiken"
+    sprint_stats_label: "Sprint-Statistiken"
     reader_count:
       one: "%{count} Leser"
       other: "%{count} Leser"

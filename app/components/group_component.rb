@@ -1,16 +1,18 @@
 class GroupComponent < ViewComponent::Base
   include ApplicationHelper
 
-  def initialize(group:, current_user:, user_group:, group_stats: nil)
+  def initialize(group:, current_user:, user_group:, group_stats: nil, sprint_stats: nil, current_sprint: nil)
     @group = group
     @current_user = current_user
     @user_group = user_group
     @group_stats = group_stats
+    @sprint_stats = sprint_stats
+    @current_sprint = current_sprint
   end
 
   private
 
-  attr_reader :group, :current_user, :user_group, :group_stats
+  attr_reader :group, :current_user, :user_group, :group_stats, :sprint_stats, :current_sprint
 
   def can_join_group?
     !user_group && !group.closed_to_new_members
@@ -81,5 +83,49 @@ class GroupComponent < ViewComponent::Base
   def current_day_number
     # Calculate the day number based on today's date in the challenge timezone
     (today_in_challenge_timezone - challenge_start_date).to_i
+  end
+
+  def has_active_sprint?
+    current_sprint.present? && sprint_stats.present?
+  end
+
+  def sprint_start_date
+    @sprint_start_date ||= current_sprint&.begin_date
+  end
+
+  def total_sprint_days
+    return 0 unless current_sprint
+    challenge_readings = group.challenge.readings
+      .where("scheduled_date >= ? AND scheduled_date <= ?", current_sprint.begin_date, current_sprint.end_date)
+      .count
+  end
+
+  def completed_days_for_user_sprint(user)
+    return [] unless current_sprint
+
+    # Get readings within the sprint date range
+    sprint_readings = group.challenge.readings
+      .where("scheduled_date >= ? AND scheduled_date <= ?", current_sprint.begin_date, current_sprint.end_date)
+      .select(:id, :scheduled_date)
+      .index_by(&:id)
+
+    # Get completed readings with their completion dates
+    completed_readings = user.user_readings
+      .where(reading_id: sprint_readings.keys)
+      .pluck(:reading_id, :completed_on)
+
+    # For each completed reading, determine day number (relative to sprint start) and if it was on time
+    completed_readings.map do |reading_id, completed_on|
+      reading = sprint_readings[reading_id]
+      day_number = (reading.scheduled_date - sprint_start_date).to_i
+      on_time = (completed_on == reading.scheduled_date)
+
+      { day: day_number, on_time: on_time }
+    end
+  end
+
+  def current_sprint_day_number
+    return 0 unless current_sprint
+    (today_in_challenge_timezone - sprint_start_date).to_i
   end
 end

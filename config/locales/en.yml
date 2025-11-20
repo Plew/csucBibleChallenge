@@ -145,6 +145,8 @@ en:
     confirm: "Confirm"
     yes: "Yes"
     no: "No"
+    showing: "Showing"
+    challenge: "Challenge"
     member_one: "member"
     member_other: "members"
     ago: "ago"
@@ -501,7 +503,9 @@ en:
     active_sprint: "Active Sprint"
     remaining_in_sprint: "remaining in this sprint"
     challenge_stats: "Challenge Stats"
+    challenge_stats_label: "Stats"
     sprint_stats: "%{sprint_title} Sprint Stats"
+    sprint_stats_label: "Sprint Stats"
     reader_count:
       one: "%{count} reader"
       other: "%{count} readers"

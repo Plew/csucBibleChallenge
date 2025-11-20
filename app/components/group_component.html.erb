@@ -39,33 +39,110 @@
 
     <!-- Group Statistics -->
     <% if group_stats %>
-      <div class="flex justify-around gap-8 mb-4 py-3 px-4">
-        <!-- Completion Percentage -->
-        <div class="flex flex-col items-center">
-          <div class="radial-progress text-accent" style="--value:<%= group_stats[:completion_percentage] %>; --size:7rem; --thickness:0.5rem;" aria-valuenow="<%= group_stats[:completion_percentage] %>" role="progressbar">
-            <span class="text-xl font-bold"><%= group_stats[:completion_percentage] %>%</span>
+      <% if has_active_sprint? %>
+        <!-- Toggle between Sprint and Challenge stats -->
+        <div class="text-center mb-3" data-controller="stats-toggle">
+          <!-- Sprint mode (shown by default) -->
+          <div id="sprint-mode-label" class="text-sm">
+            <%= t('common.showing') %> <a href="#" class="font-bold link link-primary" data-action="click->stats-toggle#toggle"><%= current_sprint.title %></a> <%= t('stats.sprint_stats_label') %>
           </div>
-          <div class="text-xs text-center mt-1 opacity-70">
-            <%= t('stats.chapters_read_short') %>
-          </div>
-          <div class="text-xs text-center mt-0.5 font-semibold opacity-80">
-            <%= group_stats[:total_completed] %>/<%= group_stats[:total_possible] %>
+          <!-- Challenge mode (hidden by default) -->
+          <div id="challenge-mode-label" class="text-sm hidden">
+            <%= t('common.showing') %> <a href="#" class="font-bold link link-primary" data-action="click->stats-toggle#toggle"><%= t('common.challenge') %></a> <%= t('stats.challenge_stats_label') %>
           </div>
         </div>
 
-        <!-- On Schedule Percentage -->
-        <div class="flex flex-col items-center">
-          <div class="radial-progress text-info" style="--value:<%= group_stats[:on_schedule_percentage] %>; --size:7rem; --thickness:0.5rem;" aria-valuenow="<%= group_stats[:on_schedule_percentage] %>" role="progressbar">
-            <span class="text-xl font-bold"><%= group_stats[:on_schedule_percentage] %>%</span>
-          </div>
-          <div class="text-xs text-center mt-1 opacity-70">
-            <%= t('stats.on_time_short') %>
-          </div>
-          <div class="text-xs text-center mt-0.5 font-semibold opacity-80">
-            <%= group_stats[:total_on_time] %>/<%= group_stats[:total_possible] %>
+        <!-- Sprint Stats (shown by default when toggle is checked) -->
+        <div id="sprint-stats" class="mb-4">
+          <div class="flex justify-around gap-8 py-3 px-4">
+            <!-- Completion Percentage -->
+            <div class="flex flex-col items-center">
+              <div class="radial-progress text-accent" style="--value:<%= sprint_stats[:completion_percentage] %>; --size:7rem; --thickness:0.5rem;" aria-valuenow="<%= sprint_stats[:completion_percentage] %>" role="progressbar">
+                <span class="text-xl font-bold"><%= sprint_stats[:completion_percentage] %>%</span>
+              </div>
+              <div class="text-xs text-center mt-1 opacity-70">
+                <%= t('stats.chapters_read_short') %>
+              </div>
+              <div class="text-xs text-center mt-0.5 font-semibold opacity-80">
+                <%= sprint_stats[:total_completed] %>/<%= sprint_stats[:total_possible] %>
+              </div>
+            </div>
+
+            <!-- On Schedule Percentage -->
+            <div class="flex flex-col items-center">
+              <div class="radial-progress text-info" style="--value:<%= sprint_stats[:on_schedule_percentage] %>; --size:7rem; --thickness:0.5rem;" aria-valuenow="<%= sprint_stats[:on_schedule_percentage] %>" role="progressbar">
+                <span class="text-xl font-bold"><%= sprint_stats[:on_schedule_percentage] %>%</span>
+              </div>
+              <div class="text-xs text-center mt-1 opacity-70">
+                <%= t('stats.on_time_short') %>
+              </div>
+              <div class="text-xs text-center mt-0.5 font-semibold opacity-80">
+                <%= sprint_stats[:total_on_time] %>/<%= sprint_stats[:total_possible] %>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+
+        <!-- Challenge Stats (hidden by default) -->
+        <div id="challenge-stats" class="mb-4 hidden">
+          <div class="flex justify-around gap-8 py-3 px-4">
+            <!-- Completion Percentage -->
+            <div class="flex flex-col items-center">
+              <div class="radial-progress text-accent" style="--value:<%= group_stats[:completion_percentage] %>; --size:7rem; --thickness:0.5rem;" aria-valuenow="<%= group_stats[:completion_percentage] %>" role="progressbar">
+                <span class="text-xl font-bold"><%= group_stats[:completion_percentage] %>%</span>
+              </div>
+              <div class="text-xs text-center mt-1 opacity-70">
+                <%= t('stats.chapters_read_short') %>
+              </div>
+              <div class="text-xs text-center mt-0.5 font-semibold opacity-80">
+                <%= group_stats[:total_completed] %>/<%= group_stats[:total_possible] %>
+              </div>
+            </div>
+
+            <!-- On Schedule Percentage -->
+            <div class="flex flex-col items-center">
+              <div class="radial-progress text-info" style="--value:<%= group_stats[:on_schedule_percentage] %>; --size:7rem; --thickness:0.5rem;" aria-valuenow="<%= group_stats[:on_schedule_percentage] %>" role="progressbar">
+                <span class="text-xl font-bold"><%= group_stats[:on_schedule_percentage] %>%</span>
+              </div>
+              <div class="text-xs text-center mt-1 opacity-70">
+                <%= t('stats.on_time_short') %>
+              </div>
+              <div class="text-xs text-center mt-0.5 font-semibold opacity-80">
+                <%= group_stats[:total_on_time] %>/<%= group_stats[:total_possible] %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% else %>
+        <!-- No active sprint, just show challenge stats -->
+        <div class="flex justify-around gap-8 mb-4 py-3 px-4">
+          <!-- Completion Percentage -->
+          <div class="flex flex-col items-center">
+            <div class="radial-progress text-accent" style="--value:<%= group_stats[:completion_percentage] %>; --size:7rem; --thickness:0.5rem;" aria-valuenow="<%= group_stats[:completion_percentage] %>" role="progressbar">
+              <span class="text-xl font-bold"><%= group_stats[:completion_percentage] %>%</span>
+            </div>
+            <div class="text-xs text-center mt-1 opacity-70">
+              <%= t('stats.chapters_read_short') %>
+            </div>
+            <div class="text-xs text-center mt-0.5 font-semibold opacity-80">
+              <%= group_stats[:total_completed] %>/<%= group_stats[:total_possible] %>
+            </div>
+          </div>
+
+          <!-- On Schedule Percentage -->
+          <div class="flex flex-col items-center">
+            <div class="radial-progress text-info" style="--value:<%= group_stats[:on_schedule_percentage] %>; --size:7rem; --thickness:0.5rem;" aria-valuenow="<%= group_stats[:on_schedule_percentage] %>" role="progressbar">
+              <span class="text-xl font-bold"><%= group_stats[:on_schedule_percentage] %>%</span>
+            </div>
+            <div class="text-xs text-center mt-1 opacity-70">
+              <%= t('stats.on_time_short') %>
+            </div>
+            <div class="text-xs text-center mt-0.5 font-semibold opacity-80">
+              <%= group_stats[:total_on_time] %>/<%= group_stats[:total_possible] %>
+            </div>
+          </div>
+        </div>
+      <% end %>
     <% end %>
 
     <ul class="list bg-base-100 rounded-box">
@@ -88,12 +165,33 @@
           <div><%= avatar_image_tag(enrollment.user, :tiny, class: 'size-10 rounded-full') %></div>
           <div class="flex-1 min-w-0">
             <div class="truncate text-sm font-medium mb-1"><%= enrollment.user.username %></div>
-            <%= render ReadingHistoryGraphComponent.new(
-              total_days: total_challenge_days,
-              completed_days: completed_days_for_user(enrollment.user),
-              start_date: challenge_start_date,
-              current_day: current_day_number
-            ) %>
+            <% if has_active_sprint? %>
+              <!-- Sprint graph (shown by default) -->
+              <div class="sprint-graph">
+                <%= render ReadingHistoryGraphComponent.new(
+                  total_days: total_sprint_days,
+                  completed_days: completed_days_for_user_sprint(enrollment.user),
+                  start_date: sprint_start_date,
+                  current_day: current_sprint_day_number
+                ) %>
+              </div>
+              <!-- Challenge graph (hidden by default) -->
+              <div class="challenge-graph hidden">
+                <%= render ReadingHistoryGraphComponent.new(
+                  total_days: total_challenge_days,
+                  completed_days: completed_days_for_user(enrollment.user),
+                  start_date: challenge_start_date,
+                  current_day: current_day_number
+                ) %>
+              </div>
+            <% else %>
+              <%= render ReadingHistoryGraphComponent.new(
+                total_days: total_challenge_days,
+                completed_days: completed_days_for_user(enrollment.user),
+                start_date: challenge_start_date,
+                current_day: current_day_number
+              ) %>
+            <% end %>
           </div>
           <div class="flex-shrink-0">
             <input type="checkbox" <%= 'checked' if has_read_today?(enrollment.user) %> class="checkbox checkbox-success checkbox-sm pointer-events-none" />
