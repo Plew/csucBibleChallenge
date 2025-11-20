@@ -6,26 +6,48 @@
         <h1 class="card-title text-xl sm:text-2xl font-bold text-base-content leading-tight break-words">
           <%= challenge.name %>
         </h1>
-        <div class="flex flex-col sm:flex-row sm:items-center gap-2 mt-3">
-          <span class="badge <%= status_badge_class %> text-sm w-fit">
-            <%= challenge_status.capitalize %>
-          </span>
-          <span class="text-sm text-base-content/70">
-            <%= status_text %>
-          </span>
-        </div>
-      </div>
-    </div>
+        <% if challenge_status != "active" %>
+          <div class="flex flex-col sm:flex-row sm:items-center gap-2 mt-3">
+            <span class="badge <%= status_badge_class %> text-sm w-fit">
+              <%= challenge_status.capitalize %>
+            </span>
+            <span class="text-sm text-base-content/70">
+              <%= status_text %>
+            </span>
+          </div>
+        <% end %>
 
-    <!-- Progress Bar -->
-    <div class="mb-6">
-      <div class="flex justify-between text-sm text-base-content/70 mb-1">
-        <span>Challenge Progress</span>
-        <span><%= challenge_progress_percentage %>% complete</span>
+        <!-- Challenge Progress Bar -->
+        <div class="mt-4">
+          <div class="flex justify-between text-sm text-base-content/70 mb-1">
+            <span><%= t('stats.challenge_progress') %> (<%= days_remaining %>/<%= total_duration_days %> days remaining)</span>
+            <span><%= challenge_progress_percentage %>% complete</span>
+          </div>
+          <progress class="progress progress-primary w-full"
+                    value="<%= challenge_progress_percentage %>"
+                    max="100"></progress>
+        </div>
+
+        <!-- Sprint Progress (if active sprint exists) -->
+        <% if statistics.active_sprint %>
+          <div class="mt-4">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+              <span class="badge badge-success text-sm w-fit">
+                <%= t('stats.active_sprint') %>: <%= statistics.active_sprint.title %>
+              </span>
+            </div>
+            <div class="mt-2">
+              <div class="flex justify-between text-sm text-base-content/70 mb-1">
+                <span><%= t('stats.sprint_progress') %> (<%= statistics.sprint_days_remaining %>/<%= sprint_total_days %> days remaining)</span>
+                <span><%= statistics.sprint_progress_percentage %>% complete</span>
+              </div>
+              <progress class="progress progress-primary w-full"
+                        value="<%= statistics.sprint_progress_percentage %>"
+                        max="100"></progress>
+            </div>
+          </div>
+        <% end %>
       </div>
-      <progress class="progress progress-primary w-full"
-                value="<%= challenge_progress_percentage %>"
-                max="100"></progress>
     </div>
 
     <!-- Main Stats Grid -->

@@ -10,6 +10,7 @@ class Sprint < ApplicationRecord
 
   scope :for_challenge, ->(challenge_id) { where(challenge_id: challenge_id) }
   scope :ordered, -> { order(begin_date: :asc) }
+  scope :active, -> { where("begin_date <= ? AND end_date >= ?", Date.current, Date.current) }
 
   def date_range
     begin_date..end_date

@@ -441,6 +441,10 @@ de:
     start_reading_message: "Beginne zu lesen, um deinen Fortschritt zu sehen!"
     leaderboard: "Bestenliste"
     over_50_percent: "über 50%"
+    sprint_progress: "Sprint-Fortschritt"
+    challenge_progress: "Challenge-Fortschritt"
+    active_sprint: "Aktiver Sprint"
+    remaining_in_sprint: "verbleibend in diesem Sprint"
     reader_count:
       one: "%{count} Leser"
       other: "%{count} Leser"
