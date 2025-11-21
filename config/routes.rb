@@ -99,6 +99,7 @@ Rails.application.routes.draw do
       end
     end
     resources :feedbacks, only: [ :index, :show, :destroy ]
+    resources :badges
 
     # Challenge transfer routes
     get "change_challenge", to: "challenge_transfers#new", as: :change_challenge

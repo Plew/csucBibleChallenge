@@ -1,0 +1,21 @@
+<div class="container mx-auto px-4 py-8 max-w-2xl">
+  <div class="text-sm breadcrumbs mb-4">
+    <ul>
+      <li><%= link_to t("admin.dashboard"), admin_root_path, class: "link link-hover" %></li>
+      <li><%= link_to t("admin.badges.manage"), admin_badges_path, class: "link link-hover" %></li>
+      <li><%= link_to @badge.name, admin_badge_path(@badge), class: "link link-hover" %></li>
+      <li><%= t("common.edit") %></li>
+    </ul>
+  </div>
+
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-3xl font-bold"><%= t("admin.badges.edit") %></h1>
+    <%= link_to t("common.back"), admin_badges_path, class: "btn btn-outline" %>
+  </div>
+
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body">
+      <%= render "form", badge: @badge %>
+    </div>
+  </div>
+</div>

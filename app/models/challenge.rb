@@ -6,6 +6,8 @@ class Challenge < ApplicationRecord
   has_many :groups, dependent: :destroy
   has_many :sprints, dependent: :destroy
   has_many :blog_posts, dependent: :destroy
+  has_many :user_badges, dependent: :destroy
+  has_many :badges, through: :user_badges
 
   validates :name, presence: true
   validates :start_date, presence: true

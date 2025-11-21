@@ -1,0 +1,41 @@
+<%= form_with(model: [:admin, badge], local: true, data: { turbo: false }, class: "space-y-6") do |form| %>
+  <% if badge.errors.any? %>
+    <div class="alert alert-error">
+      <div>
+        <h3 class="font-bold"><%= t("admin.fix_errors") %></h3>
+        <ul class="list-disc list-inside">
+          <% badge.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="form-control">
+    <%= form.label :name, class: "label" %>
+    <span class="label-text"><%= t("admin.badges.name") %></span>
+    <%= form.text_field :name, class: "input input-bordered w-full", placeholder: t("admin.badges.name_placeholder") %>
+  </div>
+
+  <div class="form-control">
+    <%= form.label :icon, class: "label" %>
+    <span class="label-text"><%= t("admin.badges.icon") %></span>
+    <%= form.text_field :icon, class: "input input-bordered w-full", placeholder: t("admin.badges.icon_placeholder") %>
+    <div class="label">
+      <span class="label-text-alt text-xs">
+        <%= t("admin.badges.icon_hint") %>
+      </span>
+    </div>
+  </div>
+
+  <div class="form-control">
+    <%= form.label :description, class: "label" %>
+    <span class="label-text"><%= t("admin.badges.description") %></span>
+    <%= form.text_area :description, class: "textarea textarea-bordered h-24", rows: 4, placeholder: t("admin.badges.description_placeholder") %>
+  </div>
+
+  <div class="form-control mt-6">
+    <%= form.submit t("common.save"), class: "btn btn-primary w-full" %>
+  </div>
+<% end %>

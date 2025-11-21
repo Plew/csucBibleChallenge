@@ -19,6 +19,8 @@ class User < ApplicationRecord
   has_many :groups, through: :user_group_enrollments
   has_many :blog_posts, dependent: :destroy
   has_many :blog_comments, dependent: :destroy
+  has_many :user_badges, dependent: :destroy
+  has_many :badges, through: :user_badges
 
   attr_accessor :current_password, :skip_current_password_validation
 

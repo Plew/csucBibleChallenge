@@ -1,0 +1,53 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="text-sm breadcrumbs mb-4">
+    <ul>
+      <li><%= link_to t("admin.dashboard"), admin_root_path, class: "link link-hover" %></li>
+      <li><%= t("admin.badges.manage") %></li>
+    </ul>
+  </div>
+
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-3xl font-bold"><%= t("admin.badges.manage") %></h1>
+    <div class="space-x-2">
+      <%= link_to t("admin.dashboard"), admin_root_path, class: "btn btn-outline" %>
+      <%= link_to t("admin.badges.new"), new_admin_badge_path, class: "btn btn-primary" %>
+    </div>
+  </div>
+
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body p-0">
+      <div class="overflow-x-auto">
+        <table class="table table-xs table-zebra w-full">
+          <thead>
+            <tr>
+              <th class="px-2 py-2"><%= t("admin.badges.icon") %></th>
+              <th class="px-2 py-2"><%= t("admin.badges.name") %></th>
+              <th class="px-2 py-2"><%= t("admin.badges.description") %></th>
+              <th class="px-2 py-2"><%= t("admin.badges.actions") %></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @badges.each do |badge| %>
+              <tr>
+                <td class="px-2 py-1 text-2xl"><%= badge.icon %></td>
+                <td class="font-semibold px-2 py-1"><%= badge.name %></td>
+                <td class="max-w-xs px-2 py-1">
+                  <div class="truncate"><%= badge.description %></div>
+                </td>
+                <td class="px-2 py-1">
+                  <div class="join">
+                    <%= link_to t("common.edit"), edit_admin_badge_path(badge), class: "btn btn-xs btn-outline join-item" %>
+                    <%= link_to t("common.view"), admin_badge_path(badge), class: "btn btn-xs btn-info join-item" %>
+                    <%= link_to t("common.delete"), admin_badge_path(badge),
+                        data: { turbo_method: :delete, turbo_confirm: t("admin.badges.confirm_delete") },
+                        class: "btn btn-xs btn-error join-item" %>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,49 @@
+<div class="container mx-auto px-4 py-8 max-w-2xl">
+  <div class="text-sm breadcrumbs mb-4">
+    <ul>
+      <li><%= link_to t("admin.dashboard"), admin_root_path, class: "link link-hover" %></li>
+      <li><%= link_to t("admin.badges.manage"), admin_badges_path, class: "link link-hover" %></li>
+      <li><%= @badge.name %></li>
+    </ul>
+  </div>
+
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-3xl font-bold"><%= @badge.name %></h1>
+    <div class="space-x-2">
+      <%= link_to t("common.back"), admin_badges_path, class: "btn btn-outline" %>
+      <%= link_to t("common.edit"), edit_admin_badge_path(@badge), class: "btn btn-primary" %>
+    </div>
+  </div>
+
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body">
+      <div class="space-y-6">
+        <div>
+          <h3 class="font-bold text-lg mb-2"><%= t("admin.badges.icon") %></h3>
+          <p class="text-4xl"><%= @badge.icon %></p>
+        </div>
+
+        <div class="divider"></div>
+
+        <div>
+          <h3 class="font-bold text-lg mb-2"><%= t("admin.badges.name") %></h3>
+          <p><%= @badge.name %></p>
+        </div>
+
+        <div class="divider"></div>
+
+        <div>
+          <h3 class="font-bold text-lg mb-2"><%= t("admin.badges.description") %></h3>
+          <p><%= @badge.description %></p>
+        </div>
+
+        <div class="divider"></div>
+
+        <div>
+          <h3 class="font-bold text-lg mb-2"><%= t("admin.badges.stats") %></h3>
+          <p><%= t("admin.badges.total_awarded", count: @badge.user_badges.count) %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
