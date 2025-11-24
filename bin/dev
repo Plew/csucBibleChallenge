@@ -8,4 +8,14 @@ fi
 # Default to port 3000 if not specified
 export PORT="${PORT:-3000}"
 
+# Kill any existing Rails server
+PID_FILE="tmp/pids/server.pid"
+if [ -f "$PID_FILE" ]; then
+  OLD_PID=$(cat "$PID_FILE")
+  echo "Found existing server (pid: $OLD_PID). Killing it..."
+  kill -9 "$OLD_PID" 2>/dev/null || true
+  rm -f "$PID_FILE"
+  echo "Cleaned up old server."
+fi
+
 exec foreman start -f Procfile.dev --env /dev/null "$@"
