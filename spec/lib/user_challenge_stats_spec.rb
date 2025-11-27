@@ -158,8 +158,8 @@ RSpec.describe UserChallengeStats do
         create(:user_reading, user: user, reading: readings.first)
       end
 
-      it 'rounds to one decimal place' do
-        expect(stats.completion_percentage).to eq(33.3) # 1/3 = 33.333...
+      it 'uses floor for percentage' do
+        expect(stats.completion_percentage).to eq(33) # 1/3 = 33.333... floored to 33
       end
     end
   end
