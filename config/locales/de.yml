@@ -600,3 +600,46 @@ de:
   # Countdown
   countdown:
     starts_in: "Beginnt in"
+
+  # Blog Posts
+  blog_posts:
+    title: "Blog"
+    no_posts: "Noch keine Blogbeiträge"
+    read_more: "Mehr lesen"
+    not_enrolled: "Du musst bei dieser Challenge angemeldet sein, um den Blog zu sehen"
+    comments: "Kommentare"
+    no_comments: "Noch keine Kommentare. Sei der Erste, der kommentiert!"
+    comment_placeholder: "Schreibe einen Kommentar..."
+    post_comment: "Kommentar posten"
+    ago: "vor"
+
+  # Blog Comments
+  blog_comments:
+    created: "Kommentar erfolgreich gepostet"
+    deleted: "Kommentar gelöscht"
+    unauthorized: "Du bist nicht berechtigt, diesen Kommentar zu löschen"
+
+  # Admin Blog Posts
+  admin:
+    blog_posts:
+      title: "Blogbeiträge"
+      manage: "Blog verwalten"
+      new: "Neuer Blogbeitrag"
+      edit: "Blogbeitrag bearbeiten"
+      created: "Blogbeitrag erfolgreich erstellt"
+      updated: "Blogbeitrag erfolgreich aktualisiert"
+      deleted: "Blogbeitrag gelöscht"
+      no_posts: "Noch keine Blogbeiträge"
+      post_title: "Titel"
+      content: "Inhalt"
+      created_at: "Erstellt"
+      visibility: "Sichtbarkeit"
+      visible: "Sichtbar"
+      hidden: "Verborgen"
+      visible_label: "Diesen Beitrag für Benutzer sichtbar machen"
+      title_placeholder: "Blogbeitrag-Titel eingeben"
+      content_placeholder: "Schreibe hier deinen Blogbeitrag. Markdown wird unterstützt."
+      markdown_hint: "Markdown-Formatierung wird unterstützt (Überschriften, fett, kursiv, Links, Listen, usw.)"
+      count:
+        one: "%{count} Blogbeitrag"
+        other: "%{count} Blogbeiträge"

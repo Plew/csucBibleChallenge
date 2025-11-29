@@ -1,0 +1,55 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-3xl font-bold"><%= t("admin.blog_posts.title") %></h1>
+    <div class="space-x-2">
+      <%= link_to t("common.back"), admin_challenge_path(@challenge), class: "btn btn-outline" %>
+      <%= link_to t("admin.blog_posts.new"), new_admin_challenge_blog_post_path(@challenge), class: "btn btn-primary" %>
+    </div>
+  </div>
+
+  <% if @blog_posts.any? %>
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <div class="overflow-x-auto">
+          <table class="table table-zebra w-full">
+            <thead>
+              <tr>
+                <th><%= t("admin.blog_posts.post_title") %></th>
+                <th><%= t("admin.blog_posts.created_at") %></th>
+                <th><%= t("admin.blog_posts.visibility") %></th>
+                <th><%= t("common.actions") %></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @blog_posts.each do |blog_post| %>
+                <tr>
+                  <td><%= blog_post.title %></td>
+                  <td><%= blog_post.created_at.strftime("%B %d, %Y") %></td>
+                  <td>
+                    <% if blog_post.visible? %>
+                      <span class="badge badge-success"><%= t("admin.blog_posts.visible") %></span>
+                    <% else %>
+                      <span class="badge badge-warning"><%= t("admin.blog_posts.hidden") %></span>
+                    <% end %>
+                  </td>
+                  <td>
+                    <div class="flex gap-2">
+                      <%= link_to t("common.edit"), edit_admin_challenge_blog_post_path(@challenge, blog_post), class: "btn btn-sm btn-outline" %>
+                      <%= button_to t("common.delete"), admin_challenge_blog_post_path(@challenge, blog_post), method: :delete, data: { turbo_confirm: t("common.are_you_sure") }, class: "btn btn-sm btn-error btn-outline" %>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  <% else %>
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <p class="text-gray-500"><%= t("admin.blog_posts.no_posts") %></p>
+      </div>
+    </div>
+  <% end %>
+</div>

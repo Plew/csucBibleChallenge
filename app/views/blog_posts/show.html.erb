@@ -1,0 +1,85 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="mb-8">
+    <%= link_to t("common.back"), challenge_blog_posts_path(@challenge), class: "btn btn-outline btn-sm mb-4" %>
+
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h1 class="text-3xl font-bold mb-4"><%= @blog_post.title %></h1>
+
+        <div class="flex items-center gap-2 text-sm text-gray-600 mb-6">
+          <%= render AvatarComponent.new(user: @blog_post.user, size: :thumb) %>
+          <span><%= @blog_post.user.username %></span>
+          <span>•</span>
+          <span><%= @blog_post.created_at.strftime("%B %d, %Y at %I:%M %p") %></span>
+        </div>
+
+        <div class="prose max-w-none">
+          <%= markdown(@blog_post.content) %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comments Section -->
+  <div class="mt-8">
+    <h2 class="text-2xl font-bold mb-4"><%= t("blog_posts.comments") %> (<%= @blog_comments.count %>)</h2>
+
+    <!-- New Comment Form -->
+    <div class="card bg-base-100 shadow-xl mb-6">
+      <div class="card-body">
+        <%= form_with(model: [@challenge, @blog_post, @blog_comment], url: challenge_blog_post_blog_comments_path(@challenge, @blog_post), local: true, class: "space-y-4") do |form| %>
+          <% if @blog_comment.errors.any? %>
+            <div class="alert alert-error">
+              <ul class="list-disc list-inside">
+                <% @blog_comment.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
+
+          <div class="form-control">
+            <%= form.text_area :content, rows: 3, class: "textarea textarea-bordered w-full", placeholder: t("blog_posts.comment_placeholder") %>
+          </div>
+
+          <div class="flex justify-end">
+            <%= form.submit t("blog_posts.post_comment"), class: "btn btn-primary" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Comments List -->
+    <% if @blog_comments.any? %>
+      <div class="space-y-4">
+        <% @blog_comments.each do |comment| %>
+          <div class="card bg-base-100 shadow">
+            <div class="card-body py-4">
+              <div class="flex items-start gap-3">
+                <%= render AvatarComponent.new(user: comment.user, size: :thumb) %>
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="font-semibold"><%= comment.user.username %></span>
+                    <span class="text-sm text-gray-600"><%= time_ago_in_words(comment.created_at) %> <%= t("blog_posts.ago") %></span>
+                  </div>
+                  <p class="whitespace-pre-wrap"><%= comment.content %></p>
+                  <% if comment.user == current_user || current_user.admin? %>
+                    <div class="mt-2">
+                      <%= button_to t("common.delete"), challenge_blog_post_blog_comment_path(@challenge, @blog_post, comment), method: :delete, data: { turbo_confirm: t("common.are_you_sure") }, class: "btn btn-ghost btn-xs text-error" %>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="card bg-base-100 shadow">
+        <div class="card-body">
+          <p class="text-gray-500 text-center"><%= t("blog_posts.no_comments") %></p>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

@@ -1,0 +1,38 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold mb-2"><%= t("blog_posts.title") %></h1>
+    <p class="text-gray-600"><%= @challenge.title %></p>
+  </div>
+
+  <% if @blog_posts.any? %>
+    <div class="space-y-4">
+      <% @blog_posts.each do |blog_post| %>
+        <div class="card bg-base-100 shadow-xl">
+          <div class="card-body">
+            <h2 class="card-title">
+              <%= link_to blog_post.title, challenge_blog_post_path(@challenge, blog_post), class: "link link-hover" %>
+            </h2>
+            <div class="flex items-center gap-2 text-sm text-gray-600">
+              <%= render AvatarComponent.new(user: blog_post.user, size: :thumb) %>
+              <span><%= blog_post.user.username %></span>
+              <span>•</span>
+              <span><%= blog_post.created_at.strftime("%B %d, %Y") %></span>
+            </div>
+            <div class="prose max-w-none line-clamp-3">
+              <%= markdown(blog_post.content) %>
+            </div>
+            <div class="card-actions justify-end">
+              <%= link_to t("blog_posts.read_more"), challenge_blog_post_path(@challenge, blog_post), class: "btn btn-primary btn-sm" %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <p class="text-gray-500 text-center"><%= t("blog_posts.no_posts") %></p>
+      </div>
+    </div>
+  <% end %>
+</div>

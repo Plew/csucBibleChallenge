@@ -655,3 +655,46 @@ en:
   # Countdown
   countdown:
     starts_in: "Starts in"
+
+  # Blog Posts
+  blog_posts:
+    title: "Blog"
+    no_posts: "No blog posts yet"
+    read_more: "Read More"
+    not_enrolled: "You must be enrolled in this challenge to view the blog"
+    comments: "Comments"
+    no_comments: "No comments yet. Be the first to comment!"
+    comment_placeholder: "Write a comment..."
+    post_comment: "Post Comment"
+    ago: "ago"
+
+  # Blog Comments
+  blog_comments:
+    created: "Comment posted successfully"
+    deleted: "Comment deleted"
+    unauthorized: "You are not authorized to delete this comment"
+
+  # Admin Blog Posts
+  admin:
+    blog_posts:
+      title: "Blog Posts"
+      manage: "Manage Blog"
+      new: "New Blog Post"
+      edit: "Edit Blog Post"
+      created: "Blog post created successfully"
+      updated: "Blog post updated successfully"
+      deleted: "Blog post deleted"
+      no_posts: "No blog posts yet"
+      post_title: "Title"
+      content: "Content"
+      created_at: "Created"
+      visibility: "Visibility"
+      visible: "Visible"
+      hidden: "Hidden"
+      visible_label: "Make this post visible to users"
+      title_placeholder: "Enter blog post title"
+      content_placeholder: "Write your blog post content here. Markdown is supported."
+      markdown_hint: "Markdown formatting is supported (headings, bold, italic, links, lists, etc.)"
+      count:
+        one: "%{count} blog post"
+        other: "%{count} blog posts"

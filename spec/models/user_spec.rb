@@ -6,6 +6,8 @@ RSpec.describe User, type: :model do
     it { should have_many(:challenges).through(:user_challenge_enrollments) }
     it { should have_many(:user_readings).dependent(:destroy) }
     it { should have_many(:completed_readings).through(:user_readings).source(:reading) }
+    it { should have_many(:blog_posts).dependent(:destroy) }
+    it { should have_many(:blog_comments).dependent(:destroy) }
   end
 
   describe 'active_storage_attachments' do

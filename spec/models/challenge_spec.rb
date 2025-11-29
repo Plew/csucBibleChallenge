@@ -7,6 +7,7 @@ RSpec.describe Challenge, type: :model do
     it { should have_many(:users).through(:user_challenge_enrollments) }
     it { should have_many(:readings).dependent(:destroy) }
     it { should have_many(:groups).dependent(:destroy) }
+    it { should have_many(:blog_posts).dependent(:destroy) }
   end
 
   describe 'validations' do
@@ -105,6 +106,7 @@ RSpec.describe Challenge, type: :model do
       @reading = FactoryBot.create(:reading, challenge: challenge)
       @group = FactoryBot.create(:group, challenge: challenge)
       @user_reading = FactoryBot.create(:user_reading, user: other_user, reading: @reading)
+      @blog_post = FactoryBot.create(:blog_post, challenge: challenge, user: creator)
     end
 
     it 'destroys all associated records when deleted' do
@@ -116,6 +118,7 @@ RSpec.describe Challenge, type: :model do
         .and change(Reading, :count).by(-1)
         .and change(Group, :count).by(-1)
         .and change(UserReading, :count).by(-1)
+        .and change(BlogPost, :count).by(-1)
     end
 
     it 'does not destroy users when challenge is deleted' do

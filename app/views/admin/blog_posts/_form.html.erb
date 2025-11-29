@@ -1,0 +1,41 @@
+<div class="card bg-base-100 shadow-xl">
+  <div class="card-body">
+    <%= form_with(model: [:admin, @challenge, @blog_post], local: true, class: "space-y-4") do |form| %>
+      <% if @blog_post.errors.any? %>
+        <div class="alert alert-error">
+          <h2 class="font-bold"><%= pluralize(@blog_post.errors.count, "error") %> prohibited this blog post from being saved:</h2>
+          <ul class="list-disc list-inside">
+            <% @blog_post.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="form-control">
+        <%= form.label :title, t("admin.blog_posts.post_title"), class: "label" %>
+        <%= form.text_field :title, class: "input input-bordered w-full", placeholder: t("admin.blog_posts.title_placeholder") %>
+      </div>
+
+      <div class="form-control">
+        <%= form.label :content, t("admin.blog_posts.content"), class: "label" %>
+        <%= form.text_area :content, rows: 15, class: "textarea textarea-bordered w-full", placeholder: t("admin.blog_posts.content_placeholder") %>
+        <label class="label">
+          <span class="label-text-alt"><%= t("admin.blog_posts.markdown_hint") %></span>
+        </label>
+      </div>
+
+      <div class="form-control">
+        <label class="label cursor-pointer justify-start gap-4">
+          <%= form.check_box :visible, class: "checkbox" %>
+          <span class="label-text"><%= t("admin.blog_posts.visible_label") %></span>
+        </label>
+      </div>
+
+      <div class="card-actions justify-end mt-6">
+        <%= link_to t("common.cancel"), admin_challenge_blog_posts_path(@challenge), class: "btn btn-outline" %>
+        <%= form.submit t("common.save"), class: "btn btn-primary" %>
+      </div>
+    <% end %>
+  </div>
+</div>

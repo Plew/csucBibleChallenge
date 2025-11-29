@@ -82,6 +82,19 @@
     </div>
   </div>
 
+  <!-- Blog Posts Section -->
+  <div class="mt-8">
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="card-title"><%= t("admin.blog_posts.title") %></h2>
+          <%= link_to t("admin.blog_posts.manage"), admin_challenge_blog_posts_path(@challenge), class: "btn btn-primary btn-sm" %>
+        </div>
+        <p class="text-sm text-gray-600"><%= t("admin.blog_posts.count", count: @challenge.blog_posts.count) %></p>
+      </div>
+    </div>
+  </div>
+
   <!-- Sprints Section -->
   <div class="mt-8">
     <div class="card bg-base-100 shadow-xl">
