@@ -82,6 +82,27 @@
     </div>
   </div>
 
+  <!-- Blog Section -->
+  <div class="mt-8">
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="card-title"><%= t("blog.posts") %></h2>
+          <%= link_to t("blog.manage_blog"), admin_challenge_blog_posts_path(@challenge), class: "btn btn-primary btn-sm" %>
+        </div>
+
+        <% if @challenge.blog_posts.any? %>
+          <p class="text-gray-500">
+            <%= pluralize(@challenge.blog_posts.count, "blog post") %>
+            (<%= @challenge.blog_posts.visible.count %> visible)
+          </p>
+        <% else %>
+          <p class="text-gray-500"><%= t("blog.no_posts") %></p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
   <!-- Sprints Section -->
   <div class="mt-8">
     <div class="card bg-base-100 shadow-xl">

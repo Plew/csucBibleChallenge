@@ -54,6 +54,9 @@ Rails.application.routes.draw do
         post :leave
       end
     end
+    resources :blog_posts, only: [ :index, :show ], controller: "blog_posts" do
+      resources :blog_comments, only: [ :create, :destroy ]
+    end
     member do
       get :summary
     end
@@ -85,6 +88,7 @@ Rails.application.routes.draw do
         get :delete_confirmation
       end
       resources :sprints, only: [ :index, :new, :create, :edit, :update, :destroy ]
+      resources :blog_posts, only: [ :index, :new, :create, :edit, :update, :destroy ]
     end
     resources :users, only: [ :index, :show ] do
       member do

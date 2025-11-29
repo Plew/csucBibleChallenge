@@ -71,6 +71,7 @@
               <%= link_to t('navigation.manage_feedback'), admin_feedbacks_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
             <% end %>
             <% if current_user.challenges.any? %>
+              <%= link_to t('navigation.blog'), challenge_blog_posts_path(current_user.challenges.first), class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
               <%= link_to t('navigation.seven_day_win'), challenge_seven_day_lobby_path(current_user.challenges.first), class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
             <% end %>
             <%= link_to t('navigation.faq'), faq_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
