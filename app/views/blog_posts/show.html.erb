@@ -1,0 +1,91 @@
+<div class="px-2 py-4 max-w-4xl mx-auto">
+  <%= link_to challenge_blog_posts_path(@challenge), class: "link link-hover mb-4 inline-block text-sm" do %>
+    <%= t("blog.back_to_blog") %>
+  <% end %>
+
+  <article class="card bg-base-100 shadow-md mb-6">
+    <% if @blog_post.image.attached? %>
+      <figure class="px-0 pt-0">
+        <%= image_tag @blog_post.image.variant(resize_to_limit: [1200, 600]),
+            class: "w-full object-cover max-h-96",
+            alt: @blog_post.title %>
+      </figure>
+    <% end %>
+    <div class="card-body p-4">
+      <h1 class="text-2xl font-bold mb-3"><%= @blog_post.title %></h1>
+
+      <div class="text-xs text-base-content/60 mb-4">
+        <%= l(@blog_post.created_at, format: :long) %>
+      </div>
+
+      <div class="prose prose-sm max-w-none">
+        <%= markdown(@blog_post.content) %>
+      </div>
+    </div>
+  </article>
+
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body">
+      <h2 class="card-title mb-6">
+        <%= t("blog.comments") %>
+        <span class="badge badge-primary"><%= @blog_comments.count %></span>
+      </h2>
+
+      <% if @blog_comments.any? %>
+        <div class="space-y-6 mb-8">
+          <% @blog_comments.each do |comment| %>
+            <div class="flex gap-4">
+              <%= render AvatarComponent.new(user: comment.user, size: :thumb) %>
+              <div class="flex-1">
+                <div class="flex items-baseline gap-2 mb-2">
+                  <strong><%= comment.user.username %></strong>
+                  <span class="text-sm text-gray-500">
+                    <%= time_ago_in_words(comment.created_at) %> <%= t("common.ago") %>
+                  </span>
+                  <% if comment.user == current_user || current_user.admin? %>
+                    <%= button_to t("blog.delete_comment"),
+                        challenge_blog_post_blog_comment_path(@challenge, @blog_post, comment),
+                        method: :delete,
+                        data: { turbo_confirm: t("blog.delete_comment_confirmation") },
+                        class: "link link-error text-xs ml-auto" %>
+                  <% end %>
+                </div>
+                <div class="text-base-content">
+                  <%= simple_format(comment.content) %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-gray-500 text-center py-6 mb-8"><%= t("blog.no_comments") %></p>
+      <% end %>
+
+      <div class="divider"><%= t("blog.add_comment") %></div>
+
+      <%= form_with(model: [ @challenge, @blog_post, @new_comment ],
+                    url: challenge_blog_post_blog_comments_path(@challenge, @blog_post),
+                    local: true) do |f| %>
+        <% if @new_comment.errors.any? %>
+          <div class="alert alert-error mb-4">
+            <ul class="list-disc list-inside">
+              <% @new_comment.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div class="form-control mb-4">
+          <%= f.text_area :content,
+              rows: 4,
+              placeholder: t("blog.comment_placeholder"),
+              class: "textarea textarea-bordered w-full",
+              required: true %>
+        </div>
+
+        <%= f.submit t("blog.post_comment"), class: "btn btn-primary" %>
+      <% end %>
+    </div>
+  </div>
+</div>
