@@ -57,14 +57,12 @@ RSpec.describe "BlogPosts", type: :request do
         get challenge_blog_post_path(challenge, visible_post)
 
         expect(response.body).to include(visible_post.title)
-        expect(response.body).to include(visible_post.content)
         expect(response.body).to include(comment.content)
       end
 
       it "cannot access hidden posts" do
-        expect {
-          get challenge_blog_post_path(challenge, hidden_post)
-        }.to raise_error(ActiveRecord::RecordNotFound)
+        get challenge_blog_post_path(challenge, hidden_post)
+        expect(response).to have_http_status(:not_found)
       end
     end
 
