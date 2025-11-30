@@ -5,7 +5,7 @@
       <div class="mx-4">
         <div class="card bg-base-100">
           <div class="card-body px-2 sm:px-4 py-2 sm:py-3">
-            <div class="text-base whitespace-pre-wrap"><%= simple_format(linkify_urls(challenge.message_of_the_day, class: 'link link-primary'), {}, sanitize: false) %></div>
+            <div class="prose prose-sm max-w-none"><%= markdown(challenge.message_of_the_day) %></div>
           </div>
         </div>
       </div>

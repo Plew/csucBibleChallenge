@@ -30,8 +30,8 @@ RSpec.describe "Stats", type: :request do
         get stats_path
         expect(response).to have_http_status(:success)
         expect(response.body).to include(message)
-        # Verify it's wrapped in paragraph tags
-        expect(response.body).to match(/<p>.*#{Regexp.escape(message)}.*<\/p>/m)
+        # Verify it's rendered with markdown (wrapped in paragraph tags)
+        expect(response.body).to match(/<p>#{Regexp.escape(message)}<\/p>/m)
       end
     end
 
@@ -45,8 +45,29 @@ RSpec.describe "Stats", type: :request do
       it "converts URLs to clickable links" do
         get stats_path
         expect(response).to have_http_status(:success)
-        expect(response.body).to include('link link-primary')
+        # Markdown helper automatically converts URLs to links
         expect(response.body).to include('href="https://example.com"')
+        # Links open in new tab
+        expect(response.body).to include('target="_blank"')
+      end
+    end
+
+    context "when message contains markdown links" do
+      let(:message) { "Check out [our website](https://example.com) for more info" }
+
+      before do
+        challenge.update!(message_of_the_day: message)
+      end
+
+      it "renders markdown links properly" do
+        get stats_path
+        expect(response).to have_http_status(:success)
+        # Should render the link text
+        expect(response.body).to include('our website')
+        # Should have the href
+        expect(response.body).to include('href="https://example.com"')
+        # Links open in new tab
+        expect(response.body).to include('target="_blank"')
       end
     end
 
