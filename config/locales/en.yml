@@ -506,15 +506,6 @@ en:
     challenge_stats_label: "Stats"
     sprint_stats: "%{sprint_title} Sprint Stats"
     sprint_stats_label: "Sprint Stats"
-  statistics:
-    most_commented_verse_today: "Most Commented Verse Today"
-    total_comments_count:
-      one: "%{count} comment today"
-      other: "%{count} comments today"
-    comment_count:
-      one: "%{count} comment"
-      other: "%{count} comments"
-    no_comments_today: "No verse comments have been added today yet"
     reader_count:
       one: "%{count} reader"
       other: "%{count} readers"
@@ -531,6 +522,15 @@ en:
     no_groups: "No groups available yet"
     top_groups_message: "Create or join a group to see group rankings!"
     completion: "Completion"
+  statistics:
+    most_commented_verse_today: "Most Commented Verse Today"
+    total_comments_count:
+      one: "%{count} comment today"
+      other: "%{count} comments today"
+    comment_count:
+      one: "%{count} comment"
+      other: "%{count} comments"
+    no_comments_today: "No verse comments have been added today yet"
 
   # Profile
   profile:

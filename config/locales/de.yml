@@ -451,15 +451,6 @@ de:
     challenge_stats_label: "Statistiken"
     sprint_stats: "%{sprint_title} Sprint-Statistiken"
     sprint_stats_label: "Sprint-Statistiken"
-  statistics:
-    most_commented_verse_today: "Meistkommentierter Vers heute"
-    total_comments_count:
-      one: "%{count} Kommentar heute"
-      other: "%{count} Kommentare heute"
-    comment_count:
-      one: "%{count} Kommentar"
-      other: "%{count} Kommentare"
-    no_comments_today: "Heute wurden noch keine Verskommentare hinzugefügt"
     reader_count:
       one: "%{count} Leser"
       other: "%{count} Leser"
@@ -476,6 +467,15 @@ de:
     no_groups: "Noch keine Gruppen verfügbar"
     top_groups_message: "Erstelle oder tritt einer Gruppe bei, um Gruppenrankings zu sehen!"
     completion: "Abschluss"
+  statistics:
+    most_commented_verse_today: "Meistkommentierter Vers heute"
+    total_comments_count:
+      one: "%{count} Kommentar heute"
+      other: "%{count} Kommentare heute"
+    comment_count:
+      one: "%{count} Kommentar"
+      other: "%{count} Kommentare"
+    no_comments_today: "Heute wurden noch keine Verskommentare hinzugefügt"
 
   # Profile
   profile:
