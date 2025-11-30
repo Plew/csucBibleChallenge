@@ -1,0 +1,75 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-8">
+    <div>
+      <h1 class="text-3xl font-bold"><%= @sprint.title %></h1>
+      <p class="text-gray-600 mt-2">
+        <%= @sprint.begin_date.strftime("%B %d, %Y") %> - <%= @sprint.end_date.strftime("%B %d, %Y") %>
+      </p>
+    </div>
+    <%= link_to t("common.back"), admin_challenge_sprints_path(@challenge), class: "btn btn-outline" %>
+  </div>
+
+  <% if @groups_with_stats.any? %>
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title mb-4"><%= t("admin.sprints.group_leaderboard") %></h2>
+        <div class="overflow-x-auto">
+          <table class="table table-zebra w-full">
+            <thead>
+              <tr>
+                <th><%= t("admin.sprints.rank") %></th>
+                <th><%= t("admin.sprints.group_name") %></th>
+                <th><%= t("admin.sprints.completion_percentage") %></th>
+                <th><%= t("admin.sprints.on_time_percentage") %></th>
+                <th><%= t("admin.sprints.members") %></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @groups_with_stats.each_with_index do |group_stats, index| %>
+                <tr>
+                  <td class="font-bold">
+                    <% if index == 0 %>
+                      <span class="text-yellow-500">🥇</span>
+                    <% elsif index == 1 %>
+                      <span class="text-gray-400">🥈</span>
+                    <% elsif index == 2 %>
+                      <span class="text-orange-600">🥉</span>
+                    <% else %>
+                      <%= index + 1 %>
+                    <% end %>
+                  </td>
+                  <td class="font-semibold"><%= group_stats[:group].name %></td>
+                  <td>
+                    <div class="flex items-center gap-2">
+                      <div class="w-24 bg-gray-200 rounded-full h-2.5">
+                        <div class="bg-blue-600 h-2.5 rounded-full" style="width: <%= group_stats[:completion_percentage] %>%"></div>
+                      </div>
+                      <span class="text-sm font-medium"><%= group_stats[:completion_percentage] %>%</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="flex items-center gap-2">
+                      <div class="w-24 bg-gray-200 rounded-full h-2.5">
+                        <div class="bg-green-600 h-2.5 rounded-full" style="width: <%= group_stats[:on_schedule_percentage] %>%"></div>
+                      </div>
+                      <span class="text-sm font-medium"><%= group_stats[:on_schedule_percentage] %>%</span>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="badge badge-outline"><%= group_stats[:member_count] %></span>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  <% else %>
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <p class="text-gray-500"><%= t("admin.sprints.no_groups") %></p>
+      </div>
+    </div>
+  <% end %>
+</div>

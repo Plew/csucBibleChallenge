@@ -28,6 +28,7 @@
                   <td><%= sprint.end_date.strftime("%B %d, %Y") %></td>
                   <td>
                     <div class="flex gap-2">
+                      <%= link_to t("admin.sprints.view_groups"), admin_challenge_sprint_path(@challenge, sprint), class: "btn btn-sm btn-primary" %>
                       <%= link_to t("common.edit"), edit_admin_challenge_sprint_path(@challenge, sprint), class: "btn btn-sm btn-outline" %>
                       <%= button_to t("common.delete"), admin_challenge_sprint_path(@challenge, sprint), method: :delete, data: { turbo_confirm: t("common.are_you_sure") }, class: "btn btn-sm btn-error btn-outline" %>
                     </div>

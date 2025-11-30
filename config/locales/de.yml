@@ -270,6 +270,7 @@ de:
       pacman_instructions: "Beobachten Sie, wie die Teilnehmer (Geister) versuchen, durch das Labyrinth zu entkommen. Pac-Man erscheint nach 5 Sekunden und jagt sie. Jeder gefangene Geist macht Pac-Man schneller. Der letzte Überlebende gewinnt!"
     sprints:
       title: "Sprints"
+      manage_sprints: "Sprints verwalten"
       new: "Neuer Sprint"
       edit: "Sprint bearbeiten"
       name: "Name"
@@ -286,6 +287,14 @@ de:
       readings_schedule_hint: "Nutzen Sie diesen Zeitplan als Referenz beim Festlegen Ihrer Sprint-Daten"
       date: "Datum"
       reading: "Lesung"
+      view_groups: "Gruppen anzeigen"
+      group_leaderboard: "Gruppen-Bestenliste"
+      rank: "Rang"
+      group_name: "Gruppenname"
+      completion_percentage: "Fertigstellung %"
+      on_time_percentage: "Pünktlich %"
+      members: "Mitglieder"
+      no_groups: "In dieser Challenge wurden noch keine Gruppen erstellt"
 
   # Seven Day Lobby
   seven_day_lobby:

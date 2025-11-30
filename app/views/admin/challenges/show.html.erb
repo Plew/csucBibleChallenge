@@ -11,6 +11,7 @@
     <h1 class="text-3xl font-bold"><%= @challenge.title %></h1>
     <div class="space-x-2">
       <%= link_to "Back to Challenges", admin_challenges_path, class: "btn btn-outline" %>
+      <%= link_to t("admin.sprints.manage_sprints"), admin_challenge_sprints_path(@challenge), class: "btn btn-secondary" %>
       <%= link_to "Edit Challenge", edit_admin_challenge_path(@challenge), class: "btn btn-primary" %>
     </div>
   </div>
@@ -78,50 +79,6 @@
             <p><%= @challenge.creator&.email || "Unknown" %></p>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Sprints Section -->
-  <div class="mt-8">
-    <div class="card bg-base-100 shadow-xl">
-      <div class="card-body">
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="card-title"><%= t("admin.sprints.title") %></h2>
-          <%= link_to t("admin.sprints.new"), new_admin_challenge_sprint_path(@challenge), class: "btn btn-primary btn-sm" %>
-        </div>
-
-        <% if @challenge.sprints.any? %>
-          <div class="overflow-x-auto">
-            <table class="table table-zebra w-full">
-              <thead>
-                <tr>
-                  <th><%= t("admin.sprints.name") %></th>
-                  <th><%= t("admin.sprints.begin_date") %></th>
-                  <th><%= t("admin.sprints.end_date") %></th>
-                  <th><%= t("common.actions") %></th>
-                </tr>
-              </thead>
-              <tbody>
-                <% @challenge.sprints.ordered.each do |sprint| %>
-                  <tr>
-                    <td><%= sprint.title %></td>
-                    <td><%= sprint.begin_date.strftime("%B %d, %Y") %></td>
-                    <td><%= sprint.end_date.strftime("%B %d, %Y") %></td>
-                    <td>
-                      <div class="flex gap-2">
-                        <%= link_to t("common.edit"), edit_admin_challenge_sprint_path(@challenge, sprint), class: "btn btn-sm btn-outline" %>
-                        <%= button_to t("common.delete"), admin_challenge_sprint_path(@challenge, sprint), method: :delete, data: { turbo_confirm: t("common.are_you_sure") }, class: "btn btn-sm btn-error btn-outline" %>
-                      </div>
-                    </td>
-                  </tr>
-                <% end %>
-              </tbody>
-            </table>
-          </div>
-        <% else %>
-          <p class="text-gray-500"><%= t("admin.sprints.no_sprints") %></p>
-        <% end %>
       </div>
     </div>
   </div>

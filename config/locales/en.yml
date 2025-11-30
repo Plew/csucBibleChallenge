@@ -325,6 +325,7 @@ en:
       pacman_instructions: "Watch as participants (ghosts) try to escape through the maze. Pac-Man appears after 5 seconds and chases them down. Each ghost caught makes Pac-Man faster. The last survivor wins!"
     sprints:
       title: "Sprints"
+      manage_sprints: "Manage Sprints"
       new: "New Sprint"
       edit: "Edit Sprint"
       name: "Name"
@@ -341,6 +342,14 @@ en:
       readings_schedule_hint: "Reference this schedule when setting your sprint dates"
       date: "Date"
       reading: "Reading"
+      view_groups: "View Groups"
+      group_leaderboard: "Group Leaderboard"
+      rank: "Rank"
+      group_name: "Group Name"
+      completion_percentage: "Completion %"
+      on_time_percentage: "On Time %"
+      members: "Members"
+      no_groups: "No groups have been created in this challenge yet"
 
   # Seven Day Lobby
   seven_day_lobby:
