@@ -104,6 +104,46 @@ RSpec.describe "Admin::Users", type: :request do
         get admin_user_path(regular_user_test)
         expect(response.body).to include('User')
       end
+
+      it "shows links to reading history and change password pages" do
+        get admin_user_path(test_user)
+        expect(response.body).to include(reading_history_admin_user_path(test_user))
+        expect(response.body).to include(change_password_admin_user_path(test_user))
+      end
+    end
+
+    describe "GET /admin/users/:id/reading_history" do
+      let(:challenge) { create(:challenge, timezone: 'Berlin') }
+      let(:reading) { create(:reading, challenge: challenge, scheduled_date: Date.current) }
+      let!(:user_reading) { create(:user_reading, user: test_user, reading: reading, completed_on: Time.current) }
+
+      it "returns http success" do
+        get reading_history_admin_user_path(test_user)
+        expect(response).to have_http_status(:success)
+      end
+
+      it "displays reading history header" do
+        get reading_history_admin_user_path(test_user)
+        expect(response.body).to include("Reading History")
+      end
+
+      it "displays reading entries with scheduled date and completed timestamp" do
+        get reading_history_admin_user_path(test_user)
+        expect(response.body).to include(reading.scheduled_date.strftime("%b %d, %Y"))
+      end
+    end
+
+    describe "GET /admin/users/:id/change_password" do
+      it "returns http success" do
+        get change_password_admin_user_path(test_user)
+        expect(response).to have_http_status(:success)
+      end
+
+      it "displays change password form" do
+        get change_password_admin_user_path(test_user)
+        expect(response.body).to include("Change Password")
+        expect(response.body).to include(update_password_admin_user_path(test_user))
+      end
     end
 
     describe "PATCH /admin/users/:id/reset_password" do

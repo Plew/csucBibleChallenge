@@ -96,8 +96,6 @@ RSpec.describe Admin::UsersController, type: :controller do
   describe 'GET #show' do
     let(:challenge) { create(:challenge, timezone: 'Berlin') }
     let!(:enrollment) { create(:user_challenge_enrollment, user: target_user, challenge: challenge) }
-    let(:reading) { create(:reading, challenge: challenge) }
-    let!(:user_reading) { create(:user_reading, user: target_user, reading: reading, completed_on: Time.current) }
 
     before { session[:user_id] = admin_user.id }
 
@@ -111,22 +109,59 @@ RSpec.describe Admin::UsersController, type: :controller do
       expect(assigns(:user)).to eq(target_user)
     end
 
+    it 'assigns challenge enrollments' do
+      get :show, params: { id: target_user.id }
+      expect(assigns(:challenge_enrollments)).to be_present
+    end
+  end
+
+  describe 'GET #reading_history' do
+    let(:challenge) { create(:challenge, timezone: 'Berlin') }
+    let(:reading) { create(:reading, challenge: challenge) }
+    let!(:user_reading) { create(:user_reading, user: target_user, reading: reading, completed_on: Time.current) }
+
+    before { session[:user_id] = admin_user.id }
+
+    it 'returns http success' do
+      get :reading_history, params: { id: target_user.id }
+      expect(response).to have_http_status(:success)
+    end
+
+    it 'assigns the user' do
+      get :reading_history, params: { id: target_user.id }
+      expect(assigns(:user)).to eq(target_user)
+    end
+
     it 'assigns user readings ordered by completed_on desc' do
       reading2 = create(:reading, challenge: challenge)
       user_reading2 = create(:user_reading, user: target_user, reading: reading2, completed_on: 1.day.ago)
 
-      get :show, params: { id: target_user.id }
+      get :reading_history, params: { id: target_user.id }
 
       expect(assigns(:user_readings)).to be_present
       expect(assigns(:user_readings).first.completed_on).to be >= assigns(:user_readings).last.completed_on
     end
 
     it 'preloads reading and challenge associations' do
-      get :show, params: { id: target_user.id }
+      get :reading_history, params: { id: target_user.id }
 
       user_reading = assigns(:user_readings).first
       expect(user_reading.association(:reading)).to be_loaded
       expect(user_reading.reading.association(:challenge)).to be_loaded
+    end
+  end
+
+  describe 'GET #change_password' do
+    before { session[:user_id] = admin_user.id }
+
+    it 'returns http success' do
+      get :change_password, params: { id: target_user.id }
+      expect(response).to have_http_status(:success)
+    end
+
+    it 'assigns the user' do
+      get :change_password, params: { id: target_user.id }
+      expect(assigns(:user)).to eq(target_user)
     end
   end
 

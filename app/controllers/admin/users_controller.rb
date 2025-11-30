@@ -1,5 +1,5 @@
 class Admin::UsersController < Admin::BaseController
-  before_action :set_user, only: [ :show, :reset_password, :update_password ]
+  before_action :set_user, only: [ :show, :reset_password, :update_password, :reading_history, :change_password ]
 
   def index
     @users = User.includes(:challenges).order(created_at: :desc)
@@ -22,10 +22,16 @@ class Admin::UsersController < Admin::BaseController
   end
 
   def show
+    @challenge_enrollments = @user.user_challenge_enrollments.includes(:challenge)
+  end
+
+  def reading_history
     @user_readings = @user.user_readings
                           .includes(reading: :challenge)
                           .order("user_readings.completed_on DESC")
-    @challenge_enrollments = @user.user_challenge_enrollments.includes(:challenge)
+  end
+
+  def change_password
   end
 
   def reset_password
