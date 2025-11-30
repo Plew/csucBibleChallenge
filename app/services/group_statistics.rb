@@ -24,6 +24,8 @@ class GroupStatistics
     group_user_ids = group.users.pluck(:id)
     completed_count = UserReading.where(user_id: group_user_ids, reading_id: reading.id).count
     return 0 if group_user_ids.empty?
+    return 100 if completed_count == group_user_ids.size
+
     (completed_count.to_f / group_user_ids.size * 100).floor
   end
 

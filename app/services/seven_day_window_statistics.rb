@@ -73,12 +73,16 @@ class SevenDayWindowStatistics
 
     completion_percentage = if total_scheduled_7_days.zero?
                            0
+    elsif total_completed_7_days == total_scheduled_7_days
+                           100
     else
                            (total_completed_7_days.to_f / total_scheduled_7_days * 100).floor
     end
 
     on_schedule_percentage = if total_scheduled_7_days.zero?
                             0
+    elsif total_on_schedule_7_days == total_scheduled_7_days
+                            100
     else
                             (total_on_schedule_7_days.to_f / total_scheduled_7_days * 100).floor
     end
