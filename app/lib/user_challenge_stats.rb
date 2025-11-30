@@ -11,7 +11,10 @@ class UserChallengeStats
   def completion_percentage
     return 0.0 if total_readings.zero?
 
-    (completed_readings_count.to_f / total_readings * 100).round(1)
+    completed = completed_readings_count
+    return 100 if completed == total_readings
+
+    (completed.to_f / total_readings * 100).floor
   end
 
   # Completion percentage relative to readings scheduled up to current date
@@ -19,7 +22,11 @@ class UserChallengeStats
   def on_track_percentage
     return 0.0 if readings_to_date.zero?
 
-    (completed_readings_count.to_f / readings_to_date * 100).round(1)
+    completed = completed_readings_count
+    scheduled = readings_to_date
+    return 100 if completed == scheduled
+
+    (completed.to_f / scheduled * 100).floor
   end
 
   private

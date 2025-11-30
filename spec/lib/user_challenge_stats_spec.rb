@@ -158,8 +158,20 @@ RSpec.describe UserChallengeStats do
         create(:user_reading, user: user, reading: readings.first)
       end
 
-      it 'rounds to one decimal place' do
-        expect(stats.completion_percentage).to eq(33.3) # 1/3 = 33.333...
+      it 'uses floor for percentage' do
+        expect(stats.completion_percentage).to eq(33) # 1/3 = 33.333... floored to 33
+      end
+    end
+
+    context 'when all readings are completed' do
+      let!(:readings) { create_list(:reading, 3, challenge: challenge) }
+
+      before do
+        readings.each { |reading| create(:user_reading, user: user, reading: reading) }
+      end
+
+      it 'returns exactly 100 when all readings completed' do
+        expect(stats.completion_percentage).to eq(100)
       end
     end
   end

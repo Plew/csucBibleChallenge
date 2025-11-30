@@ -170,8 +170,21 @@ class GroupsController < ApplicationController
                                   .where("DATE(user_readings.completed_on) = readings.scheduled_date")
                                   .count
 
-      sprint_completion_percentage = sprint_possible.zero? ? 0 : (sprint_completed.to_f / sprint_possible * 100).round
-      sprint_on_schedule_percentage = sprint_completed.zero? ? 0 : (sprint_on_time.to_f / sprint_completed * 100).round
+      if sprint_possible.zero?
+        sprint_completion_percentage = 0
+      elsif sprint_completed == sprint_possible
+        sprint_completion_percentage = 100
+      else
+        sprint_completion_percentage = (sprint_completed.to_f / sprint_possible * 100).floor
+      end
+
+      if sprint_completed.zero?
+        sprint_on_schedule_percentage = 0
+      elsif sprint_on_time == sprint_completed
+        sprint_on_schedule_percentage = 100
+      else
+        sprint_on_schedule_percentage = (sprint_on_time.to_f / sprint_completed * 100).floor
+      end
 
       @sprint_stats = {
         completion_percentage: sprint_completion_percentage,
