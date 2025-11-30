@@ -11,7 +11,7 @@
     <%= link_to "Back to Site", root_path, class: "btn btn-outline" %>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
     <div class="card bg-base-100 shadow-xl">
       <div class="card-body">
         <h2 class="card-title">Challenges</h2>
@@ -29,42 +29,6 @@
         <div class="card-actions justify-end">
           <%= link_to "Manage Users", admin_users_path, class: "btn btn-secondary" %>
         </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="card bg-base-100 shadow-xl">
-    <div class="card-body">
-      <h2 class="card-title">Recent Challenges</h2>
-      <div class="overflow-x-auto">
-        <table class="table table-zebra w-full">
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Created</th>
-              <th>Hidden</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% @recent_challenges.each do |challenge| %>
-              <tr>
-                <td><%= challenge.title %></td>
-                <td><%= challenge.created_at.strftime("%B %d, %Y") %></td>
-                <td>
-                  <% if challenge.hidden? %>
-                    <span class="badge badge-warning">Hidden</span>
-                  <% else %>
-                    <span class="badge badge-success">Visible</span>
-                  <% end %>
-                </td>
-                <td>
-                  <%= link_to "Edit", edit_admin_challenge_path(challenge), class: "btn btn-sm btn-outline" %>
-                </td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
       </div>
     </div>
   </div>

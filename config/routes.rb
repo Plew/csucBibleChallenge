@@ -94,6 +94,8 @@ Rails.application.routes.draw do
       member do
         patch :reset_password
         patch :update_password
+        get :reading_history
+        get :change_password
       end
     end
     resources :feedbacks, only: [ :index, :show, :destroy ]

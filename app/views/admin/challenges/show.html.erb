@@ -9,44 +9,40 @@
 
   <div class="flex justify-between items-center mb-8">
     <h1 class="text-3xl font-bold"><%= @challenge.title %></h1>
-    <div class="space-x-2">
-      <%= link_to "Back to Challenges", admin_challenges_path, class: "btn btn-outline" %>
-      <%= link_to t("admin.sprints.manage_sprints"), admin_challenge_sprints_path(@challenge), class: "btn btn-secondary" %>
-      <%= link_to "Edit Challenge", edit_admin_challenge_path(@challenge), class: "btn btn-primary" %>
-    </div>
+    <%= link_to "Back to Challenges", admin_challenges_path, class: "btn btn-outline" %>
   </div>
 
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <div class="card bg-base-100 shadow-xl">
       <div class="card-body">
         <h2 class="card-title">Challenge Details</h2>
-        
+
         <div class="space-y-4">
           <div>
             <label class="font-semibold">Title:</label>
             <p><%= @challenge.title %></p>
           </div>
-          
+
           <div>
             <label class="font-semibold">Description:</label>
             <p><%= @challenge.description %></p>
           </div>
-          
+
           <div>
             <label class="font-semibold">Start Date:</label>
             <p><%= @challenge.start_date.strftime("%B %d, %Y") if @challenge.start_date %></p>
           </div>
-          
+
           <div>
             <label class="font-semibold">End Date:</label>
             <p><%= @challenge.end_date.strftime("%B %d, %Y") if @challenge.end_date %></p>
           </div>
-          
+
           <div>
             <label class="font-semibold">Timezone:</label>
             <p><%= @challenge.timezone %></p>
           </div>
-          
+
           <div>
             <label class="font-semibold">Status:</label>
             <% if @challenge.hidden? %>
@@ -62,18 +58,18 @@
     <div class="card bg-base-100 shadow-xl">
       <div class="card-body">
         <h2 class="card-title">Statistics</h2>
-        
+
         <div class="space-y-4">
           <div>
             <label class="font-semibold">Total Readings:</label>
             <p><%= @challenge.readings.count %></p>
           </div>
-          
+
           <div>
             <label class="font-semibold">Created:</label>
             <p><%= @challenge.created_at.strftime("%B %d, %Y at %I:%M %p") %></p>
           </div>
-          
+
           <div>
             <label class="font-semibold">Creator:</label>
             <p><%= @challenge.creator&.email || "Unknown" %></p>
@@ -83,68 +79,31 @@
     </div>
   </div>
 
-  <!-- Blog Section -->
+  <!-- Management Actions -->
   <div class="mt-8">
     <div class="card bg-base-100 shadow-xl">
       <div class="card-body">
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="card-title"><%= t("blog.posts") %></h2>
-          <%= link_to t("blog.manage_blog"), admin_challenge_blog_posts_path(@challenge), class: "btn btn-primary btn-sm" %>
+        <h2 class="card-title mb-4"><%= t("admin.challenges.management_actions") %></h2>
+        <div class="flex flex-wrap gap-2">
+          <%= link_to t("challenges.edit_challenge"), edit_admin_challenge_path(@challenge), class: "btn btn-primary" %>
+          <%= link_to t("admin.sprints.manage_sprints"), admin_challenge_sprints_path(@challenge), class: "btn btn-secondary" %>
+          <%= link_to t("admin.challenges.manage_posts"), admin_challenge_blog_posts_path(@challenge), class: "btn btn-secondary" %>
+          <%= link_to t("admin.seven_day_winner.title"), challenge_seven_day_lobby_path(@challenge), class: "btn btn-accent" %>
         </div>
-
-        <% if @challenge.blog_posts.any? %>
-          <p class="text-gray-500">
-            <%= pluralize(@challenge.blog_posts.count, "blog post") %>
-            (<%= @challenge.blog_posts.visible.count %> visible)
-          </p>
-        <% else %>
-          <p class="text-gray-500"><%= t("blog.no_posts") %></p>
-        <% end %>
       </div>
     </div>
   </div>
 
-  <!-- Sprints Section -->
-  <div class="mt-8">
-    <div class="card bg-base-100 shadow-xl">
-      <div class="card-body">
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="card-title"><%= t("admin.sprints.title") %></h2>
-          <%= link_to t("admin.sprints.new"), new_admin_challenge_sprint_path(@challenge), class: "btn btn-primary btn-sm" %>
+  <% if @challenge.creator == current_user %>
+    <!-- Danger Zone -->
+    <div class="mt-8">
+      <div class="card bg-base-100 shadow-xl border border-error">
+        <div class="card-body">
+          <h2 class="card-title text-error mb-4"><%= t("admin.challenges.danger_zone") %></h2>
+          <p class="text-sm text-base-content/70 mb-4"><%= t("admin.challenges.delete_warning") %></p>
+          <%= link_to t("admin.challenges.delete_challenge"), delete_confirmation_admin_challenge_path(@challenge), class: "btn btn-error btn-outline" %>
         </div>
-
-        <% if @challenge.sprints.any? %>
-          <div class="overflow-x-auto">
-            <table class="table table-zebra w-full">
-              <thead>
-                <tr>
-                  <th><%= t("admin.sprints.name") %></th>
-                  <th><%= t("admin.sprints.begin_date") %></th>
-                  <th><%= t("admin.sprints.end_date") %></th>
-                  <th><%= t("common.actions") %></th>
-                </tr>
-              </thead>
-              <tbody>
-                <% @challenge.sprints.ordered.each do |sprint| %>
-                  <tr>
-                    <td><%= sprint.title %></td>
-                    <td><%= sprint.begin_date.strftime("%B %d, %Y") %></td>
-                    <td><%= sprint.end_date.strftime("%B %d, %Y") %></td>
-                    <td>
-                      <div class="flex gap-2">
-                        <%= link_to t("common.edit"), edit_admin_challenge_sprint_path(@challenge, sprint), class: "btn btn-sm btn-outline" %>
-                        <%= button_to t("common.delete"), admin_challenge_sprint_path(@challenge, sprint), method: :delete, data: { turbo_confirm: t("common.are_you_sure") }, class: "btn btn-sm btn-error btn-outline" %>
-                      </div>
-                    </td>
-                  </tr>
-                <% end %>
-              </tbody>
-            </table>
-          </div>
-        <% else %>
-          <p class="text-gray-500"><%= t("admin.sprints.no_sprints") %></p>
-        <% end %>
       </div>
     </div>
-  </div>
+  <% end %>
 </div>
