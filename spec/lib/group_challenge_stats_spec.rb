@@ -99,7 +99,7 @@ RSpec.describe GroupChallengeStats do
       end
 
       it 'only counts readings from the specified challenge' do
-        expect(stats.completion_percentage).to eq(16.7) # 1 out of 6 possible (2 users × 3 readings)
+        expect(stats.completion_percentage).to eq(16) # 1 out of 6 possible (2 users × 3 readings) floored
       end
     end
 
@@ -227,8 +227,24 @@ RSpec.describe GroupChallengeStats do
         create(:user_reading, user: users[0], reading: readings[0])
       end
 
-      it 'rounds to one decimal place' do
-        expect(stats.completion_percentage).to eq(16.7) # 1/6 = 16.666...
+      it 'uses floor for percentage' do
+        expect(stats.completion_percentage).to eq(16) # 1/6 = 16.666... floored to 16
+      end
+    end
+
+    context 'when all readings are completed by all users' do
+      let!(:users) { create_list(:user, 2) }
+      let!(:readings) { create_list(:reading, 3, challenge: challenge) }
+
+      before do
+        users.each { |user| create(:user_group_enrollment, user: user, group: group) }
+        users.each do |user|
+          readings.each { |reading| create(:user_reading, user: user, reading: reading) }
+        end
+      end
+
+      it 'returns exactly 100 when all readings completed' do
+        expect(stats.completion_percentage).to eq(100)
       end
     end
 

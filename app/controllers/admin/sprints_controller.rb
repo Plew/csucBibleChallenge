@@ -1,9 +1,30 @@
 class Admin::SprintsController < Admin::BaseController
   before_action :set_challenge
-  before_action :set_sprint, only: [ :edit, :update, :destroy ]
+  before_action :set_sprint, only: [ :show, :edit, :update, :destroy ]
 
   def index
     @sprints = @challenge.sprints.ordered
+  end
+
+  def show
+    # Get all groups for this challenge
+    groups = @challenge.groups.includes(:users)
+
+    # Calculate statistics for each group within the sprint date range
+    @groups_with_stats = groups.map do |group|
+      stats = GroupStatistics.new(group, @sprint.date_range)
+      {
+        group: group,
+        completion_percentage: stats.completion_percentage,
+        on_schedule_percentage: stats.on_schedule_percentage,
+        member_count: group.users.count
+      }
+    end
+
+    # Sort by: completion_percentage (desc), on_schedule_percentage (desc), member_count (desc)
+    @groups_with_stats.sort_by! do |g|
+      [ -g[:completion_percentage], -g[:on_schedule_percentage], -g[:member_count] ]
+    end
   end
 
   def new

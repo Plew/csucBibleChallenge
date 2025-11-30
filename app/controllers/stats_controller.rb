@@ -106,7 +106,13 @@ class StatsController < ApplicationController
                          .where("readings.scheduled_date <= ?", current_date_in_tz)
     completed_count = completed_query.count
 
-    completion_percentage = scheduled_count.zero? ? 0 : (completed_count.to_f / scheduled_count * 100).round
+    if scheduled_count.zero?
+      completion_percentage = 0
+    elsif completed_count == scheduled_count
+      completion_percentage = 100
+    else
+      completion_percentage = (completed_count.to_f / scheduled_count * 100).floor
+    end
 
     # Calculate on-schedule percentage
     completed_readings = user.user_readings
@@ -118,7 +124,13 @@ class StatsController < ApplicationController
                        .where("date(user_readings.created_at) <= readings.scheduled_date")
                        .count
 
-    on_schedule_percentage = completed_count.zero? ? 0 : (on_schedule_count.to_f / completed_count * 100).round
+    if completed_count.zero?
+      on_schedule_percentage = 0
+    elsif on_schedule_count == completed_count
+      on_schedule_percentage = 100
+    else
+      on_schedule_percentage = (on_schedule_count.to_f / completed_count * 100).floor
+    end
 
     {
       chapters_completed: completed_count,
@@ -164,14 +176,26 @@ class StatsController < ApplicationController
                          .where("readings.scheduled_date <= ?", current_date_in_tz)
     completed_count = completed_query.count
 
-    completion_percentage = scheduled_count.zero? ? 0 : (completed_count.to_f / scheduled_count * 100).round
+    if scheduled_count.zero?
+      completion_percentage = 0
+    elsif completed_count == scheduled_count
+      completion_percentage = 100
+    else
+      completion_percentage = (completed_count.to_f / scheduled_count * 100).floor
+    end
 
     # Calculate on-schedule percentage for sprint readings
     on_schedule_count = completed_query
                        .where("date(user_readings.created_at) <= readings.scheduled_date")
                        .count
 
-    on_schedule_percentage = completed_count.zero? ? 0 : (on_schedule_count.to_f / completed_count * 100).round
+    if completed_count.zero?
+      on_schedule_percentage = 0
+    elsif on_schedule_count == completed_count
+      on_schedule_percentage = 100
+    else
+      on_schedule_percentage = (on_schedule_count.to_f / completed_count * 100).floor
+    end
 
     {
       chapters_completed: completed_count,

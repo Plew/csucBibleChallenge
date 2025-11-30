@@ -43,10 +43,10 @@ RSpec.describe GroupStatistics, type: :service do
       expect(stat.check_in_percentage(readings.first.scheduled_date)).to eq(100)
     end
 
-    it 'returns 33.33 if one of three completed the reading' do
+    it 'returns 33 if one of three completed the reading (floored, not rounded)' do
       create(:user_reading, user: users.first, reading: readings.first, completed_on: readings.first.scheduled_date)
       stat = described_class.new(group)
-      expect(stat.check_in_percentage(readings.first.scheduled_date)).to be_within(0.01).of(33.33)
+      expect(stat.check_in_percentage(readings.first.scheduled_date)).to eq(33)
     end
   end
 

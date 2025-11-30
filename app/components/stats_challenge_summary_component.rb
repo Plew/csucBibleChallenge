@@ -21,7 +21,7 @@ class StatsChallengeSummaryComponent < ViewComponent::Base
     return 100 if days_elapsed >= total_days
     return 0 if days_elapsed <= 0
 
-    ((days_elapsed.to_f / total_days) * 100).round
+    ((days_elapsed.to_f / total_days) * 100).floor
   end
 
   def days_remaining

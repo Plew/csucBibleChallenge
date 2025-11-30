@@ -71,8 +71,9 @@ class TopReadersStatistics
     completed_count = completed_query.count
 
     return 0 if scheduled_count.zero?
+    return 100 if completed_count == scheduled_count
 
-    (completed_count.to_f / scheduled_count * 100).round
+    (completed_count.to_f / scheduled_count * 100).floor
   end
 
   def calculate_chapters_data(user)
@@ -96,7 +97,7 @@ class TopReadersStatistics
   end
 
   def calculate_on_schedule_percentage(user)
-    OnScheduleStatistic.new(user, @challenge, @date_range).percentage.round
+    OnScheduleStatistic.new(user, @challenge, @date_range).percentage.floor
   end
 
   def avatar_url_for(user)

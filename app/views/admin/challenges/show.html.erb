@@ -11,6 +11,7 @@
     <h1 class="text-3xl font-bold"><%= @challenge.title %></h1>
     <div class="space-x-2">
       <%= link_to "Back to Challenges", admin_challenges_path, class: "btn btn-outline" %>
+      <%= link_to t("admin.sprints.manage_sprints"), admin_challenge_sprints_path(@challenge), class: "btn btn-secondary" %>
       <%= link_to "Edit Challenge", edit_admin_challenge_path(@challenge), class: "btn btn-primary" %>
     </div>
   </div>

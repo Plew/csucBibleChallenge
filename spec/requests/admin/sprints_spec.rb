@@ -21,6 +21,88 @@ RSpec.describe "Admin::Sprints", type: :request do
     end
   end
 
+  describe "GET /admin/challenges/:challenge_id/sprints/:id" do
+    let(:sprint) { create(:sprint, challenge: challenge, title: "Q1 Sprint", begin_date: Date.new(2025, 1, 1), end_date: Date.new(2025, 3, 31)) }
+
+    it "returns success" do
+      get admin_challenge_sprint_path(challenge, sprint)
+      expect(response).to have_http_status(:success)
+    end
+
+    it "displays sprint title and dates" do
+      get admin_challenge_sprint_path(challenge, sprint)
+      expect(response.body).to include("Q1 Sprint")
+      expect(response.body).to include("January 01, 2025")
+      expect(response.body).to include("March 31, 2025")
+    end
+
+    context "with groups in the challenge" do
+      let!(:group1) { create(:group, challenge: challenge, name: "Group A") }
+      let!(:group2) { create(:group, challenge: challenge, name: "Group B") }
+      let!(:group3) { create(:group, challenge: challenge, name: "Group C") }
+
+      it "displays all groups" do
+        get admin_challenge_sprint_path(challenge, sprint)
+        expect(response.body).to include("Group A")
+        expect(response.body).to include("Group B")
+        expect(response.body).to include("Group C")
+      end
+
+      it "displays group statistics" do
+        # Add a user to group1 to ensure member count appears
+        user1 = create(:user)
+        create(:user_challenge_enrollment, user: user1, challenge: challenge)
+        create(:user_group_enrollment, user: user1, group: group1)
+
+        get admin_challenge_sprint_path(challenge, sprint)
+        expect(response.body).to include("Group A")
+        # The page should show completion and on-time percentages (likely 0% for new groups)
+        expect(response.body).to match(/\d+%/)
+      end
+
+      it "orders groups by completion percentage, on-time percentage, and member count" do
+        # Create users and readings to test ordering
+        user1 = create(:user)
+        user2 = create(:user)
+        user3 = create(:user)
+
+        create(:user_challenge_enrollment, user: user1, challenge: challenge)
+        create(:user_challenge_enrollment, user: user2, challenge: challenge)
+        create(:user_challenge_enrollment, user: user3, challenge: challenge)
+
+        create(:user_group_enrollment, user: user1, group: group1)
+        create(:user_group_enrollment, user: user2, group: group2)
+        create(:user_group_enrollment, user: user3, group: group2)
+
+        # Create a reading within the sprint date range
+        reading = create(:reading, challenge: challenge, scheduled_date: Date.new(2025, 1, 15))
+
+        # Group 2 has higher completion (both users completed)
+        create(:user_reading, user: user2, reading: reading)
+        create(:user_reading, user: user3, reading: reading)
+
+        # Group 1 has no completions
+
+        get admin_challenge_sprint_path(challenge, sprint)
+
+        # The response should list the groups
+        expect(response).to have_http_status(:success)
+        expect(assigns(:groups_with_stats)).to be_present
+
+        # Group 2 should be ranked higher than Group 1 due to higher completion
+        stats = assigns(:groups_with_stats)
+        expect(stats.first[:group].name).to eq("Group B")
+      end
+    end
+
+    context "with no groups in the challenge" do
+      it "displays a no groups message" do
+        get admin_challenge_sprint_path(challenge, sprint)
+        expect(response.body).to include(I18n.t("admin.sprints.no_groups"))
+      end
+    end
+  end
+
   describe "GET /admin/challenges/:challenge_id/sprints/new" do
     it "returns success" do
       get new_admin_challenge_sprint_path(challenge)
