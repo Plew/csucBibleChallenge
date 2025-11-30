@@ -100,7 +100,7 @@ module ApplicationHelper
     end
 
     options = {
-      filter_html: true,
+      filter_html: false,  # We sanitize afterward with sanitize_with_youtube
       hard_wrap: true,
       link_attributes: { target: "_blank", rel: "noopener noreferrer" },
       no_styles: true
@@ -207,7 +207,10 @@ module ApplicationHelper
   def sanitize_with_youtube(html)
     # Use Rails sanitize with custom scrubber for YouTube iframes
     scrubber = Loofah::Scrubber.new do |node|
-      if node.name == "iframe"
+      # Allow text nodes
+      if node.type == Nokogiri::XML::Node::TEXT_NODE
+        Loofah::Scrubber::CONTINUE
+      elsif node.name == "iframe"
         # Only allow iframes from YouTube
         src = node["src"]
         if src && (src.start_with?("https://www.youtube-nocookie.com/embed/", "https://www.youtube.com/embed/"))
