@@ -232,6 +232,22 @@ RSpec.describe GroupChallengeStats do
       end
     end
 
+    context 'when all readings are completed by all users' do
+      let!(:users) { create_list(:user, 2) }
+      let!(:readings) { create_list(:reading, 3, challenge: challenge) }
+
+      before do
+        users.each { |user| create(:user_group_enrollment, user: user, group: group) }
+        users.each do |user|
+          readings.each { |reading| create(:user_reading, user: user, reading: reading) }
+        end
+      end
+
+      it 'returns exactly 100 when all readings completed' do
+        expect(stats.completion_percentage).to eq(100)
+      end
+    end
+
     context 'when group belongs to different challenge than readings' do
       let(:different_challenge) { create(:challenge) }
       let(:different_group) { create(:group, challenge: different_challenge) }

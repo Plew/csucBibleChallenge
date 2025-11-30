@@ -12,6 +12,8 @@ class GroupChallengeStats
     return 0.0 if total_possible.zero?
 
     completed = completed_readings_count
+    return 100 if completed == total_possible
+
     (completed.to_f / total_possible * 100).floor
   end
 
@@ -21,6 +23,8 @@ class GroupChallengeStats
     return 0.0 if total_possible.zero?
 
     completed = completed_readings_to_date_count
+    return 100 if completed == total_possible
+
     (completed.to_f / total_possible * 100).floor
   end
 

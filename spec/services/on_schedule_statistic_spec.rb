@@ -157,8 +157,8 @@ RSpec.describe OnScheduleStatistic, type: :service do
       end
 
       it 'correctly handles timezone when determining if reading was on schedule' do
-        # 1 on-schedule out of 3 total scheduled readings
-        expect(subject.percentage).to eq(33.33)
+        # 1 on-schedule out of 3 total scheduled readings (floored to 33, not rounded to 33.33)
+        expect(subject.percentage).to eq(33)
       end
     end
   end

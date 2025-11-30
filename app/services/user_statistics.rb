@@ -13,6 +13,8 @@ class UserStatistics
     total_readings = challenge.readings.where("scheduled_date <= ?", Date.current).count
     return 0 if total_readings.zero?
     completed = user.user_readings.joins(:reading).where(readings: { challenge_id: challenge.id }).where("readings.scheduled_date <= ?", Date.current).count
+    return 100 if completed == total_readings
+
     (completed.to_f / total_readings * 100).floor
   end
 

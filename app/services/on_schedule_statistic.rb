@@ -37,7 +37,11 @@ class OnScheduleStatistic
     percentages = {}
     results.each do |result|
       on_schedule_count = result.on_schedule_count
-      percentages[result.id] = (on_schedule_count.to_f / total_scheduled * 100).floor
+      if on_schedule_count == total_scheduled
+        percentages[result.id] = 100
+      else
+        percentages[result.id] = (on_schedule_count.to_f / total_scheduled * 100).floor
+      end
     end
 
     # Fill in 0 for users not in results (no on-schedule readings)
@@ -54,7 +58,11 @@ class OnScheduleStatistic
   def percentage
     return 0 if scheduled_readings_to_date.zero?
 
-    (on_schedule_count.to_f / scheduled_readings_to_date * 100).floor
+    on_schedule = on_schedule_count
+    scheduled = scheduled_readings_to_date
+    return 100 if on_schedule == scheduled
+
+    (on_schedule.to_f / scheduled * 100).floor
   end
 
   # Count of readings completed on their scheduled date (only for readings scheduled up to current date)
