@@ -1,0 +1,8 @@
+<div class="flex flex-col items-center">
+  <div class="radial-progress <%= color_class %>" style="--value:<%= percentage %>; --size:7rem; --thickness:0.5rem;" aria-valuenow="<%= percentage %>" role="progressbar">
+    <span class="text-xl font-bold"><%= percentage %>%</span>
+  </div>
+  <div class="text-xs text-center mt-1 opacity-70">
+    <%= label %>
+  </div>
+</div>

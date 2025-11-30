@@ -12,7 +12,9 @@ class GroupChallengeStats
     return 0.0 if total_possible.zero?
 
     completed = completed_readings_count
-    (completed.to_f / total_possible * 100).round(1)
+    return 100 if completed == total_possible
+
+    (completed.to_f / total_possible * 100).floor
   end
 
   # Completion percentage relative to readings scheduled up to current date for all group members
@@ -21,7 +23,9 @@ class GroupChallengeStats
     return 0.0 if total_possible.zero?
 
     completed = completed_readings_to_date_count
-    (completed.to_f / total_possible * 100).round(1)
+    return 100 if completed == total_possible
+
+    (completed.to_f / total_possible * 100).floor
   end
 
   private

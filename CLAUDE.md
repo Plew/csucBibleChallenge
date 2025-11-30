@@ -201,3 +201,4 @@ note that kamal deploy could be a background task so that you can finish this ta
 - whenever we want to render avatars we use the AvatarComponent
 - if we have issues with classes being missing in production deploys, make sure to consider the safelist in tailwind.config.js because they may have been used in a ruby class
 - We are using Sqlite for our database, NOT postgresql
+- any time you interact with linear mcp, creating or finding tickets, they will always be in the "CSM Bible Challenge" project

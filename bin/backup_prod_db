@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Configuration
+PROD_HOST="hetzprod"
+PROD_DB_PATH="/storage/reverse"
+PROD_BACKUP_PATH="/storage/db_backups"
+LOCAL_BACKUP_PATH="tmp"
+LOCAL_STORAGE_PATH="storage"
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+
+echo "=== Backing Up Production Database ==="
+echo
+
+# Create local backup directory if needed
+mkdir -p "$LOCAL_BACKUP_PATH"
+
+echo "📦 Creating backup directory on server..."
+ssh "$PROD_HOST" "mkdir -p $PROD_BACKUP_PATH"
+
+echo "🔄 Creating production database backup on server..."
+ssh "$PROD_HOST" "cd $PROD_DB_PATH && sqlite3 production.sqlite3 \".backup $PROD_BACKUP_PATH/production-backup-${TIMESTAMP}.sqlite3\""
+
+echo "🔄 Creating queue database backup on server..."
+ssh "$PROD_HOST" "cd $PROD_DB_PATH && sqlite3 queue_production.sqlite3 \".backup $PROD_BACKUP_PATH/queue-production-backup-${TIMESTAMP}.sqlite3\""
+
+echo "⬇️  Downloading production database backup..."
+scp "${PROD_HOST}:${PROD_BACKUP_PATH}/production-backup-${TIMESTAMP}.sqlite3" \
+    "$LOCAL_BACKUP_PATH/production-backup-${TIMESTAMP}.sqlite3"
+
+echo "⬇️  Downloading queue database backup..."
+scp "${PROD_HOST}:${PROD_BACKUP_PATH}/queue-production-backup-${TIMESTAMP}.sqlite3" \
+    "$LOCAL_BACKUP_PATH/queue-production-backup-${TIMESTAMP}.sqlite3"
+
+echo "🧹 Cleaning up server-side backup files..."
+ssh "$PROD_HOST" "rm $PROD_BACKUP_PATH/production-backup-${TIMESTAMP}.sqlite3"
+ssh "$PROD_HOST" "rm $PROD_BACKUP_PATH/queue-production-backup-${TIMESTAMP}.sqlite3"
+
+echo
+echo "✅ Backup complete!"
+echo
+echo "Backups saved to:"
+ls -lh "$LOCAL_BACKUP_PATH"/production-backup-${TIMESTAMP}.sqlite3
+ls -lh "$LOCAL_BACKUP_PATH"/queue-production-backup-${TIMESTAMP}.sqlite3
+echo
+
+# Output the backup file paths for use by other scripts
+echo "$LOCAL_BACKUP_PATH/production-backup-${TIMESTAMP}.sqlite3"
+echo "$LOCAL_BACKUP_PATH/queue-production-backup-${TIMESTAMP}.sqlite3"

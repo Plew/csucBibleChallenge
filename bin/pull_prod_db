@@ -3,56 +3,30 @@
 set -e
 
 # Configuration
-PROD_HOST="philip@178.156.131.96"
-PROD_DB_PATH="/storage/reverse"
 LOCAL_STORAGE_PATH="storage"
-TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 
 echo "=== Pulling Production Database ==="
 echo
 
-# Create backup directory if it doesn't exist
-mkdir -p storage/backups
+# Run backup_prod_db and capture the last two lines (the file paths)
+BACKUP_OUTPUT=$(bin/backup_prod_db)
+echo "$BACKUP_OUTPUT"
 
-# Backup current dev databases if they exist
-if [ -f "$LOCAL_STORAGE_PATH/development.sqlite3" ]; then
-  echo "📦 Backing up current development database..."
-  cp "$LOCAL_STORAGE_PATH/development.sqlite3" "$LOCAL_STORAGE_PATH/backups/development_${TIMESTAMP}.sqlite3"
-  echo "   → storage/backups/development_${TIMESTAMP}.sqlite3"
-fi
-
-if [ -f "$LOCAL_STORAGE_PATH/queue_development.sqlite3" ]; then
-  echo "📦 Backing up current queue database..."
-  cp "$LOCAL_STORAGE_PATH/queue_development.sqlite3" "$LOCAL_STORAGE_PATH/backups/queue_development_${TIMESTAMP}.sqlite3"
-  echo "   → storage/backups/queue_development_${TIMESTAMP}.sqlite3"
-fi
+# Extract the backup file paths from the output (last two lines)
+PROD_DB_BACKUP=$(echo "$BACKUP_OUTPUT" | tail -2 | head -1)
+QUEUE_DB_BACKUP=$(echo "$BACKUP_OUTPUT" | tail -1)
 
 echo
-
-# Pull production databases
-echo "⬇️  Downloading production database..."
-scp "${PROD_HOST}:${PROD_DB_PATH}/production.sqlite3" "$LOCAL_STORAGE_PATH/development.sqlite3"
-
-echo "⬇️  Downloading production queue database..."
-scp "${PROD_HOST}:${PROD_DB_PATH}/queue_production.sqlite3" "$LOCAL_STORAGE_PATH/queue_development.sqlite3"
-
-echo
-
-# Show file sizes
-echo "✅ Download complete!"
-echo
-echo "Database sizes:"
-ls -lh "$LOCAL_STORAGE_PATH/development.sqlite3" | awk '{print "  Main DB: " $5}'
-ls -lh "$LOCAL_STORAGE_PATH/queue_development.sqlite3" | awk '{print "  Queue DB: " $5}'
-
-echo
-
-# Run migrations in case production is ahead
-echo "🔄 Running any pending migrations..."
-bin/rails db:migrate
+echo "🔄 Replacing development databases with production backups..."
+cp "$PROD_DB_BACKUP" "$LOCAL_STORAGE_PATH/development.sqlite3"
+cp "$QUEUE_DB_BACKUP" "$LOCAL_STORAGE_PATH/queue_development.sqlite3"
 
 echo
 echo "✨ Production database successfully synced to development!"
 echo
+echo "Database sizes:"
+ls -lh "$LOCAL_STORAGE_PATH/development.sqlite3" | awk '{print "  Main DB: " $5}'
+ls -lh "$LOCAL_STORAGE_PATH/queue_development.sqlite3" | awk '{print "  Queue DB: " $5}'
+echo
 echo "⚠️  Remember: This contains real production data."
-echo "   Backups saved in storage/backups/"
+echo

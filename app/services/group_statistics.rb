@@ -24,7 +24,9 @@ class GroupStatistics
     group_user_ids = group.users.pluck(:id)
     completed_count = UserReading.where(user_id: group_user_ids, reading_id: reading.id).count
     return 0 if group_user_ids.empty?
-    (completed_count.to_f / group_user_ids.size * 100).round(2)
+    return 100 if completed_count == group_user_ids.size
+
+    (completed_count.to_f / group_user_ids.size * 100).floor
   end
 
   # Longest streak where every member completed the reading
@@ -69,7 +71,7 @@ class GroupStatistics
       completed = completed_query.count
       (completed.to_f / total_readings * 100)
     end
-    (percentages.sum / group_user_ids.size).round
+    (percentages.sum / group_user_ids.size).floor
   end
 
   def on_schedule_percentage
@@ -83,12 +85,12 @@ class GroupStatistics
       percentages = group_users.map do |user|
         OnScheduleStatistic.new(user, challenge, date_range).percentage
       end
-      (percentages.sum / group_users.size).round
+      (percentages.sum / group_users.size).floor
     else
       # Use batch query when no date_range (more efficient)
       user_ids = group_users.pluck(:id)
       percentages_by_user = OnScheduleStatistic.batch_percentages(user_ids, challenge)
-      (percentages_by_user.values.sum / group_users.size).round
+      (percentages_by_user.values.sum / group_users.size).floor
     end
   end
 end

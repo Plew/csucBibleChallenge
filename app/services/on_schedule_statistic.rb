@@ -21,7 +21,7 @@ class OnScheduleStatistic
                               .where("scheduled_date <= ?", current_date)
                               .count
 
-    return user_ids.index_with { 0.0 } if total_scheduled.zero?
+    return user_ids.index_with { 0 } if total_scheduled.zero?
 
     # Single query to get on-schedule counts for all users
     results = User.joins("LEFT JOIN user_readings ON user_readings.user_id = users.id")
@@ -37,12 +37,16 @@ class OnScheduleStatistic
     percentages = {}
     results.each do |result|
       on_schedule_count = result.on_schedule_count
-      percentages[result.id] = (on_schedule_count.to_f / total_scheduled * 100).round(2)
+      if on_schedule_count == total_scheduled
+        percentages[result.id] = 100
+      else
+        percentages[result.id] = (on_schedule_count.to_f / total_scheduled * 100).floor
+      end
     end
 
-    # Fill in 0.0 for users not in results (no on-schedule readings)
+    # Fill in 0 for users not in results (no on-schedule readings)
     user_ids.each do |user_id|
-      percentages[user_id] ||= 0.0
+      percentages[user_id] ||= 0
     end
 
     percentages
@@ -54,7 +58,11 @@ class OnScheduleStatistic
   def percentage
     return 0 if scheduled_readings_to_date.zero?
 
-    (on_schedule_count.to_f / scheduled_readings_to_date * 100).round(2)
+    on_schedule = on_schedule_count
+    scheduled = scheduled_readings_to_date
+    return 100 if on_schedule == scheduled
+
+    (on_schedule.to_f / scheduled * 100).floor
   end
 
   # Count of readings completed on their scheduled date (only for readings scheduled up to current date)

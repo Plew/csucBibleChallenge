@@ -21,7 +21,7 @@ class StatsChallengeSummaryComponent < ViewComponent::Base
     return 100 if days_elapsed >= total_days
     return 0 if days_elapsed <= 0
 
-    ((days_elapsed.to_f / total_days) * 100).round(1)
+    ((days_elapsed.to_f / total_days) * 100).floor
   end
 
   def days_remaining
@@ -80,6 +80,11 @@ class StatsChallengeSummaryComponent < ViewComponent::Base
     (challenge.end_date - challenge.start_date).to_i + 1
   end
 
+  def sprint_total_days
+    return 0 unless statistics.active_sprint
+    (statistics.active_sprint.end_date - statistics.active_sprint.begin_date).to_i + 1
+  end
+
   def first_reader_username
     statistics.first_reader_today&.username || "None yet"
   end
@@ -103,6 +108,18 @@ class StatsChallengeSummaryComponent < ViewComponent::Base
   class MockStatistics
     def initialize(challenge)
       @challenge = challenge
+    end
+
+    def active_sprint
+      nil  # Return nil by default for mock
+    end
+
+    def sprint_progress_percentage
+      0
+    end
+
+    def sprint_days_remaining
+      0
     end
 
     def number_of_participants

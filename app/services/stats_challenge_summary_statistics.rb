@@ -73,6 +73,30 @@ class StatsChallengeSummaryStatistics
     end
   end
 
+  def active_sprint
+    @active_sprint ||= challenge.sprints.active.first
+  end
+
+  def sprint_progress_percentage
+    return 0 unless active_sprint
+    return 0 unless active_sprint.begin_date && active_sprint.end_date
+
+    total_days = (active_sprint.end_date - active_sprint.begin_date).to_i + 1
+    days_elapsed = [ (Date.current - active_sprint.begin_date).to_i + 1, 0 ].max
+
+    return 100 if days_elapsed >= total_days
+    return 0 if days_elapsed <= 0
+
+    ((days_elapsed.to_f / total_days) * 100).floor
+  end
+
+  def sprint_days_remaining
+    return 0 unless active_sprint
+    return 0 if active_sprint.end_date < Date.current
+
+    (active_sprint.end_date - Date.current).to_i
+  end
+
   private
 
   def time_ago_in_words(time)

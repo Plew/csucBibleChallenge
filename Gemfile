@@ -73,7 +73,7 @@ group :development do
   gem "listen"
   gem "actioncable"
   gem "lookbook", "~> 2.3.13"
-  gem "hotwire-livereload", "~> 1.2"
+  gem "hotwire-livereload", "~> 2.1"
   gem "letter_opener"
 end
 

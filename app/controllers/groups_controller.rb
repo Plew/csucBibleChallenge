@@ -112,7 +112,7 @@ class GroupsController < ApplicationController
                   .includes(user_group_enrollments: { user: [ :avatar_attachment, :avatar_blob ] })
                   .to_a
 
-    # Calculate group statistics
+    # Calculate group statistics for challenge
     group_stats = GroupStatistics.new(@group)
     group_user_ids = @group.users.pluck(:id)
     current_date = Time.current.in_time_zone(@challenge.timezone).to_date
@@ -143,6 +143,57 @@ class GroupsController < ApplicationController
       total_possible: total_possible,
       total_on_time: total_on_time
     }
+
+    # Find current sprint
+    @current_sprint = @challenge.sprints.find_by("begin_date <= ? AND end_date >= ?", current_date, current_date)
+
+    # Calculate sprint statistics if there's an active sprint
+    if @current_sprint
+      sprint_scheduled = @challenge.readings
+                                   .where("scheduled_date >= ? AND scheduled_date <= ?", @current_sprint.begin_date, @current_sprint.end_date)
+                                   .where("scheduled_date <= ?", current_date)
+                                   .count
+      sprint_possible = sprint_scheduled * group_user_ids.count
+
+      sprint_completed = UserReading.where(user_id: group_user_ids)
+                                    .joins(:reading)
+                                    .where(readings: { challenge_id: @challenge.id })
+                                    .where("readings.scheduled_date >= ? AND readings.scheduled_date <= ?", @current_sprint.begin_date, @current_sprint.end_date)
+                                    .where("readings.scheduled_date <= ?", current_date)
+                                    .count
+
+      sprint_on_time = UserReading.where(user_id: group_user_ids)
+                                  .joins(:reading)
+                                  .where(readings: { challenge_id: @challenge.id })
+                                  .where("readings.scheduled_date >= ? AND readings.scheduled_date <= ?", @current_sprint.begin_date, @current_sprint.end_date)
+                                  .where("readings.scheduled_date <= ?", current_date)
+                                  .where("DATE(user_readings.completed_on) = readings.scheduled_date")
+                                  .count
+
+      if sprint_possible.zero?
+        sprint_completion_percentage = 0
+      elsif sprint_completed == sprint_possible
+        sprint_completion_percentage = 100
+      else
+        sprint_completion_percentage = (sprint_completed.to_f / sprint_possible * 100).floor
+      end
+
+      if sprint_completed.zero?
+        sprint_on_schedule_percentage = 0
+      elsif sprint_on_time == sprint_completed
+        sprint_on_schedule_percentage = 100
+      else
+        sprint_on_schedule_percentage = (sprint_on_time.to_f / sprint_completed * 100).floor
+      end
+
+      @sprint_stats = {
+        completion_percentage: sprint_completion_percentage,
+        on_schedule_percentage: sprint_on_schedule_percentage,
+        total_completed: sprint_completed,
+        total_possible: sprint_possible,
+        total_on_time: sprint_on_time
+      }
+    end
   end
 
   # GET /groups/:id/edit

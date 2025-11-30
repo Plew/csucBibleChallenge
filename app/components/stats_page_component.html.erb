@@ -20,7 +20,13 @@
 
     <!-- Personal Stats -->
     <div>
-      <%= render Statistics::PersonalStatsComponent.new(user_stats: personal_stats) %>
+      <%= render Statistics::PersonalStatsComponent.new(
+        user_stats: personal_stats,
+        sprint_stats: sprint_stats,
+        current_sprint: current_sprint,
+        challenge_graph_data: challenge_graph_data,
+        sprint_graph_data: sprint_graph_data
+      ) %>
     </div>
 
     <!-- Challenge Stats (Leaderboard) -->
