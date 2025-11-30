@@ -605,7 +605,7 @@ de:
   # Blog
   blog:
     title: "Blog"
-    posts: "Blog-Beiträge"
+    posts: "Beiträge"
     new_post: "Neuer Beitrag"
     edit_post: "Beitrag bearbeiten"
     create_post: "Beitrag erstellen"
@@ -613,6 +613,9 @@ de:
     delete_post: "Beitrag löschen"
     post_title: "Beitragstitel"
     post_content: "Inhalt"
+    post_image: "Titelbild (Optional)"
+    image_help: "Laden Sie ein Bild hoch, um es mit diesem Beitrag anzuzeigen (JPEG, PNG, GIF oder WebP, max. 10 MB)"
+    current_image: "Aktuelles Bild - laden Sie ein neues hoch, um es zu ersetzen"
     post_visibility: "Für Benutzer sichtbar"
     visibility_help: "Wenn nicht aktiviert, können nur Admins diesen Beitrag sehen"
     created: "Blog-Beitrag erfolgreich erstellt"
@@ -624,6 +627,9 @@ de:
     posted_by: "Gepostet von"
     posted_on: "Gepostet am"
     comments: "Kommentare"
+    comment_count:
+      one: "%{count} Kommentar"
+      other: "%{count} Kommentare"
     no_comments: "Noch keine Kommentare. Seien Sie der Erste, der kommentiert!"
     add_comment: "Kommentar hinzufügen"
     comment_placeholder: "Schreiben Sie Ihren Kommentar..."

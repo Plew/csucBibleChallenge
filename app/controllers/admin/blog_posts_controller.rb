@@ -48,6 +48,6 @@ class Admin::BlogPostsController < Admin::BaseController
   end
 
   def blog_post_params
-    params.require(:blog_post).permit(:title, :content, :visible)
+    params.require(:blog_post).permit(:title, :content, :visible, :image)
   end
 end

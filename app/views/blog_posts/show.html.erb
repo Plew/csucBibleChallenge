@@ -1,21 +1,24 @@
-<div class="container mx-auto px-4 py-8 max-w-4xl">
-  <%= link_to challenge_blog_posts_path(@challenge), class: "link link-hover mb-6 inline-block" do %>
+<div class="px-2 py-4 max-w-4xl mx-auto">
+  <%= link_to challenge_blog_posts_path(@challenge), class: "link link-hover mb-4 inline-block text-sm" do %>
     <%= t("blog.back_to_blog") %>
   <% end %>
 
-  <article class="card bg-base-100 shadow-xl mb-8">
-    <div class="card-body">
-      <h1 class="card-title text-3xl mb-4"><%= @blog_post.title %></h1>
+  <article class="card bg-base-100 shadow-md mb-6">
+    <% if @blog_post.image.attached? %>
+      <figure class="px-0 pt-0">
+        <%= image_tag @blog_post.image.variant(resize_to_limit: [1200, 600]),
+            class: "w-full object-cover max-h-96",
+            alt: @blog_post.title %>
+      </figure>
+    <% end %>
+    <div class="card-body p-4">
+      <h1 class="text-2xl font-bold mb-3"><%= @blog_post.title %></h1>
 
-      <div class="flex items-center gap-2 text-sm text-gray-500 mb-6">
-        <%= render AvatarComponent.new(user: @blog_post.author, size: :thumb) %>
-        <div>
-          <div><%= t("blog.posted_by") %> <strong><%= @blog_post.author.username %></strong></div>
-          <div><%= l(@blog_post.created_at, format: :long) %></div>
-        </div>
+      <div class="text-xs text-base-content/60 mb-4">
+        <%= l(@blog_post.created_at, format: :long) %>
       </div>
 
-      <div class="prose max-w-none">
+      <div class="prose prose-sm max-w-none">
         <%= markdown(@blog_post.content) %>
       </div>
     </div>

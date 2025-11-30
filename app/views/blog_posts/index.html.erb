@@ -1,42 +1,42 @@
-<div class="container mx-auto px-4 py-8">
-  <div class="flex justify-between items-center mb-8">
-    <h1 class="text-3xl font-bold"><%= t("blog.title") %></h1>
-  </div>
-
+<div class="px-2 py-4">
   <% if @blog_posts.any? %>
-    <div class="space-y-6">
+    <div class="space-y-3">
       <% @blog_posts.each do |post| %>
-        <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
-          <div class="card-body">
-            <%= link_to challenge_blog_post_path(@challenge, post) do %>
-              <h2 class="card-title text-2xl mb-2"><%= post.title %></h2>
+        <%= link_to challenge_blog_post_path(@challenge, post), class: "block" do %>
+          <div class="card bg-base-100 shadow-md hover:shadow-lg transition-shadow">
+            <% if post.image.attached? %>
+              <figure class="px-0 pt-0">
+                <%= image_tag post.image.variant(resize_to_limit: [800, 400]),
+                    class: "w-full object-cover max-h-48",
+                    alt: post.title %>
+              </figure>
             <% end %>
+            <div class="card-body p-4">
+              <h2 class="card-title text-xl"><%= post.title %></h2>
 
-            <p class="text-sm text-gray-500 mb-4">
-              <%= t("blog.posted_by") %> <%= post.author.username %> •
-              <%= l(post.created_at, format: :long) %>
-            </p>
+              <p class="text-xs text-base-content/60 mb-2">
+                <%= l(post.created_at, format: :long) %>
+              </p>
 
-            <div class="prose max-w-none mb-4">
-              <%= markdown(truncate(post.content, length: 300)) %>
-            </div>
-
-            <div class="card-actions justify-between items-center mt-4">
-              <div class="text-sm text-gray-500">
-                <%= pluralize(post.blog_comments.count, t("blog.comments")) %>
+              <div class="prose prose-sm max-w-none mb-3">
+                <%= markdown(truncate(post.content, length: 200)) %>
               </div>
-              <%= link_to t("common.view"), challenge_blog_post_path(@challenge, post), class: "btn btn-primary btn-sm" %>
+
+              <div class="flex justify-between items-center text-sm text-base-content/60">
+                <span><%= t("blog.comment_count", count: post.blog_comments.count) %></span>
+                <span class="link link-primary"><%= t("common.view") %> →</span>
+              </div>
             </div>
           </div>
-        </div>
+        <% end %>
       <% end %>
     </div>
   <% else %>
     <div class="text-center py-12">
-      <div class="card bg-base-200 shadow-xl max-w-md mx-auto">
-        <div class="card-body">
-          <h2 class="card-title justify-center"><%= t("blog.no_posts") %></h2>
-          <p class="text-gray-500"><%= t("blog.no_posts_message") %></p>
+      <div class="card bg-base-200 shadow-md max-w-md mx-auto">
+        <div class="card-body p-6">
+          <h2 class="card-title justify-center text-lg"><%= t("blog.no_posts") %></h2>
+          <p class="text-sm text-base-content/60"><%= t("blog.no_posts_message") %></p>
         </div>
       </div>
     </div>

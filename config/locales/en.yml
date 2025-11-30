@@ -660,7 +660,7 @@ en:
   # Blog
   blog:
     title: "Blog"
-    posts: "Blog Posts"
+    posts: "Posts"
     new_post: "New Post"
     edit_post: "Edit Post"
     create_post: "Create Post"
@@ -668,6 +668,9 @@ en:
     delete_post: "Delete Post"
     post_title: "Post Title"
     post_content: "Content"
+    post_image: "Featured Image (Optional)"
+    image_help: "Upload an image to display with this post (JPEG, PNG, GIF, or WebP, max 10MB)"
+    current_image: "Current image - upload a new one to replace it"
     post_visibility: "Visible to users"
     visibility_help: "If unchecked, only admins can see this post"
     created: "Blog post created successfully"
@@ -679,6 +682,9 @@ en:
     posted_by: "Posted by"
     posted_on: "Posted on"
     comments: "Comments"
+    comment_count:
+      one: "%{count} Comment"
+      other: "%{count} Comments"
     no_comments: "No comments yet. Be the first to comment!"
     add_comment: "Add a comment"
     comment_placeholder: "Write your comment..."

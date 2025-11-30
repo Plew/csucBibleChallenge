@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_14_063941) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_29_160801) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -37,6 +37,31 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_14_063941) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "blog_comments", force: :cascade do |t|
+    t.integer "blog_post_id", null: false
+    t.text "content", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["blog_post_id", "created_at"], name: "index_blog_comments_on_blog_post_id_and_created_at"
+    t.index ["blog_post_id"], name: "index_blog_comments_on_blog_post_id"
+    t.index ["user_id"], name: "index_blog_comments_on_user_id"
+  end
+
+  create_table "blog_posts", force: :cascade do |t|
+    t.integer "challenge_id", null: false
+    t.text "content", null: false
+    t.datetime "created_at", null: false
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.boolean "visible", default: true, null: false
+    t.index ["challenge_id", "created_at"], name: "index_blog_posts_on_challenge_id_and_created_at"
+    t.index ["challenge_id"], name: "index_blog_posts_on_challenge_id"
+    t.index ["user_id"], name: "index_blog_posts_on_user_id"
+    t.index ["visible"], name: "index_blog_posts_on_visible"
   end
 
   create_table "challenges", force: :cascade do |t|
@@ -303,17 +328,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_14_063941) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
-  create_table "verse_likes", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.integer "reading_id", null: false
-    t.datetime "updated_at", null: false
-    t.integer "user_id", null: false
-    t.integer "verse_number", null: false
-    t.index ["reading_id"], name: "index_verse_likes_on_reading_id"
-    t.index ["user_id", "reading_id", "verse_number"], name: "index_verse_likes_on_user_reading_verse", unique: true
-    t.index ["user_id"], name: "index_verse_likes_on_user_id"
-  end
-
   create_table "verse_messages", force: :cascade do |t|
     t.text "content"
     t.datetime "created_at", null: false
@@ -344,6 +358,10 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_14_063941) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "blog_comments", "blog_posts"
+  add_foreign_key "blog_comments", "users"
+  add_foreign_key "blog_posts", "challenges"
+  add_foreign_key "blog_posts", "users"
   add_foreign_key "challenges", "users", column: "creator_id"
   add_foreign_key "email_login_tokens", "challenges"
   add_foreign_key "email_login_tokens", "readings"
@@ -367,8 +385,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_14_063941) do
   add_foreign_key "user_group_enrollments", "users"
   add_foreign_key "user_readings", "readings"
   add_foreign_key "user_readings", "users"
-  add_foreign_key "verse_likes", "readings"
-  add_foreign_key "verse_likes", "users"
   add_foreign_key "verse_messages", "readings"
   add_foreign_key "verse_messages", "users"
 end
