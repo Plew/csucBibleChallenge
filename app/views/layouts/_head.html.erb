@@ -17,4 +17,13 @@
     <%= javascript_include_tag "hotwire-livereload", defer: true %>
   <% end %>
   <%= javascript_importmap_tags %>
+
+  <% if Rails.env.production? %>
+    <!-- Privacy-friendly analytics by Plausible -->
+    <script async src="https://pce.eleven89.org/js/pa-n9fd6b4gKb_BY59mo36aF.js"></script>
+    <script>
+      window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+      plausible.init()
+    </script>
+  <% end %>
 </head> 
