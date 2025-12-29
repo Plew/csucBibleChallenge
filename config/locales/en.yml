@@ -503,6 +503,7 @@ en:
     no_reading_scheduled: "No Reading Scheduled"
     untitled: "Untitled Reading"
     no_verses: "No verses found for this reading."
+    unread: "unread"
 
   # Verse messages
   verse_messages:

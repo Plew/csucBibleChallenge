@@ -448,6 +448,7 @@ de:
     no_reading_scheduled: "Keine Lesung geplant"
     untitled: "Lesung ohne Titel"
     no_verses: "Keine Verse für diese Lesung gefunden."
+    unread: "ungelesen"
 
   # Verse messages
   verse_messages:

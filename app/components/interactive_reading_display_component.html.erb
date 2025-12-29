@@ -1,6 +1,11 @@
 <div class="bg-base-100 shadow-xl w-full rounded-none">
   <div>
-    <h2 class="text-lg font-bold mb-2 text-center"><%= title.presence || 'Untitled Reading' %></h2>
+    <h2 class="text-lg font-bold mb-2 text-center">
+      <%= title.presence || 'Untitled Reading' %>
+      <% unless is_completed %>
+        <span class="text-primary font-semibold">(<%= t('reading.unread') %>)</span>
+      <% end %>
+    </h2>
     <div class="prose max-w-none bg-base-200 p-4 px-6 rounded-md">
       <% if verses.any? %>
         <% verses.each do |verse| %>
