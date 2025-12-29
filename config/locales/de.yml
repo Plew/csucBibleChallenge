@@ -501,6 +501,9 @@ de:
     no_groups: "Noch keine Gruppen verfügbar"
     top_groups_message: "Erstelle oder tritt einer Gruppe bei, um Gruppenrankings zu sehen!"
     completion: "Abschluss"
+    most_liked_verse: "Beliebtester Vers"
+    no_liked_verses: "Noch keine geliketen Verse"
+    like_verses_message: "Like Verse beim Lesen, um den beliebtesten hier zu sehen!"
 
   # Profile
   profile:

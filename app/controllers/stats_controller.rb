@@ -17,6 +17,7 @@ class StatsController < ApplicationController
     @participant_count = cached_participant_count(current_challenge)
     @top_groups_data = cached_top_groups(current_challenge)
     @seven_day_leaderboard_data = cached_seven_day_window(current_challenge)
+    @most_liked_verse = cached_most_liked_verse(current_challenge)
   end
 
   def challenge
@@ -74,6 +75,52 @@ class StatsController < ApplicationController
     Rails.cache.fetch("stats/seven_day_window/#{challenge.id}", expires_in: CACHE_EXPIRATION) do
       SevenDayWindowStatistics.call(challenge: challenge)
     end
+  end
+
+  def cached_most_liked_verse(challenge)
+    return nil unless challenge
+
+    Rails.cache.fetch("stats/most_liked_verse/#{challenge.id}", expires_in: CACHE_EXPIRATION) do
+      calculate_most_liked_verse(challenge)
+    end
+  end
+
+  def calculate_most_liked_verse(challenge)
+    # Find the most liked verse across all readings in this challenge
+    reading_ids = challenge.readings.pluck(:id)
+    return nil if reading_ids.empty?
+
+    # Group by reading_id and verse_number, count likes, order by count descending
+    most_liked = VerseLike
+      .where(reading_id: reading_ids)
+      .group(:reading_id, :verse_number)
+      .order("count_all DESC")
+      .limit(1)
+      .count
+      .first
+
+    return nil unless most_liked
+
+    (reading_id, verse_number), like_count = most_liked
+    reading = Reading.find(reading_id)
+
+    # Get the verse text (using KJV as default, or we could use any available version)
+    verse = Verse.find_by(
+      book_number: reading.book_number,
+      chapter_number: reading.chapter_number,
+      verse_number: verse_number,
+      version: "KJV"
+    )
+
+    return nil unless verse
+
+    book_name = helpers.book_number_to_name(reading.book_number)
+
+    {
+      reference: "#{book_name} #{reading.chapter_number}:#{verse_number}",
+      text: verse.verse_text,
+      like_count: like_count
+    }
   end
 
   def cached_challenge_summary_stats(challenge)

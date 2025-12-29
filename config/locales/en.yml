@@ -556,6 +556,9 @@ en:
     no_groups: "No groups available yet"
     top_groups_message: "Create or join a group to see group rankings!"
     completion: "Completion"
+    most_liked_verse: "Most Liked Verse"
+    no_liked_verses: "No liked verses yet"
+    like_verses_message: "Like verses while reading to see the most popular one here!"
 
   # Profile
   profile:
