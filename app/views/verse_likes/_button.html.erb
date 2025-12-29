@@ -2,10 +2,10 @@
 <%= turbo_frame_tag "verse-like-#{reading_id}-#{verse_number}" do %>
   <%= button_to reading_toggle_verse_like_path(reading_id, verse_number: verse_number),
       method: :post,
-      class: "relative text-base-content/60 hover:text-primary transition-colors",
+      class: "relative text-base-content/60 hover:text-red-500 transition-colors",
       data: { turbo_frame: "verse-like-#{reading_id}-#{verse_number}" } do %>
     <svg xmlns="http://www.w3.org/2000/svg"
-         class="w-6 h-6 <%= liked ? 'text-primary' : '' %>"
+         class="w-6 h-6 <%= liked ? 'text-red-500' : '' %>"
          fill="<%= liked ? 'currentColor' : 'none' %>"
          viewBox="0 0 24 24"
          stroke="currentColor"
@@ -13,7 +13,7 @@
       <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
     </svg>
     <% if like_count > 0 %>
-      <span class="absolute inset-0 flex items-center justify-center text-[9px] font-bold <%= liked ? 'text-primary-content' : 'text-base-content/80' %>" style="padding-bottom: 2px;"><%= like_count %></span>
+      <span class="absolute inset-0 flex items-center justify-center text-[9px] font-bold <%= liked ? 'text-white' : 'text-base-content/80' %>" style="padding-bottom: 2px;"><%= like_count %></span>
     <% end %>
   <% end %>
 <% end %>
