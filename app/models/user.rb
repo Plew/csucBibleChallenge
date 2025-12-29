@@ -13,10 +13,12 @@ class User < ApplicationRecord
 
   has_many :user_challenge_enrollments, dependent: :destroy
   has_many :challenges, through: :user_challenge_enrollments
+  has_many :created_challenges, class_name: "Challenge", foreign_key: :creator_id, dependent: :destroy
   has_many :user_readings, dependent: :destroy
   has_many :completed_readings, through: :user_readings, source: :reading
   has_many :user_group_enrollments, dependent: :destroy
   has_many :groups, through: :user_group_enrollments
+  has_many :created_groups, class_name: "Group", foreign_key: :creator_id, dependent: :destroy
   has_many :blog_posts, dependent: :destroy
   has_many :blog_comments, dependent: :destroy
 
