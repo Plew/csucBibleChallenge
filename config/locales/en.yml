@@ -505,6 +505,11 @@ en:
     no_verses: "No verses found for this reading."
     unread: "unread"
 
+  # Verse likes
+  verse_likes:
+    like: "Like this verse"
+    unlike: "Unlike this verse"
+
   # Verse messages
   verse_messages:
     delete_confirmation: "Are you sure you want to delete this comment?"

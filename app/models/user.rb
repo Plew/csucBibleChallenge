@@ -21,6 +21,7 @@ class User < ApplicationRecord
   has_many :created_groups, class_name: "Group", foreign_key: :creator_id, dependent: :destroy
   has_many :blog_posts, dependent: :destroy
   has_many :blog_comments, dependent: :destroy
+  has_many :verse_likes, dependent: :destroy
 
   attr_accessor :current_password, :skip_current_password_validation
 

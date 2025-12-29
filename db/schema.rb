@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_29_160801) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_23_093153) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -328,6 +328,17 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_29_160801) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
+  create_table "verse_likes", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "reading_id", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.integer "verse_number", null: false
+    t.index ["reading_id"], name: "index_verse_likes_on_reading_id"
+    t.index ["user_id", "reading_id", "verse_number"], name: "index_verse_likes_on_user_id_and_reading_id_and_verse_number", unique: true
+    t.index ["user_id"], name: "index_verse_likes_on_user_id"
+  end
+
   create_table "verse_messages", force: :cascade do |t|
     t.text "content"
     t.datetime "created_at", null: false
@@ -385,6 +396,8 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_29_160801) do
   add_foreign_key "user_group_enrollments", "users"
   add_foreign_key "user_readings", "readings"
   add_foreign_key "user_readings", "users"
+  add_foreign_key "verse_likes", "readings"
+  add_foreign_key "verse_likes", "users"
   add_foreign_key "verse_messages", "readings"
   add_foreign_key "verse_messages", "users"
 end

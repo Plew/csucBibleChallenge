@@ -450,6 +450,11 @@ de:
     no_verses: "Keine Verse für diese Lesung gefunden."
     unread: "ungelesen"
 
+  # Verse likes
+  verse_likes:
+    like: "Diesen Vers liken"
+    unlike: "Like entfernen"
+
   # Verse messages
   verse_messages:
     delete_confirmation: "Bist du sicher, dass du diesen Kommentar löschen möchtest?"
