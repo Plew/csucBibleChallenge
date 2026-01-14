@@ -38,7 +38,12 @@
                       <%= index + 1 %>
                     <% end %>
                   </td>
-                  <td class="font-semibold"><%= group_stats[:group].name %></td>
+                  <td>
+                    <div class="font-semibold"><%= group_stats[:group].name %></div>
+                    <div class="text-xs text-gray-500 mt-1">
+                      <%= group_stats[:group].users.map(&:name).join(", ") %>
+                    </div>
+                  </td>
                   <td>
                     <div class="flex items-center gap-2">
                       <div class="w-24 bg-gray-200 rounded-full h-2.5">
