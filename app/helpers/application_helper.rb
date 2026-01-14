@@ -51,7 +51,9 @@ module ApplicationHelper
 
     # Default to medium size if an invalid key is provided
     dimension = sizes[size_key.to_sym] || sizes[:medium]
-    options = { size: dimension }.merge(html_options)
+    default_class = "rounded-full object-cover"
+    merged_class = [ default_class, html_options[:class] ].compact.join(" ")
+    options = { size: dimension, class: merged_class }.merge(html_options.except(:class))
 
     if user.avatar.attached?
       variant =
