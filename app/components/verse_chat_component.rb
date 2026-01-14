@@ -3,16 +3,17 @@
 class VerseChatComponent < ViewComponent::Base
   include ApplicationHelper
 
-  def initialize(reading_id:, verse_number:, current_user: nil, messages: [])
+  def initialize(reading_id:, verse_number:, current_user: nil, messages: [], likers: [])
     @reading_id = reading_id
     @verse_number = verse_number
     @current_user = current_user
     @messages = messages
+    @likers = likers
   end
 
   private
 
-  attr_reader :reading_id, :verse_number, :current_user, :messages
+  attr_reader :reading_id, :verse_number, :current_user, :messages, :likers
 
   def chat_id
     "#{reading_id}-#{verse_number}"

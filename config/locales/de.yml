@@ -680,3 +680,10 @@ de:
     manage_blog: "Blog verwalten"
     admin_blog_title: "Blog-Beiträge für %{challenge}"
     confirm_delete: "Sind Sie sicher, dass Sie diesen Blog-Beitrag löschen möchten? Alle Kommentare werden ebenfalls gelöscht."
+
+  # Public Profile
+  public_profile:
+    liked_verses: "Gelikte Verse"
+    no_liked_verses: "Noch keine gelikten Verse"
+    verse: "Vers"
+    not_authorized: "Sie können nur Profile von Personen in Ihrer Challenge anzeigen"

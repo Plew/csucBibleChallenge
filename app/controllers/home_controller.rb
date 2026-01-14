@@ -63,6 +63,12 @@ class HomeController < ApplicationController
                                      .pluck(:verse_number)
                                      .to_set
 
+        # Pre-fetch likers for all verses
+        likers_by_verse = VerseLike.where(reading_id: @selected_reading.id)
+                                   .includes(user: [ :avatar_attachment, :avatar_blob ])
+                                   .group_by(&:verse_number)
+                                   .transform_values { |likes| likes.map(&:user) }
+
         @selected_reading_verses = verses.map do |v|
           {
             reading_id: @selected_reading.id,
@@ -73,7 +79,8 @@ class HomeController < ApplicationController
                                   .order(:created_at)
                                   .limit(50),
             like_count: like_counts[v.verse_number] || 0,
-            liked: user_liked_verses.include?(v.verse_number)
+            liked: user_liked_verses.include?(v.verse_number),
+            likers: likers_by_verse[v.verse_number] || []
           }
         end
       end

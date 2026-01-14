@@ -1,0 +1,47 @@
+<div class="container mx-auto px-2 py-4">
+  <%# User header with large avatar %>
+  <div class="flex flex-col items-center mb-6">
+    <div class="mb-3">
+      <% if @user.avatar.attached? %>
+        <%= image_tag @user.avatar.variant(:profile), class: "w-32 h-32 rounded-full object-cover shadow-lg" %>
+      <% else %>
+        <%= image_tag Avatarro.image(@user.username), size: "128x128", class: "rounded-full shadow-lg" %>
+      <% end %>
+    </div>
+    <h1 class="text-xl font-bold text-base-content"><%= @user.name %></h1>
+  </div>
+
+  <%# Liked verses section %>
+  <div class="bg-base-100 rounded-lg shadow p-3">
+    <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+      <span class="text-red-500">&#10084;</span>
+      <%= t('public_profile.liked_verses') %>
+    </h2>
+
+    <% if @likes_by_date.any? %>
+      <div class="space-y-4">
+        <% @likes_by_date.each do |date, likes| %>
+          <div class="border-b border-base-300 pb-3 last:border-b-0">
+            <div class="text-sm font-medium text-base-content/70 mb-2">
+              <%= date.strftime('%A, %B %-d, %Y') %>
+            </div>
+            <div class="space-y-1">
+              <% likes.each do |like| %>
+                <% reading = like.reading %>
+                <% if reading %>
+                  <div class="text-sm pl-2">
+                    <%= link_to reading_path(date: reading.scheduled_date), class: "link link-hover text-primary" do %>
+                      <%= book_number_to_name(reading.book_number) %> <%= reading.chapter_number %>:<%= like.verse_number %>
+                    <% end %>
+                  </div>
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-base-content/60 text-sm"><%= t('public_profile.no_liked_verses') %></p>
+    <% end %>
+  </div>
+</div>

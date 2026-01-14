@@ -1,4 +1,17 @@
 <div class="bg-base-100 rounded-lg shadow p-2">
+  <%= helpers.turbo_frame_tag "verse-likers-#{reading_id}-#{verse_number}" do %>
+    <% if likers.any? %>
+      <div class="flex items-center flex-wrap gap-x-1 mb-2 px-2 text-xs text-base-content/70">
+        <span class="text-red-500 text-sm mr-1">&#10084;</span>
+        <% likers.each_with_index do |user, index| %>
+          <%= link_to public_profile_path(user), data: { turbo_frame: "_top" }, class: "inline-flex items-center gap-1 hover:text-base-content" do %>
+            <%= render AvatarComponent.new(user: user, size: :tiny) %>
+            <%= user.name %><% end %><% if index < likers.length - 1 %>,<% end %>
+        <% end %>
+      </div>
+    <% end %>
+  <% end %>
+
   <div class="mb-2 text-sm">
     <div id="verse-chat-messages-<%= chat_id %>">
       <% if messages.any? %>

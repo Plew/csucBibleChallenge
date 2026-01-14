@@ -63,7 +63,10 @@ Rails.application.routes.draw do
   end
   resources :user_challenge_enrollments, only: [ :destroy ] # DELETE /user_challenge_enrollments/:id
 
-  # User Profile UI
+  # Public user profiles (viewable by anyone)
+  resources :public_profiles, only: [ :show ], path: "users"
+
+  # User Profile UI (current user's own settings)
   get "account", to: "profile#index", as: :account
   get "profile", to: redirect("/account") # Redirect old profile path to account
   namespace :profile do

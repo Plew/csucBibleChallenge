@@ -153,6 +153,7 @@ This is a Rails 8 application for managing Bible reading challenges. Users can j
 - Use ViewComponent for reusable UI components
 - Lookbook available at `/lookbook` in development
 - Components include: CheckIn, PieChart, UserStats, etc.
+- **IMPORTANT:** In ViewComponent templates, Rails view helpers like `turbo_frame_tag`, `link_to`, `form_with`, etc. must be called via the `helpers.` prefix (e.g., `helpers.turbo_frame_tag` not `turbo_frame_tag`)
 
 ### Important Files
 

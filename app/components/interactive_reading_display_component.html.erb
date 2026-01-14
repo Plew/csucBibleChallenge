@@ -39,7 +39,8 @@
                 reading_id: verse[:reading_id],
                 verse_number: verse[:verse_number],
                 current_user: current_user,
-                messages: verse[:messages] || []
+                messages: verse[:messages] || [],
+                likers: verse[:likers] || []
               ) %>
             </div>
           </details>

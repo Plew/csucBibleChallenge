@@ -22,14 +22,24 @@ class VerseLikesController < ApplicationController
     end
 
     @like_count = VerseLike.for_verse(@reading.id, @verse_number).count
+    @likers = VerseLike.for_verse(@reading.id, @verse_number)
+                       .includes(user: [ :avatar_attachment, :avatar_blob ])
+                       .map(&:user)
 
     respond_to do |format|
       format.turbo_stream do
-        render turbo_stream: turbo_stream.replace(
-          "verse-like-#{@reading.id}-#{@verse_number}",
-          partial: "verse_likes/button",
-          locals: { reading: @reading, verse_number: @verse_number, liked: @liked, like_count: @like_count }
-        )
+        render turbo_stream: [
+          turbo_stream.replace(
+            "verse-like-#{@reading.id}-#{@verse_number}",
+            partial: "verse_likes/button",
+            locals: { reading: @reading, verse_number: @verse_number, liked: @liked, like_count: @like_count }
+          ),
+          turbo_stream.replace(
+            "verse-likers-#{@reading.id}-#{@verse_number}",
+            partial: "verse_likes/likers",
+            locals: { reading_id: @reading.id, verse_number: @verse_number, likers: @likers }
+          )
+        ]
       end
       format.html { redirect_back(fallback_location: reading_path) }
     end
