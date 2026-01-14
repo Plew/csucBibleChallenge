@@ -102,6 +102,7 @@ This is a Rails 8 application for managing Bible reading challenges. Users can j
 - Use `.cursorrules` for comprehensive Ruby/Rails standards
 - Mobile-first design approach
 - Use DaisyUI components for UI consistency
+- **Array brackets must have spaces inside:** `[ item1, item2 ]` not `[item1, item2]` (RuboCop: Layout/SpaceInsideArrayLiteralBrackets)
 
 ### Internationalization (i18n)
 
