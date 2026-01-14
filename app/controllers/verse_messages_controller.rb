@@ -1,7 +1,6 @@
 class VerseMessagesController < ApplicationController
   before_action :require_login
   before_action :set_reading_and_verse
-  before_action :ensure_reading_completed
 
   def index
     @messages = VerseMessage.for_verse(@reading.id, @verse_number)
@@ -63,12 +62,6 @@ class VerseMessagesController < ApplicationController
   def set_reading_and_verse
     @reading = Reading.find(params[:reading_id])
     @verse_number = params[:verse_number].to_i
-  end
-
-  def ensure_reading_completed
-    unless current_user.user_readings.exists?(reading_id: @reading.id)
-      redirect_to reading_path, alert: "You must complete the reading before participating in verse discussions."
-    end
   end
 
   def message_params
