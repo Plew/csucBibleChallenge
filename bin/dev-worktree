@@ -1,5 +1,16 @@
 #!/usr/bin/env bash
 
+# Parse arguments
+PULL_DB=false
+for arg in "$@"; do
+  case $arg in
+    --pull-db)
+      PULL_DB=true
+      shift
+      ;;
+  esac
+done
+
 # Find an available port starting from 3000
 find_available_port() {
   local port=3000
@@ -12,6 +23,13 @@ find_available_port() {
   done
   echo $port
 }
+
+# Pull production database if requested
+if [ "$PULL_DB" = true ]; then
+  echo "Pulling production database..."
+  bin/pull_prod_db
+  echo
+fi
 
 # Find available port
 export PORT=$(find_available_port)
