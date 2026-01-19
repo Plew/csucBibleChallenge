@@ -13,16 +13,14 @@ find_available_port() {
   echo $port
 }
 
-# Install foreman if needed
-if ! gem list --installed --exact --silent foreman; then
-  echo "Installing foreman..."
-  gem install foreman
-fi
-
 # Find available port
 export PORT=$(find_available_port)
 echo "Starting dev server on port $PORT..."
 echo "Access at: http://localhost:$PORT"
+
+# Build CSS once (no watch mode needed for worktrees)
+echo "Building CSS..."
+yarn build:css
 
 # Clean up stale PID file
 PID_FILE="tmp/pids/server.pid"
@@ -30,4 +28,5 @@ if [ -f "$PID_FILE" ]; then
   rm -f "$PID_FILE"
 fi
 
-exec foreman start -f Procfile.dev --env /dev/null "$@"
+# Run just the web server (no CSS watcher)
+exec bundle exec bin/rails server -b 0.0.0.0 -p $PORT
