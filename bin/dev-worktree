@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+# Find an available port starting from 3000
+find_available_port() {
+  local port=3000
+  while lsof -ti:$port >/dev/null 2>&1; do
+    port=$((port + 1))
+    if [ $port -gt 3100 ]; then
+      echo "No available port found between 3000-3100" >&2
+      exit 1
+    fi
+  done
+  echo $port
+}
+
+# Install foreman if needed
+if ! gem list --installed --exact --silent foreman; then
+  echo "Installing foreman..."
+  gem install foreman
+fi
+
+# Find available port
+export PORT=$(find_available_port)
+echo "Starting dev server on port $PORT..."
+echo "Access at: http://localhost:$PORT"
+
+# Clean up stale PID file
+PID_FILE="tmp/pids/server.pid"
+if [ -f "$PID_FILE" ]; then
+  rm -f "$PID_FILE"
+fi
+
+exec foreman start -f Procfile.dev --env /dev/null "$@"
