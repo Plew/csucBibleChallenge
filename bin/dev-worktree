@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 # Parse arguments
-PULL_DB=false
+PULL_DB=true
 for arg in "$@"; do
   case $arg in
-    --pull-db)
-      PULL_DB=true
+    --no-pull-db)
+      PULL_DB=false
       shift
       ;;
   esac
