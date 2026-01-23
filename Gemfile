@@ -25,6 +25,9 @@ gem "redis", ">= 4.0.1"
 # Background job processing
 gem "solid_queue"
 
+# Solid Cable for Action Cable without Redis
+gem "solid_cable"
+
 gem "swearjar"
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
