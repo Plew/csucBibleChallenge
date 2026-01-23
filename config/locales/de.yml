@@ -449,6 +449,7 @@ de:
     untitled: "Lesung ohne Titel"
     no_verses: "Keine Verse für diese Lesung gefunden."
     unread: "ungelesen"
+    active_readers: "lesen gerade"
 
   # Verse likes
   verse_likes:

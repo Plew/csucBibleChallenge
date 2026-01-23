@@ -504,6 +504,7 @@ en:
     untitled: "Untitled Reading"
     no_verses: "No verses found for this reading."
     unread: "unread"
+    active_readers: "reading now"
 
   # Verse likes
   verse_likes:
