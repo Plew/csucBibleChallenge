@@ -180,16 +180,21 @@ export default class extends Controller {
     wrapper.style.animationDelay = `${index * 0.1}s`
     wrapper.title = user.username
 
+    const link = document.createElement("a")
+    link.href = `/users/${user.id}`
+    link.className = "block"
+
     const img = document.createElement("img")
     img.src = user.avatar_url
     img.alt = user.username
-    img.className = "w-8 h-8 rounded-full object-cover border-2 border-base-100 shadow-sm"
+    img.className = "w-10 h-10 rounded-full object-cover border-2 border-base-100 shadow-sm hover:border-primary transition-colors"
     img.onerror = () => {
       // Fallback: generate SVG avatar with user's initial
       img.src = this.generatePlaceholderAvatar(user.username)
     }
 
-    wrapper.appendChild(img)
+    link.appendChild(img)
+    wrapper.appendChild(link)
     return wrapper
   }
 
