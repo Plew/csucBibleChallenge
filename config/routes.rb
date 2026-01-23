@@ -17,6 +17,9 @@ Rails.application.routes.draw do
   # Reading page for logged-in users
   get "reading", to: "home#reading", as: :reading
 
+  # Date picker for month navigation
+  get "date_picker", to: "date_picker#show", as: :date_picker
+
   # User Authentication UI routes
   get "users/sign_up", to: "users#new", as: :new_user_registration
   resources :users, only: [ :create ] # For handling registration form submission

@@ -1,0 +1,78 @@
+<div class="bg-base-100 p-4 rounded-lg shadow-lg max-w-xs mx-auto"
+     data-controller="date-picker"
+     data-date-picker-selected-date-value="<%= selected_date %>"
+     data-date-picker-challenge-id-value="<%= challenge.id %>">
+  <!-- Month Navigation Header -->
+  <div class="flex items-center justify-between mb-4">
+    <button type="button"
+            class="btn btn-ghost btn-sm btn-circle"
+            data-action="click->date-picker#prevMonth"
+            data-month="<%= prev_month %>">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+      </svg>
+    </button>
+
+    <h3 class="text-base font-semibold text-base-content" data-date-picker-target="monthTitle">
+      <%= month_title %>
+    </h3>
+
+    <button type="button"
+            class="btn btn-ghost btn-sm btn-circle"
+            data-action="click->date-picker#nextMonth"
+            data-month="<%= next_month %>">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Weekday Headers -->
+  <div class="grid grid-cols-7 gap-1 mb-2">
+    <% weekday_names.each do |name| %>
+      <div class="w-8 h-6 flex items-center justify-center text-xs font-medium text-base-content/60">
+        <%= name %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Calendar Grid -->
+  <div data-date-picker-target="calendarGrid">
+    <% calendar_weeks.each do |week| %>
+      <div class="grid grid-cols-7 gap-1 mb-1">
+        <% week.each do |day| %>
+          <% if day_link(day) %>
+            <a href="<%= day_link(day) %>"
+               class="<%= day_classes(day) %>"
+               data-action="click->date-picker#selectDate"
+               data-turbo-frame="_top">
+              <% if day[:completed] %>
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+              <% else %>
+                <%= day_content(day) %>
+              <% end %>
+            </a>
+          <% else %>
+            <div class="<%= day_classes(day) %>">
+              <%= day_content(day) %>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Legend -->
+  <div class="flex items-center justify-center gap-4 mt-4 text-xs text-base-content/60">
+    <div class="flex items-center gap-1">
+      <div class="w-3 h-3 bg-success rounded-sm"></div>
+      <span><%= t('date_picker.completed') %></span>
+    </div>
+    <div class="flex items-center gap-1">
+      <div class="w-3 h-3 bg-base-200 rounded-sm"></div>
+      <span><%= t('date_picker.not_read') %></span>
+    </div>
+  </div>
+</div>
