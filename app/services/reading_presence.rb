@@ -1,44 +1,35 @@
 # frozen_string_literal: true
 
 # Service for tracking active readers on a reading page.
-# Uses Redis with automatic expiration for presence tracking.
+# Uses SQLite database with automatic expiration for presence tracking.
 # Users are considered "active" only while sending heartbeats.
 class ReadingPresence
   HEARTBEAT_EXPIRY = 30.seconds
-  REDIS_KEY_PREFIX = "reading_presence"
 
   class << self
     # Record a heartbeat from a user viewing a reading
     def heartbeat(user_id, reading_id)
-      redis.setex(
-        user_key(user_id, reading_id),
-        HEARTBEAT_EXPIRY.to_i,
-        Time.current.to_i
-      )
-      redis.sadd(reading_users_key(reading_id), user_id)
+      ReadingPresenceRecord.heartbeat(user_id, reading_id)
     end
 
     # Mark a user as inactive (called when they stop interacting)
     def leave(user_id, reading_id)
-      redis.del(user_key(user_id, reading_id))
-      redis.srem(reading_users_key(reading_id), user_id)
+      ReadingPresenceRecord.leave(user_id, reading_id)
     end
 
     # Get count of active viewers for a reading
     def active_count(reading_id)
-      cleanup_stale_users(reading_id)
-      redis.scard(reading_users_key(reading_id))
+      ReadingPresenceRecord.active_count(reading_id)
     end
 
     # Get list of active user IDs for a reading
     def active_user_ids(reading_id)
-      cleanup_stale_users(reading_id)
-      redis.smembers(reading_users_key(reading_id)).map(&:to_i)
+      ReadingPresenceRecord.active_user_ids(reading_id)
     end
 
     # Check if a specific user is active on a reading
     def active?(user_id, reading_id)
-      redis.exists?(user_key(user_id, reading_id))
+      ReadingPresenceRecord.active?(user_id, reading_id)
     end
 
     # Get active users with their avatar URLs for broadcasting
@@ -83,32 +74,6 @@ class ReadingPresence
       SVG
 
       "data:image/svg+xml;base64,#{Base64.strict_encode64(svg)}"
-    end
-
-    def redis
-      @redis ||= Redis.new(url: redis_url)
-    end
-
-    def redis_url
-      Rails.application.config_for(:cable)[:url] || "redis://localhost:6379/1"
-    end
-
-    def user_key(user_id, reading_id)
-      "#{REDIS_KEY_PREFIX}:#{reading_id}:user:#{user_id}"
-    end
-
-    def reading_users_key(reading_id)
-      "#{REDIS_KEY_PREFIX}:#{reading_id}:users"
-    end
-
-    # Remove users from the set whose heartbeat keys have expired
-    def cleanup_stale_users(reading_id)
-      user_ids = redis.smembers(reading_users_key(reading_id))
-      user_ids.each do |user_id|
-        unless redis.exists?(user_key(user_id, reading_id))
-          redis.srem(reading_users_key(reading_id), user_id)
-        end
-      end
     end
   end
 end

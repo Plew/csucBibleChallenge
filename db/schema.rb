@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_23_100141) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_23_103005) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -127,6 +127,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_23_100141) do
     t.index ["challenge_id"], name: "index_groups_on_challenge_id"
     t.index ["creator_id"], name: "index_groups_on_creator_id"
     t.index ["token"], name: "index_groups_on_token", unique: true
+  end
+
+  create_table "reading_presences", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "last_heartbeat_at", null: false
+    t.integer "reading_id", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["reading_id", "last_heartbeat_at"], name: "index_reading_presences_on_reading_id_and_last_heartbeat_at"
+    t.index ["reading_id"], name: "index_reading_presences_on_reading_id"
+    t.index ["user_id", "reading_id"], name: "index_reading_presences_on_user_id_and_reading_id", unique: true
+    t.index ["user_id"], name: "index_reading_presences_on_user_id"
   end
 
   create_table "readings", force: :cascade do |t|
@@ -392,6 +404,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_23_100141) do
   add_foreign_key "group_messages", "users"
   add_foreign_key "groups", "challenges"
   add_foreign_key "groups", "users", column: "creator_id"
+  add_foreign_key "reading_presences", "readings"
+  add_foreign_key "reading_presences", "users"
   add_foreign_key "readings", "challenges"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
