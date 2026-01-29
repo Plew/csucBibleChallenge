@@ -154,30 +154,48 @@ export default class extends Controller {
   updateAvatars(users) {
     if (!this.hasAvatarsTarget) return
 
-    this.currentUsers = users
     const container = this.avatarsTarget
+    const newUserIds = new Set(users.map(u => u.id))
+    const existingUserIds = new Set(this.currentUsers.map(u => u.id))
 
-    // Clear existing avatars
-    container.innerHTML = ""
+    // Remove avatars for users who left
+    this.currentUsers.forEach(user => {
+      if (!newUserIds.has(user.id)) {
+        const avatar = container.querySelector(`[data-user-id="${user.id}"]`)
+        if (avatar) {
+          avatar.classList.add("presence-avatar-exit")
+          setTimeout(() => avatar.remove(), 200)
+        }
+      }
+    })
+
+    // Add avatars for new users
+    users.forEach((user, index) => {
+      if (!existingUserIds.has(user.id)) {
+        const avatar = this.createAvatarElement(user, index)
+        avatar.classList.add("presence-avatar-enter")
+        container.appendChild(avatar)
+        // Force reflow then remove enter class to trigger transition
+        avatar.offsetHeight // Force reflow
+        requestAnimationFrame(() => {
+          avatar.classList.remove("presence-avatar-enter")
+        })
+      }
+    })
+
+    this.currentUsers = users
 
     if (users.length === 0) {
       container.classList.add("hidden")
-      return
+    } else {
+      container.classList.remove("hidden")
     }
-
-    container.classList.remove("hidden")
-
-    // Add avatar for each active user
-    users.forEach((user, index) => {
-      const avatar = this.createAvatarElement(user, index)
-      container.appendChild(avatar)
-    })
   }
 
   createAvatarElement(user, index) {
     const wrapper = document.createElement("div")
     wrapper.className = "presence-avatar"
-    wrapper.style.animationDelay = `${index * 0.1}s`
+    wrapper.dataset.userId = user.id
     wrapper.title = user.username
 
     const link = document.createElement("a")
