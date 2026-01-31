@@ -205,7 +205,7 @@ export default class extends Controller {
     const img = document.createElement("img")
     img.src = user.avatar_url
     img.alt = user.username
-    img.className = "w-10 h-10 rounded-full object-cover border-2 border-base-100 shadow-sm hover:border-primary transition-colors"
+    img.className = "w-8 h-8 rounded-full object-cover border-2 border-base-100 shadow-sm hover:border-primary transition-colors"
     img.onerror = () => {
       // Fallback: generate SVG avatar with user's initial
       img.src = this.generatePlaceholderAvatar(user.username)
