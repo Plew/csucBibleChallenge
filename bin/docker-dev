@@ -1,0 +1,153 @@
+#!/usr/bin/env bash
+set -e
+
+# Docker development helper script
+# Usage: bin/docker-dev [command]
+
+COMPOSE_FILE="docker-compose.yml"
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+NC='\033[0m' # No Color
+
+print_usage() {
+  echo "Usage: bin/docker-dev [command]"
+  echo ""
+  echo "Commands:"
+  echo "  up        Start the development environment"
+  echo "  down      Stop the development environment"
+  echo "  build     Build/rebuild the Docker image"
+  echo "  shell     Open a bash shell in the app container"
+  echo "  console   Open Rails console in the app container"
+  echo "  test      Run RSpec tests"
+  echo "  setup     Initial setup (db:create, db:migrate, db:seed)"
+  echo "  reset     Full rebuild (removes volumes, rebuilds image)"
+  echo "  logs      Tail logs from the app container"
+  echo "  status    Show container status"
+  echo ""
+  echo "Examples:"
+  echo "  bin/docker-dev build    # First time setup"
+  echo "  bin/docker-dev setup    # Initialize database"
+  echo "  bin/docker-dev up       # Start development"
+  echo "  bin/docker-dev shell    # Open bash in container"
+}
+
+# Check if docker compose is available
+check_docker() {
+  if ! command -v docker &> /dev/null; then
+    echo -e "${RED}Error: Docker is not installed${NC}"
+    exit 1
+  fi
+
+  if ! docker compose version &> /dev/null; then
+    echo -e "${RED}Error: Docker Compose is not available${NC}"
+    exit 1
+  fi
+}
+
+cmd_up() {
+  echo -e "${GREEN}Starting development environment...${NC}"
+  docker compose -f $COMPOSE_FILE up
+}
+
+cmd_down() {
+  echo -e "${YELLOW}Stopping development environment...${NC}"
+  docker compose -f $COMPOSE_FILE down
+}
+
+cmd_build() {
+  echo -e "${GREEN}Building Docker image...${NC}"
+  docker compose -f $COMPOSE_FILE build
+}
+
+cmd_shell() {
+  echo -e "${GREEN}Opening shell in app container...${NC}"
+  docker compose -f $COMPOSE_FILE exec app bash
+}
+
+cmd_console() {
+  echo -e "${GREEN}Opening Rails console...${NC}"
+  docker compose -f $COMPOSE_FILE exec app bin/rails console
+}
+
+cmd_test() {
+  echo -e "${GREEN}Running RSpec tests...${NC}"
+  docker compose -f $COMPOSE_FILE exec app bundle exec rspec "$@"
+}
+
+cmd_setup() {
+  echo -e "${GREEN}Setting up database...${NC}"
+  docker compose -f $COMPOSE_FILE run --rm app bin/rails db:create db:migrate db:seed
+  echo -e "${GREEN}Setup complete!${NC}"
+}
+
+cmd_reset() {
+  echo -e "${YELLOW}This will remove all containers and volumes. Are you sure? (y/N)${NC}"
+  read -r response
+  if [[ "$response" =~ ^[Yy]$ ]]; then
+    echo -e "${YELLOW}Stopping containers...${NC}"
+    docker compose -f $COMPOSE_FILE down -v --remove-orphans
+    echo -e "${YELLOW}Removing named volumes...${NC}"
+    docker volume rm hiegra_bundle_cache hiegra_node_modules hiegra_redis_data 2>/dev/null || true
+    echo -e "${GREEN}Rebuilding image...${NC}"
+    docker compose -f $COMPOSE_FILE build --no-cache
+    echo -e "${GREEN}Reset complete! Run 'bin/docker-dev setup' to initialize the database.${NC}"
+  else
+    echo "Cancelled"
+  fi
+}
+
+cmd_logs() {
+  docker compose -f $COMPOSE_FILE logs -f app
+}
+
+cmd_status() {
+  docker compose -f $COMPOSE_FILE ps
+}
+
+# Main
+check_docker
+
+case "${1:-}" in
+  up)
+    cmd_up
+    ;;
+  down)
+    cmd_down
+    ;;
+  build)
+    cmd_build
+    ;;
+  shell)
+    cmd_shell
+    ;;
+  console)
+    cmd_console
+    ;;
+  test)
+    shift
+    cmd_test "$@"
+    ;;
+  setup)
+    cmd_setup
+    ;;
+  reset)
+    cmd_reset
+    ;;
+  logs)
+    cmd_logs
+    ;;
+  status)
+    cmd_status
+    ;;
+  -h|--help|help|"")
+    print_usage
+    ;;
+  *)
+    echo -e "${RED}Unknown command: $1${NC}"
+    print_usage
+    exit 1
+    ;;
+esac

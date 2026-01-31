@@ -4,11 +4,23 @@ A Rails 8 application for managing Bible reading challenges. Users can join chal
 
 ## Quick Start
 
+### Option A: Native (requires Ruby, Node.js)
+
 ```bash
 git clone <repository-url>
 cd nargh
 bin/setup
 bin/dev
+```
+
+### Option B: Docker (no local dependencies)
+
+```bash
+git clone <repository-url>
+cd nargh
+bin/docker-dev build
+bin/docker-dev setup
+bin/docker-dev up
 ```
 
 **📖 For detailed setup instructions, see [SETUP.md](SETUP.md)**
@@ -19,9 +31,13 @@ The app will be available at `http://localhost:3000`
 
 ## Requirements
 
+### Native Development
 - Ruby 3.x
 - Node.js and npm
 - SQLite3
+
+### Docker Development
+- Docker Desktop
 
 ## What is This?
 

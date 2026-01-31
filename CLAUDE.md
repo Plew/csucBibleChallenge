@@ -47,6 +47,36 @@ This is a Rails 8 application for managing Bible reading challenges. Users can j
 - `bundle exec rubocop` - Run Ruby linter
 - `bundle exec brakeman` - Security vulnerability scanner
 
+### Docker Development (Alternative)
+
+For development without installing Ruby/Node locally, use the Docker-based environment:
+
+```bash
+# First time setup
+bin/docker-dev build     # Build the Docker image
+bin/docker-dev setup     # Create and seed database
+bin/docker-dev up        # Start development server (http://localhost:3000)
+
+# Daily development
+bin/docker-dev up        # Start the environment
+
+# Other commands
+bin/docker-dev shell     # Open bash in container
+bin/docker-dev console   # Rails console
+bin/docker-dev test      # Run RSpec tests
+bin/docker-dev down      # Stop the environment
+bin/docker-dev reset     # Full rebuild (removes volumes)
+```
+
+**Key files:**
+- `Dockerfile.dev` - Development container (Ruby 3.2.3, Node 20, Chromium)
+- `docker-compose.yml` - Service orchestration (app + Redis)
+- `bin/docker-dev` - Helper script
+
+**Note:** The `storage/` directory is bind-mounted, so `bin/pull_prod_db` works from the host and the container sees the updated database immediately.
+
+**Note:** Docker development does NOT affect Kamal deploys - production uses the separate `Dockerfile`.
+
 ### Deployment
 
 - Uses Kamal for deployment to `reverse.eleven89.org`

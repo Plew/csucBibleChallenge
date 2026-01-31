@@ -4,14 +4,58 @@ Complete guide for setting up the Bible Reading Challenge application after clon
 
 ## Requirements
 
+### Native Development
 - **Ruby** 3.x or higher
 - **Node.js** and npm
 - **SQLite3** (usually pre-installed on macOS/Linux)
 - **Git**
 
-## Quick Setup (Recommended)
+### Docker Development
+- **Docker Desktop** (includes Docker Compose)
+- **Git**
 
-The fastest way to get started is using the automated setup script:
+## Docker Setup (Recommended for New Contributors)
+
+If you don't have Ruby/Node.js installed locally, use Docker:
+
+```bash
+# Clone the repository
+git clone <repository-url>
+cd nargh
+
+# Build the Docker image
+bin/docker-dev build
+
+# Initialize the database
+bin/docker-dev setup
+
+# Start development server
+bin/docker-dev up
+```
+
+The app will be available at `http://localhost:3000`
+
+### Docker Commands
+
+| Command | Description |
+|---------|-------------|
+| `bin/docker-dev up` | Start development environment |
+| `bin/docker-dev down` | Stop the environment |
+| `bin/docker-dev shell` | Open bash in container |
+| `bin/docker-dev console` | Rails console |
+| `bin/docker-dev test` | Run RSpec tests |
+| `bin/docker-dev reset` | Full rebuild (removes all data) |
+
+### Docker Notes
+
+- **Database:** SQLite files are stored in `storage/` and persist between container restarts
+- **Production scripts:** `bin/pull_prod_db` works from the host - the container sees changes immediately
+- **Code changes:** Mounted live - edit files normally, changes appear on refresh
+- **Gems/npm:** Cached in Docker volumes for fast subsequent starts
+
+## Native Setup
+
+The fastest way to get started (if you have Ruby/Node.js installed) is using the automated setup script:
 
 ```bash
 # Clone the repository
