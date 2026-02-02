@@ -21,6 +21,7 @@
                 options_for_select([
                   ['English Standard Version (ESV)', 'ESV'],
                   ['King James Version (KJV)', 'KJV'],
+                  [t('profile.versions.rcv'), 'RCV'],
                   ['Elberfelder Bibel 2006 (German)', 'ELB2006'],
                   ['Schlachter 2000 (German)', 'SCHL2000']
                 ], @user.version),
@@ -35,6 +36,10 @@
           <div class="form-control mt-6">
             <%= f.submit t('profile.update_bible_version'), class: "btn btn-primary" %>
           </div>
+        <% end %>
+
+        <% if @user.version == "RCV" %>
+          <p class="text-xs text-base-content/50 mt-4">Holy Bible Recovery Version (text-only edition) © 2025 Living Stream Ministry www.lsm.org</p>
         <% end %>
       </div>
     </div>

@@ -53,7 +53,11 @@ class HomeController < ApplicationController
         @reading_is_completed = current_user.user_readings.exists?(reading_id: @selected_reading.id)
 
         # Prepare verses with reading_id and message counts for interactive display
-        verses = @selected_reading.verses(version: user_version)
+        verses = VerseFetcher.fetch(
+          version: user_version,
+          book_number: @selected_reading.book_number,
+          chapter_number: @selected_reading.chapter_number
+        )
 
         # Pre-fetch like counts and user likes for all verses in this reading
         like_counts = VerseLike.where(reading_id: @selected_reading.id)

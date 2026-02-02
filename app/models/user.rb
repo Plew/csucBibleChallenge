@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  VALID_VERSIONS = [ "ASV", "ELB2006", "ESV", "KJV", "NASB", "NKJV", "SCHL2000" ].freeze
+  VALID_VERSIONS = [ "ASV", "ELB2006", "ESV", "KJV", "NASB", "NKJV", "RCV", "SCHL2000" ].freeze
 
   has_secure_password
   has_one_attached :avatar do |attachable|

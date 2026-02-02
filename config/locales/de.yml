@@ -562,6 +562,8 @@ de:
     daily_notifications: "Tägliche E-Mail-Benachrichtigungen"
     daily_notifications_help: "Erhalte tägliche Leseerinnerungen und Ermutigungen per E-Mail"
     save_preferences: "Einstellungen speichern"
+    versions:
+      rcv: "Recovery Version (RcV)"
 
   # Sessions (Login/Signup)
   sessions:

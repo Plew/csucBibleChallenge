@@ -613,6 +613,8 @@ en:
     current_version: "Current version:"
     version_help: "This will be used for all your Bible reading"
     update_bible_version: "Update Bible Version"
+    versions:
+      rcv: "Recovery Version (RcV)"
     email_prefs_title: "Email Preferences"
     daily_notifications: "Daily email notifications"
     daily_notifications_help: "Receive daily reading reminders and encouragement via email"

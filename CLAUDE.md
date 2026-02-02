@@ -47,9 +47,9 @@ This is a Rails 8 application for managing Bible reading challenges. Users can j
 - `bundle exec rubocop` - Run Ruby linter
 - `bundle exec brakeman` - Security vulnerability scanner
 
-### Docker Development (Alternative)
+### Docker Development (Primary Method)
 
-For development without installing Ruby/Node locally, use the Docker-based environment:
+**Always use Docker for local development.** This ensures a consistent environment.
 
 ```bash
 # First time setup
@@ -217,12 +217,12 @@ bin/docker-dev reset     # Full rebuild (removes volumes)
 - don't ever deploy to production using kamal without being asked to do so
 - When I say to deploy to production, I want you to do the following:  1. ssh interactively into philip@hetzdev 2. go into code/reverse folder 3. git pull main 4. run kamal deploy 
 note that kamal deploy could be a background task so that you can finish this task; you don't need to wait for it to complete
-- whenever you need to start a rails server, use bin/dev not rails s
+- whenever you need to start a rails server, use `bin/docker-dev up`
 - when you are using playwright and need to take screenshots, store them in context/screenshots/latest.png, and you can keep overwriting latest.png with each successive screenshot
 - no, the playwright screenshots should be saved in context/screenshots off of the app folder, not within .playwright-mcp
 - actually it is fine to save it in the .playwright-mcp folder, please remove the instructions that said contrary
 - any info about recurring jobs is in config/recurring.yml
-- do not run the rails server directly always use bin/dev.  one reason it may not work is that you need to remove the old pid file
+- do not run the rails server directly, always use `bin/docker-dev up` for development
 - any time i want to show an avatar, use avatar_image_tag in application_helper.rb
 - I would prefer you don't do a kamal deploy ever unless explicitly asked to do so.
 - whenever i say check this in production or do something in production, I mean the running production app that you would access via kamal commands.
