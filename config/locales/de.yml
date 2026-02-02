@@ -294,6 +294,10 @@ de:
         survivor: "Der Überlebende!"
         escaped_shark: "ist dem hungrigen Hai entkommen!"
         chomp: "SCHNAPP!"
+      pacman_draw:
+        start_game: "SPIEL STARTEN"
+        survivor: "DER ÜBERLEBENDE!"
+        escaped_pacman: "ist dem hungrigen Pac-Man entkommen!"
     sprints:
       title: "Sprints"
       manage_sprints: "Sprints verwalten"

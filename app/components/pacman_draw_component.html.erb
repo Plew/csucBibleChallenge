@@ -1,0 +1,100 @@
+<div class="card bg-base-100 shadow-xl" data-controller="pacman-draw">
+  <div class="card-body p-0">
+    <% if users.any? %>
+      <!-- Arcade container - full screen -->
+      <div class="relative w-full h-screen overflow-hidden pacman-arcade-bg" data-pacman-draw-target="arcade">
+        <!-- Challenge title -->
+        <div class="absolute top-4 left-0 right-0 text-center z-10">
+          <h2 class="text-2xl font-bold text-yellow-300 drop-shadow-lg pacman-font"><%= challenge.title %></h2>
+        </div>
+
+        <!-- Start button -->
+        <div class="absolute top-16 left-0 right-0 text-center z-10">
+          <button type="button"
+                  data-action="click->pacman-draw#startGame"
+                  data-pacman-draw-target="startButton"
+                  class="btn btn-warning btn-lg pacman-font">
+            <%= t('admin.seven_day_winner.pacman_draw.start_game') %>
+          </button>
+        </div>
+
+        <!-- Score display -->
+        <div class="absolute top-4 right-4 z-10 text-yellow-300 pacman-font text-xl" data-pacman-draw-target="score">
+          <span class="text-white">SCORE:</span> <span data-pacman-draw-target="scoreValue">0</span>
+        </div>
+
+        <!-- Dots decoration (maze feel) -->
+        <div class="absolute inset-0 pacman-dots-pattern pointer-events-none opacity-20"></div>
+
+        <!-- Ghosts container -->
+        <div class="absolute left-0 right-0 flex flex-wrap justify-center gap-4 px-4" style="top: 40%;" data-pacman-draw-target="ghostsContainer">
+          <% users.each_with_index do |user, index| %>
+            <div class="ghost-container relative transition-all duration-500"
+                 data-pacman-draw-target="ghost"
+                 data-user-id="<%= user.id %>"
+                 data-user-name="<%= user.name %>"
+                 data-ghost-color="<%= ghost_color_for(index) %>">
+              <!-- Ghost with avatar -->
+              <div class="animate-ghost-float">
+                <div class="ghost-body ghost-<%= ghost_color_for(index) %>">
+                  <div class="ghost-avatar">
+                    <%= avatar_image_tag(user, :xlarge) %>
+                  </div>
+                  <div class="ghost-eyes">
+                    <div class="ghost-eye"></div>
+                    <div class="ghost-eye"></div>
+                  </div>
+                  <div class="ghost-bottom">
+                    <div class="ghost-wave"></div>
+                    <div class="ghost-wave"></div>
+                    <div class="ghost-wave"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+        <!-- Pac-Man element (hidden initially) -->
+        <div class="absolute hidden" style="top: 50%; left: -100px;" data-pacman-draw-target="pacman">
+          <div class="pacman-body">
+            <div class="pacman-top"></div>
+            <div class="pacman-bottom"></div>
+          </div>
+        </div>
+
+        <!-- Chomp effect (hidden initially) -->
+        <div class="absolute hidden pointer-events-none" data-pacman-draw-target="chompEffect">
+          <div class="chomp-points text-2xl font-bold text-cyan-300 pacman-font">+100</div>
+        </div>
+
+        <!-- Power pellet mode indicator (hidden initially) -->
+        <div class="absolute top-28 left-0 right-0 text-center z-10 hidden" data-pacman-draw-target="powerMode">
+          <div class="text-2xl text-blue-400 pacman-font animate-pulse">POWER MODE!</div>
+        </div>
+
+        <!-- Winner announcement (hidden initially) - Full screen overlay -->
+        <div class="hidden fixed inset-0 pacman-winner-bg z-50 flex items-center justify-center" data-pacman-draw-target="winnerAnnouncement">
+          <div class="text-center px-4">
+            <div class="text-6xl mb-4 animate-bounce">
+              <span class="pacman-winner-icon"></span>
+            </div>
+            <div class="text-3xl text-yellow-300 mb-4 pacman-font"><%= t('admin.seven_day_winner.pacman_draw.survivor') %></div>
+            <div class="text-5xl md:text-7xl font-bold text-white mb-4 pacman-font" data-pacman-draw-target="winnerName"></div>
+            <div class="text-3xl md:text-4xl font-semibold text-cyan-300 pacman-font"><%= t('admin.seven_day_winner.pacman_draw.escaped_pacman') %></div>
+            <div class="mt-6 flex justify-center gap-4">
+              <div class="ghost-body ghost-red scale-50"></div>
+              <div class="ghost-body ghost-pink scale-50"></div>
+              <div class="ghost-body ghost-cyan scale-50"></div>
+              <div class="ghost-body ghost-orange scale-50"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% else %>
+      <div class="text-center py-8 text-base-content/70">
+        <div class="text-lg"><%= t('admin.seven_day_winner.no_users_selected') %></div>
+      </div>
+    <% end %>
+  </div>
+</div>

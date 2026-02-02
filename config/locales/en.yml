@@ -349,6 +349,10 @@ en:
         survivor: "The Survivor!"
         escaped_shark: "escaped the hungry shark!"
         chomp: "CHOMP!"
+      pacman_draw:
+        start_game: "START GAME"
+        survivor: "THE SURVIVOR!"
+        escaped_pacman: "escaped the hungry Pac-Man!"
     sprints:
       title: "Sprints"
       manage_sprints: "Manage Sprints"

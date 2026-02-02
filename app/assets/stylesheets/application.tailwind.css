@@ -126,3 +126,234 @@
     transform: translateY(-5px) rotate(-3deg);
   }
 }
+
+/* ========================================
+   Pac-Man Draw Animation Styles
+   ======================================== */
+
+/* Arcade background - classic dark blue */
+.pacman-arcade-bg {
+  background: #000000;
+  background-image:
+    radial-gradient(circle at 25% 25%, #1a1a4a 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, #1a1a4a 0%, transparent 50%);
+}
+
+/* Pac-Man font style */
+.pacman-font {
+  font-family: 'Press Start 2P', 'Courier New', monospace;
+  text-shadow: 2px 2px 0 #000;
+  letter-spacing: 2px;
+}
+
+/* Dots pattern for maze feel */
+.pacman-dots-pattern {
+  background-image: radial-gradient(circle, #ffff00 2px, transparent 2px);
+  background-size: 40px 40px;
+}
+
+/* Ghost floating animation */
+.animate-ghost-float {
+  animation: ghost-float 1.5s ease-in-out infinite;
+}
+
+@keyframes ghost-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* Ghost body styles */
+.ghost-body {
+  position: relative;
+  width: 70px;
+  height: 80px;
+  border-radius: 35px 35px 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 8px;
+}
+
+/* Ghost colors - classic Pac-Man */
+.ghost-red { background: #ff0000; }
+.ghost-pink { background: #ffb8ff; }
+.ghost-cyan { background: #00ffff; }
+.ghost-orange { background: #ffb852; }
+
+/* Ghost avatar container */
+.ghost-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  z-index: 2;
+}
+
+.ghost-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Ghost eyes */
+.ghost-eyes {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.ghost-eye {
+  width: 12px;
+  height: 14px;
+  background: white;
+  border-radius: 50%;
+  position: relative;
+}
+
+.ghost-eye::after {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #2121de;
+  border-radius: 50%;
+  top: 4px;
+  left: 3px;
+}
+
+/* Ghost bottom wavy part */
+.ghost-bottom {
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+}
+
+.ghost-wave {
+  width: 23px;
+  height: 16px;
+  border-radius: 0 0 50% 50%;
+}
+
+.ghost-red .ghost-wave { background: #ff0000; }
+.ghost-pink .ghost-wave { background: #ffb8ff; }
+.ghost-cyan .ghost-wave { background: #00ffff; }
+.ghost-orange .ghost-wave { background: #ffb852; }
+
+/* Scared ghost state (blue) */
+.ghost-scared .ghost-body {
+  background: #2121de !important;
+  animation: ghost-scared-pulse 0.3s ease-in-out infinite;
+}
+
+.ghost-scared .ghost-wave {
+  background: #2121de !important;
+}
+
+.ghost-scared .ghost-eye::after {
+  background: white;
+}
+
+@keyframes ghost-scared-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Pac-Man body */
+.pacman-body {
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.pacman-top,
+.pacman-bottom {
+  position: absolute;
+  width: 80px;
+  height: 40px;
+  background: #ffff00;
+  left: 0;
+}
+
+.pacman-top {
+  top: 0;
+  border-radius: 80px 80px 0 0;
+  transform-origin: bottom center;
+}
+
+.pacman-bottom {
+  bottom: 0;
+  border-radius: 0 0 80px 80px;
+  transform-origin: top center;
+}
+
+/* Pac-Man chomping animation */
+.pacman-chomping .pacman-top {
+  animation: pacman-chomp-top 0.2s ease-in-out infinite;
+}
+
+.pacman-chomping .pacman-bottom {
+  animation: pacman-chomp-bottom 0.2s ease-in-out infinite;
+}
+
+@keyframes pacman-chomp-top {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-25deg);
+  }
+}
+
+@keyframes pacman-chomp-bottom {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(25deg);
+  }
+}
+
+/* Points floating animation */
+.animate-points-float {
+  animation: points-float 0.8s ease-out forwards;
+}
+
+@keyframes points-float {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-40px);
+    opacity: 0;
+  }
+}
+
+/* Winner background */
+.pacman-winner-bg {
+  background: linear-gradient(180deg, #000428 0%, #004e92 100%);
+}
+
+/* Winner Pac-Man icon */
+.pacman-winner-icon::before {
+  content: '';
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+  background: #ffff00;
+  border-radius: 50%;
+  clip-path: polygon(100% 50%, 50% 50%, 65% 15%, 100% 0%, 100% 100%, 65% 85%);
+}
