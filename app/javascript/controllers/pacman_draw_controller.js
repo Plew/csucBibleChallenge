@@ -407,14 +407,15 @@ export default class extends Controller {
       // Update Pac-Man rotation based on direction
       this.updatePacmanDirection(pacman, state.direction)
 
-      // At intersections, sometimes change direction randomly
+      // Check for any available side passages and sometimes turn into them
       const validDirs = this.getValidDirections(newCellX, newCellY)
-      if (validDirs.length > 2 && Math.random() < 0.03) {
-        const opposite = this.getOppositeDirection(state.direction)
-        const choices = validDirs.filter(d => d !== opposite)
-        if (choices.length > 0) {
-          state.direction = choices[Math.floor(Math.random() * choices.length)]
-        }
+      const opposite = this.getOppositeDirection(state.direction)
+      // Get side passages (directions that aren't forward or backward)
+      const sideDirs = validDirs.filter(d => d !== state.direction && d !== opposite)
+
+      // If there are side passages available, sometimes turn into them
+      if (sideDirs.length > 0 && Math.random() < 0.15) {
+        state.direction = sideDirs[Math.floor(Math.random() * sideDirs.length)]
       }
     } else {
       // Hit a wall - choose a new random direction
@@ -485,7 +486,7 @@ export default class extends Controller {
     this.scoreValueTarget.textContent = this.score
 
     // Increase Pac-Man speed
-    this.pacmanState.speed += 0.4
+    this.pacmanState.speed += 0.6
 
     // Make ghost disappear with eaten effect
     ghost.style.transition = 'all 0.3s ease-out'
