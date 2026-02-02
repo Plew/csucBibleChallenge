@@ -106,11 +106,11 @@ class RecoveryVersionClient
 
   def load_config
     @config ||= begin
-      config_path = File.expand_path("~/.claude/skills/bible-rcv/config.json")
-      if File.exist?(config_path)
-        JSON.parse(File.read(config_path))
+      creds = Rails.application.credentials.recovery_version
+      if creds&.app_id && creds&.token
+        { "appid" => creds.app_id, "token" => creds.token }
       else
-        Rails.logger.warn("RecoveryVersionClient: config.json not found at #{config_path}")
+        Rails.logger.warn("RecoveryVersionClient: credentials not configured in Rails credentials")
         nil
       end
     end
