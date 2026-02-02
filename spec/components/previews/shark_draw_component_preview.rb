@@ -48,4 +48,13 @@ class SharkDrawComponentPreview < ViewComponent::Preview
 
     render SharkDrawComponent.new(users: users, challenge: challenge)
   end
+
+  # Shows the shark draw with 45 swimmers (extra large group)
+  # @label With 45 Swimmers (XL)
+  def forty_five_swimmers
+    challenge = Challenge.first || FactoryBot.create(:challenge)
+    users = User.limit(45)
+
+    render SharkDrawComponent.new(users: users, challenge: challenge)
+  end
 end
