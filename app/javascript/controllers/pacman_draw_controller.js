@@ -484,6 +484,9 @@ export default class extends Controller {
     this.score += 100
     this.scoreValueTarget.textContent = this.score
 
+    // Increase Pac-Man speed
+    this.pacmanState.speed += 0.4
+
     // Make ghost disappear with eaten effect
     ghost.style.transition = 'all 0.3s ease-out'
     ghost.style.transform = 'scale(0)'
