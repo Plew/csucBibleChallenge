@@ -23,32 +23,30 @@
           <span class="text-white">SCORE:</span> <span data-pacman-draw-target="scoreValue">0</span>
         </div>
 
-        <!-- Dots decoration (maze feel) -->
-        <div class="absolute inset-0 pacman-dots-pattern pointer-events-none opacity-20"></div>
+        <!-- Maze canvas -->
+        <canvas class="absolute left-1/2 -translate-x-1/2" style="top: 120px;" data-pacman-draw-target="mazeCanvas"></canvas>
 
-        <!-- Ghosts container -->
-        <div class="absolute left-0 right-0 flex flex-wrap justify-center gap-4 px-4" style="top: 40%;" data-pacman-draw-target="ghostsContainer">
+        <!-- Ghosts container (ghosts are positioned absolutely within arcade) -->
+        <div class="absolute inset-0" data-pacman-draw-target="ghostsContainer">
           <% users.each_with_index do |user, index| %>
-            <div class="ghost-container relative transition-all duration-500"
+            <div class="ghost-container absolute transition-none"
                  data-pacman-draw-target="ghost"
                  data-user-id="<%= user.id %>"
                  data-user-name="<%= user.name %>"
                  data-ghost-color="<%= ghost_color_for(index) %>">
               <!-- Ghost with avatar -->
-              <div class="animate-ghost-float">
-                <div class="ghost-body ghost-<%= ghost_color_for(index) %>">
-                  <div class="ghost-avatar">
-                    <%= avatar_image_tag(user, :xlarge) %>
-                  </div>
-                  <div class="ghost-eyes">
-                    <div class="ghost-eye"></div>
-                    <div class="ghost-eye"></div>
-                  </div>
-                  <div class="ghost-bottom">
-                    <div class="ghost-wave"></div>
-                    <div class="ghost-wave"></div>
-                    <div class="ghost-wave"></div>
-                  </div>
+              <div class="ghost-body ghost-<%= ghost_color_for(index) %>">
+                <div class="ghost-avatar">
+                  <%= avatar_image_tag(user, :xlarge) %>
+                </div>
+                <div class="ghost-eyes">
+                  <div class="ghost-eye"></div>
+                  <div class="ghost-eye"></div>
+                </div>
+                <div class="ghost-bottom">
+                  <div class="ghost-wave"></div>
+                  <div class="ghost-wave"></div>
+                  <div class="ghost-wave"></div>
                 </div>
               </div>
             </div>
