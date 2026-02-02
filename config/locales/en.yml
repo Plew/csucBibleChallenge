@@ -342,6 +342,13 @@ en:
       no_users_selected: "No users selected. Please go back and select participants."
       pacman_mode: "Pac-Man Chase Mode"
       pacman_instructions: "Watch as participants (ghosts) try to escape through the maze. Pac-Man appears after 5 seconds and chases them down. Each ghost caught makes Pac-Man faster. The last survivor wins!"
+      shark_mode: "Hungry Shark Mode"
+      shark_instructions: "Swimmers bob in the ocean while a hungry shark hunts them down. One by one, the shark chomps each swimmer until only one survivor remains on a life raft!"
+      shark_draw:
+        start_hunt: "Release the Shark!"
+        survivor: "The Survivor!"
+        escaped_shark: "escaped the hungry shark!"
+        chomp: "CHOMP!"
     sprints:
       title: "Sprints"
       manage_sprints: "Manage Sprints"
@@ -390,6 +397,8 @@ en:
     must_be_enrolled: "You must be enrolled in this challenge to access the lobby."
     admin_only: "Only administrators can start the winner drawing."
     start_confirmation: "Are you sure you want to start the winner drawing with these participants?"
+    choose_animation: "Choose animation style:"
+    start_pile_mode: "Classic Pile Mode"
     lobby_cleared: "The lobby has been cleared successfully."
     clear_lobby_confirmation: "Are you sure you want to remove all participants from the lobby?"
 

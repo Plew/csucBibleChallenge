@@ -48,8 +48,15 @@ class SevenDayLobbiesController < ApplicationController
     # Clear the lobby after getting participants (game is starting)
     SevenDayLobby.where(challenge: @challenge).destroy_all
 
+    # Get animation type from params (default to "pile")
+    animation_type = params[:animation_type] || "pile"
+
     # Redirect to the draw page with lobby participants
-    redirect_to admin_seven_day_winner_draw_path(challenge_id: @challenge.id, user_ids: lobby_participants.map(&:id))
+    redirect_to admin_seven_day_winner_draw_path(
+      challenge_id: @challenge.id,
+      user_ids: lobby_participants.map(&:id),
+      animation_type: animation_type
+    )
   end
 
   def clear_lobby

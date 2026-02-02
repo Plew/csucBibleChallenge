@@ -46,5 +46,8 @@ module Irmbi
 
     # Configure ViewComponent preview paths
     config.view_component.preview_paths = [ "#{Rails.root}/spec/components/previews" ]
+
+    # Add preview paths to autoload for development
+    config.autoload_paths << "#{Rails.root}/spec/components/previews"
   end
 end

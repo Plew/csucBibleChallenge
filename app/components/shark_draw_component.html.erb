@@ -1,0 +1,91 @@
+<div class="card bg-base-100 shadow-xl" data-controller="shark-draw">
+  <div class="card-body p-0">
+    <% if users.any? %>
+      <!-- Ocean container - full screen -->
+      <div class="relative w-full h-screen overflow-hidden shark-ocean-bg" data-shark-draw-target="ocean">
+        <!-- Challenge title -->
+        <div class="absolute top-4 left-0 right-0 text-center z-10">
+          <h2 class="text-2xl font-bold text-white drop-shadow-lg"><%= challenge.title %></h2>
+        </div>
+
+        <!-- Start button -->
+        <div class="absolute top-16 left-0 right-0 text-center z-10">
+          <button type="button"
+                  data-action="click->shark-draw#startHunt"
+                  data-shark-draw-target="startButton"
+                  class="btn btn-primary btn-lg">
+            <%= t('admin.seven_day_winner.shark_draw.start_hunt') %>
+          </button>
+        </div>
+
+        <!-- Wave line (decorative) -->
+        <div class="absolute left-0 right-0 shark-wave-line" style="top: 55%;" data-shark-draw-target="waveLine">
+          <svg class="w-full h-8" viewBox="0 0 1200 32" preserveAspectRatio="none">
+            <path d="M0,16 Q50,0 100,16 T200,16 T300,16 T400,16 T500,16 T600,16 T700,16 T800,16 T900,16 T1000,16 T1100,16 T1200,16"
+                  stroke="rgba(255,255,255,0.5)" stroke-width="2" fill="none" class="animate-wave"/>
+          </svg>
+        </div>
+
+        <!-- Swimmers container -->
+        <div class="absolute left-0 right-0 flex flex-wrap justify-center gap-4 px-4" style="top: 40%;" data-shark-draw-target="swimmersContainer">
+          <% users.each do |user| %>
+            <div class="swimmer-container relative transition-all duration-500"
+                 data-shark-draw-target="swimmer"
+                 data-user-id="<%= user.id %>"
+                 data-user-name="<%= user.name %>">
+              <!-- Swimmer avatar with bobbing animation -->
+              <div class="animate-bob">
+                <%= avatar_image_tag(user, :xxlarge) %>
+              </div>
+              <!-- Water ripples around swimmer -->
+              <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-16 h-4 bg-white/20 rounded-full blur-sm"></div>
+            </div>
+          <% end %>
+        </div>
+
+        <!-- Shark element (hidden initially) -->
+        <div class="absolute hidden" style="top: 50%; left: -150px;" data-shark-draw-target="shark">
+          <div class="shark-body text-8xl">
+            <span class="inline-block">🦈</span>
+          </div>
+        </div>
+
+        <!-- Splash effect (hidden initially) -->
+        <div class="absolute hidden pointer-events-none" data-shark-draw-target="splash">
+          <div class="splash-effect text-6xl">💦</div>
+        </div>
+
+        <!-- Chomp effect overlay (hidden initially) -->
+        <div class="absolute inset-0 hidden items-center justify-center z-20 bg-black/30" data-shark-draw-target="chompOverlay">
+          <div class="text-center">
+            <div class="text-6xl mb-2">🦈💥</div>
+            <div class="text-3xl font-bold text-red-500 drop-shadow-lg" data-shark-draw-target="chompText">CHOMP!</div>
+          </div>
+        </div>
+
+        <!-- Life raft for winner (hidden initially) -->
+        <div class="absolute hidden left-1/2 transform -translate-x-1/2" style="top: 40%;" data-shark-draw-target="lifeRaft">
+          <div class="text-center">
+            <div class="mb-2" data-shark-draw-target="winnerAvatar"></div>
+            <div class="text-6xl">🛟</div>
+          </div>
+        </div>
+
+        <!-- Winner announcement (hidden initially) - Full screen overlay -->
+        <div class="hidden fixed inset-0 bg-gradient-to-b from-blue-600 to-blue-900 z-50 flex items-center justify-center" data-shark-draw-target="winnerAnnouncement">
+          <div class="text-center px-4">
+            <div class="text-6xl mb-4">🎉 🛟 🏆 🦈 🎊</div>
+            <div class="text-3xl text-white mb-4"><%= t('admin.seven_day_winner.shark_draw.survivor') %></div>
+            <div class="text-5xl md:text-7xl font-bold text-white mb-4" data-shark-draw-target="winnerName"></div>
+            <div class="text-3xl md:text-4xl font-semibold text-yellow-300"><%= t('admin.seven_day_winner.shark_draw.escaped_shark') %></div>
+            <div class="text-6xl mt-6">🎉 🛟 🏆 🦈 🎊</div>
+          </div>
+        </div>
+      </div>
+    <% else %>
+      <div class="text-center py-8 text-base-content/70">
+        <div class="text-lg"><%= t('admin.seven_day_winner.no_users_selected') %></div>
+      </div>
+    <% end %>
+  </div>
+</div>

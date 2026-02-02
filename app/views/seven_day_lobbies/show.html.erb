@@ -51,12 +51,27 @@
 
           <%# Admin buttons %>
           <% if current_user.admin? %>
-            <div class="mt-6 pt-4 border-t border-base-300 space-y-2">
-              <%= button_to t('seven_day_lobby.start_button'),
-                            start_challenge_seven_day_lobby_path(@challenge),
+            <div class="mt-6 pt-4 border-t border-base-300 space-y-3">
+              <p class="text-sm font-medium text-base-content/70 mb-2"><%= t('seven_day_lobby.choose_animation') %></p>
+
+              <%# Pile animation (default) %>
+              <%= button_to start_challenge_seven_day_lobby_path(@challenge, animation_type: "pile"),
                             method: :post,
                             class: "btn btn-success w-full",
-                            data: { turbo: false, confirm: t('seven_day_lobby.start_confirmation') } %>
+                            data: { turbo: false, confirm: t('seven_day_lobby.start_confirmation') } do %>
+                <span class="text-xl mr-2">🎰</span> <%= t('seven_day_lobby.start_pile_mode') %>
+              <% end %>
+
+              <%# Shark animation %>
+              <%= button_to start_challenge_seven_day_lobby_path(@challenge, animation_type: "shark"),
+                            method: :post,
+                            class: "btn btn-info w-full",
+                            data: { turbo: false, confirm: t('seven_day_lobby.start_confirmation') } do %>
+                <span class="text-xl mr-2">🦈</span> <%= t('admin.seven_day_winner.shark_mode') %>
+              <% end %>
+
+              <div class="divider my-2"></div>
+
               <%= button_to t('seven_day_lobby.clear_lobby_button'),
                             clear_lobby_challenge_seven_day_lobby_path(@challenge),
                             method: :delete,

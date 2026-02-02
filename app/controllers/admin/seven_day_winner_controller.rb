@@ -4,5 +4,6 @@ class Admin::SevenDayWinnerController < Admin::BaseController
     @selected_user_ids = params[:user_ids] || []
     @users = User.where(id: @selected_user_ids)
     @challenge = Challenge.find(params[:challenge_id])
+    @animation_type = params[:animation_type] || "pile"
   end
 end

@@ -56,20 +56,25 @@ module ApplicationHelper
     options = { size: dimension, class: merged_class }.merge(html_options.except(:class))
 
     if user.avatar.attached?
-      variant =
-        case size_key.to_sym
-        when :tiny
-          user.avatar.variant(:thumb).processed
-        when :large
-          user.avatar.variant(:large).processed
-        when :xlarge
-          user.avatar.variant(:xlarge).processed
-        when :xxlarge
-          user.avatar.variant(:xxlarge).processed
-        else
-          user.avatar.variant(:medium).processed
-        end
-      image_tag(variant, options)
+      begin
+        variant =
+          case size_key.to_sym
+          when :tiny
+            user.avatar.variant(:thumb).processed
+          when :large
+            user.avatar.variant(:large).processed
+          when :xlarge
+            user.avatar.variant(:xlarge).processed
+          when :xxlarge
+            user.avatar.variant(:xxlarge).processed
+          else
+            user.avatar.variant(:medium).processed
+          end
+        image_tag(variant, options)
+      rescue ActiveStorage::FileNotFoundError
+        # Fall back to generated avatar if file is missing
+        image_tag(Avatarro.image(user.username), options)
+      end
     else
       image_tag(Avatarro.image(user.username), options)
     end

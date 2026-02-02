@@ -18,3 +18,111 @@
   opacity: 0;
   transform: translateX(-10px);
 }
+
+/* Shark Draw Animation Styles */
+.shark-ocean-bg {
+  background: linear-gradient(180deg,
+    #1e3a5f 0%,
+    #2563eb 30%,
+    #3b82f6 50%,
+    #60a5fa 70%,
+    #93c5fd 100%);
+}
+
+.shark-wave-line svg path {
+  animation: wave-flow 3s ease-in-out infinite;
+}
+
+@keyframes wave-flow {
+  0%, 100% {
+    d: path("M0,16 Q50,0 100,16 T200,16 T300,16 T400,16 T500,16 T600,16 T700,16 T800,16 T900,16 T1000,16 T1100,16 T1200,16");
+  }
+  50% {
+    d: path("M0,16 Q50,32 100,16 T200,16 T300,16 T400,16 T500,16 T600,16 T700,16 T800,16 T900,16 T1000,16 T1100,16 T1200,16");
+  }
+}
+
+/* Swimmer bobbing animation */
+.animate-bob {
+  animation: bob 2s ease-in-out infinite;
+}
+
+@keyframes bob {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+/* Nervous/shaking animation for swimmers */
+.animate-nervous {
+  animation: nervous 0.15s ease-in-out infinite;
+}
+
+@keyframes nervous {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-3px);
+  }
+  75% {
+    transform: translateX(3px);
+  }
+}
+
+/* Splash animation */
+.animate-splash {
+  animation: splash 0.5s ease-out forwards;
+}
+
+@keyframes splash {
+  0% {
+    transform: scale(0.5);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+/* Winner celebration animation */
+.animate-celebration {
+  animation: celebration 1s ease-in-out infinite;
+}
+
+@keyframes celebration {
+  0%, 100% {
+    transform: translateX(-50%) translateY(0) rotate(-2deg);
+  }
+  25% {
+    transform: translateX(-50%) translateY(-5px) rotate(2deg);
+  }
+  50% {
+    transform: translateX(-50%) translateY(0) rotate(-2deg);
+  }
+  75% {
+    transform: translateX(-50%) translateY(-3px) rotate(1deg);
+  }
+}
+
+/* Shark swimming animation */
+.shark-body {
+  animation: shark-swim 0.4s ease-in-out infinite;
+}
+
+@keyframes shark-swim {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-5px) rotate(-3deg);
+  }
+}

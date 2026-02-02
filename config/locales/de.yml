@@ -287,6 +287,13 @@ de:
       no_users_selected: "Keine Benutzer ausgewählt. Bitte gehe zurück und wähle Teilnehmer aus."
       pacman_mode: "Pac-Man-Verfolgungsmodus"
       pacman_instructions: "Beobachten Sie, wie die Teilnehmer (Geister) versuchen, durch das Labyrinth zu entkommen. Pac-Man erscheint nach 5 Sekunden und jagt sie. Jeder gefangene Geist macht Pac-Man schneller. Der letzte Überlebende gewinnt!"
+      shark_mode: "Hungriger Hai-Modus"
+      shark_instructions: "Die Schwimmer dümpeln im Ozean, während ein hungriger Hai sie jagt. Einer nach dem anderen schnappt der Hai jeden Schwimmer, bis nur noch ein Überlebender auf einem Rettungsring übrig bleibt!"
+      shark_draw:
+        start_hunt: "Den Hai loslassen!"
+        survivor: "Der Überlebende!"
+        escaped_shark: "ist dem hungrigen Hai entkommen!"
+        chomp: "SCHNAPP!"
     sprints:
       title: "Sprints"
       manage_sprints: "Sprints verwalten"
@@ -335,6 +342,8 @@ de:
     must_be_enrolled: "Du musst in dieser Challenge eingeschrieben sein, um auf die Lobby zuzugreifen."
     admin_only: "Nur Administratoren können die Gewinnerziehung starten."
     start_confirmation: "Bist du sicher, dass du die Gewinnerziehung mit diesen Teilnehmern starten möchtest?"
+    choose_animation: "Animationsstil wählen:"
+    start_pile_mode: "Klassischer Stapel-Modus"
     lobby_cleared: "Die Lobby wurde erfolgreich geleert."
     clear_lobby_confirmation: "Bist du sicher, dass du alle Teilnehmer aus der Lobby entfernen möchtest?"
 
