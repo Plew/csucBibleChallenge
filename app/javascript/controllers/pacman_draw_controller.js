@@ -23,6 +23,7 @@ export default class extends Controller {
     this.ghostStates = new Map()
     this.animationFrameId = null
     this.pacmanState = null
+    this.pacmanActive = false
 
     // Maze configuration
     this.cellSize = 40
@@ -281,15 +282,36 @@ export default class extends Controller {
     this.startButtonTarget.disabled = true
     this.startButtonTarget.classList.add('hidden')
 
-    // Show Pac-Man and start chomping
-    this.pacmanTarget.classList.remove('hidden')
-    this.pacmanTarget.querySelector('.pacman-body').classList.add('pacman-chomping')
-
-    // Show power mode
-    this.powerModeTarget.classList.remove('hidden')
-
-    // Start the game loop
+    // Start the game loop (ghosts start moving)
     this.startGameLoop()
+
+    // Pac-Man appears after 5 seconds
+    setTimeout(() => {
+      // Reposition Pac-Man to a random spot in the maze
+      const paths = this.getPathCells()
+      const cell = paths[Math.floor(Math.random() * paths.length)]
+      const pixelX = cell.x * this.cellSize + (this.cellSize - this.pacmanSize) / 2
+      const pixelY = cell.y * this.cellSize + (this.cellSize - this.pacmanSize) / 2 + 120
+
+      this.pacmanState.cellX = cell.x
+      this.pacmanState.cellY = cell.y
+      this.pacmanState.pixelX = pixelX
+      this.pacmanState.pixelY = pixelY
+
+      const pacman = this.pacmanTarget
+      pacman.style.left = `${pixelX}px`
+      pacman.style.top = `${pixelY}px`
+
+      // Show Pac-Man and start chomping
+      pacman.classList.remove('hidden')
+      pacman.querySelector('.pacman-body').classList.add('pacman-chomping')
+
+      // Show power mode
+      this.powerModeTarget.classList.remove('hidden')
+
+      // Mark that Pac-Man is now active
+      this.pacmanActive = true
+    }, 5000)
   }
 
   startGameLoop() {
@@ -373,7 +395,7 @@ export default class extends Controller {
   }
 
   movePacman() {
-    if (!this.pacmanState) return
+    if (!this.pacmanState || !this.pacmanActive) return
 
     const state = this.pacmanState
     const pacman = this.pacmanTarget
@@ -444,7 +466,7 @@ export default class extends Controller {
   }
 
   checkCollisions() {
-    if (!this.pacmanState) return
+    if (!this.pacmanState || !this.pacmanActive) return
 
     const pacmanCenterX = this.pacmanState.pixelX + this.pacmanSize / 2
     const pacmanCenterY = this.pacmanState.pixelY + this.pacmanSize / 2
