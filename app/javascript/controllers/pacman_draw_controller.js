@@ -118,13 +118,15 @@ export default class extends Controller {
   }
 
   addExtraPaths() {
-    const extraPathCount = Math.floor((this.mazeWidth * this.mazeHeight) / 15)
+    // Add many extra paths to make maze more open and less complex
+    const extraPathCount = Math.floor((this.mazeWidth * this.mazeHeight) / 6)
     for (let i = 0; i < extraPathCount; i++) {
       const x = Math.floor(Math.random() * (this.mazeWidth - 2)) + 1
       const y = Math.floor(Math.random() * (this.mazeHeight - 2)) + 1
       if (this.maze[y][x] === 1) {
         const adjacentPaths = this.countAdjacentPaths(x, y)
-        if (adjacentPaths >= 2) {
+        // Remove walls that connect paths (adjacentPaths >= 2) or even some dead-end walls
+        if (adjacentPaths >= 1) {
           this.maze[y][x] = 0
         }
       }
