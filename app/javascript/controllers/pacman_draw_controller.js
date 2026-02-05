@@ -26,6 +26,8 @@ export default class extends Controller {
     this.pacmanState = null
     this.pacmanActive = false
     this.pacmanStuckCounter = 0
+    this.pacmanLastMoveTime = null
+    this.pacmanLastPosition = null
 
     // Maze configuration - sized for iPad screen sharing
     this.cellSize = 24
@@ -337,6 +339,8 @@ export default class extends Controller {
 
       // Mark that Pac-Man is now active
       this.pacmanActive = true
+      this.pacmanLastMoveTime = Date.now()
+      this.pacmanLastPosition = { x: pixelX, y: pixelY }
     }, 5000)
   }
 
@@ -425,6 +429,21 @@ export default class extends Controller {
 
     const state = this.pacmanState
     const pacman = this.pacmanTarget
+
+    // Check if Pac-Man has been stuck for 5 seconds
+    if (this.pacmanLastPosition) {
+      const hasMoved = Math.abs(state.pixelX - this.pacmanLastPosition.x) > 1 ||
+                       Math.abs(state.pixelY - this.pacmanLastPosition.y) > 1
+
+      if (hasMoved) {
+        this.pacmanLastMoveTime = Date.now()
+        this.pacmanLastPosition = { x: state.pixelX, y: state.pixelY }
+      } else if (Date.now() - this.pacmanLastMoveTime > 5000) {
+        // Stuck for 5 seconds - teleport to random location
+        this.teleportPacman()
+        return
+      }
+    }
 
     // Always recalculate current cell from pixel position to stay in sync
     const currentCenterX = state.pixelX - this.mazeOffsetX + this.pacmanSize / 2
@@ -525,6 +544,40 @@ export default class extends Controller {
     }
   }
 
+  teleportPacman() {
+    const state = this.pacmanState
+    const pacman = this.pacmanTarget
+
+    // Find a random path cell
+    const paths = this.getPathCells()
+    const cell = paths[Math.floor(Math.random() * paths.length)]
+
+    const pixelX = this.mazeOffsetX + cell.x * this.cellSize + (this.cellSize - this.pacmanSize) / 2
+    const pixelY = cell.y * this.cellSize + (this.cellSize - this.pacmanSize) / 2 + 120
+
+    // Update state (speed remains unchanged)
+    state.cellX = cell.x
+    state.cellY = cell.y
+    state.pixelX = pixelX
+    state.pixelY = pixelY
+
+    // Pick a new valid direction
+    const validDirs = this.getValidDirections(cell.x, cell.y)
+    if (validDirs.length > 0) {
+      state.direction = validDirs[Math.floor(Math.random() * validDirs.length)]
+    }
+
+    // Update DOM
+    pacman.style.left = `${pixelX}px`
+    pacman.style.top = `${pixelY}px`
+    this.updatePacmanDirection(pacman, state.direction)
+
+    // Reset stuck tracking
+    this.pacmanLastMoveTime = Date.now()
+    this.pacmanLastPosition = { x: pixelX, y: pixelY }
+    this.pacmanStuckCounter = 0
+  }
+
   testDirection(state, direction) {
     // Test if moving in this direction from current position would work
     let testX = state.pixelX
@@ -613,7 +666,7 @@ export default class extends Controller {
     this.scoreValueTarget.textContent = this.score
 
     // Increase Pac-Man speed
-    this.pacmanState.speed += 0.8
+    this.pacmanState.speed += 0.3
     this.updateSpeedDisplay()
 
     // Make ghost disappear with eaten effect
