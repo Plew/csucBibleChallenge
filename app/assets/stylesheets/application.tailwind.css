@@ -166,17 +166,17 @@
   }
 }
 
-/* Ghost body styles */
+/* Ghost body styles - sized for iPad screen sharing */
 .ghost-body {
   position: relative;
-  width: 70px;
-  height: 80px;
-  border-radius: 35px 35px 0 0;
+  width: 36px;
+  height: 42px;
+  border-radius: 18px 18px 0 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding-top: 8px;
+  padding-top: 3px;
 }
 
 /* Ghost colors - classic Pac-Man */
@@ -187,8 +187,8 @@
 
 /* Ghost avatar container */
 .ghost-avatar {
-  width: 40px;
-  height: 40px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   overflow: hidden;
   border: 2px solid rgba(255, 255, 255, 0.5);
@@ -204,13 +204,13 @@
 /* Ghost eyes */
 .ghost-eyes {
   display: flex;
-  gap: 8px;
-  margin-top: 4px;
+  gap: 5px;
+  margin-top: 2px;
 }
 
 .ghost-eye {
-  width: 12px;
-  height: 14px;
+  width: 7px;
+  height: 8px;
   background: white;
   border-radius: 50%;
   position: relative;
@@ -219,18 +219,18 @@
 .ghost-eye::after {
   content: '';
   position: absolute;
-  width: 6px;
-  height: 6px;
+  width: 4px;
+  height: 4px;
   background: #2121de;
   border-radius: 50%;
-  top: 4px;
-  left: 3px;
+  top: 2px;
+  left: 2px;
 }
 
 /* Ghost bottom wavy part */
 .ghost-bottom {
   position: absolute;
-  bottom: -8px;
+  bottom: -5px;
   left: 0;
   right: 0;
   display: flex;
@@ -238,8 +238,8 @@
 }
 
 .ghost-wave {
-  width: 23px;
-  height: 16px;
+  width: 12px;
+  height: 9px;
   border-radius: 0 0 50% 50%;
 }
 
@@ -271,31 +271,31 @@
   }
 }
 
-/* Pac-Man body */
+/* Pac-Man body - sized for iPad screen sharing */
 .pacman-body {
   position: relative;
-  width: 80px;
-  height: 80px;
+  width: 44px;
+  height: 44px;
 }
 
 .pacman-top,
 .pacman-bottom {
   position: absolute;
-  width: 80px;
-  height: 40px;
+  width: 44px;
+  height: 22px;
   background: #ffff00;
   left: 0;
 }
 
 .pacman-top {
   top: 0;
-  border-radius: 80px 80px 0 0;
+  border-radius: 44px 44px 0 0;
   transform-origin: bottom center;
 }
 
 .pacman-bottom {
   bottom: 0;
-  border-radius: 0 0 80px 80px;
+  border-radius: 0 0 44px 44px;
   transform-origin: top center;
 }
 

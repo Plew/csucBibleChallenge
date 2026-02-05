@@ -13,7 +13,8 @@ export default class extends Controller {
     "winnerAnnouncement",
     "winnerName",
     "score",
-    "scoreValue"
+    "scoreValue",
+    "speedValue"
   ]
 
   connect() {
@@ -24,11 +25,12 @@ export default class extends Controller {
     this.animationFrameId = null
     this.pacmanState = null
     this.pacmanActive = false
+    this.pacmanStuckCounter = 0
 
-    // Maze configuration
-    this.cellSize = 40
-    this.ghostSize = 60
-    this.pacmanSize = 80
+    // Maze configuration - sized for iPad screen sharing
+    this.cellSize = 24
+    this.ghostSize = 36
+    this.pacmanSize = 44
 
     // Speed configuration - Pac-Man is faster than ghosts
     this.ghostBaseSpeed = 1.2
@@ -37,13 +39,20 @@ export default class extends Controller {
     // Generate and render maze
     this.generateMaze()
     this.renderMaze()
+    this.calculateMazeOffset()
     this.initializeGhosts()
     this.initializePacman()
+
+    // Auto-start the game
+    this.startGame()
   }
 
   disconnect() {
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId)
+    }
+    if (this.speedIncreaseInterval) {
+      clearInterval(this.speedIncreaseInterval)
     }
   }
 
@@ -57,9 +66,9 @@ export default class extends Controller {
     if (this.mazeWidth % 2 === 0) this.mazeWidth--
     if (this.mazeHeight % 2 === 0) this.mazeHeight--
 
-    // Minimum size
-    this.mazeWidth = Math.max(11, this.mazeWidth)
-    this.mazeHeight = Math.max(11, this.mazeHeight)
+    // Minimum and maximum size for iPad viewport
+    this.mazeWidth = Math.max(11, Math.min(21, this.mazeWidth))
+    this.mazeHeight = Math.max(11, Math.min(19, this.mazeHeight))
 
     // Initialize maze with all walls
     this.maze = []
@@ -147,6 +156,14 @@ export default class extends Controller {
     return count
   }
 
+  calculateMazeOffset() {
+    // The maze canvas is centered with left-1/2 -translate-x-1/2
+    // Calculate the actual left position of the maze
+    const arcadeRect = this.arcadeTarget.getBoundingClientRect()
+    const mazePixelWidth = this.mazeWidth * this.cellSize
+    this.mazeOffsetX = (arcadeRect.width - mazePixelWidth) / 2
+  }
+
   renderMaze() {
     const canvas = this.mazeCanvasTarget
     const ctx = canvas.getContext('2d')
@@ -212,7 +229,7 @@ export default class extends Controller {
 
       usedPositions.add(`${cell.x},${cell.y}`)
 
-      const pixelX = cell.x * this.cellSize + (this.cellSize - this.ghostSize) / 2
+      const pixelX = this.mazeOffsetX + cell.x * this.cellSize + (this.cellSize - this.ghostSize) / 2
       const pixelY = cell.y * this.cellSize + (this.cellSize - this.ghostSize) / 2 + 120
 
       ghost.style.position = 'absolute'
@@ -241,7 +258,7 @@ export default class extends Controller {
     // Start Pac-Man at a random position
     const cell = paths[Math.floor(Math.random() * paths.length)]
 
-    const pixelX = cell.x * this.cellSize + (this.cellSize - this.pacmanSize) / 2
+    const pixelX = this.mazeOffsetX + cell.x * this.cellSize + (this.cellSize - this.pacmanSize) / 2
     const pixelY = cell.y * this.cellSize + (this.cellSize - this.pacmanSize) / 2 + 120
 
     const pacman = this.pacmanTarget
@@ -285,12 +302,20 @@ export default class extends Controller {
     // Start the game loop (ghosts start moving)
     this.startGameLoop()
 
+    // Increase Pac-Man speed by 0.1 every second
+    this.speedIncreaseInterval = setInterval(() => {
+      if (this.pacmanState && this.pacmanActive) {
+        this.pacmanState.speed += 0.3
+        this.updateSpeedDisplay()
+      }
+    }, 1000)
+
     // Pac-Man appears after 5 seconds
     setTimeout(() => {
       // Reposition Pac-Man to a random spot in the maze
       const paths = this.getPathCells()
       const cell = paths[Math.floor(Math.random() * paths.length)]
-      const pixelX = cell.x * this.cellSize + (this.cellSize - this.pacmanSize) / 2
+      const pixelX = this.mazeOffsetX + cell.x * this.cellSize + (this.cellSize - this.pacmanSize) / 2
       const pixelY = cell.y * this.cellSize + (this.cellSize - this.pacmanSize) / 2 + 120
 
       this.pacmanState.cellX = cell.x
@@ -306,8 +331,9 @@ export default class extends Controller {
       pacman.classList.remove('hidden')
       pacman.querySelector('.pacman-body').classList.add('pacman-chomping')
 
-      // Show power mode
+      // Show speed indicator
       this.powerModeTarget.classList.remove('hidden')
+      this.updateSpeedDisplay()
 
       // Mark that Pac-Man is now active
       this.pacmanActive = true
@@ -358,7 +384,7 @@ export default class extends Controller {
         case 'right': targetX += speed; break
       }
 
-      const centerX = targetX + this.ghostSize / 2
+      const centerX = targetX - this.mazeOffsetX + this.ghostSize / 2
       const centerY = targetY - 120 + this.ghostSize / 2
       const newCellX = Math.floor(centerX / this.cellSize)
       const newCellY = Math.floor(centerY / this.cellSize)
@@ -400,6 +426,12 @@ export default class extends Controller {
     const state = this.pacmanState
     const pacman = this.pacmanTarget
 
+    // Always recalculate current cell from pixel position to stay in sync
+    const currentCenterX = state.pixelX - this.mazeOffsetX + this.pacmanSize / 2
+    const currentCenterY = state.pixelY - 120 + this.pacmanSize / 2
+    state.cellX = Math.floor(currentCenterX / this.cellSize)
+    state.cellY = Math.floor(currentCenterY / this.cellSize)
+
     // Calculate target position based on current direction
     let targetX = state.pixelX
     let targetY = state.pixelY
@@ -412,7 +444,7 @@ export default class extends Controller {
     }
 
     // Calculate which cell we'd be in
-    const centerX = targetX + this.pacmanSize / 2
+    const centerX = targetX - this.mazeOffsetX + this.pacmanSize / 2
     const centerY = targetY - 120 + this.pacmanSize / 2
     const newCellX = Math.floor(centerX / this.cellSize)
     const newCellY = Math.floor(centerY / this.cellSize)
@@ -441,17 +473,45 @@ export default class extends Controller {
       if (sideDirs.length > 0 && Math.random() < 0.15) {
         state.direction = sideDirs[Math.floor(Math.random() * sideDirs.length)]
       }
+
+      // Reset stuck counter when moving
+      this.pacmanStuckCounter = 0
     } else {
-      // Hit a wall - choose a new random direction
+      // Hit a wall - snap to cell center to fix alignment issues
+      this.snapToCell(state, pacman)
+
+      // Get valid directions from the properly aligned position
       const validDirs = this.getValidDirections(state.cellX, state.cellY)
-      if (validDirs.length > 0) {
-        // Prefer not going back the way we came
-        const opposite = this.getOppositeDirection(state.direction)
-        const preferredDirs = validDirs.filter(d => d !== opposite)
-        const choices = preferredDirs.length > 0 ? preferredDirs : validDirs
+      const opposite = this.getOppositeDirection(state.direction)
+
+      // Pick a new direction (prefer not going backwards)
+      const preferredDirs = validDirs.filter(d => d !== opposite)
+      const choices = preferredDirs.length > 0 ? preferredDirs : validDirs
+
+      if (choices.length > 0) {
         state.direction = choices[Math.floor(Math.random() * choices.length)]
       }
+
+      this.pacmanStuckCounter++
+
+      // If still stuck after many attempts, force reverse direction
+      if (this.pacmanStuckCounter > 30 && validDirs.includes(opposite)) {
+        state.direction = opposite
+        this.pacmanStuckCounter = 0
+      }
     }
+  }
+
+  snapToCell(state, pacman) {
+    // Snap Pac-Man to the center of its current cell
+    const cellCenterX = this.mazeOffsetX + state.cellX * this.cellSize + (this.cellSize - this.pacmanSize) / 2
+    const cellCenterY = state.cellY * this.cellSize + (this.cellSize - this.pacmanSize) / 2 + 120
+
+    state.pixelX = cellCenterX
+    state.pixelY = cellCenterY
+
+    pacman.style.left = `${cellCenterX}px`
+    pacman.style.top = `${cellCenterY}px`
   }
 
   updatePacmanDirection(pacman, direction) {
@@ -510,7 +570,8 @@ export default class extends Controller {
     this.scoreValueTarget.textContent = this.score
 
     // Increase Pac-Man speed
-    this.pacmanState.speed += 0.6
+    this.pacmanState.speed += 0.8
+    this.updateSpeedDisplay()
 
     // Make ghost disappear with eaten effect
     ghost.style.transition = 'all 0.3s ease-out'
@@ -548,6 +609,9 @@ export default class extends Controller {
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId)
     }
+    if (this.speedIncreaseInterval) {
+      clearInterval(this.speedIncreaseInterval)
+    }
 
     // Hide Pac-Man
     this.pacmanTarget.classList.add('hidden')
@@ -578,5 +642,11 @@ export default class extends Controller {
 
   wait(ms) {
     return new Promise(resolve => setTimeout(resolve, ms))
+  }
+
+  updateSpeedDisplay() {
+    if (this.hasSpeedValueTarget && this.pacmanState) {
+      this.speedValueTarget.textContent = this.pacmanState.speed.toFixed(1)
+    }
   }
 }

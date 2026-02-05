@@ -142,6 +142,7 @@ en:
     filter: "Filter"
     clear: "Clear"
     submit: "Submit"
+    start: "Start"
     confirm: "Confirm"
     yes: "Yes"
     no: "No"

@@ -66,9 +66,9 @@
           <div class="chomp-points text-2xl font-bold text-cyan-300 pacman-font">+100</div>
         </div>
 
-        <!-- Power pellet mode indicator (hidden initially) -->
+        <!-- Pac-Man speed indicator (hidden initially) -->
         <div class="absolute top-28 left-0 right-0 text-center z-10 hidden" data-pacman-draw-target="powerMode">
-          <div class="text-2xl text-blue-400 pacman-font animate-pulse">POWER MODE!</div>
+          <div class="text-2xl text-yellow-300 pacman-font">SPEED: <span data-pacman-draw-target="speedValue">2.0</span></div>
         </div>
 
         <!-- Winner announcement (hidden initially) - Full screen overlay -->
@@ -79,13 +79,6 @@
             </div>
             <div class="text-3xl text-yellow-300 mb-4 pacman-font"><%= t('admin.seven_day_winner.pacman_draw.survivor') %></div>
             <div class="text-5xl md:text-7xl font-bold text-white mb-4 pacman-font" data-pacman-draw-target="winnerName"></div>
-            <div class="text-3xl md:text-4xl font-semibold text-cyan-300 pacman-font"><%= t('admin.seven_day_winner.pacman_draw.escaped_pacman') %></div>
-            <div class="mt-6 flex justify-center gap-4">
-              <div class="ghost-body ghost-red scale-50"></div>
-              <div class="ghost-body ghost-pink scale-50"></div>
-              <div class="ghost-body ghost-cyan scale-50"></div>
-              <div class="ghost-body ghost-orange scale-50"></div>
-            </div>
           </div>
         </div>
       </div>
