@@ -405,6 +405,10 @@ en:
     start_pile_mode: "Classic Pile Mode"
     lobby_cleared: "The lobby has been cleared successfully."
     clear_lobby_confirmation: "Are you sure you want to remove all participants from the lobby?"
+    add_all_eligibles_button: "Add All Eligibles"
+    added_all_eligibles:
+      one: "Added 1 eligible user to the lobby."
+      other: "Added %{count} eligible users to the lobby."
 
   # Feedback
   feedback:

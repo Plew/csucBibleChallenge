@@ -350,6 +350,10 @@ de:
     start_pile_mode: "Klassischer Stapel-Modus"
     lobby_cleared: "Die Lobby wurde erfolgreich geleert."
     clear_lobby_confirmation: "Bist du sicher, dass du alle Teilnehmer aus der Lobby entfernen möchtest?"
+    add_all_eligibles_button: "Alle Berechtigten hinzufügen"
+    added_all_eligibles:
+      one: "1 berechtigter Benutzer wurde zur Lobby hinzugefügt."
+      other: "%{count} berechtigte Benutzer wurden zur Lobby hinzugefügt."
 
   # Feedback
   feedback:

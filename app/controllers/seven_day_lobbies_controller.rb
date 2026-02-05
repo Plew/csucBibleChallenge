@@ -4,7 +4,7 @@ class SevenDayLobbiesController < ApplicationController
   before_action :require_login
   before_action :set_challenge
   before_action :require_enrollment
-  before_action :require_admin, only: [ :start, :clear_lobby ]
+  before_action :require_admin, only: [ :start, :clear_lobby, :add_all_eligibles ]
 
   def show
     @lobby_participants = SevenDayLobby.participants_for_challenge(@challenge)
@@ -48,8 +48,8 @@ class SevenDayLobbiesController < ApplicationController
     # Clear the lobby after getting participants (game is starting)
     SevenDayLobby.where(challenge: @challenge).destroy_all
 
-    # Get animation type from params (default to "pile")
-    animation_type = params[:animation_type] || "pile"
+    # Get animation type from params (default to "pacman")
+    animation_type = params[:animation_type] || "pacman"
 
     # Redirect to the draw page with lobby participants
     redirect_to admin_seven_day_winner_draw_path(
@@ -62,6 +62,21 @@ class SevenDayLobbiesController < ApplicationController
   def clear_lobby
     SevenDayLobby.where(challenge: @challenge).destroy_all
     redirect_to challenge_seven_day_lobby_path(@challenge), notice: t("seven_day_lobby.lobby_cleared")
+  end
+
+  def add_all_eligibles
+    eligible_users = find_all_eligible_users
+    added_count = 0
+
+    eligible_users.each do |user|
+      unless SevenDayLobby.user_in_lobby?(user, @challenge)
+        SevenDayLobby.create(user: user, challenge: @challenge)
+        added_count += 1
+      end
+    end
+
+    redirect_to challenge_seven_day_lobby_path(@challenge),
+                notice: t("seven_day_lobby.added_all_eligibles", count: added_count)
   end
 
   private
@@ -80,6 +95,14 @@ class SevenDayLobbiesController < ApplicationController
     # User must have 100% completion for the last 7 days
     stats = SevenDayWindowStatistics.new(@challenge).send(:calculate_seven_day_data, current_user)
     stats[:completion_percentage] == 100
+  end
+
+  def find_all_eligible_users
+    seven_day_stats = SevenDayWindowStatistics.new(@challenge)
+    @challenge.users.select do |user|
+      stats = seven_day_stats.send(:calculate_seven_day_data, user)
+      stats[:completion_percentage] == 100
+    end
   end
 
   def require_admin

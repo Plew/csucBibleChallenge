@@ -1,6 +1,9 @@
 <% if @animation_type == "shark" %>
   <%# Shark animation is full-screen, minimal wrapper %>
   <%= render SharkDrawComponent.new(users: @users, challenge: @challenge) %>
+<% elsif @animation_type == "pacman" %>
+  <%# Pac-Man animation is full-screen, minimal wrapper %>
+  <%= render PacmanDrawComponent.new(users: @users, challenge: @challenge) %>
 <% else %>
   <div class="container mx-auto px-4 py-8">
     <div class="text-sm breadcrumbs mb-4">

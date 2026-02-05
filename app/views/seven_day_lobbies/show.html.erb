@@ -48,18 +48,24 @@
               </div>
             <% end %>
           </div>
+        <% else %>
+          <div class="text-center py-6 text-base-content/70">
+            <p class="text-sm"><%= t('seven_day_lobby.no_participants_yet') %></p>
+          </div>
+        <% end %>
 
-          <%# Admin buttons %>
-          <% if current_user.admin? %>
-            <div class="mt-6 pt-4 border-t border-base-300 space-y-3">
+        <%# Admin buttons - show even when lobby is empty %>
+        <% if current_user.admin? %>
+          <div class="mt-6 pt-4 border-t border-base-300 space-y-3">
+            <% if @lobby_participants.any? %>
               <p class="text-sm font-medium text-base-content/70 mb-2"><%= t('seven_day_lobby.choose_animation') %></p>
 
-              <%# Pile animation (default) %>
-              <%= button_to start_challenge_seven_day_lobby_path(@challenge, animation_type: "pile"),
+              <%# Pac-Man animation (default) %>
+              <%= button_to start_challenge_seven_day_lobby_path(@challenge, animation_type: "pacman"),
                             method: :post,
                             class: "btn btn-success w-full",
                             data: { turbo: false, confirm: t('seven_day_lobby.start_confirmation') } do %>
-                <span class="text-xl mr-2">🎰</span> <%= t('seven_day_lobby.start_pile_mode') %>
+                <span class="text-xl mr-2">👻</span> <%= t('admin.seven_day_winner.pacman_mode') %>
               <% end %>
 
               <%# Shark animation %>
@@ -70,18 +76,33 @@
                 <span class="text-xl mr-2">🦈</span> <%= t('admin.seven_day_winner.shark_mode') %>
               <% end %>
 
-              <div class="divider my-2"></div>
+              <%# Pile animation %>
+              <%= button_to start_challenge_seven_day_lobby_path(@challenge, animation_type: "pile"),
+                            method: :post,
+                            class: "btn btn-outline w-full",
+                            data: { turbo: false, confirm: t('seven_day_lobby.start_confirmation') } do %>
+                <span class="text-xl mr-2">🎰</span> <%= t('seven_day_lobby.start_pile_mode') %>
+              <% end %>
 
+              <div class="divider my-2"></div>
+            <% end %>
+
+            <%# Add all eligibles button %>
+            <%= button_to add_all_eligibles_challenge_seven_day_lobby_path(@challenge),
+                          method: :post,
+                          class: "btn btn-primary btn-outline w-full",
+                          data: { turbo: false } do %>
+              <span class="text-xl mr-2">+</span> <%= t('seven_day_lobby.add_all_eligibles_button') %>
+            <% end %>
+
+            <%# Clear lobby button %>
+            <% if @lobby_participants.any? %>
               <%= button_to t('seven_day_lobby.clear_lobby_button'),
                             clear_lobby_challenge_seven_day_lobby_path(@challenge),
                             method: :delete,
                             class: "btn btn-error btn-outline w-full",
                             data: { turbo: false, confirm: t('seven_day_lobby.clear_lobby_confirmation') } %>
-            </div>
-          <% end %>
-        <% else %>
-          <div class="text-center py-6 text-base-content/70">
-            <p class="text-sm"><%= t('seven_day_lobby.no_participants_yet') %></p>
+            <% end %>
           </div>
         <% end %>
       </div>

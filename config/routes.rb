@@ -121,6 +121,7 @@ Rails.application.routes.draw do
       delete :leave, on: :member
       post :start, on: :member
       delete :clear_lobby, on: :member
+      post :add_all_eligibles, on: :member
     end
   end
 
