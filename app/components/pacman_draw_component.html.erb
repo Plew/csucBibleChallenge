@@ -34,19 +34,15 @@
                  data-user-id="<%= user.id %>"
                  data-user-name="<%= user.name %>"
                  data-ghost-color="<%= ghost_color_for(index) %>">
-              <!-- Ghost with avatar -->
+              <!-- Ghost with full avatar -->
               <div class="ghost-body ghost-<%= ghost_color_for(index) %>">
-                <div class="ghost-avatar">
+                <div class="ghost-avatar-full">
                   <%= avatar_image_tag(user, :xlarge) %>
                 </div>
-                <div class="ghost-eyes">
-                  <div class="ghost-eye"></div>
-                  <div class="ghost-eye"></div>
-                </div>
                 <div class="ghost-bottom">
-                  <div class="ghost-wave"></div>
-                  <div class="ghost-wave"></div>
-                  <div class="ghost-wave"></div>
+                  <div class="ghost-wave ghost-wave-<%= ghost_color_for(index) %>"></div>
+                  <div class="ghost-wave ghost-wave-<%= ghost_color_for(index) %>"></div>
+                  <div class="ghost-wave ghost-wave-<%= ghost_color_for(index) %>"></div>
                 </div>
               </div>
             </div>

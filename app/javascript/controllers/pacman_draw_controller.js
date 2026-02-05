@@ -29,7 +29,7 @@ export default class extends Controller {
 
     // Maze configuration - sized for iPad screen sharing
     this.cellSize = 24
-    this.ghostSize = 36
+    this.ghostSize = 44
     this.pacmanSize = 44
 
     // Speed configuration - Pac-Man is faster than ghosts
@@ -305,7 +305,7 @@ export default class extends Controller {
     // Increase Pac-Man speed by 0.1 every second
     this.speedIncreaseInterval = setInterval(() => {
       if (this.pacmanState && this.pacmanActive) {
-        this.pacmanState.speed += 0.3
+        this.pacmanState.speed += 0.15
         this.updateSpeedDisplay()
       }
     }, 1000)
@@ -477,29 +477,72 @@ export default class extends Controller {
       // Reset stuck counter when moving
       this.pacmanStuckCounter = 0
     } else {
-      // Hit a wall - snap to cell center to fix alignment issues
-      this.snapToCell(state, pacman)
-
-      // Get valid directions from the properly aligned position
+      // Hit a wall - try to find a working direction
       const validDirs = this.getValidDirections(state.cellX, state.cellY)
       const opposite = this.getOppositeDirection(state.direction)
 
-      // Pick a new direction (prefer not going backwards)
-      const preferredDirs = validDirs.filter(d => d !== opposite)
-      const choices = preferredDirs.length > 0 ? preferredDirs : validDirs
+      // Sort directions: prefer sides first, then backwards (avoid continuing into wall)
+      const sideDirs = validDirs.filter(d => d !== state.direction && d !== opposite)
+      const sortedDirs = [
+        ...sideDirs.sort(() => Math.random() - 0.5),
+        ...validDirs.filter(d => d === opposite)
+      ]
 
-      if (choices.length > 0) {
-        state.direction = choices[Math.floor(Math.random() * choices.length)]
+      // Test each direction to find one that actually allows movement
+      let foundWorkingDir = false
+      for (const dir of sortedDirs) {
+        if (this.testDirection(state, dir)) {
+          state.direction = dir
+          foundWorkingDir = true
+          break
+        }
       }
 
-      this.pacmanStuckCounter++
+      // If no tested direction works, snap to cell center and try again
+      if (!foundWorkingDir) {
+        this.snapToCell(state, pacman)
 
-      // If still stuck after many attempts, force reverse direction
-      if (this.pacmanStuckCounter > 30 && validDirs.includes(opposite)) {
-        state.direction = opposite
+        // After snapping, try all directions including opposite
+        for (const dir of validDirs) {
+          if (this.testDirection(state, dir)) {
+            state.direction = dir
+            foundWorkingDir = true
+            break
+          }
+        }
+      }
+
+      if (!foundWorkingDir) {
+        this.pacmanStuckCounter++
+        // If really stuck, just reverse
+        if (this.pacmanStuckCounter > 10) {
+          state.direction = opposite
+          this.pacmanStuckCounter = 0
+        }
+      } else {
         this.pacmanStuckCounter = 0
       }
     }
+  }
+
+  testDirection(state, direction) {
+    // Test if moving in this direction from current position would work
+    let testX = state.pixelX
+    let testY = state.pixelY
+
+    switch (direction) {
+      case 'up': testY -= state.speed; break
+      case 'down': testY += state.speed; break
+      case 'left': testX -= state.speed; break
+      case 'right': testX += state.speed; break
+    }
+
+    const centerX = testX - this.mazeOffsetX + this.pacmanSize / 2
+    const centerY = testY - 120 + this.pacmanSize / 2
+    const testCellX = Math.floor(centerX / this.cellSize)
+    const testCellY = Math.floor(centerY / this.cellSize)
+
+    return this.canMoveTo(testCellX, testCellY)
   }
 
   snapToCell(state, pacman) {

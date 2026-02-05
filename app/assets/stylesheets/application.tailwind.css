@@ -169,62 +169,31 @@
 /* Ghost body styles - sized for iPad screen sharing */
 .ghost-body {
   position: relative;
-  width: 36px;
-  height: 42px;
-  border-radius: 18px 18px 0 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  padding-top: 3px;
-}
-
-/* Ghost colors - classic Pac-Man */
-.ghost-red { background: #ff0000; }
-.ghost-pink { background: #ffb8ff; }
-.ghost-cyan { background: #00ffff; }
-.ghost-orange { background: #ffb852; }
-
-/* Ghost avatar container */
-.ghost-avatar {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
+  width: 44px;
+  height: 50px;
+  border-radius: 22px 22px 0 0;
   overflow: hidden;
-  border: 2px solid rgba(255, 255, 255, 0.5);
-  z-index: 2;
+  border: 3px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
-.ghost-avatar img {
+/* Ghost colors - used as fallback/border tint */
+.ghost-red { border-color: #ff0000; box-shadow: 0 0 8px #ff0000; }
+.ghost-pink { border-color: #ffb8ff; box-shadow: 0 0 8px #ffb8ff; }
+.ghost-cyan { border-color: #00ffff; box-shadow: 0 0 8px #00ffff; }
+.ghost-orange { border-color: #ffb852; box-shadow: 0 0 8px #ffb852; }
+
+/* Full avatar that fills the ghost */
+.ghost-avatar-full {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.ghost-avatar-full img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-
-/* Ghost eyes */
-.ghost-eyes {
-  display: flex;
-  gap: 5px;
-  margin-top: 2px;
-}
-
-.ghost-eye {
-  width: 7px;
-  height: 8px;
-  background: white;
-  border-radius: 50%;
-  position: relative;
-}
-
-.ghost-eye::after {
-  content: '';
-  position: absolute;
-  width: 4px;
-  height: 4px;
-  background: #2121de;
-  border-radius: 50%;
-  top: 2px;
-  left: 2px;
 }
 
 /* Ghost bottom wavy part */
@@ -238,11 +207,18 @@
 }
 
 .ghost-wave {
-  width: 12px;
-  height: 9px;
+  width: 14px;
+  height: 10px;
   border-radius: 0 0 50% 50%;
 }
 
+/* Wave colors by individual class */
+.ghost-wave-red { background: #ff0000; }
+.ghost-wave-pink { background: #ffb8ff; }
+.ghost-wave-cyan { background: #00ffff; }
+.ghost-wave-orange { background: #ffb852; }
+
+/* Legacy - keep for backwards compatibility */
 .ghost-red .ghost-wave { background: #ff0000; }
 .ghost-pink .ghost-wave { background: #ffb8ff; }
 .ghost-cyan .ghost-wave { background: #00ffff; }
