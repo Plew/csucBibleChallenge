@@ -86,7 +86,7 @@
       </div>
 
       <% if current_user.version == "RCV" %>
-        <p class="text-center text-xs text-base-content/[3%] mx-4 mb-12">Holy Bible Recovery Version (text-only edition) © 2025 Living Stream Ministry www.lsm.org</p>
+        <p class="text-center text-xs <%= @user_challenge.hide_copyright ? 'text-base-content/[3%]' : 'text-base-content/30' %> mx-4 mb-12">Holy Bible Recovery Version (text-only edition) © 2025 Living Stream Ministry www.lsm.org</p>
       <% else %>
         <div class="mb-12"></div>
       <% end %>
