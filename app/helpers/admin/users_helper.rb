@@ -24,4 +24,19 @@ module Admin::UsersHelper
     today = Time.use_zone(challenge.timezone) { Date.current }
     (today - challenge.start_date).to_i
   end
+
+  # Returns an array of 15 booleans (one per day, most recent last) indicating
+  # whether the user completed any reading on that date across all challenges.
+  def last_15_days_activity(user)
+    today = Date.current
+    start_date = today - 14.days
+    completed_dates = user.user_readings
+      .where(completed_on: start_date..today)
+      .distinct
+      .pluck(:completed_on)
+      .map(&:to_date)
+      .to_set
+
+    (0..14).map { |offset| completed_dates.include?(start_date + offset.days) }
+  end
 end

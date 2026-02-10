@@ -15,6 +15,13 @@ class Admin::UsersController < Admin::BaseController
                      .distinct
     end
 
+    if params[:inactive_days].present?
+      days = params[:inactive_days].to_i
+      cutoff_date = days.days.ago.to_date
+      active_user_ids = UserReading.where("completed_on >= ?", cutoff_date).distinct.pluck(:user_id)
+      @users = @users.where.not(id: active_user_ids)
+    end
+
     respond_to do |format|
       format.html
       format.csv { send_data generate_csv(@users), filename: "users-#{Date.today}.csv" }
@@ -57,6 +64,17 @@ class Admin::UsersController < Admin::BaseController
 
     @user.update_attribute(:password, new_password)
     redirect_to admin_user_path(@user), notice: "Password updated successfully"
+  end
+
+  def remove_from_groups
+    user_ids = params[:user_ids] || []
+    if user_ids.empty?
+      redirect_to admin_users_path, alert: t("admin.users.no_users_selected")
+      return
+    end
+
+    removed_count = UserGroupEnrollment.where(user_id: user_ids).delete_all
+    redirect_to admin_users_path, notice: t("admin.users.removed_from_groups", count: removed_count)
   end
 
   private

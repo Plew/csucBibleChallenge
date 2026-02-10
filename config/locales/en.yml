@@ -323,6 +323,14 @@ en:
       scheduled_date: "Scheduled Date"
       completed_at: "Completed At"
       no_readings: "No readings completed yet."
+      last_15_days: "Last 15 Days"
+      no_activity_7_days: "No activity last 7 days"
+      no_activity_10_days: "No activity last 10 days"
+      remove_checked_from_group: "Remove checked users from their group"
+      no_users_selected: "No users selected."
+      removed_from_groups:
+        one: "Removed 1 user from their group."
+        other: "Removed %{count} group memberships."
     seven_day_winner:
       title: "7 Day Winner"
       select_challenge: "Select Challenge"

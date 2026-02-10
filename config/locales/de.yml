@@ -268,6 +268,14 @@ de:
       scheduled_date: "Geplantes Datum"
       completed_at: "Abgeschlossen am"
       no_readings: "Noch keine Lesungen abgeschlossen."
+      last_15_days: "Letzte 15 Tage"
+      no_activity_7_days: "Keine Aktivität letzte 7 Tage"
+      no_activity_10_days: "Keine Aktivität letzte 10 Tage"
+      remove_checked_from_group: "Ausgewählte Benutzer aus Gruppe entfernen"
+      no_users_selected: "Keine Benutzer ausgewählt."
+      removed_from_groups:
+        one: "1 Benutzer aus der Gruppe entfernt."
+        other: "%{count} Gruppenmitgliedschaften entfernt."
     seven_day_winner:
       title: "7-Tage-Gewinner"
       select_challenge: "Challenge auswählen"

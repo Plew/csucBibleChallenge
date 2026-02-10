@@ -103,6 +103,9 @@ Rails.application.routes.draw do
         get :reading_history
         get :change_password
       end
+      collection do
+        post :remove_from_groups
+      end
     end
     resources :feedbacks, only: [ :index, :show, :destroy ]
 

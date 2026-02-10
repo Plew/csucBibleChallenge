@@ -264,4 +264,145 @@ RSpec.describe Admin::UsersController, type: :controller do
       expect(flash[:notice]).to match(/Password reset for #{target_user.email}. New password:/)
     end
   end
+
+  describe 'GET #index with inactive_days filter' do
+    let(:challenge) { create(:challenge) }
+
+    before { session[:user_id] = admin_user.id }
+
+    it 'filters to show only users with no activity in the last 7 days' do
+      active_user = create(:user, username: 'active_user')
+      inactive_user = create(:user, username: 'inactive_user')
+
+      reading = create(:reading, challenge: challenge, scheduled_date: 3.days.ago.to_date)
+      create(:user_reading, user: active_user, reading: reading, completed_on: 3.days.ago.to_date)
+
+      get :index, params: { inactive_days: 7 }
+
+      expect(assigns(:users)).to include(inactive_user)
+      expect(assigns(:users)).not_to include(active_user)
+    end
+
+    it 'filters to show only users with no activity in the last 10 days' do
+      active_user = create(:user, username: 'active_user')
+      inactive_user = create(:user, username: 'inactive_user')
+
+      reading = create(:reading, challenge: challenge, scheduled_date: 5.days.ago.to_date)
+      create(:user_reading, user: active_user, reading: reading, completed_on: 5.days.ago.to_date)
+
+      get :index, params: { inactive_days: 10 }
+
+      expect(assigns(:users)).to include(inactive_user)
+      expect(assigns(:users)).not_to include(active_user)
+    end
+
+    it 'shows user with old activity when filtering by 7 days' do
+      old_active_user = create(:user, username: 'old_active')
+      old_reading = create(:reading, challenge: challenge, scheduled_date: 8.days.ago.to_date)
+      create(:user_reading, user: old_active_user, reading: old_reading, completed_on: 8.days.ago.to_date)
+
+      get :index, params: { inactive_days: 7 }
+
+      expect(assigns(:users)).to include(old_active_user)
+    end
+
+    it 'does not show user with recent activity when filtering by 7 days' do
+      recent_user = create(:user, username: 'recent_user')
+      recent_reading = create(:reading, challenge: challenge, scheduled_date: 2.days.ago.to_date)
+      create(:user_reading, user: recent_user, reading: recent_reading, completed_on: 2.days.ago.to_date)
+
+      get :index, params: { inactive_days: 7 }
+
+      expect(assigns(:users)).not_to include(recent_user)
+    end
+
+    it 'combines inactive filter with search' do
+      inactive_user = create(:user, username: 'inactive_target', email: 'inactive_target@example.com')
+      other_inactive = create(:user, username: 'other_inactive', email: 'other@example.com')
+
+      get :index, params: { inactive_days: 7, search: 'inactive_target' }
+
+      expect(assigns(:users)).to include(inactive_user)
+      expect(assigns(:users)).not_to include(other_inactive)
+    end
+  end
+
+  describe 'GET #index renders last 15 days activity' do
+    render_views
+
+    before { session[:user_id] = admin_user.id }
+
+    it 'renders the index page successfully with activity data' do
+      get :index
+      expect(response).to have_http_status(:success)
+      expect(response.body).to include('Last 15 Days')
+    end
+
+    it 'renders activity squares for each user' do
+      create(:user, username: 'graphuser')
+      get :index
+      # Each user should have 15 activity squares (w-2.5 h-2.5)
+      expect(response.body).to include('bg-base-300')
+    end
+  end
+
+  describe 'POST #remove_from_groups' do
+    let(:challenge) { create(:challenge) }
+    let(:group) { create(:group, challenge: challenge) }
+    let!(:user1) { create(:user, username: 'groupuser1') }
+    let!(:user2) { create(:user, username: 'groupuser2') }
+    let!(:user3) { create(:user, username: 'groupuser3') }
+
+    before do
+      session[:user_id] = admin_user.id
+      create(:user_group_enrollment, user: user1, group: group)
+      create(:user_group_enrollment, user: user2, group: group)
+      create(:user_group_enrollment, user: user3, group: group)
+    end
+
+    it 'removes selected users from their groups' do
+      expect {
+        post :remove_from_groups, params: { user_ids: [ user1.id, user2.id ] }
+      }.to change(UserGroupEnrollment, :count).by(-2)
+
+      expect(response).to redirect_to(admin_users_path)
+      expect(flash[:notice]).to include('Removed')
+    end
+
+    it 'does not remove unselected users from their groups' do
+      post :remove_from_groups, params: { user_ids: [ user1.id ] }
+
+      expect(UserGroupEnrollment.exists?(user_id: user2.id)).to be true
+      expect(UserGroupEnrollment.exists?(user_id: user3.id)).to be true
+    end
+
+    it 'handles empty user_ids' do
+      expect {
+        post :remove_from_groups, params: { user_ids: [] }
+      }.not_to change(UserGroupEnrollment, :count)
+
+      expect(response).to redirect_to(admin_users_path)
+      expect(flash[:alert]).to include('No users selected')
+    end
+
+    it 'handles missing user_ids param' do
+      expect {
+        post :remove_from_groups
+      }.not_to change(UserGroupEnrollment, :count)
+
+      expect(response).to redirect_to(admin_users_path)
+    end
+
+    it 'requires admin authentication' do
+      session[:user_id] = nil
+      post :remove_from_groups, params: { user_ids: [ user1.id ] }
+      expect(response).to redirect_to(new_user_session_path)
+    end
+
+    it 'denies access to non-admin users' do
+      session[:user_id] = regular_user.id
+      post :remove_from_groups, params: { user_ids: [ user1.id ] }
+      expect(response).to redirect_to(root_path)
+    end
+  end
 end
