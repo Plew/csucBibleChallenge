@@ -9,6 +9,10 @@ FactoryBot.define do
       admin { true }
     end
 
+    trait :challenge_creator do
+      can_create_challenges { true }
+    end
+
     trait :with_avatar do
       after(:create) do |user|
         # Note: In real usage, you'd attach an actual file

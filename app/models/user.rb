@@ -64,6 +64,10 @@ class User < ApplicationRecord
     admin
   end
 
+  def can_create_challenges?
+    admin? || can_create_challenges
+  end
+
   def owns_challenge?(challenge)
     challenge.present? && challenge.creator_id == id
   end

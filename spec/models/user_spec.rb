@@ -127,6 +127,23 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe '#can_create_challenges?' do
+    it 'returns true for admin users' do
+      user = create(:user, admin: true, can_create_challenges: false)
+      expect(user.can_create_challenges?).to be true
+    end
+
+    it 'returns true for users with can_create_challenges flag' do
+      user = create(:user, admin: false, can_create_challenges: true)
+      expect(user.can_create_challenges?).to be true
+    end
+
+    it 'returns false for regular users without the flag' do
+      user = create(:user, admin: false, can_create_challenges: false)
+      expect(user.can_create_challenges?).to be false
+    end
+  end
+
   describe '#owns_challenge?' do
     let(:user) { create(:user) }
     let(:challenge) { create(:challenge, creator: user) }

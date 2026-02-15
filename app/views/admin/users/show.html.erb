@@ -60,6 +60,19 @@
         </div>
       </div>
 
+      <div class="flex gap-2 items-center mt-2">
+        <label class="font-semibold text-sm">Challenge Creator:</label>
+        <% if @user.admin? %>
+          <span class="badge badge-success badge-sm"><%= t("admin.users.challenge_creator_via_admin") %></span>
+        <% elsif @user.can_create_challenges %>
+          <span class="badge badge-success badge-sm"><%= t("common.yes") %></span>
+          <%= button_to t("admin.users.revoke_challenge_creator"), toggle_challenge_creator_admin_user_path(@user), method: :patch, class: "btn btn-xs btn-outline btn-error" %>
+        <% else %>
+          <span class="badge badge-ghost badge-sm"><%= t("common.no") %></span>
+          <%= button_to t("admin.users.grant_challenge_creator"), toggle_challenge_creator_admin_user_path(@user), method: :patch, class: "btn btn-xs btn-outline btn-success" %>
+        <% end %>
+      </div>
+
       <div class="card-actions mt-4">
         <%= link_to t("admin.users.reading_history"), reading_history_admin_user_path(@user), class: "btn btn-sm btn-primary" %>
         <%= link_to t("admin.users.change_password"), change_password_admin_user_path(@user), class: "btn btn-sm btn-secondary" %>

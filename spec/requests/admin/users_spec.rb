@@ -112,6 +112,23 @@ RSpec.describe "Admin::Users", type: :request do
       end
     end
 
+    describe "PATCH /admin/users/:id/toggle_challenge_creator" do
+      it "grants challenge creator permission" do
+        patch toggle_challenge_creator_admin_user_path(test_user)
+        expect(response).to redirect_to(admin_user_path(test_user))
+        test_user.reload
+        expect(test_user.can_create_challenges).to be true
+      end
+
+      it "revokes challenge creator permission" do
+        test_user.update_column(:can_create_challenges, true)
+        patch toggle_challenge_creator_admin_user_path(test_user)
+        expect(response).to redirect_to(admin_user_path(test_user))
+        test_user.reload
+        expect(test_user.can_create_challenges).to be false
+      end
+    end
+
     describe "GET /admin/users/:id/reading_history" do
       let(:challenge) { create(:challenge, timezone: 'Berlin') }
       let(:reading) { create(:reading, challenge: challenge, scheduled_date: Date.current) }

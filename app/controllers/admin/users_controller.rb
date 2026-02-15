@@ -1,5 +1,5 @@
 class Admin::UsersController < Admin::BaseController
-  before_action :set_user, only: [ :show, :reset_password, :update_password, :reading_history, :change_password ]
+  before_action :set_user, only: [ :show, :reset_password, :update_password, :reading_history, :change_password, :toggle_challenge_creator ]
 
   def index
     @users = User.includes(:challenges).order(created_at: :desc)
@@ -64,6 +64,15 @@ class Admin::UsersController < Admin::BaseController
 
     @user.update_attribute(:password, new_password)
     redirect_to admin_user_path(@user), notice: "Password updated successfully"
+  end
+
+  def toggle_challenge_creator
+    @user.update(can_create_challenges: !@user.can_create_challenges)
+    if @user.can_create_challenges
+      redirect_to admin_user_path(@user), notice: t("admin.users.challenge_creator_granted", username: @user.username)
+    else
+      redirect_to admin_user_path(@user), notice: t("admin.users.challenge_creator_revoked", username: @user.username)
+    end
   end
 
   def remove_from_groups

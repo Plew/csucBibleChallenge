@@ -2,6 +2,7 @@ class ChallengesController < ApplicationController
   include ChallengeCreation
 
   before_action :require_login, only: [ :new, :create ]
+  before_action :require_challenge_creator, only: [ :new, :create ]
 
   # GET /challenges
   def index
@@ -58,6 +59,14 @@ class ChallengesController < ApplicationController
       redirect_to challenge_manage_dashboard_path(@challenge), notice: t("manage.challenge_created")
     else
       render :new, status: :unprocessable_content
+    end
+  end
+
+  private
+
+  def require_challenge_creator
+    unless current_user&.can_create_challenges?
+      redirect_to challenges_path, alert: t("challenges.not_permitted_to_create")
     end
   end
 

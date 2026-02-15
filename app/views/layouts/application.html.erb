@@ -66,7 +66,9 @@
           role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
         <div class="py-1" role="none">
           <% if logged_in? %>
-            <%= link_to t('navigation.create_challenge'), new_challenge_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
+            <% if current_user.can_create_challenges? %>
+              <%= link_to t('navigation.create_challenge'), new_challenge_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
+            <% end %>
             <% current_user.created_challenges.each do |owned_challenge| %>
               <%= link_to "#{t('navigation.manage')}: #{owned_challenge.name}", challenge_manage_dashboard_path(owned_challenge), class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
             <% end %>

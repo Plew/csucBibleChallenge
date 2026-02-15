@@ -117,6 +117,7 @@ Rails.application.routes.draw do
       member do
         patch :reset_password
         patch :update_password
+        patch :toggle_challenge_creator
         get :reading_history
         get :change_password
       end
