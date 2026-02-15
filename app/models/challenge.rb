@@ -32,6 +32,10 @@ class Challenge < ApplicationRecord
     save!
   end
 
+  def owned_by?(user)
+    user.present? && creator_id == user.id
+  end
+
   def join_url
     Rails.application.routes.url_helpers.challenge_invitation_url(invitation_token, host: ENV.fetch("APP_HOST", "localhost:3000"))
   end

@@ -94,6 +94,24 @@ RSpec.describe Challenge, type: :model do
     end
   end
 
+  describe '#owned_by?' do
+    let(:creator) { create(:user) }
+    let(:challenge) { create(:challenge, creator: creator) }
+    let(:other_user) { create(:user) }
+
+    it 'returns true for the creator' do
+      expect(challenge.owned_by?(creator)).to be true
+    end
+
+    it 'returns false for another user' do
+      expect(challenge.owned_by?(other_user)).to be false
+    end
+
+    it 'returns false for nil' do
+      expect(challenge.owned_by?(nil)).to be false
+    end
+  end
+
   describe 'deletion' do
     let(:creator) { FactoryBot.create(:user, admin: true) }
     let(:challenge) { FactoryBot.create(:challenge, creator: creator) }

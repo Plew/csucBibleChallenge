@@ -56,6 +56,12 @@
 
 
 
+    <% if logged_in? && @challenge.owned_by?(current_user) %>
+      <div class="mb-4">
+        <%= link_to t('navigation.manage_challenge'), challenge_manage_dashboard_path(@challenge), class: "btn btn-secondary btn-sm w-full" %>
+      </div>
+    <% end %>
+
     <div class="flex flex-col items-center mb-6 mt-8 gap-4">
       <% if logged_in? %>
         <% if @user_enrollment %>

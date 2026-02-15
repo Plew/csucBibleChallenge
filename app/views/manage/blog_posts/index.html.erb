@@ -1,0 +1,54 @@
+<div class="px-2 py-4">
+  <div class="text-sm breadcrumbs mb-4">
+    <ul>
+      <li><%= link_to @challenge.title, challenge_manage_dashboard_path(@challenge), class: "link link-hover" %></li>
+      <li><%= t("manage.blog_posts.title") %></li>
+    </ul>
+  </div>
+
+  <div class="flex justify-between items-center mb-4">
+    <h1 class="text-2xl font-bold"><%= t("manage.blog_posts.title") %></h1>
+    <div class="flex gap-2">
+      <%= link_to t("common.back"), challenge_manage_dashboard_path(@challenge), class: "btn btn-sm btn-outline" %>
+      <%= link_to t("blog.new_post"), new_challenge_manage_blog_post_path(@challenge), class: "btn btn-sm btn-primary" %>
+    </div>
+  </div>
+
+  <% if @blog_posts.any? %>
+    <div class="space-y-3">
+      <% @blog_posts.each do |post| %>
+        <div class="card bg-base-100 shadow-sm">
+          <div class="card-body p-3">
+            <div class="flex justify-between items-start">
+              <div class="flex-1 min-w-0">
+                <h2 class="font-semibold text-sm">
+                  <%= post.title %>
+                  <% unless post.visible %>
+                    <span class="badge badge-warning badge-xs"><%= t("challenges.hidden") %></span>
+                  <% end %>
+                </h2>
+                <p class="text-xs text-base-content/60 mt-1">
+                  <%= t("blog.posted_by") %> <%= post.author.username %> · <%= time_ago_in_words(post.created_at) %> <%= t("common.ago") %>
+                </p>
+              </div>
+              <div class="flex gap-1 ml-2">
+                <%= link_to t("common.edit"), edit_challenge_manage_blog_post_path(@challenge, post), class: "btn btn-xs btn-outline" %>
+                <%= button_to t("common.delete"), challenge_manage_blog_post_path(@challenge, post), method: :delete,
+                    data: { turbo_confirm: t("blog.confirm_delete") },
+                    class: "btn btn-xs btn-error btn-outline" %>
+              </div>
+            </div>
+            <div class="text-xs text-base-content/60 mt-2">
+              <%= pluralize(post.blog_comments.count, t("blog.comments")) %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="text-center py-8">
+      <p class="text-base-content/60 mb-4"><%= t("blog.no_posts") %></p>
+      <%= link_to t("blog.new_post"), new_challenge_manage_blog_post_path(@challenge), class: "btn btn-primary btn-sm" %>
+    </div>
+  <% end %>
+</div>

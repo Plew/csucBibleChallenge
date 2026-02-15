@@ -49,7 +49,7 @@ Rails.application.routes.draw do
   get "groups/:token/join", to: "group_invitations#show", as: :group_invitation
 
   # Challenges UI
-  resources :challenges, only: [ :index, :show ] do # Add :show, :new, :create, etc. as needed for UI
+  resources :challenges, only: [ :index, :show, :new, :create ] do # Challenge creation for logged-in users
     resources :user_challenge_enrollments, only: [ :create ], as: :enrollments # POST challenges/:challenge_id/enrollments
     resources :groups, only: [ :create ], controller: "challenge_groups" do
       member do
@@ -65,6 +65,23 @@ Rails.application.routes.draw do
     end
   end
   resources :user_challenge_enrollments, only: [ :destroy ] # DELETE /user_challenge_enrollments/:id
+
+  # Challenge owner management
+  resources :challenges, only: [] do
+    namespace :manage do
+      root "dashboard#index", as: :dashboard
+      resource :settings, only: [ :edit, :update ], controller: "settings"
+      resources :sprints, only: [ :index, :show, :new, :create, :edit, :update, :destroy ]
+      resources :blog_posts, only: [ :index, :new, :create, :edit, :update, :destroy ]
+      resources :users, only: [ :index, :show ] do
+        member do
+          delete :remove
+          get :change_password
+          patch :update_password
+        end
+      end
+    end
+  end
 
   # Public user profiles (viewable by anyone)
   resources :public_profiles, only: [ :show ], path: "users"

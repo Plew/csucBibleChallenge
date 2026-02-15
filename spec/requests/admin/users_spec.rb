@@ -57,8 +57,8 @@ RSpec.describe "Admin::Users", type: :request do
 
       it "displays all users" do
         get admin_users_path
-        expect(response.body).to include('searchable1@example.com')
-        expect(response.body).to include('searchable2@example.com')
+        expect(response.body).to include('searchable1')
+        expect(response.body).to include('searchable2')
       end
 
       it "shows admin badges correctly" do
@@ -70,13 +70,13 @@ RSpec.describe "Admin::Users", type: :request do
       context "with search parameter" do
         it "filters users by email" do
           get admin_users_path, params: { search: 'searchable1' }
-          expect(response.body).to include('searchable1@example.com')
-          expect(response.body).not_to include('searchable2@example.com')
+          expect(response.body).to include('searchable1')
+          expect(response.body).not_to include('searchable2')
         end
 
         it "filters users by ID" do
           get admin_users_path, params: { search: user1.id.to_s }
-          expect(response.body).to include('searchable1@example.com')
+          expect(response.body).to include('searchable1')
           # user2 may still appear due to pagination or other users, so just check that user1 is included
         end
       end

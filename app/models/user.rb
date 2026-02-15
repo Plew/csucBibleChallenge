@@ -64,6 +64,10 @@ class User < ApplicationRecord
     admin
   end
 
+  def owns_challenge?(challenge)
+    challenge.present? && challenge.creator_id == id
+  end
+
   private
 
   def password_being_updated?

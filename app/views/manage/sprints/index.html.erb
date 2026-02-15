@@ -1,0 +1,57 @@
+<div class="px-2 py-4">
+  <div class="text-sm breadcrumbs mb-4">
+    <ul>
+      <li><%= link_to @challenge.title, challenge_manage_dashboard_path(@challenge), class: "link link-hover" %></li>
+      <li><%= t("manage.sprints.title") %></li>
+    </ul>
+  </div>
+
+  <div class="flex justify-between items-center mb-4">
+    <h1 class="text-2xl font-bold"><%= t("manage.sprints.title") %></h1>
+    <div class="flex gap-2">
+      <%= link_to t("common.back"), challenge_manage_dashboard_path(@challenge), class: "btn btn-sm btn-outline" %>
+      <%= link_to t("manage.sprints.new"), new_challenge_manage_sprint_path(@challenge), class: "btn btn-sm btn-primary" %>
+    </div>
+  </div>
+
+  <% if @sprints.any? %>
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body p-3">
+        <div class="overflow-x-auto">
+          <table class="table table-zebra table-sm w-full">
+            <thead>
+              <tr>
+                <th><%= t("admin.sprints.name") %></th>
+                <th><%= t("admin.sprints.begin_date") %></th>
+                <th><%= t("admin.sprints.end_date") %></th>
+                <th><%= t("common.actions") %></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @sprints.each do |sprint| %>
+                <tr>
+                  <td><%= sprint.title %></td>
+                  <td><%= sprint.begin_date.strftime("%b %d, %Y") %></td>
+                  <td><%= sprint.end_date.strftime("%b %d, %Y") %></td>
+                  <td>
+                    <div class="flex gap-1">
+                      <%= link_to t("admin.sprints.view_groups"), challenge_manage_sprint_path(@challenge, sprint), class: "btn btn-xs btn-primary" %>
+                      <%= link_to t("common.edit"), edit_challenge_manage_sprint_path(@challenge, sprint), class: "btn btn-xs btn-outline" %>
+                      <%= button_to t("common.delete"), challenge_manage_sprint_path(@challenge, sprint), method: :delete, data: { turbo_confirm: t("common.are_you_sure") }, class: "btn btn-xs btn-error btn-outline" %>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  <% else %>
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body p-4">
+        <p class="text-base-content/60"><%= t("admin.sprints.no_sprints") %></p>
+      </div>
+    </div>
+  <% end %>
+</div>

@@ -23,6 +23,8 @@ de:
     log_in: "Anmelden"
     sign_up: "Registrieren"
     open_main_menu: "Hauptmenü öffnen"
+    manage: "Verwalten"
+    manage_challenge: "Challenge verwalten"
 
   bible_books:
     genesis: "Genesis"
@@ -135,6 +137,54 @@ de:
     minutes: "Min"
     seconds: "Sek"
     starts_in: "Beginnt in"
+
+  # Challenge Owner Management
+  manage:
+    access_denied: "Du hast keine Berechtigung, diese Challenge zu verwalten."
+    challenge_created: "Challenge erfolgreich erstellt! Du kannst sie jetzt konfigurieren."
+    dashboard:
+      title: "Challenge verwalten"
+      participants: "Teilnehmer"
+      readings: "Lesungen"
+      groups: "Gruppen"
+      sprints: "Sprints"
+      status: "Status"
+      edit_settings: "Einstellungen bearbeiten"
+      manage_sprints: "Sprints verwalten"
+      manage_blog: "Blog-Beiträge verwalten"
+      manage_users: "Benutzer verwalten"
+    settings:
+      title: "Challenge-Einstellungen"
+      updated: "Challenge-Einstellungen erfolgreich aktualisiert."
+      message_of_the_day: "Nachricht des Tages"
+      message_of_the_day_placeholder: "Optionale Nachricht für alle Challenge-Teilnehmer..."
+    sprints:
+      title: "Sprints"
+      new: "Neuer Sprint"
+      edit: "Sprint bearbeiten"
+      created: "Sprint wurde erfolgreich erstellt."
+      updated: "Sprint wurde erfolgreich aktualisiert."
+      deleted: "Sprint wurde erfolgreich gelöscht."
+    blog_posts:
+      title: "Blog-Beiträge"
+    users:
+      title: "Benutzer"
+      search_placeholder: "Nach E-Mail oder Benutzername suchen..."
+      participants: "Teilnehmer"
+      username: "Benutzername"
+      email: "E-Mail"
+      joined: "Beigetreten"
+      change_password: "Passwort ändern"
+      change_password_for: "Passwort ändern für %{username}"
+      new_password: "Neues Passwort"
+      update_password: "Passwort aktualisieren"
+      password_updated: "Passwort erfolgreich aktualisiert."
+      password_blank: "Passwort darf nicht leer sein."
+      password_too_short: "Passwort muss mindestens 6 Zeichen lang sein."
+      remove_from_challenge: "Aus Challenge entfernen"
+      remove_confirmation: "Bist du sicher, dass du %{username} aus dieser Challenge entfernen möchtest?"
+      removed: "%{username} wurde aus der Challenge entfernt."
+      not_enrolled: "Benutzer ist nicht in dieser Challenge angemeldet."
 
   # Home page
   home:

@@ -1,4 +1,8 @@
 class ChallengesController < ApplicationController
+  include ChallengeCreation
+
+  before_action :require_login, only: [ :new, :create ]
+
   # GET /challenges
   def index
     # Show simple list of active and upcoming challenges
@@ -25,6 +29,35 @@ class ChallengesController < ApplicationController
       [ all_groups.find { |g| g.id == @user_group.id } ].compact + all_groups.where.not(id: @user_group.id)
     else
       all_groups
+    end
+  end
+
+  # GET /challenges/new
+  def new
+    @challenge = Challenge.new(hidden: true)
+    @bible_books = load_bible_books
+  end
+
+  # POST /challenges
+  def create
+    @challenge = Challenge.new(challenge_params)
+    @challenge.creator = current_user
+    @challenge.hidden = true
+    @bible_books = load_bible_books
+
+    # Calculate end_date before saving
+    if params[:selected_books].present?
+      total_chapters = calculate_total_chapters(params[:selected_books])
+      @challenge.end_date = @challenge.start_date + (total_chapters - 1).days
+    else
+      @challenge.end_date = @challenge.start_date
+    end
+
+    if @challenge.save
+      create_readings_for_challenge(@challenge, params[:selected_books])
+      redirect_to challenge_manage_dashboard_path(@challenge), notice: t("manage.challenge_created")
+    else
+      render :new, status: :unprocessable_content
     end
   end
 

@@ -29,4 +29,9 @@ end
 
 RSpec.configure do |config|
   config.include AuthenticationHelpers, type: :request
+
+  # Set default host to localhost for request specs to avoid Rails 8.1 host authorization blocking
+  config.before(:each, type: :request) do
+    host! "localhost"
+  end
 end

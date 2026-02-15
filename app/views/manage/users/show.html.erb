@@ -1,0 +1,41 @@
+<div class="px-2 py-4">
+  <div class="text-sm breadcrumbs mb-4">
+    <ul>
+      <li><%= link_to @challenge.title, challenge_manage_dashboard_path(@challenge), class: "link link-hover" %></li>
+      <li><%= link_to t("manage.users.title"), challenge_manage_users_path(@challenge), class: "link link-hover" %></li>
+      <li><%= @user.username %></li>
+    </ul>
+  </div>
+
+  <div class="flex justify-between items-center mb-4">
+    <h1 class="text-2xl font-bold"><%= @user.username %></h1>
+    <%= link_to t("common.back"), challenge_manage_users_path(@challenge), class: "btn btn-sm btn-outline" %>
+  </div>
+
+  <div class="card bg-base-100 shadow-xl mb-4">
+    <div class="card-body p-4">
+      <div class="flex items-center gap-4 mb-4">
+        <%= avatar_image_tag(@user, :large, class: 'rounded-full') %>
+        <div>
+          <h2 class="font-semibold"><%= @user.username %></h2>
+          <p class="text-sm text-base-content/60"><%= @user.email %></p>
+        </div>
+      </div>
+
+      <div class="space-y-2 text-sm">
+        <div class="flex gap-2">
+          <label class="font-semibold"><%= t("manage.users.joined") %>:</label>
+          <p><%= @enrollment&.created_at&.strftime("%b %d, %Y") %></p>
+        </div>
+      </div>
+
+      <div class="card-actions mt-4 flex flex-col gap-2">
+        <%= link_to t("manage.users.change_password"), change_password_challenge_manage_user_path(@challenge, @user), class: "btn btn-sm btn-secondary w-full" %>
+        <%= button_to t("manage.users.remove_from_challenge"), remove_challenge_manage_user_path(@challenge, @user),
+            method: :delete,
+            data: { turbo_confirm: t("manage.users.remove_confirmation", username: @user.username) },
+            class: "btn btn-sm btn-error btn-outline w-full" %>
+      </div>
+    </div>
+  </div>
+</div>

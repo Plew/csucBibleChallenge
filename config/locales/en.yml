@@ -190,6 +190,56 @@ en:
     log_in: "Log In"
     sign_up: "Sign Up"
     open_main_menu: "Open main menu"
+    manage: "Manage"
+    manage_challenge: "Manage Challenge"
+
+  # Challenge Owner Management
+  manage:
+    access_denied: "You don't have permission to manage this challenge."
+    challenge_created: "Challenge created successfully! You can now configure it."
+    dashboard:
+      title: "Manage Challenge"
+      participants: "Participants"
+      readings: "Readings"
+      groups: "Groups"
+      sprints: "Sprints"
+      status: "Status"
+      edit_settings: "Edit Settings"
+      manage_sprints: "Manage Sprints"
+      manage_blog: "Manage Blog Posts"
+      manage_users: "Manage Users"
+    settings:
+      title: "Challenge Settings"
+      updated: "Challenge settings updated successfully."
+      message_of_the_day: "Message of the Day"
+      message_of_the_day_placeholder: "Optional message to display to all challenge members..."
+    sprints:
+      title: "Sprints"
+      new: "New Sprint"
+      edit: "Edit Sprint"
+      created: "Sprint was successfully created."
+      updated: "Sprint was successfully updated."
+      deleted: "Sprint was successfully deleted."
+    blog_posts:
+      title: "Blog Posts"
+    users:
+      title: "Users"
+      search_placeholder: "Search by email or username..."
+      participants: "participants"
+      username: "Username"
+      email: "Email"
+      joined: "Joined"
+      change_password: "Change Password"
+      change_password_for: "Change password for %{username}"
+      new_password: "New Password"
+      update_password: "Update Password"
+      password_updated: "Password updated successfully."
+      password_blank: "Password cannot be blank."
+      password_too_short: "Password must be at least 6 characters."
+      remove_from_challenge: "Remove from Challenge"
+      remove_confirmation: "Are you sure you want to remove %{username} from this challenge?"
+      removed: "%{username} has been removed from the challenge."
+      not_enrolled: "User is not enrolled in this challenge."
 
   # Home page
   home:

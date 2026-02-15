@@ -1,0 +1,74 @@
+<div class="px-2 py-4 max-w-2xl mx-auto">
+  <div class="text-sm breadcrumbs mb-4">
+    <ul>
+      <li><%= link_to @challenge.title, challenge_manage_dashboard_path(@challenge), class: "link link-hover" %></li>
+      <li><%= t("manage.settings.title") %></li>
+    </ul>
+  </div>
+
+  <div class="flex justify-between items-center mb-4">
+    <h1 class="text-2xl font-bold"><%= t("manage.settings.title") %></h1>
+    <%= link_to t("common.back"), challenge_manage_dashboard_path(@challenge), class: "btn btn-sm btn-outline" %>
+  </div>
+
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body p-4">
+      <%= form_with(model: @challenge, url: challenge_manage_settings_path(@challenge), method: :patch, local: true, data: { turbo: false }, class: "space-y-4") do |form| %>
+        <% if @challenge.errors.any? %>
+          <div class="alert alert-error">
+            <div>
+              <h3 class="font-bold"><%= t("admin.fix_errors") %></h3>
+              <ul class="list-disc list-inside">
+                <% @challenge.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+              </ul>
+            </div>
+          </div>
+        <% end %>
+
+        <div class="form-control">
+          <%= form.label :title, t("challenges.title"), class: "label" %>
+          <%= form.text_field :title, class: "input input-bordered w-full" %>
+        </div>
+
+        <div class="form-control">
+          <%= form.label :description, t("challenge_form.description_label"), class: "label" %>
+          <%= form.text_area :description, class: "textarea textarea-bordered h-24", rows: 4 %>
+          <div class="label">
+            <span class="label-text-alt text-xs"><%= t("challenge_form.markdown_help") %></span>
+          </div>
+        </div>
+
+        <div class="form-control">
+          <%= form.label :message_of_the_day, t("manage.settings.message_of_the_day"), class: "label" %>
+          <%= form.text_area :message_of_the_day, class: "textarea textarea-bordered h-24", rows: 3, placeholder: t("manage.settings.message_of_the_day_placeholder") %>
+        </div>
+
+        <div class="form-control">
+          <%= form.label :start_date, t("challenges.start_date"), class: "label" %>
+          <%= form.date_field :start_date, class: "input input-bordered w-full" %>
+        </div>
+
+        <div class="form-control">
+          <%= form.label :timezone, t("challenges.timezone"), class: "label" %>
+          <%= form.select :timezone,
+                options_for_select(timezone_options_for_select, @challenge.timezone),
+                { prompt: t("challenges.select_timezone") },
+                { class: "select select-bordered w-full" } %>
+        </div>
+
+        <div class="form-control">
+          <label class="label cursor-pointer">
+            <%= form.check_box :hidden, class: "checkbox" %>
+            <span class="label-text"><%= t("challenges.hide_challenge") %></span>
+          </label>
+        </div>
+
+        <div class="form-control mt-4">
+          <%= form.submit t("common.save_changes"), class: "btn btn-primary w-full" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
