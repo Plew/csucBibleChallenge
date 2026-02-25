@@ -585,7 +585,9 @@ de:
     top_groups_message: "Erstelle oder tritt einer Gruppe bei, um Gruppenrankings zu sehen!"
     completion: "Abschluss"
     most_liked_verse: "Beliebtester Vers"
+    most_liked_verse_today: "Beliebteste Verse heute"
     no_liked_verses: "Noch keine geliketen Verse"
+    no_liked_verses_today: "Noch keine gelikten Verse heute"
     like_verses_message: "Like Verse beim Lesen, um den beliebtesten hier zu sehen!"
 
   # Profile

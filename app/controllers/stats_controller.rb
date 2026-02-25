@@ -18,6 +18,7 @@ class StatsController < ApplicationController
     @top_groups_data = cached_top_groups(current_challenge)
     @seven_day_leaderboard_data = cached_seven_day_window(current_challenge)
     @most_liked_verse = cached_most_liked_verse(current_challenge)
+    @most_liked_verse_today = calculate_most_liked_verse_today(current_challenge, current_user)
   end
 
   def challenge
@@ -121,6 +122,65 @@ class StatsController < ApplicationController
       text: verse.verse_text,
       like_count: like_count
     }
+  end
+
+  def calculate_most_liked_verse_today(challenge, user)
+    return [] unless challenge
+
+    current_date_in_tz = Time.current.in_time_zone(challenge.timezone).to_date
+    reading_ids = challenge.readings.where(scheduled_date: current_date_in_tz).pluck(:id)
+    return [] if reading_ids.empty?
+
+    top_liked = VerseLike
+      .where(reading_id: reading_ids)
+      .group(:reading_id, :verse_number)
+      .order("count_all DESC")
+      .limit(5)
+      .count
+
+    return [] if top_liked.empty?
+
+    version = user.version.presence || "KJV"
+    readings_cache = Reading.where(id: reading_ids).index_by(&:id)
+
+    # Build lookup keys for all needed verses: [book_number, chapter_number, verse_number]
+    verse_coords = top_liked.filter_map do |(reading_id, verse_number), _|
+      reading = readings_cache[reading_id]
+      next unless reading
+      [ reading.book_number, reading.chapter_number, verse_number ]
+    end
+
+    # Fetch all verses in two queries (preferred version + KJV fallback)
+    preferred_verses = Verse.where(version: version).where(verse_coords.map { |b, c, v|
+      Verse.sanitize_sql_array([ "(book_number = ? AND chapter_number = ? AND verse_number = ?)", b, c, v ])
+    }.join(" OR ")).index_by { |v| [ v.book_number, v.chapter_number, v.verse_number ] }
+
+    fallback_needed = verse_coords.reject { |key| preferred_verses.key?(key) }
+    fallback_verses = if fallback_needed.any? && version != "KJV"
+      Verse.where(version: "KJV").where(fallback_needed.map { |b, c, v|
+        Verse.sanitize_sql_array([ "(book_number = ? AND chapter_number = ? AND verse_number = ?)", b, c, v ])
+      }.join(" OR ")).index_by { |v| [ v.book_number, v.chapter_number, v.verse_number ] }
+    else
+      {}
+    end
+
+    top_liked.filter_map do |(reading_id, verse_number), like_count|
+      reading = readings_cache[reading_id]
+      next unless reading
+
+      key = [ reading.book_number, reading.chapter_number, verse_number ]
+      verse = preferred_verses[key] || fallback_verses[key]
+      next unless verse
+
+      book_name = helpers.book_number_to_name(reading.book_number)
+
+      {
+        reference: "#{book_name} #{reading.chapter_number}:#{verse_number}",
+        text: verse.verse_text,
+        like_count: like_count,
+        version: verse.version
+      }
+    end
   end
 
   def cached_challenge_summary_stats(challenge)

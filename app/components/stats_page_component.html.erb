@@ -14,7 +14,7 @@
     <!-- Challenge Summary -->
     <% if challenge && challenge_summary_stats %>
       <div>
-        <%= render StatsChallengeSummaryComponent.new(challenge: challenge, statistics: challenge_summary_stats) %>
+        <%= render StatsChallengeSummaryComponent.new(challenge: challenge, statistics: challenge_summary_stats, most_liked_verse_today: most_liked_verse_today) %>
       </div>
     <% end %>
 
@@ -46,9 +46,5 @@
       <%= render SevenDayLeaderboardComponent.new(leaderboard_data: seven_day_leaderboard_data) %>
     </div>
 
-    <!-- Most Liked Verse -->
-    <div>
-      <%= render MostLikedVerseComponent.new(most_liked_verse: most_liked_verse) %>
-    </div>
   </div>
 </div>

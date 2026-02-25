@@ -640,7 +640,9 @@ en:
     top_groups_message: "Create or join a group to see group rankings!"
     completion: "Completion"
     most_liked_verse: "Most Liked Verse"
+    most_liked_verse_today: "Most liked verses today"
     no_liked_verses: "No liked verses yet"
+    no_liked_verses_today: "No liked verses today yet"
     like_verses_message: "Like verses while reading to see the most popular one here!"
 
   # Profile
