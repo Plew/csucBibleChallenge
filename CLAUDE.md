@@ -30,6 +30,9 @@ This is a Rails 8 application for managing Bible reading challenges. Users can j
 - `bundle exec rspec spec/controllers/` - Run controller tests only
 - `bundle exec rspec spec/requests/` - Run request tests only
 
+**Docker testing notes:**
+- If the development DB was pulled from production (`bin/pull_prod_db`), its `ar_internal_metadata` has `environment=production`. This causes `db:test:prepare` to fail with `ProtectedEnvironmentError`. Fix: `DISABLE_DATABASE_ENVIRONMENT_CHECK=1 bin/rails db:test:prepare` and run specs with the same env var.
+
 ### Assets & Styling
 
 - `npm run build:css` - Build Tailwind CSS

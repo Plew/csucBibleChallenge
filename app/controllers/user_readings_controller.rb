@@ -1,4 +1,5 @@
 class UserReadingsController < ApplicationController
+  include ReadingDateValidation
   before_action :require_login
 
   def create
@@ -11,16 +12,10 @@ class UserReadingsController < ApplicationController
       return
     end
 
-    current_date_in_challenge_tz = Time.current.in_time_zone(challenge.timezone).to_date
     scheduled_date = @reading.scheduled_date
+    completed_on = resolve_completed_on(scheduled_date, challenge)
 
-    if current_date_in_challenge_tz < scheduled_date
-      flash[:alert] = "Cannot mark readings for future dates. This reading is scheduled for #{scheduled_date}."
-      redirect_to params[:date].present? ? root_path(date: params[:date]) : root_path
-      return
-    end
-
-    @user_reading = current_user.user_readings.build(reading: @reading, completed_on: current_date_in_challenge_tz)
+    @user_reading = current_user.user_readings.build(reading: @reading, completed_on: completed_on)
 
     if @user_reading.save
       # flash[:notice] = "Marked as read."
@@ -30,6 +25,9 @@ class UserReadingsController < ApplicationController
     end
 
     # Preserve the selected date when redirecting
+    redirect_to params[:date].present? ? root_path(date: params[:date]) : root_path
+  rescue ReadingDateValidation::FutureReadingError => e
+    flash[:alert] = e.message
     redirect_to params[:date].present? ? root_path(date: params[:date]) : root_path
   end
 end

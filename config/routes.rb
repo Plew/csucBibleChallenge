@@ -151,12 +151,9 @@ Rails.application.routes.draw do
       resources :users, only: [ :create ]
       resources :challenges, only: [ :index, :show, :create ] do
         resources :enrollments, only: [ :create, :update ], controller: "challenge_enrollments"
-        resources :readings, only: [ :index, :create ] do
-          resource :user_reading, only: [ :create, :destroy ], controller: "user_readings"
-        end
+        resources :readings, only: [ :index, :create ]
         resources :groups, only: [ :index, :create ]
       end
-      resources :user_readings, only: [ :index, :create, :destroy ]
       get "chapter_verses", to: "chapter_verses#show"
     end
   end
