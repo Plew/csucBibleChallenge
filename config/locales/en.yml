@@ -445,6 +445,8 @@ en:
       on_time_percentage: "On Time %"
       members: "Members"
       no_groups: "No groups have been created in this challenge yet"
+      winner_group: "Winner Group"
+      no_winner_selected: "— No winner selected —"
 
   # Seven Day Lobby
   seven_day_lobby:

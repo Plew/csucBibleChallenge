@@ -46,7 +46,7 @@ RSpec.describe "Challenges", type: :request do
   end
 
   describe "GET /challenges/:id/summary" do
-    let(:challenge) { create(:challenge) }
+    let!(:challenge) { create(:challenge) }
 
     it "returns http success" do
       get summary_challenge_path(challenge)

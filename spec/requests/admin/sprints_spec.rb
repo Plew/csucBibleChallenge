@@ -5,7 +5,7 @@ RSpec.describe "Admin::Sprints", type: :request do
   let(:challenge) { create(:challenge, creator: user, start_date: Date.new(2025, 1, 1), end_date: Date.new(2025, 12, 31)) }
 
   before do
-    login_as user
+    login_via_session user
   end
 
   describe "GET /admin/challenges/:challenge_id/sprints" do
@@ -18,6 +18,19 @@ RSpec.describe "Admin::Sprints", type: :request do
       sprint = create(:sprint, challenge: challenge, title: "Q1 Sprint")
       get admin_challenge_sprints_path(challenge)
       expect(response.body).to include("Q1 Sprint")
+    end
+
+    it "shows the winner group badge when a winner is set" do
+      group = create(:group, challenge: challenge, name: "Champions")
+      create(:sprint, challenge: challenge, title: "Q1 Sprint", winner_group: group)
+      get admin_challenge_sprints_path(challenge)
+      expect(response.body).to include("Champions")
+    end
+
+    it "shows a dash when no winner is set" do
+      create(:sprint, challenge: challenge, title: "Q1 Sprint")
+      get admin_challenge_sprints_path(challenge)
+      expect(response).to have_http_status(:success)
     end
   end
 
@@ -101,6 +114,28 @@ RSpec.describe "Admin::Sprints", type: :request do
         expect(response.body).to include(I18n.t("admin.sprints.no_groups"))
       end
     end
+
+    context "winner group" do
+      let!(:group) { create(:group, challenge: challenge, name: "Champions") }
+
+      it "displays the winner group dropdown with challenge groups" do
+        get admin_challenge_sprint_path(challenge, sprint)
+        expect(response.body).to include("Champions")
+        expect(response.body).to include(I18n.t("admin.sprints.winner_group"))
+      end
+
+      it "shows the current winner when one is set" do
+        sprint.update!(winner_group: group)
+        get admin_challenge_sprint_path(challenge, sprint)
+        expect(response.body).to include("Champions")
+        expect(response.body).to include("🏆")
+      end
+
+      it "shows no winner badge when no winner is set" do
+        get admin_challenge_sprint_path(challenge, sprint)
+        expect(response.body).not_to include("🏆")
+      end
+    end
   end
 
   describe "GET /admin/challenges/:challenge_id/sprints/new" do
@@ -178,6 +213,29 @@ RSpec.describe "Admin::Sprints", type: :request do
       it "redirects to the sprints index" do
         patch admin_challenge_sprint_path(challenge, sprint), params: { sprint: new_attributes }
         expect(response).to redirect_to(admin_challenge_sprints_path(challenge))
+      end
+    end
+
+    context "setting winner group" do
+      let!(:group) { create(:group, challenge: challenge, name: "Champions") }
+
+      it "assigns the winner group" do
+        patch admin_challenge_sprint_path(challenge, sprint), params: { sprint: { winner_group_id: group.id } }
+        expect(sprint.reload.winner_group).to eq(group)
+      end
+
+      it "clears the winner group when blank is selected" do
+        sprint.update!(winner_group: group)
+        patch admin_challenge_sprint_path(challenge, sprint), params: { sprint: { winner_group_id: "" } }
+        expect(sprint.reload.winner_group).to be_nil
+      end
+
+      it "redirects back to the show page when the referer is the show page" do
+        show_url = admin_challenge_sprint_url(challenge, sprint)
+        patch admin_challenge_sprint_path(challenge, sprint),
+          params: { sprint: { winner_group_id: group.id } },
+          headers: { "HTTP_REFERER" => show_url }
+        expect(response).to redirect_to(show_url)
       end
     end
 

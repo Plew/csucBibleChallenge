@@ -1,5 +1,6 @@
 class Sprint < ApplicationRecord
   belongs_to :challenge
+  belongs_to :winner_group, class_name: "Group", optional: true
 
   validates :title, presence: true
   validates :begin_date, presence: true

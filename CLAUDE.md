@@ -32,6 +32,7 @@ This is a Rails 8 application for managing Bible reading challenges. Users can j
 
 **Docker testing notes:**
 - If the development DB was pulled from production (`bin/pull_prod_db`), its `ar_internal_metadata` has `environment=production`. This causes `db:test:prepare` to fail with `ProtectedEnvironmentError`. Fix: `DISABLE_DATABASE_ENVIRONMENT_CHECK=1 bin/rails db:test:prepare` and run specs with the same env var.
+- The Docker container runs with `RAILS_ENV=development` by default. Always run specs with `RAILS_ENV=test` explicitly, otherwise CSRF protection is active and all POST/PATCH/DELETE request specs will fail with `ActionController::InvalidAuthenticityToken`. Correct command: `DISABLE_DATABASE_ENVIRONMENT_CHECK=1 docker compose exec -e RAILS_ENV=test app bundle exec rspec`
 
 ### Assets & Styling
 

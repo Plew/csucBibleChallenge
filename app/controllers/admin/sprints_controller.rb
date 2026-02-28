@@ -3,7 +3,7 @@ class Admin::SprintsController < Admin::BaseController
   before_action :set_sprint, only: [ :show, :edit, :update, :destroy ]
 
   def index
-    @sprints = @challenge.sprints.ordered
+    @sprints = @challenge.sprints.ordered.includes(:winner_group)
   end
 
   def show
@@ -49,7 +49,7 @@ class Admin::SprintsController < Admin::BaseController
 
   def update
     if @sprint.update(sprint_params)
-      redirect_to admin_challenge_sprints_path(@challenge), notice: t("admin.sprints.updated")
+      redirect_back_or_to admin_challenge_sprints_path(@challenge), notice: t("admin.sprints.updated")
     else
       @readings = @challenge.readings.order(:scheduled_date)
       render :edit, status: :unprocessable_entity
@@ -72,6 +72,6 @@ class Admin::SprintsController < Admin::BaseController
   end
 
   def sprint_params
-    params.require(:sprint).permit(:title, :begin_date, :end_date)
+    params.require(:sprint).permit(:title, :begin_date, :end_date, :winner_group_id)
   end
 end

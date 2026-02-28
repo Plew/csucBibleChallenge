@@ -1,5 +1,5 @@
 <div class="container mx-auto px-4 py-8">
-  <div class="flex justify-between items-center mb-8">
+  <div class="flex justify-between items-center mb-4">
     <div>
       <h1 class="text-3xl font-bold"><%= @sprint.title %></h1>
       <p class="text-gray-600 mt-2">
@@ -7,6 +7,23 @@
       </p>
     </div>
     <%= link_to t("common.back"), admin_challenge_sprints_path(@challenge), class: "btn btn-outline" %>
+  </div>
+
+  <div class="card bg-base-100 shadow mb-6">
+    <div class="card-body py-4">
+      <div class="flex items-center gap-4">
+        <label class="font-semibold text-sm whitespace-nowrap"><%= t("admin.sprints.winner_group") %></label>
+        <%= form_with model: [ :admin, @challenge, @sprint ], data: { turbo: false } do |f| %>
+          <%= f.select :winner_group_id,
+            options_for_select(@challenge.groups.order(:name).map { |g| [ g.name, g.id ] }, @sprint.winner_group_id),
+            { include_blank: t("admin.sprints.no_winner_selected") },
+            { class: "select select-bordered select-sm", onchange: "this.form.submit()" } %>
+        <% end %>
+        <% if @sprint.winner_group %>
+          <span class="badge badge-success gap-1">🏆 <%= @sprint.winner_group.name %></span>
+        <% end %>
+      </div>
+    </div>
   </div>
 
   <% if @groups_with_stats.any? %>

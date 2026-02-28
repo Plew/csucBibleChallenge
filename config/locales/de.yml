@@ -390,6 +390,8 @@ de:
       on_time_percentage: "Pünktlich %"
       members: "Mitglieder"
       no_groups: "In dieser Challenge wurden noch keine Gruppen erstellt"
+      winner_group: "Gewinnergruppe"
+      no_winner_selected: "— Kein Gewinner ausgewählt —"
 
   # Seven Day Lobby
   seven_day_lobby:

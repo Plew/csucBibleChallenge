@@ -17,6 +17,7 @@
                 <th><%= t("admin.sprints.name") %></th>
                 <th><%= t("admin.sprints.begin_date") %></th>
                 <th><%= t("admin.sprints.end_date") %></th>
+                <th><%= t("admin.sprints.winner_group") %></th>
                 <th><%= t("common.actions") %></th>
               </tr>
             </thead>
@@ -26,6 +27,13 @@
                   <td><%= sprint.title %></td>
                   <td><%= sprint.begin_date.strftime("%B %d, %Y") %></td>
                   <td><%= sprint.end_date.strftime("%B %d, %Y") %></td>
+                  <td>
+                    <% if sprint.winner_group %>
+                      <span class="badge badge-success gap-1">🏆 <%= sprint.winner_group.name %></span>
+                    <% else %>
+                      <span class="text-gray-400 text-sm">—</span>
+                    <% end %>
+                  </td>
                   <td>
                     <div class="flex gap-2">
                       <%= link_to t("admin.sprints.view_groups"), admin_challenge_sprint_path(@challenge, sprint), class: "btn btn-sm btn-primary" %>
