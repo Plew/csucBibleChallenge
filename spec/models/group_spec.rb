@@ -6,6 +6,20 @@ RSpec.describe Group, type: :model do
     it { should belong_to(:creator).class_name('User') }
     it { should have_many(:user_group_enrollments).dependent(:destroy) }
     it { should have_many(:users).through(:user_group_enrollments) }
+    it { should have_many(:won_sprints).class_name('Sprint').dependent(:nullify) }
+  end
+
+  describe 'destroying a group that is a sprint winner' do
+    it 'nullifies the winner_group_id on associated sprints' do
+      group = create(:group)
+      challenge = group.challenge
+      sprint = create(:sprint, challenge: challenge, winner_group: group,
+                      begin_date: challenge.start_date, end_date: challenge.end_date)
+
+      group.destroy
+
+      expect(sprint.reload.winner_group_id).to be_nil
+    end
   end
 
   describe 'validations' do
