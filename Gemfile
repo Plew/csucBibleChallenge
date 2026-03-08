@@ -59,7 +59,7 @@ group :development, :test do
   gem "pry", "~> 0.15.2"
 
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
-  gem "brakeman", "~> 7.1", require: false
+  gem "brakeman", require: false
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false

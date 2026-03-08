@@ -87,7 +87,7 @@ GEM
     bindex (0.8.1)
     bootsnap (1.20.1)
       msgpack (~> 1.2)
-    brakeman (7.1.2)
+    brakeman (8.0.4)
       racc
     builder (3.3.0)
     capybara (3.40.0)
@@ -477,7 +477,7 @@ DEPENDENCIES
   avatarro
   bcrypt (~> 3.1.7)
   bootsnap
-  brakeman (~> 7.1)
+  brakeman
   capybara
   chartkick (~> 5.2.1)
   cssbundling-rails (~> 1.4.3)
