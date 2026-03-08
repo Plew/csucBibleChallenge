@@ -75,7 +75,7 @@ group :development do
   gem "web-console"
   gem "listen"
   gem "actioncable"
-  gem "lookbook", "~> 2.3.13"
+  gem "lookbook", "~> 2.3.14"
   gem "hotwire-livereload", "~> 2.1"
   gem "letter_opener"
 end
