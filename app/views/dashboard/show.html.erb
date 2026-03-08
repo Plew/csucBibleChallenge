@@ -1,0 +1,28 @@
+<div class="flex flex-col h-screen bg-background text-foreground" data-controller="hello">
+  <div class="main flex-1 overflow-hidden">
+    <div class="mt-2">
+      <%= render(LastSevenDaysComponent.new(active_date: @active_date)) %>
+    </div>
+    <div class="mt-2">
+      <%= render(CheckInComponent.new(active_date: @active_date, checked: @checked)) %>
+    </div>
+
+    <div class="text-xl font-bold mx-8 mt-4 text-center">
+      Today's Check-ins
+    </div>
+    <div class="mx-4 mt-4">
+      <ul>
+        <% @recent_user_checkins.each do |checkin| %>
+          <li class="flex justify-between mb-1">
+            <div class="text-sm">
+              <%= checkin.username %>
+            </div>
+            <div class="text-sm">
+              <%= time_ago_in_words(checkin.timestamp) + ' ago' %>
+            </div>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+</div>

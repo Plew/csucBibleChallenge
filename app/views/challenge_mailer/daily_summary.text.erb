@@ -1,0 +1,27 @@
+Challenge Daily Summary: <%= @challenge.name %>
+
+Hi <%= @challenge.creator.username %>,
+
+Here's your daily summary for the challenge "<%= @challenge.name %>".
+
+Challenge Details:
+- Name: <%= @challenge.name %>
+- Start Date: <%= @challenge.start_date.strftime('%B %d, %Y') %>
+- End Date: <%= @challenge.end_date.strftime('%B %d, %Y') %>
+- Timezone: <%= @challenge.timezone %>
+
+Participants (<%= @participants.count %>):
+<% if @participants.any? -%>
+<% @participants.each do |participant| -%>
+- <%= participant.username %> (<%= participant.email %>)
+<% end -%>
+<% else -%>
+No participants have joined yet.
+<% end -%>
+
+Thanks,
+The CSM Bible Challenge Team
+
+---
+
+To manage your email preferences, visit: <%= unsubscribe_url_for(@challenge.creator) %>
