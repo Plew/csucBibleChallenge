@@ -219,8 +219,7 @@ bin/docker-dev reset     # Full rebuild (removes volumes)
 - always when designing anything make sure there are not big margins or padding.  the content should go almost all the way to the left and right.
 - in app/controllers/profile are all the controllers managing aspects of a users profile that they can edit.  if anything is added to a users profile, you can look at these controllers and repeat what they have done and how they have done it.
 - don't ever deploy to production using kamal without being asked to do so
-- When I say to deploy to production, I want you to do the following:  1. ssh interactively into philip@hetzdev 2. go into code/reverse folder 3. git pull main 4. run kamal deploy 
-note that kamal deploy could be a background task so that you can finish this task; you don't need to wait for it to complete
+- Deploys to production happen automatically via GitHub Actions CI when tests pass on main. Do not manually run kamal deploy.
 - whenever you need to start a rails server, use `bin/docker-dev up`
 - when you are using playwright and need to take screenshots, store them in context/screenshots/latest.png, and you can keep overwriting latest.png with each successive screenshot
 - no, the playwright screenshots should be saved in context/screenshots off of the app folder, not within .playwright-mcp
