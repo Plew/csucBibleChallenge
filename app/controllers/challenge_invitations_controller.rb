@@ -3,6 +3,11 @@ class ChallengeInvitationsController < ApplicationController
 
   # GET /challenges/:token/join
   def show
+    if @challenge.locked?
+      redirect_to challenge_path(@challenge), alert: I18n.t("challenges.signups_closed")
+      return
+    end
+
     if logged_in?
       # Check if user is already enrolled in this challenge
       if current_user.challenges.include?(@challenge)

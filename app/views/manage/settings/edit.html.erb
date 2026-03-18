@@ -60,7 +60,14 @@
 
         <div class="form-control">
           <label class="label cursor-pointer">
-            <%= form.check_box :hidden, class: "checkbox" %>
+            <%= form.check_box :locked, class: "toggle toggle-primary" %>
+            <span class="label-text"><%= t("manage.settings.lock_challenge") %></span>
+          </label>
+        </div>
+
+        <div class="form-control">
+          <label class="label cursor-pointer">
+            <%= form.check_box :hidden, class: "toggle toggle-primary" %>
             <span class="label-text"><%= t("challenges.hide_challenge") %></span>
           </label>
         </div>

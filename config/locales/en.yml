@@ -212,6 +212,7 @@ en:
     settings:
       title: "Challenge Settings"
       updated: "Challenge settings updated successfully."
+      lock_challenge: "Lock this challenge — no new signups"
       message_of_the_day: "Message of the Day"
       message_of_the_day_placeholder: "Optional message to display to all challenge members..."
     sprints:
@@ -298,6 +299,7 @@ en:
     ends_date: "Ends:"
     quick_actions: "Quick Actions"
     view_details: "View Details"
+    signups_closed: "Signups closed"
     all_challenges: "All Challenges"
     start_reading: "Start Reading"
 

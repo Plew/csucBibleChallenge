@@ -157,6 +157,7 @@ de:
     settings:
       title: "Challenge-Einstellungen"
       updated: "Challenge-Einstellungen erfolgreich aktualisiert."
+      lock_challenge: "Challenge sperren — keine neuen Anmeldungen"
       message_of_the_day: "Nachricht des Tages"
       message_of_the_day_placeholder: "Optionale Nachricht für alle Challenge-Teilnehmer..."
     sprints:
@@ -243,6 +244,7 @@ de:
     ends_date: "Endet:"
     quick_actions: "Schnellaktionen"
     view_details: "Details ansehen"
+    signups_closed: "Anmeldungen geschlossen"
     all_challenges: "Alle Challenges"
     start_reading: "Mit Lesen beginnen"
 

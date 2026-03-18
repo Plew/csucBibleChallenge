@@ -5,6 +5,11 @@ class UserChallengeEnrollmentsController < ApplicationController
 
   # POST /challenges/:challenge_id/user_challenge_enrollments
   def create
+    if @challenge.locked?
+      redirect_to challenge_path(@challenge), alert: I18n.t("challenges.signups_closed")
+      return
+    end
+
     # Ensure user is not already in a challenge if we strictly enforce one challenge at a time via UI
     if current_user.challenges.any?
       redirect_to root_path, alert: "You are already enrolled in a challenge. Leave your current challenge to join a new one."

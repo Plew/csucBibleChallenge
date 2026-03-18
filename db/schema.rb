@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_28_000001) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_18_114953) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -72,6 +72,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_28_000001) do
     t.boolean "hidden", default: false, null: false
     t.boolean "hide_copyright", default: false, null: false
     t.string "invitation_token"
+    t.boolean "locked", default: false, null: false
     t.text "message_of_the_day"
     t.string "name"
     t.date "start_date"

@@ -62,16 +62,24 @@
       </div>
     <% end %>
 
+    <% if @challenge.locked? && !@user_enrollment %>
+      <div class="mb-4">
+        <span class="badge badge-warning"><%= t('challenges.signups_closed') %></span>
+      </div>
+    <% end %>
+
     <div class="flex flex-col items-center mb-6 mt-8 gap-4">
       <% if logged_in? %>
         <% if @user_enrollment %>
           <p class="text-sm text-primary mb-2"><%= t('challenges.you_are_member') %></p>
           <%= button_to t('challenges.leave_challenge'), user_challenge_enrollment_path(@user_enrollment), method: :delete, class: "btn btn-outline btn-error", data: { confirm: t('challenges.leave_confirmation') } %>
-        <% else %>
+        <% elsif !@challenge.locked? %>
           <%= button_to t('challenges.join_challenge'), challenge_enrollments_path(challenge_id: @challenge.id), method: :post, class: "btn btn-primary" %>
         <% end %>
       <% else %>
-        <%= link_to t('challenges.join_challenge'), new_user_registration_path(challenge_id: @challenge.id), class: "btn btn-primary" %>
+        <% unless @challenge.locked? %>
+          <%= link_to t('challenges.join_challenge'), new_user_registration_path(challenge_id: @challenge.id), class: "btn btn-primary" %>
+        <% end %>
       <% end %>
     </div>
 
