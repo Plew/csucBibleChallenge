@@ -162,6 +162,7 @@ Rails.application.routes.draw do
     mount Lookbook::Engine, at: "/lookbook"
   end
 
+  get "about", to: "pages#about"
   get "faq", to: "pages#faq"
   get "statistics_update", to: "static_pages#statistics_update", as: :statistics_update
   get "stats", to: "stats#index"

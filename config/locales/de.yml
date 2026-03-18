@@ -776,6 +776,22 @@ de:
     admin_blog_title: "Blog-Beiträge für %{challenge}"
     confirm_delete: "Sind Sie sicher, dass Sie diesen Blog-Beitrag löschen möchten? Alle Kommentare werden ebenfalls gelöscht."
 
+  # About
+  about:
+    title: "Über CSM Bible Challenge"
+    what_is_title: "Was ist CSM Bible Challenge?"
+    what_is_description: "CSM Bible Challenge ist eine Plattform zum täglichen Bibellesen mit Freunden. Nimm an einer Lesechallenge teil, verfolge deinen Fortschritt und ermutige einander beim gemeinsamen Lesen der Bibel."
+    how_it_works_title: "So funktioniert es"
+    how_it_works_description: "Tritt einer Challenge bei, erhalte eine tägliche E-Mail mit deinem zugewiesenen Kapitel, lies es und markiere es als abgeschlossen. Jeden Tag gibt es ein neues Kapitel, sodass alle auf dem gleichen Stand bleiben."
+    groups_title: "Gruppen"
+    groups_description: "Bilde oder tritt optional einer Gruppe innerhalb einer Challenge bei. Gruppen bieten Rechenschaftspflicht, Gruppenchat und eigene Abschlussstatistiken. Es ist eine großartige Möglichkeit, mit Freunden in Verbindung zu bleiben."
+    statistics_title: "Statistiken"
+    statistics_description: "Verfolge deinen Abschlussprozentsatz, deine Pünktlichkeitsrate und sieh, wo du in der Bestenliste stehst. Gruppenrankings zeigen, welche Teams am besten mithalten."
+    sprints_title: "Sprints"
+    sprints_description: "Sprints sind zeitlich begrenzte Abschnitte innerhalb einer Challenge — zum Beispiel ein Monat oder ein Quartal. Sie ermöglichen es, sich auf kürzere Ziele zu konzentrieren und die Gruppenleistung über verschiedene Zeiträume zu vergleichen."
+    seven_day_win_title: "7-Tage-Gewinn"
+    seven_day_win_description: "Jeder Teilnehmer, der in den letzten 7 Tagen 100% der Lesungen abgeschlossen hat, nimmt an einer Ziehung teil. Ein Gewinner wird live mit einer lustigen Animation ausgewählt. Es ist ein wöchentlicher Anreiz, konsequent zu bleiben."
+
   # Date Picker
   date_picker:
     completed: "Gelesen"
