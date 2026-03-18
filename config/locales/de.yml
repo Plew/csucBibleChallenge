@@ -16,7 +16,7 @@ de:
     blog: "Blog"
     create_challenge: "Challenge erstellen"
     manage_feedback: "Feedback verwalten"
-    seven_day_win: "7-Tage-Gewinn"
+    seven_day_win: "Wöchentlicher Gewinner"
     settings: "Einstellungen"
     send_feedback: "Feedback senden"
     log_out: "Abmelden"
@@ -339,7 +339,7 @@ de:
         one: "1 Benutzer aus der Gruppe entfernt."
         other: "%{count} Gruppenmitgliedschaften entfernt."
     seven_day_winner:
-      title: "7-Tage-Gewinner"
+      title: "Wöchentlicher Gewinner"
       select_challenge: "Challenge auswählen"
       challenge_label: "Challenge"
       choose_challenge: "Challenge wählen..."
@@ -401,8 +401,8 @@ de:
 
   # Seven Day Lobby
   seven_day_lobby:
-    title: "7-Tage-Gewinn"
-    description: "Tritt der 7-Tage-Gewinn-Lobby bei, um mit anderen zu konkurrieren, die in den letzten 7 Tagen 100% Abschluss erreicht haben."
+    title: "Wöchentlicher Gewinner"
+    description: "Tritt der Wöchentlicher-Gewinner-Lobby bei, um mit anderen zu konkurrieren, die in den letzten 7 Tagen 100% Abschluss erreicht haben."
     join_button: "Lobby beitreten"
     leave_button: "Lobby verlassen"
     start_button: "Gewinnerziehung starten"
@@ -789,7 +789,7 @@ de:
     statistics_description: "Verfolge deinen Abschlussprozentsatz, deine Pünktlichkeitsrate und sieh, wo du in der Bestenliste stehst. Gruppenrankings zeigen, welche Teams am besten mithalten."
     sprints_title: "Sprints"
     sprints_description: "Sprints sind zeitlich begrenzte Abschnitte innerhalb einer Challenge — zum Beispiel ein Monat oder ein Quartal. Sie ermöglichen es, sich auf kürzere Ziele zu konzentrieren und die Gruppenleistung über verschiedene Zeiträume zu vergleichen."
-    seven_day_win_title: "7-Tage-Gewinn"
+    seven_day_win_title: "Wöchentlicher Gewinner"
     seven_day_win_description: "Jeder Teilnehmer, der in den letzten 7 Tagen 100% der Lesungen abgeschlossen hat, nimmt an einer Ziehung teil. Ein Gewinner wird live mit einer lustigen Animation ausgewählt. Es ist ein wöchentlicher Anreiz, konsequent zu bleiben."
 
   # Date Picker

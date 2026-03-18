@@ -183,7 +183,7 @@ en:
     blog: "Blog"
     create_challenge: "Create Challenge"
     manage_feedback: "Manage Feedback"
-    seven_day_win: "7 Day Win"
+    seven_day_win: "Weekly Winner"
     settings: "Settings"
     send_feedback: "Send Feedback"
     log_out: "Log Out"
@@ -394,7 +394,7 @@ en:
         one: "Removed 1 user from their group."
         other: "Removed %{count} group memberships."
     seven_day_winner:
-      title: "7 Day Winner"
+      title: "Weekly Winner"
       select_challenge: "Select Challenge"
       challenge_label: "Challenge"
       choose_challenge: "Choose a challenge..."
@@ -456,8 +456,8 @@ en:
 
   # Seven Day Lobby
   seven_day_lobby:
-    title: "7 Day Win"
-    description: "Join the 7 Day Win lobby to compete with others who have achieved 100% completion in the last 7 days."
+    title: "Weekly Winner"
+    description: "Join the Weekly Winner lobby to compete with others who have achieved 100% completion in the last 7 days."
     join_button: "Join Lobby"
     leave_button: "Leave Lobby"
     start_button: "Start Winner Drawing"
@@ -844,7 +844,7 @@ en:
     statistics_description: "Track your completion percentage, on-time reading rate, and see how you rank on the leaderboard. Group rankings show which teams are keeping up best."
     sprints_title: "Sprints"
     sprints_description: "Sprints are time-bounded periods within a challenge — for example, a month or a quarter. They let you focus on shorter goals and compare group performance across different stretches."
-    seven_day_win_title: "7 Day Win"
+    seven_day_win_title: "Weekly Winner"
     seven_day_win_description: "Every participant who completes 100% of readings in the last 7 days is entered into a drawing. A winner is selected live with a fun animation. It is a weekly incentive to stay consistent."
 
   # Date Picker
