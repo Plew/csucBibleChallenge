@@ -10,22 +10,24 @@
     <%= link_to t("common.back"), admin_challenge_sprints_path(@challenge), class: "btn btn-outline" %>
   </div>
 
-  <div class="card bg-base-100 shadow mb-6">
-    <div class="card-body py-4">
-      <div class="flex items-center gap-4">
-        <label class="font-semibold text-sm whitespace-nowrap"><%= t("admin.sprints.winner_group") %></label>
-        <%= form_with model: [ :admin, @challenge, @sprint ], data: { turbo: false } do |f| %>
-          <%= f.select :winner_group_id,
-            options_for_select(@challenge.groups.order(:name).map { |g| [ g.name, g.id ] }, @sprint.winner_group_id),
-            { include_blank: t("admin.sprints.no_winner_selected") },
-            { class: "select select-bordered select-sm", onchange: "this.form.submit()" } %>
-        <% end %>
-        <% if @sprint.winner_group %>
-          <span class="badge badge-success gap-1">🏆 <%= @sprint.winner_group.name %></span>
-        <% end %>
+  <% if @sprint.winner_groups.any? %>
+    <div class="card bg-base-100 shadow mb-6">
+      <div class="card-body py-4">
+        <div class="flex items-center gap-4 flex-wrap">
+          <label class="font-semibold text-sm whitespace-nowrap"><%= t("admin.sprints.winners") %></label>
+          <% @sprint.winner_groups.each do |group| %>
+            <span class="badge badge-success gap-1">🏆 <%= group.name %></span>
+          <% end %>
+        </div>
       </div>
     </div>
-  </div>
+  <% elsif @sprint.end_date < Date.current %>
+    <div class="card bg-base-100 shadow mb-6">
+      <div class="card-body py-4">
+        <p class="text-sm text-base-content/60"><%= t("admin.sprints.no_winners_yet") %></p>
+      </div>
+    </div>
+  <% end %>
 
   <% if @groups_with_stats.any? %>
     <div class="card bg-base-100 shadow-xl">

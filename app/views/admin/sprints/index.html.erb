@@ -18,7 +18,7 @@
                 <th><%= t("admin.sprints.begin_date") %></th>
                 <th><%= t("admin.sprints.end_date") %></th>
                 <th><%= t("admin.sprints.days") %></th>
-                <th><%= t("admin.sprints.winner_group") %></th>
+                <th><%= t("admin.sprints.winners") %></th>
                 <th><%= t("common.actions") %></th>
               </tr>
             </thead>
@@ -30,8 +30,10 @@
                   <td><%= sprint.end_date.strftime("%B %d, %Y") %></td>
                   <td><%= t("admin.sprints.days_count", count: sprint.days_count) %></td>
                   <td>
-                    <% if sprint.winner_group %>
-                      <span class="badge badge-success gap-1">🏆 <%= sprint.winner_group.name %></span>
+                    <% if sprint.winner_groups.any? %>
+                      <% sprint.winner_groups.each do |group| %>
+                        <span class="badge badge-success gap-1">🏆 <%= group.name %></span>
+                      <% end %>
                     <% else %>
                       <span class="text-gray-400 text-sm">—</span>
                     <% end %>

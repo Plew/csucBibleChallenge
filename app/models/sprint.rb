@@ -1,6 +1,7 @@
 class Sprint < ApplicationRecord
   belongs_to :challenge
-  belongs_to :winner_group, class_name: "Group", optional: true
+  has_many :sprint_winners, dependent: :destroy
+  has_many :winner_groups, through: :sprint_winners, source: :group
 
   validates :title, presence: true
   validates :begin_date, presence: true
@@ -19,6 +20,33 @@ class Sprint < ApplicationRecord
 
   def days_count
     (end_date - begin_date).to_i + 1
+  end
+
+  def winners_calculated?
+    sprint_winners.exists?
+  end
+
+  def calculate_winners!
+    return if winners_calculated?
+
+    groups = challenge.groups.joins(:user_group_enrollments).distinct
+    return if groups.empty?
+
+    stats = groups.map do |group|
+      gs = GroupStatistics.new(group, date_range)
+      { group: group, completion: gs.completion_percentage, on_schedule: gs.on_schedule_percentage }
+    end
+
+    stats.sort_by! { |s| [ -s[:completion], -s[:on_schedule] ] }
+    top = stats.first
+
+    winners = stats.select { |s| s[:completion] == top[:completion] && s[:on_schedule] == top[:on_schedule] }
+
+    transaction do
+      winners.each do |w|
+        sprint_winners.create!(group: w[:group], completion_percentage: w[:completion], on_schedule_percentage: w[:on_schedule])
+      end
+    end
   end
 
   private

@@ -4,7 +4,8 @@ class Group < ApplicationRecord
   has_many :user_group_enrollments, dependent: :destroy
   has_many :users, through: :user_group_enrollments
   has_many :group_messages, dependent: :destroy
-  has_many :won_sprints, class_name: "Sprint", foreign_key: :winner_group_id, dependent: :nullify
+  has_many :sprint_winners, dependent: :destroy
+  has_many :won_sprints, through: :sprint_winners, source: :sprint
   # If you want to directly get users in a group: has_many :users, through: :user_challenge_enrollments, source: :user
 
   validates :name, presence: true,

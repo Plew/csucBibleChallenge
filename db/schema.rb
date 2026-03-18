@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_18_132151) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_18_160000) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -296,6 +296,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_18_132151) do
     t.index ["key"], name: "index_solid_queue_semaphores_on_key", unique: true
   end
 
+  create_table "sprint_winners", force: :cascade do |t|
+    t.integer "completion_percentage", null: false
+    t.datetime "created_at", null: false
+    t.integer "group_id", null: false
+    t.integer "on_schedule_percentage", null: false
+    t.integer "sprint_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["group_id"], name: "index_sprint_winners_on_group_id"
+    t.index ["sprint_id", "group_id"], name: "index_sprint_winners_on_sprint_id_and_group_id", unique: true
+    t.index ["sprint_id"], name: "index_sprint_winners_on_sprint_id"
+  end
+
   create_table "sprints", force: :cascade do |t|
     t.date "begin_date"
     t.integer "challenge_id", null: false
@@ -303,9 +315,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_18_132151) do
     t.date "end_date"
     t.string "title"
     t.datetime "updated_at", null: false
-    t.integer "winner_group_id"
     t.index ["challenge_id"], name: "index_sprints_on_challenge_id"
-    t.index ["winner_group_id"], name: "index_sprints_on_winner_group_id"
   end
 
   create_table "user_challenge_enrollments", force: :cascade do |t|
@@ -421,8 +431,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_18_132151) do
   add_foreign_key "solid_queue_ready_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+  add_foreign_key "sprint_winners", "groups"
+  add_foreign_key "sprint_winners", "sprints"
   add_foreign_key "sprints", "challenges"
-  add_foreign_key "sprints", "groups", column: "winner_group_id"
   add_foreign_key "user_challenge_enrollments", "challenges"
   add_foreign_key "user_challenge_enrollments", "users"
   add_foreign_key "user_group_enrollments", "groups"

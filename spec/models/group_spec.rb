@@ -6,19 +6,19 @@ RSpec.describe Group, type: :model do
     it { should belong_to(:creator).class_name('User') }
     it { should have_many(:user_group_enrollments).dependent(:destroy) }
     it { should have_many(:users).through(:user_group_enrollments) }
-    it { should have_many(:won_sprints).class_name('Sprint').dependent(:nullify) }
+    it { should have_many(:sprint_winners).dependent(:destroy) }
+    it { should have_many(:won_sprints).through(:sprint_winners) }
   end
 
   describe 'destroying a group that is a sprint winner' do
-    it 'nullifies the winner_group_id on associated sprints' do
+    it 'destroys associated sprint_winners records' do
       group = create(:group)
       challenge = group.challenge
-      sprint = create(:sprint, challenge: challenge, winner_group: group,
+      sprint = create(:sprint, challenge: challenge,
                       begin_date: challenge.start_date, end_date: challenge.end_date)
+      create(:sprint_winner, sprint: sprint, group: group)
 
-      group.destroy
-
-      expect(sprint.reload.winner_group_id).to be_nil
+      expect { group.destroy }.to change(SprintWinner, :count).by(-1)
     end
   end
 

@@ -423,8 +423,8 @@ de:
       on_time_percentage: "Pünktlich %"
       members: "Mitglieder"
       no_groups: "In dieser Challenge wurden noch keine Gruppen erstellt"
-      winner_group: "Gewinnergruppe"
-      no_winner_selected: "— Kein Gewinner ausgewählt —"
+      winners: "Gewinner"
+      no_winners_yet: "Gewinner noch nicht berechnet"
       days_count:
         one: "%{count} Tag"
         other: "%{count} Tage"

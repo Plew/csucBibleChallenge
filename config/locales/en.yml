@@ -478,8 +478,8 @@ en:
       on_time_percentage: "On Time %"
       members: "Members"
       no_groups: "No groups have been created in this challenge yet"
-      winner_group: "Winner Group"
-      no_winner_selected: "— No winner selected —"
+      winners: "Winners"
+      no_winners_yet: "Winners not yet calculated"
       days_count:
         one: "%{count} day"
         other: "%{count} days"

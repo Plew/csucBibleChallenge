@@ -3,7 +3,7 @@ class Admin::SprintsController < Admin::BaseController
   before_action :set_sprint, only: [ :show, :edit, :update, :destroy ]
 
   def index
-    @sprints = @challenge.sprints.ordered.includes(:winner_group)
+    @sprints = @challenge.sprints.ordered
   end
 
   def show
@@ -72,6 +72,6 @@ class Admin::SprintsController < Admin::BaseController
   end
 
   def sprint_params
-    params.require(:sprint).permit(:title, :begin_date, :end_date, :winner_group_id)
+    params.require(:sprint).permit(:title, :begin_date, :end_date)
   end
 end

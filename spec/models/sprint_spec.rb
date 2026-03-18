@@ -3,7 +3,8 @@ require 'rails_helper'
 RSpec.describe Sprint, type: :model do
   describe "associations" do
     it { should belong_to(:challenge) }
-    it { should belong_to(:winner_group).optional }
+    it { should have_many(:sprint_winners).dependent(:destroy) }
+    it { should have_many(:winner_groups).through(:sprint_winners) }
   end
 
   describe "validations" do
@@ -141,6 +142,92 @@ RSpec.describe Sprint, type: :model do
     it "returns a range from begin_date to end_date" do
       sprint = build(:sprint, begin_date: Date.new(2025, 3, 1), end_date: Date.new(2025, 6, 30))
       expect(sprint.date_range).to eq(Date.new(2025, 3, 1)..Date.new(2025, 6, 30))
+    end
+  end
+
+  describe "#winners_calculated?" do
+    let(:challenge) { create(:challenge, start_date: Date.new(2025, 1, 1), end_date: Date.new(2025, 12, 31)) }
+    let(:sprint) { create(:sprint, challenge: challenge) }
+
+    it "returns false when no sprint_winners exist" do
+      expect(sprint.winners_calculated?).to be false
+    end
+
+    it "returns true when sprint_winners exist" do
+      group = create(:group, challenge: challenge)
+      create(:sprint_winner, sprint: sprint, group: group)
+      expect(sprint.winners_calculated?).to be true
+    end
+  end
+
+  describe "#calculate_winners!" do
+    let(:challenge) { create(:challenge, start_date: Date.new(2025, 1, 1), end_date: Date.new(2025, 12, 31)) }
+    let(:sprint) { create(:sprint, challenge: challenge, begin_date: Date.new(2025, 1, 1), end_date: Date.new(2025, 1, 31)) }
+
+    it "does nothing when no groups with members exist" do
+      create(:group, challenge: challenge) # group without members
+      sprint.calculate_winners!
+      expect(sprint.sprint_winners).to be_empty
+    end
+
+    it "creates a single winner when one group leads" do
+      group1 = create(:group, challenge: challenge)
+      group2 = create(:group, challenge: challenge)
+      create(:user_group_enrollment, group: group1)
+      create(:user_group_enrollment, group: group2)
+
+      stats1 = instance_double(GroupStatistics, completion_percentage: 80, on_schedule_percentage: 70)
+      stats2 = instance_double(GroupStatistics, completion_percentage: 60, on_schedule_percentage: 50)
+      allow(GroupStatistics).to receive(:new).with(group1, anything).and_return(stats1)
+      allow(GroupStatistics).to receive(:new).with(group2, anything).and_return(stats2)
+
+      sprint.calculate_winners!
+
+      expect(sprint.sprint_winners.count).to eq(1)
+      winner = sprint.sprint_winners.first
+      expect(winner.group).to eq(group1)
+      expect(winner.completion_percentage).to eq(80)
+      expect(winner.on_schedule_percentage).to eq(70)
+    end
+
+    it "creates multiple winners when groups are tied on both metrics" do
+      group1 = create(:group, challenge: challenge)
+      group2 = create(:group, challenge: challenge)
+      create(:user_group_enrollment, group: group1)
+      create(:user_group_enrollment, group: group2)
+
+      stats = instance_double(GroupStatistics, completion_percentage: 80, on_schedule_percentage: 70)
+      allow(GroupStatistics).to receive(:new).and_return(stats)
+
+      sprint.calculate_winners!
+
+      expect(sprint.sprint_winners.count).to eq(2)
+      expect(sprint.winner_groups).to contain_exactly(group1, group2)
+    end
+
+    it "uses on_schedule_percentage as tiebreaker when completion is tied" do
+      group1 = create(:group, challenge: challenge)
+      group2 = create(:group, challenge: challenge)
+      create(:user_group_enrollment, group: group1)
+      create(:user_group_enrollment, group: group2)
+
+      stats1 = instance_double(GroupStatistics, completion_percentage: 80, on_schedule_percentage: 90)
+      stats2 = instance_double(GroupStatistics, completion_percentage: 80, on_schedule_percentage: 70)
+      allow(GroupStatistics).to receive(:new).with(group1, anything).and_return(stats1)
+      allow(GroupStatistics).to receive(:new).with(group2, anything).and_return(stats2)
+
+      sprint.calculate_winners!
+
+      expect(sprint.sprint_winners.count).to eq(1)
+      expect(sprint.winner_groups.first).to eq(group1)
+    end
+
+    it "is idempotent — does not recalculate if winners already exist" do
+      group = create(:group, challenge: challenge)
+      create(:user_group_enrollment, group: group)
+      create(:sprint_winner, sprint: sprint, group: group)
+
+      expect { sprint.calculate_winners! }.not_to change { sprint.sprint_winners.count }
     end
   end
 end
