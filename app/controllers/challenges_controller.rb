@@ -8,6 +8,7 @@ class ChallengesController < ApplicationController
   def index
     # Show simple list of active and upcoming challenges
     @challenges = Challenge.where("end_date >= ? AND hidden = ?", Date.current, false)
+                          .includes(:users, :groups, :readings)
   end
 
   # GET /challenges/:id
