@@ -7,7 +7,10 @@ class SendDailyReadingEmailsJob < ApplicationJob
       # Get current time in the challenge's timezone
       current_time_in_tz = Time.current.in_time_zone(challenge.timezone)
 
-      # Get today's reading for this challenge
+      # Only send emails when it's the 6am hour in the challenge's timezone
+      next unless current_time_in_tz.hour == 6
+
+      # Get today's reading for this challenge (in the challenge's timezone)
       today = current_time_in_tz.to_date
       reading = challenge.readings.find_by(scheduled_date: today)
 
@@ -16,6 +19,9 @@ class SendDailyReadingEmailsJob < ApplicationJob
 
       # Find all users enrolled in this challenge who want daily emails
       challenge.users.wants_daily_email.find_each do |user|
+        # Guard against duplicates: skip if a token already exists for this user+reading
+        next if EmailLoginToken.exists?(user: user, reading: reading)
+
         # Create a login token for this user/reading
         login_token = EmailLoginToken.create!(
           user: user,

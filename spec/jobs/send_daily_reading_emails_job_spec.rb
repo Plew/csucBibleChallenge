@@ -136,5 +136,64 @@ RSpec.describe SendDailyReadingEmailsJob, type: :job do
         }.not_to change { ActionMailer::Base.deliveries.count }
       end
     end
+
+    context 'duplicate guard on re-run' do
+      let!(:berlin_reading) { create(:reading, challenge: berlin_challenge, scheduled_date: Date.current) }
+
+      before do
+        berlin_time = Time.current.in_time_zone(berlin_timezone).change(hour: 6, min: 0)
+        allow(Time).to receive(:current).and_return(berlin_time.in_time_zone('UTC'))
+      end
+
+      it 'does not send duplicate emails on re-run' do
+        described_class.perform_now
+        expect(ActionMailer::Base.deliveries.count).to eq(1)
+
+        ActionMailer::Base.deliveries.clear
+
+        # Run again — should not send because token already exists
+        expect {
+          described_class.perform_now
+        }.not_to change { ActionMailer::Base.deliveries.count }
+      end
+
+      it 'does not create duplicate tokens on re-run' do
+        described_class.perform_now
+        initial_count = EmailLoginToken.count
+
+        described_class.perform_now
+        expect(EmailLoginToken.count).to eq(initial_count)
+      end
+    end
+
+    context 'different timezone challenges at different times' do
+      let!(:berlin_reading) { create(:reading, challenge: berlin_challenge, scheduled_date: Date.current) }
+      let!(:tokyo_reading) { create(:reading, challenge: tokyo_challenge, scheduled_date: Date.current) }
+
+      it 'sends for Berlin challenge at 6am Berlin time but not Tokyo' do
+        # 6am Berlin is ~2pm Tokyo (UTC+9 vs UTC+1/+2)
+        berlin_time = Time.current.in_time_zone(berlin_timezone).change(hour: 6, min: 0)
+        allow(Time).to receive(:current).and_return(berlin_time.in_time_zone('UTC'))
+
+        described_class.perform_now
+
+        delivered_to_challenges = EmailLoginToken.pluck(:challenge_id)
+        expect(delivered_to_challenges).to include(berlin_challenge.id)
+        expect(delivered_to_challenges).not_to include(tokyo_challenge.id)
+      end
+
+      it 'sends for Tokyo challenge at 6am Tokyo time but not Berlin' do
+        # 6am Tokyo is ~10pm Berlin (previous day)
+        tokyo_time = Time.current.in_time_zone(tokyo_timezone).change(hour: 6, min: 0)
+        allow(Time).to receive(:current).and_return(tokyo_time.in_time_zone('UTC'))
+
+        described_class.perform_now
+
+        delivered_to_challenges = EmailLoginToken.pluck(:challenge_id)
+        expect(delivered_to_challenges).to include(tokyo_challenge.id)
+        # Berlin would be around 10pm-11pm, not 6am
+        expect(delivered_to_challenges).not_to include(berlin_challenge.id)
+      end
+    end
   end
 end
