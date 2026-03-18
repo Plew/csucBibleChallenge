@@ -12,6 +12,11 @@ class VerseMessagesController < ApplicationController
   end
 
   def create
+    unless @reading.challenge.verse_comments_enabled?
+      head :forbidden
+      return
+    end
+
     @message = @reading.verse_messages.build(
       message_params.merge(
         user: current_user,

@@ -213,6 +213,7 @@ en:
       title: "Challenge Settings"
       updated: "Challenge settings updated successfully."
       lock_challenge: "Lock this challenge — no new signups"
+      verse_comments_enabled: "Allow verse comments"
       message_of_the_day: "Message of the Day"
       message_of_the_day_placeholder: "Optional message to display to all challenge members..."
     sprints:

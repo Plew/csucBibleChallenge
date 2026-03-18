@@ -158,6 +158,7 @@ de:
       title: "Challenge-Einstellungen"
       updated: "Challenge-Einstellungen erfolgreich aktualisiert."
       lock_challenge: "Challenge sperren — keine neuen Anmeldungen"
+      verse_comments_enabled: "Vers-Kommentare erlauben"
       message_of_the_day: "Nachricht des Tages"
       message_of_the_day_placeholder: "Optionale Nachricht für alle Challenge-Teilnehmer..."
     sprints:

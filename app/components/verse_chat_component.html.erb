@@ -27,7 +27,7 @@
     </div>
   </div>
 
-  <% if current_user %>
+  <% if current_user && reading.challenge.verse_comments_enabled? %>
     <%= tag.turbo_frame id: "verse-new-message-form-#{chat_id}" do %>
       <%= form_with url: reading_verse_messages_path(reading_id, verse_number: verse_number),
                     method: :post,
@@ -43,7 +43,7 @@
                        class: "btn btn-primary btn-sm" %>
       <% end %>
     <% end %>
-  <% else %>
+  <% elsif !current_user %>
     <!-- Show disabled form if no current_user (for Lookbook preview) -->
     <div class="flex gap-2 items-center px-2">
       <textarea placeholder="Type your message..." rows="2" class="textarea textarea-bordered textarea-sm flex-1 resize-none text-sm" disabled></textarea>
