@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_18_123929) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_18_132151) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -311,6 +311,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_18_123929) do
   create_table "user_challenge_enrollments", force: :cascade do |t|
     t.integer "challenge_id", null: false
     t.datetime "created_at", null: false
+    t.string "role", default: "member", null: false
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
     t.index ["challenge_id"], name: "index_user_challenge_enrollments_on_challenge_id"

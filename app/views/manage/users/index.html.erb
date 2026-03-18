@@ -71,6 +71,9 @@
                     <div class="flex items-center gap-2">
                       <%= avatar_image_tag(user, :tiny, class: 'rounded-full') %>
                       <%= user.username %>
+                      <% if user.user_challenge_enrollments.find_by(challenge: @challenge)&.admin? %>
+                        <span class="badge badge-sm badge-primary"><%= t('manage.users.admin_badge') %></span>
+                      <% end %>
                     </div>
                   </td>
                   <td>

@@ -17,7 +17,12 @@
       <div class="flex items-center gap-4 mb-4">
         <%= avatar_image_tag(@user, :large, class: 'rounded-full') %>
         <div>
-          <h2 class="font-semibold"><%= @user.username %></h2>
+          <h2 class="font-semibold">
+            <%= @user.username %>
+            <% if @enrollment&.admin? %>
+              <span class="badge badge-sm badge-primary"><%= t('manage.users.admin_badge') %></span>
+            <% end %>
+          </h2>
           <p class="text-sm text-base-content/60"><%= @user.email %></p>
         </div>
       </div>
@@ -44,6 +49,19 @@
       </div>
 
       <div class="card-actions mt-4 flex flex-col gap-2">
+        <% if @challenge.owned_by?(current_user) && @user != @challenge.creator %>
+          <% if @enrollment&.admin? %>
+            <%= button_to t("manage.users.demote_admin"), demote_challenge_manage_user_path(@challenge, @user),
+                method: :patch,
+                data: { turbo_confirm: t("manage.users.demote_confirmation", username: @user.username) },
+                class: "btn btn-sm btn-warning w-full" %>
+          <% else %>
+            <%= button_to t("manage.users.promote_admin"), promote_challenge_manage_user_path(@challenge, @user),
+                method: :patch,
+                data: { turbo_confirm: t("manage.users.promote_confirmation", username: @user.username) },
+                class: "btn btn-sm btn-primary w-full" %>
+          <% end %>
+        <% end %>
         <%= link_to t("manage.users.change_password"), change_password_challenge_manage_user_path(@challenge, @user), class: "btn btn-sm btn-secondary w-full" %>
         <% if @user_group %>
           <%= button_to t("manage.users.remove_from_group_button"), remove_from_group_challenge_manage_user_path(@challenge, @user),

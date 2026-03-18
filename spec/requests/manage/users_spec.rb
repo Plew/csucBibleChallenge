@@ -174,6 +174,82 @@ RSpec.describe "Manage::Users", type: :request do
     end
   end
 
+  describe "PATCH /challenges/:challenge_id/manage/users/:id/promote" do
+    it "promotes a user to admin" do
+      patch promote_challenge_manage_user_path(challenge, enrolled_user)
+      expect(enrolled_user.user_challenge_enrollments.find_by(challenge: challenge).role).to eq("admin")
+      expect(response).to redirect_to(challenge_manage_user_path(challenge, enrolled_user))
+      expect(flash[:notice]).to include(enrolled_user.username)
+    end
+
+    it "prevents promoting the creator" do
+      create(:user_challenge_enrollment, user: owner, challenge: challenge)
+      patch promote_challenge_manage_user_path(challenge, owner)
+      expect(response).to redirect_to(challenge_manage_user_path(challenge, owner))
+      expect(flash[:alert]).to be_present
+    end
+
+    context "when logged in as a challenge admin (not creator)" do
+      let(:admin_user) { create(:user) }
+
+      before do
+        create(:user_challenge_enrollment, :admin, user: admin_user, challenge: challenge)
+        login_as admin_user
+      end
+
+      it "denies promote action" do
+        patch promote_challenge_manage_user_path(challenge, enrolled_user)
+        expect(response).to redirect_to(challenge_manage_dashboard_path(challenge))
+      end
+    end
+  end
+
+  describe "PATCH /challenges/:challenge_id/manage/users/:id/demote" do
+    before do
+      enrolled_user.user_challenge_enrollments.find_by(challenge: challenge).update!(role: "admin")
+    end
+
+    it "demotes a user from admin" do
+      patch demote_challenge_manage_user_path(challenge, enrolled_user)
+      expect(enrolled_user.user_challenge_enrollments.find_by(challenge: challenge).role).to eq("member")
+      expect(response).to redirect_to(challenge_manage_user_path(challenge, enrolled_user))
+      expect(flash[:notice]).to include(enrolled_user.username)
+    end
+
+    context "when logged in as a challenge admin (not creator)" do
+      let(:admin_user) { create(:user) }
+
+      before do
+        create(:user_challenge_enrollment, :admin, user: admin_user, challenge: challenge)
+        login_as admin_user
+      end
+
+      it "denies demote action" do
+        patch demote_challenge_manage_user_path(challenge, enrolled_user)
+        expect(response).to redirect_to(challenge_manage_dashboard_path(challenge))
+      end
+    end
+  end
+
+  context "when logged in as a challenge admin" do
+    let(:admin_user) { create(:user) }
+
+    before do
+      create(:user_challenge_enrollment, :admin, user: admin_user, challenge: challenge)
+      login_as admin_user
+    end
+
+    it "allows access to user list" do
+      get challenge_manage_users_path(challenge)
+      expect(response).to have_http_status(:success)
+    end
+
+    it "allows viewing a user" do
+      get challenge_manage_user_path(challenge, enrolled_user)
+      expect(response).to have_http_status(:success)
+    end
+  end
+
   context "when logged in as a different user" do
     let(:other_user) { create(:user) }
     before { login_as other_user }

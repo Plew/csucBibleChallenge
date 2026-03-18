@@ -11,6 +11,19 @@ RSpec.describe UserChallengeEnrollment, type: :model do
     # subject is implicitly created by shoulda-matchers for this test
     subject { FactoryBot.create(:user_challenge_enrollment) }
     it { should validate_uniqueness_of(:user_id).scoped_to(:challenge_id).with_message("already enrolled in this challenge") }
+    it { should validate_inclusion_of(:role).in_array(UserChallengeEnrollment::ROLES) }
+  end
+
+  describe '#admin?' do
+    it 'returns true when role is admin' do
+      enrollment = FactoryBot.build(:user_challenge_enrollment, :admin)
+      expect(enrollment.admin?).to be true
+    end
+
+    it 'returns false when role is member' do
+      enrollment = FactoryBot.build(:user_challenge_enrollment)
+      expect(enrollment.admin?).to be false
+    end
   end
 
   it 'is valid with valid attributes (associated user and challenge)' do

@@ -36,6 +36,16 @@ class Challenge < ApplicationRecord
     user.present? && creator_id == user.id
   end
 
+  def challenge_admin?(user)
+    return false unless user.present?
+
+    user_challenge_enrollments.exists?(user: user, role: "admin")
+  end
+
+  def manageable_by?(user)
+    owned_by?(user) || challenge_admin?(user)
+  end
+
   def join_url
     Rails.application.routes.url_helpers.challenge_invitation_url(invitation_token, host: ENV.fetch("APP_HOST", "localhost:3000"))
   end

@@ -61,7 +61,7 @@
 
 
 
-    <% if logged_in? && @challenge.owned_by?(current_user) %>
+    <% if logged_in? && @challenge.manageable_by?(current_user) %>
       <div class="mb-4">
         <%= link_to t('navigation.manage_challenge'), challenge_manage_dashboard_path(@challenge), class: "btn btn-secondary btn-sm w-full" %>
       </div>

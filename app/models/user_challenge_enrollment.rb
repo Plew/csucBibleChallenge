@@ -1,7 +1,13 @@
 class UserChallengeEnrollment < ApplicationRecord
+  ROLES = [ "member", "admin" ].freeze
+
   belongs_to :user
   belongs_to :challenge
 
   validates :user_id, uniqueness: { scope: :challenge_id, message: "already enrolled in this challenge" }
-  # Add validation to ensure group belongs to the same challenge as the enrollment? (More complex, for later if needed)
+  validates :role, inclusion: { in: ROLES }
+
+  def admin?
+    role == "admin"
+  end
 end

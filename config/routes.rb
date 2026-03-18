@@ -79,6 +79,8 @@ Rails.application.routes.draw do
           delete :remove_from_group
           get :change_password
           patch :update_password
+          patch :promote
+          patch :demote
         end
         collection do
           post :bulk_remove_from_groups

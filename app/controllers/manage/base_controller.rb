@@ -12,7 +12,7 @@ class Manage::BaseController < ApplicationController
   end
 
   def ensure_challenge_owner!
-    unless @challenge.owned_by?(current_user)
+    unless @challenge.manageable_by?(current_user)
       redirect_to root_path, alert: t("manage.access_denied")
     end
   end

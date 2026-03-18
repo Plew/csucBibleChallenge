@@ -261,6 +261,13 @@ en:
       remove_confirmation: "Are you sure you want to remove %{username} from this challenge?"
       removed: "%{username} has been removed from the challenge."
       not_enrolled: "User is not enrolled in this challenge."
+      admin_badge: "Admin"
+      promote_admin: "Make Admin"
+      demote_admin: "Remove Admin"
+      promoted: "%{username} has been promoted to admin."
+      demoted: "%{username} has been removed as admin."
+      promote_confirmation: "Are you sure you want to make %{username} an admin of this challenge?"
+      demote_confirmation: "Are you sure you want to remove %{username} as an admin of this challenge?"
 
   # Home page
   home:

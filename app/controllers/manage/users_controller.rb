@@ -1,5 +1,6 @@
 class Manage::UsersController < Manage::BaseController
-  before_action :set_user, only: [ :show, :remove, :remove_from_group, :change_password, :update_password ]
+  before_action :set_user, only: [ :show, :remove, :remove_from_group, :change_password, :update_password, :promote, :demote ]
+  before_action :require_challenge_creator!, only: [ :promote, :demote ]
 
   def index
     @users = @challenge.users.includes(:user_challenge_enrollments, :groups).order("user_challenge_enrollments.created_at DESC")
@@ -76,9 +77,37 @@ class Manage::UsersController < Manage::BaseController
     redirect_to challenge_manage_user_path(@challenge, @user), notice: t("manage.users.password_updated")
   end
 
+  def promote
+    if @user == @challenge.creator
+      redirect_to challenge_manage_user_path(@challenge, @user), alert: t("manage.access_denied")
+      return
+    end
+
+    enrollment = @user.user_challenge_enrollments.find_by(challenge: @challenge)
+    enrollment.update!(role: "admin")
+    redirect_to challenge_manage_user_path(@challenge, @user), notice: t("manage.users.promoted", username: @user.username)
+  end
+
+  def demote
+    if @user == @challenge.creator
+      redirect_to challenge_manage_user_path(@challenge, @user), alert: t("manage.access_denied")
+      return
+    end
+
+    enrollment = @user.user_challenge_enrollments.find_by(challenge: @challenge)
+    enrollment.update!(role: "member")
+    redirect_to challenge_manage_user_path(@challenge, @user), notice: t("manage.users.demoted", username: @user.username)
+  end
+
   private
 
   def set_user
     @user = @challenge.users.find(params[:id])
+  end
+
+  def require_challenge_creator!
+    unless @challenge.owned_by?(current_user)
+      redirect_to challenge_manage_dashboard_path(@challenge), alert: t("manage.access_denied")
+    end
   end
 end

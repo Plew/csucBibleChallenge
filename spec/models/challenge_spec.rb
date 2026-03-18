@@ -112,6 +112,63 @@ RSpec.describe Challenge, type: :model do
     end
   end
 
+  describe '#challenge_admin?' do
+    let(:creator) { create(:user) }
+    let(:challenge) { create(:challenge, creator: creator) }
+    let(:admin_user) { create(:user) }
+    let(:member_user) { create(:user) }
+
+    before do
+      create(:user_challenge_enrollment, :admin, user: admin_user, challenge: challenge)
+      create(:user_challenge_enrollment, user: member_user, challenge: challenge)
+    end
+
+    it 'returns true for an admin-enrolled user' do
+      expect(challenge.challenge_admin?(admin_user)).to be true
+    end
+
+    it 'returns false for a member-enrolled user' do
+      expect(challenge.challenge_admin?(member_user)).to be false
+    end
+
+    it 'returns false for nil' do
+      expect(challenge.challenge_admin?(nil)).to be false
+    end
+  end
+
+  describe '#manageable_by?' do
+    let(:creator) { create(:user) }
+    let(:challenge) { create(:challenge, creator: creator) }
+    let(:admin_user) { create(:user) }
+    let(:member_user) { create(:user) }
+    let(:outsider) { create(:user) }
+
+    before do
+      create(:user_challenge_enrollment, :admin, user: admin_user, challenge: challenge)
+      create(:user_challenge_enrollment, user: member_user, challenge: challenge)
+    end
+
+    it 'returns true for the creator' do
+      expect(challenge.manageable_by?(creator)).to be true
+    end
+
+    it 'returns true for a challenge admin' do
+      expect(challenge.manageable_by?(admin_user)).to be true
+    end
+
+    it 'returns false for a regular member' do
+      expect(challenge.manageable_by?(member_user)).to be false
+    end
+
+    it 'returns false for an outsider' do
+      expect(challenge.manageable_by?(outsider)).to be false
+    end
+
+    it 'returns false for nil' do
+      expect(challenge.manageable_by?(nil)).to be false
+    end
+  end
+
   describe 'deletion' do
     let(:creator) { FactoryBot.create(:user, admin: true) }
     let(:challenge) { FactoryBot.create(:challenge, creator: creator) }
