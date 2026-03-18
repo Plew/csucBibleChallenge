@@ -300,6 +300,7 @@ en:
     ends_date: "Ends:"
     quick_actions: "Quick Actions"
     view_details: "View Details"
+    get_invitation_link: "Get invitation link"
     details: "Details"
     signups_closed: "Signups closed"
     all_challenges: "All Challenges"
