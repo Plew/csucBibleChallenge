@@ -74,6 +74,7 @@
             <% elsif current_user.can_create_challenges? && current_user.created_challenges.any? %>
               <%= link_to t('navigation.admin'), challenge_manage_dashboard_path(current_user.created_challenges.first), class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
             <% end %>
+            <%# TODO: When multi-challenge support is added, these links should show per-challenge or let user choose %>
             <% if current_user.challenges.any? %>
               <%= link_to t('blog.posts'), challenge_blog_posts_path(current_user.challenges.first), class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
               <%= link_to t('navigation.seven_day_win'), challenge_seven_day_lobby_path(current_user.challenges.first), class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>

@@ -16,8 +16,9 @@ class BlogPostsController < ApplicationController
   private
 
   def set_challenge
-    @challenge = current_user.challenges.first
-    redirect_to root_path, alert: I18n.t("blog.not_enrolled") unless @challenge
+    @challenge = Challenge.find(params[:challenge_id])
+  rescue ActiveRecord::RecordNotFound
+    redirect_to root_path, alert: I18n.t("blog.not_enrolled")
   end
 
   def ensure_enrolled
