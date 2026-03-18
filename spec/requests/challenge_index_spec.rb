@@ -40,16 +40,17 @@ RSpec.describe "Challenge Index Page", type: :request do
     end
 
     context "Create Challenge button" do
-      it "is visible for challenge creators" do
-        creator = create(:user, :challenge_creator)
-        login_via_session(creator)
+      it "is visible for users not enrolled in any challenge" do
+        user = create(:user)
+        login_via_session(user)
         get challenges_path
         expect(response.body).to include(I18n.t("challenges.create_new"))
       end
 
-      it "is not visible for regular users" do
-        regular = create(:user)
-        login_via_session(regular)
+      it "is not visible for users already enrolled in a challenge" do
+        enrolled_user = create(:user)
+        create(:user_challenge_enrollment, user: enrolled_user, challenge: challenge)
+        login_via_session(enrolled_user)
         get challenges_path
         expect(response.body).not_to include(I18n.t("challenges.create_new"))
       end

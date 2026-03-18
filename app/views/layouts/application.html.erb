@@ -66,12 +66,12 @@
           role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
         <div class="py-1" role="none">
           <% if logged_in? %>
-            <% if current_user.can_create_challenges? %>
+            <% unless current_user.challenges.any? %>
               <%= link_to t('navigation.create_challenge'), new_challenge_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
             <% end %>
             <% if current_user.admin? %>
               <%= link_to t('navigation.admin'), admin_root_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
-            <% elsif current_user.can_create_challenges? && current_user.created_challenges.any? %>
+            <% elsif current_user.created_challenges.any? %>
               <%= link_to t('navigation.admin'), challenge_manage_dashboard_path(current_user.created_challenges.first), class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
             <% end %>
             <%# TODO: When multi-challenge support is added, these links should show per-challenge or let user choose %>

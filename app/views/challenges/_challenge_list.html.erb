@@ -1,4 +1,4 @@
-<% if logged_in? && current_user.can_create_challenges? %>
+<% if logged_in? && current_user.challenges.empty? %>
   <div class="mb-4">
     <%= link_to t('challenges.create_new'), new_challenge_path, class: "btn btn-primary btn-sm w-full" %>
   </div>

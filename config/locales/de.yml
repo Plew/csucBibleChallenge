@@ -203,6 +203,7 @@ de:
     edit_challenge: "Challenge bearbeiten"
     create_new: "Neue Lese-Challenge erstellen"
     not_permitted_to_create: "Du hast keine Berechtigung, Challenges zu erstellen."
+    already_enrolled_cannot_create: "Du bist bereits in einer Challenge angemeldet. Verlasse deine aktuelle Challenge, um eine neue zu erstellen."
     no_challenges: "Keine Challenges verfügbar"
     no_challenges_message: "Derzeit sind keine Challenges verfügbar. Bitte schaue später wieder vorbei."
     no_description: "Keine Beschreibung verfügbar"

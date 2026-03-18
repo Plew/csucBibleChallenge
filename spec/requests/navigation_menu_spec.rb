@@ -24,8 +24,8 @@ RSpec.describe "Navigation Menu", type: :request do
       end
     end
 
-    context "when user is a challenge creator (non-admin)" do
-      let(:creator) { create(:user, :challenge_creator) }
+    context "when user owns a challenge (non-admin)" do
+      let(:creator) { create(:user) }
       let!(:owned_challenge) { create(:challenge, creator: creator) }
 
       before do

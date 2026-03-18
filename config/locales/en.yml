@@ -258,6 +258,7 @@ en:
     edit_challenge: "Edit Challenge"
     create_new: "Create New Reading Challenge"
     not_permitted_to_create: "You don't have permission to create challenges."
+    already_enrolled_cannot_create: "You are already enrolled in a challenge. Leave your current challenge to create a new one."
     no_challenges: "No Challenges Available"
     no_challenges_message: "There are currently no challenges available to join. Please check back later."
     no_description: "No description available"

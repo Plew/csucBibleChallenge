@@ -71,8 +71,13 @@ class ChallengesController < ApplicationController
   private
 
   def require_challenge_creator
-    unless current_user&.can_create_challenges?
+    unless current_user
       redirect_to challenges_path, alert: t("challenges.not_permitted_to_create")
+      return
+    end
+
+    if current_user.challenges.any?
+      redirect_to challenges_path, alert: t("challenges.already_enrolled_cannot_create")
     end
   end
 end
