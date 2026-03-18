@@ -12,6 +12,7 @@
       <h1 class="text-2xl font-bold"><%= @sprint.title %></h1>
       <p class="text-sm text-base-content/60 mt-1">
         <%= @sprint.begin_date.strftime("%B %d, %Y") %> - <%= @sprint.end_date.strftime("%B %d, %Y") %>
+        <span class="badge badge-outline badge-sm ml-1"><%= t("admin.sprints.days_count", count: @sprint.days_count) %></span>
       </p>
     </div>
     <%= link_to t("common.back"), challenge_manage_sprints_path(@challenge), class: "btn btn-sm btn-outline" %>

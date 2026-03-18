@@ -461,6 +461,7 @@ en:
       begin_date_hint: "Must be on or after %{start_date}"
       end_date: "End Date"
       end_date_hint: "Must be on or before %{end_date}"
+      days: "Days"
       created: "Sprint was successfully created"
       updated: "Sprint was successfully updated"
       deleted: "Sprint was successfully deleted"
@@ -479,6 +480,9 @@ en:
       no_groups: "No groups have been created in this challenge yet"
       winner_group: "Winner Group"
       no_winner_selected: "— No winner selected —"
+      days_count:
+        one: "%{count} day"
+        other: "%{count} days"
 
   # Seven Day Lobby
   seven_day_lobby:

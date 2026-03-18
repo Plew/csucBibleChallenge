@@ -24,6 +24,7 @@
                 <th><%= t("admin.sprints.name") %></th>
                 <th><%= t("admin.sprints.begin_date") %></th>
                 <th><%= t("admin.sprints.end_date") %></th>
+                <th><%= t("admin.sprints.days") %></th>
                 <th><%= t("common.actions") %></th>
               </tr>
             </thead>
@@ -33,6 +34,7 @@
                   <td><%= sprint.title %></td>
                   <td><%= sprint.begin_date.strftime("%b %d, %Y") %></td>
                   <td><%= sprint.end_date.strftime("%b %d, %Y") %></td>
+                  <td><%= t("admin.sprints.days_count", count: sprint.days_count) %></td>
                   <td>
                     <div class="flex gap-1">
                       <%= link_to t("admin.sprints.view_groups"), challenge_manage_sprint_path(@challenge, sprint), class: "btn btn-xs btn-primary" %>

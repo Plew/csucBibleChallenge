@@ -406,6 +406,7 @@ de:
       begin_date_hint: "Muss am oder nach dem %{start_date} sein"
       end_date: "Enddatum"
       end_date_hint: "Muss am oder vor dem %{end_date} sein"
+      days: "Tage"
       created: "Sprint wurde erfolgreich erstellt"
       updated: "Sprint wurde erfolgreich aktualisiert"
       deleted: "Sprint wurde erfolgreich gelöscht"
@@ -424,6 +425,9 @@ de:
       no_groups: "In dieser Challenge wurden noch keine Gruppen erstellt"
       winner_group: "Gewinnergruppe"
       no_winner_selected: "— Kein Gewinner ausgewählt —"
+      days_count:
+        one: "%{count} Tag"
+        other: "%{count} Tage"
 
   # Seven Day Lobby
   seven_day_lobby:

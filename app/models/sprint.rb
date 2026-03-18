@@ -17,6 +17,10 @@ class Sprint < ApplicationRecord
     begin_date..end_date
   end
 
+  def days_count
+    (end_date - begin_date).to_i + 1
+  end
+
   private
 
   def end_date_after_begin_date
