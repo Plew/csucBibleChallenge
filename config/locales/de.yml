@@ -23,6 +23,7 @@ de:
     log_in: "Anmelden"
     sign_up: "Registrieren"
     open_main_menu: "Hauptmenü öffnen"
+    admin: "Admin"
     manage: "Verwalten"
     manage_challenge: "Challenge verwalten"
 

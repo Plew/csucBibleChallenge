@@ -190,6 +190,7 @@ en:
     log_in: "Log In"
     sign_up: "Sign Up"
     open_main_menu: "Open main menu"
+    admin: "Admin"
     manage: "Manage"
     manage_challenge: "Manage Challenge"
 
