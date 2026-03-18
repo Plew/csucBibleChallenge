@@ -1,4 +1,6 @@
 class Manage::BaseController < ApplicationController
+  helper Admin::UsersHelper
+
   before_action :require_login
   before_action :set_challenge
   before_action :ensure_challenge_owner!

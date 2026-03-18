@@ -13,52 +13,83 @@
 
   <div class="card bg-base-100 shadow-xl mb-4">
     <div class="card-body p-3">
-      <%= form_with url: challenge_manage_users_path(@challenge), method: :get, local: true, class: "flex gap-2" do |form| %>
-        <div class="form-control flex-1">
-          <%= form.text_field :search,
-                value: params[:search],
-                placeholder: t("manage.users.search_placeholder"),
-                class: "input input-bordered input-sm w-full" %>
+      <%= form_with url: challenge_manage_users_path(@challenge), method: :get, local: true, class: "flex flex-col gap-3" do |form| %>
+        <div class="flex gap-2">
+          <div class="form-control flex-1">
+            <%= form.text_field :search,
+                  value: params[:search],
+                  placeholder: t("manage.users.search_placeholder"),
+                  class: "input input-bordered input-sm w-full" %>
+          </div>
+          <%= form.submit t("common.search"), class: "btn btn-sm btn-primary" %>
         </div>
-        <%= form.submit t("common.search"), class: "btn btn-sm btn-primary" %>
-        <% if params[:search].present? %>
-          <%= link_to t("common.clear"), challenge_manage_users_path(@challenge), class: "btn btn-sm btn-outline" %>
-        <% end %>
+        <div class="flex flex-wrap gap-2">
+          <% if params[:search].present? || params[:inactive_days].present? %>
+            <%= link_to t("common.clear"), challenge_manage_users_path(@challenge), class: "btn btn-sm btn-outline" %>
+          <% end %>
+          <%= link_to t("manage.users.no_activity_7_days"),
+                challenge_manage_users_path(@challenge, inactive_days: 7, search: params[:search]),
+                class: "btn btn-sm #{params[:inactive_days] == '7' ? 'btn-warning' : 'btn-outline btn-warning'}" %>
+          <%= link_to t("manage.users.no_activity_10_days"),
+                challenge_manage_users_path(@challenge, inactive_days: 10, search: params[:search]),
+                class: "btn btn-sm #{params[:inactive_days] == '10' ? 'btn-error' : 'btn-outline btn-error'}" %>
+        </div>
       <% end %>
     </div>
   </div>
 
-  <p class="text-sm text-base-content/60 mb-2"><%= @users.count %> <%= t("manage.users.participants") %></p>
+  <%= form_with url: bulk_remove_from_groups_challenge_manage_users_path(@challenge), method: :post, local: true, data: { controller: "admin-users" } do |form| %>
+    <div class="flex justify-between items-center mb-2">
+      <p class="text-sm text-base-content/60"><%= @users.count %> <%= t("manage.users.participants") %></p>
+      <button type="submit" class="btn btn-sm btn-error" data-admin-users-target="removeBtn" style="display:none;"
+              data-action="click->admin-users#confirmRemove">
+        <%= t("manage.users.remove_checked_from_group") %>
+      </button>
+    </div>
 
-  <div class="card bg-base-100 shadow-xl">
-    <div class="card-body p-2">
-      <div class="overflow-x-auto">
-        <table class="table table-zebra table-sm w-full">
-          <thead>
-            <tr>
-              <th><%= t("manage.users.username") %></th>
-              <th><%= t("manage.users.email") %></th>
-              <th><%= t("common.actions") %></th>
-            </tr>
-          </thead>
-          <tbody>
-            <% @users.each do |user| %>
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body p-2">
+        <div class="overflow-x-auto">
+          <table class="table table-zebra table-sm w-full">
+            <thead>
               <tr>
-                <td class="font-semibold text-sm">
-                  <div class="flex items-center gap-2">
-                    <%= avatar_image_tag(user, :tiny, class: 'rounded-full') %>
-                    <%= user.username %>
-                  </div>
-                </td>
-                <td class="text-xs"><%= user.email %></td>
-                <td>
-                  <%= link_to t("common.view"), challenge_manage_user_path(@challenge, user), class: "btn btn-xs btn-info" %>
-                </td>
+                <th class="w-8">
+                  <input type="checkbox" class="checkbox checkbox-sm" data-action="change->admin-users#toggleAll" data-admin-users-target="selectAll" />
+                </th>
+                <th><%= t("manage.users.username") %></th>
+                <th><%= t("manage.users.last_15_days") %></th>
+                <th><%= t("common.actions") %></th>
               </tr>
-            <% end %>
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              <% @users.each do |user| %>
+                <tr>
+                  <td>
+                    <input type="checkbox" name="user_ids[]" value="<%= user.id %>" class="checkbox checkbox-sm" data-action="change->admin-users#toggleOne" data-admin-users-target="userCheckbox" />
+                  </td>
+                  <td class="font-semibold text-sm">
+                    <div class="flex items-center gap-2">
+                      <%= avatar_image_tag(user, :tiny, class: 'rounded-full') %>
+                      <%= user.username %>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="flex gap-px items-center" title="<%= t('manage.users.last_15_days') %>">
+                      <% last_15_days_activity(user).each_with_index do |active, i| %>
+                        <div class="w-2.5 h-2.5 rounded-sm <%= active ? 'bg-success' : 'bg-base-300' %>"
+                             title="<%= (Date.current - (14 - i).days).strftime('%b %d') %>"></div>
+                      <% end %>
+                    </div>
+                  </td>
+                  <td>
+                    <%= link_to t("common.view"), challenge_manage_user_path(@challenge, user), class: "btn btn-xs btn-info" %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
-  </div>
+  <% end %>
 </div>

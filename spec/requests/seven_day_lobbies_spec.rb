@@ -178,7 +178,23 @@ RSpec.describe 'SevenDayLobbies', type: :request do
       end
     end
 
-    context 'when user is not admin' do
+    context 'when user is the challenge owner (non-admin)' do
+      before do
+        create(:user_challenge_enrollment, user: challenge.creator, challenge: challenge)
+        sign_in challenge.creator
+      end
+
+      it 'allows starting the draw' do
+        post start_challenge_seven_day_lobby_path(challenge)
+        expect(response).to redirect_to(admin_seven_day_winner_draw_path(
+          challenge_id: challenge.id,
+          user_ids: [ participant1.id, participant2.id ],
+          animation_type: "pacman"
+        ))
+      end
+    end
+
+    context 'when user is not admin or owner' do
       before { sign_in user }
 
       it 'redirects with error message' do

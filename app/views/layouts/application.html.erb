@@ -71,8 +71,11 @@
             <% end %>
             <% if current_user.admin? %>
               <%= link_to t('navigation.admin'), admin_root_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
-            <% elsif current_user.created_challenges.any? %>
-              <%= link_to t('navigation.admin'), challenge_manage_dashboard_path(current_user.created_challenges.first), class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
+            <% end %>
+            <% if current_user.created_challenges.any? %>
+              <% current_user.created_challenges.each do |created_challenge| %>
+                <%= link_to t('navigation.creator_dashboard', challenge: created_challenge.title), challenge_manage_dashboard_path(created_challenge), class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
+              <% end %>
             <% end %>
             <%# TODO: When multi-challenge support is added, these links should show per-challenge or let user choose %>
             <% if current_user.challenges.any? %>

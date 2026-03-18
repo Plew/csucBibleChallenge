@@ -13,6 +13,6 @@ class Manage::SettingsController < Manage::BaseController
   private
 
   def settings_params
-    params.require(:challenge).permit(:title, :name, :description, :start_date, :timezone, :hidden, :locked, :verse_comments_enabled, :message_of_the_day)
+    params.require(:challenge).permit(:title, :name, :description, :start_date, :timezone, :hidden, :locked, :verse_comments_enabled, :message_of_the_day, :auto_remove_inactive_from_groups)
   end
 end

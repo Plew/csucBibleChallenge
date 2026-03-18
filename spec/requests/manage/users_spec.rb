@@ -25,12 +25,44 @@ RSpec.describe "Manage::Users", type: :request do
       get challenge_manage_users_path(challenge, search: "testparticipant")
       expect(response.body).to include("testparticipant")
     end
+
+    context "with activity filtering" do
+      let(:active_user) { create(:user, username: "xactiveuser") }
+      let(:inactive_user) { create(:user, username: "xinactiveuser") }
+
+      before do
+        create(:user_challenge_enrollment, user: active_user, challenge: challenge)
+        create(:user_challenge_enrollment, user: inactive_user, challenge: challenge)
+
+        reading = create(:reading, challenge: challenge, scheduled_date: 2.days.ago)
+        create(:user_reading, user: active_user, reading: reading, completed_on: 2.days.ago)
+      end
+
+      it "filters users with no activity in last 7 days" do
+        get challenge_manage_users_path(challenge, inactive_days: 7)
+        expect(response.body).to include("xinactiveuser")
+        expect(response.body).not_to include("xactiveuser")
+      end
+
+      it "filters users with no activity in last 10 days" do
+        get challenge_manage_users_path(challenge, inactive_days: 10)
+        expect(response.body).to include("xinactiveuser")
+        expect(response.body).not_to include("xactiveuser")
+      end
+    end
   end
 
   describe "GET /challenges/:challenge_id/manage/users/:id" do
     it "returns success" do
       get challenge_manage_user_path(challenge, enrolled_user)
       expect(response).to have_http_status(:success)
+    end
+
+    it "shows group info when user is in a group" do
+      group = create(:group, challenge: challenge, creator: owner)
+      create(:user_group_enrollment, user: enrolled_user, group: group)
+      get challenge_manage_user_path(challenge, enrolled_user)
+      expect(response.body).to include(group.name)
     end
   end
 
@@ -44,6 +76,76 @@ RSpec.describe "Manage::Users", type: :request do
     it "redirects to users index" do
       delete remove_challenge_manage_user_path(challenge, enrolled_user)
       expect(response).to redirect_to(challenge_manage_users_path(challenge))
+    end
+  end
+
+  describe "DELETE /challenges/:challenge_id/manage/users/:id/remove_from_group" do
+    let(:group) { create(:group, challenge: challenge, creator: owner) }
+
+    before do
+      create(:user_group_enrollment, user: enrolled_user, group: group)
+    end
+
+    it "removes the user from their group in this challenge" do
+      expect {
+        delete remove_from_group_challenge_manage_user_path(challenge, enrolled_user)
+      }.to change(UserGroupEnrollment, :count).by(-1)
+    end
+
+    it "does NOT remove the user from the challenge" do
+      expect {
+        delete remove_from_group_challenge_manage_user_path(challenge, enrolled_user)
+      }.not_to change(UserChallengeEnrollment, :count)
+    end
+
+    it "redirects to user show page" do
+      delete remove_from_group_challenge_manage_user_path(challenge, enrolled_user)
+      expect(response).to redirect_to(challenge_manage_user_path(challenge, enrolled_user))
+    end
+
+    it "shows error when user is not in a group" do
+      UserGroupEnrollment.where(user: enrolled_user).delete_all
+      delete remove_from_group_challenge_manage_user_path(challenge, enrolled_user)
+      expect(response).to redirect_to(challenge_manage_user_path(challenge, enrolled_user))
+      expect(flash[:alert]).to be_present
+    end
+  end
+
+  describe "POST /challenges/:challenge_id/manage/users/bulk_remove_from_groups" do
+    let(:group) { create(:group, challenge: challenge, creator: owner) }
+    let(:user2) { create(:user) }
+
+    before do
+      create(:user_challenge_enrollment, user: user2, challenge: challenge)
+      create(:user_group_enrollment, user: enrolled_user, group: group)
+      create(:user_group_enrollment, user: user2, group: group)
+    end
+
+    it "removes selected users from their groups" do
+      expect {
+        post bulk_remove_from_groups_challenge_manage_users_path(challenge), params: { user_ids: [ enrolled_user.id, user2.id ] }
+      }.to change(UserGroupEnrollment, :count).by(-2)
+    end
+
+    it "redirects to users index" do
+      post bulk_remove_from_groups_challenge_manage_users_path(challenge), params: { user_ids: [ enrolled_user.id ] }
+      expect(response).to redirect_to(challenge_manage_users_path(challenge))
+    end
+
+    it "shows error when no users selected" do
+      post bulk_remove_from_groups_challenge_manage_users_path(challenge)
+      expect(response).to redirect_to(challenge_manage_users_path(challenge))
+      expect(flash[:alert]).to be_present
+    end
+
+    it "only removes from groups within this challenge" do
+      other_challenge = create(:challenge, creator: owner)
+      other_group = create(:group, challenge: other_challenge, creator: owner)
+      create(:user_challenge_enrollment, user: enrolled_user, challenge: other_challenge)
+      other_enrollment = create(:user_group_enrollment, user: enrolled_user, group: other_group)
+
+      post bulk_remove_from_groups_challenge_manage_users_path(challenge), params: { user_ids: [ enrolled_user.id ] }
+      expect(UserGroupEnrollment.exists?(other_enrollment.id)).to be true
     end
   end
 

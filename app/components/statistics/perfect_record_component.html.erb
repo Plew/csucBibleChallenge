@@ -1,0 +1,26 @@
+<div class="collapse collapse-arrow border-base-300 bg-base-200 border">
+  <input type="checkbox" id="perfect-record-collapse">
+  <label for="perfect-record-collapse" class="collapse-title text-xl font-medium flex items-center gap-2 pr-12">
+    <span class="truncate"><%= t('stats.perfect_record.title') %>: <%= t('stats.reader_count', count: user_count) %></span>
+  </label>
+  <div class="collapse-content">
+    <% if users.any? %>
+      <div class="text-center mb-4">
+        <div class="text-2xl font-bold text-success"><%= t('stats.perfect_record.days_in_a_row', count: days_count) %></div>
+      </div>
+      <div class="space-y-1">
+        <% users.each do |user| %>
+          <div class="flex items-center gap-3 px-3 py-2 bg-base-100 rounded-lg">
+            <%= avatar_image_tag(user, :tiny, class: 'rounded-full') %>
+            <span class="font-medium truncate"><%= user.username %></span>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="text-center py-8 text-base-content/70">
+        <div class="text-lg mb-2"><%= t('stats.perfect_record.no_perfect_readers') %></div>
+        <div class="text-sm"><%= t('stats.perfect_record.encouragement') %></div>
+      </div>
+    <% end %>
+  </div>
+</div>

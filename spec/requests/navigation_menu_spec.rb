@@ -33,8 +33,8 @@ RSpec.describe "Navigation Menu", type: :request do
         follow_redirect!
       end
 
-      it "shows the Admin link pointing to manage dashboard" do
-        expect(response.body).to include(I18n.t("navigation.admin"))
+      it "shows the creator dashboard link pointing to manage dashboard" do
+        expect(response.body).to include(I18n.t("navigation.creator_dashboard", challenge: owned_challenge.title))
         expect(response.body).to include(challenge_manage_dashboard_path(owned_challenge))
       end
     end

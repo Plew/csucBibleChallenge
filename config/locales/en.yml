@@ -193,6 +193,7 @@ en:
     admin: "Admin"
     manage: "Manage"
     manage_challenge: "Manage Challenge"
+    creator_dashboard: "Manage: %{challenge}"
 
   # Challenge Owner Management
   manage:
@@ -209,6 +210,7 @@ en:
       manage_sprints: "Manage Sprints"
       manage_blog: "Manage Blog Posts"
       manage_users: "Manage Users"
+      weekly_winner: "Weekly Winner"
     settings:
       title: "Challenge Settings"
       updated: "Challenge settings updated successfully."
@@ -216,6 +218,8 @@ en:
       verse_comments_enabled: "Allow verse comments"
       message_of_the_day: "Message of the Day"
       message_of_the_day_placeholder: "Optional message to display to all challenge members..."
+      auto_remove_inactive: "Auto-remove inactive users from groups"
+      auto_remove_inactive_help: "Users with no reading activity for 10 days will be automatically removed from their group (not from the challenge)"
     sprints:
       title: "Sprints"
       new: "New Sprint"
@@ -239,7 +243,21 @@ en:
       password_updated: "Password updated successfully."
       password_blank: "Password cannot be blank."
       password_too_short: "Password must be at least 6 characters."
+      group: "Group"
+      no_group: "No group"
+      last_15_days: "Last 15 Days"
+      no_activity_7_days: "No activity last 7 days"
+      no_activity_10_days: "No activity last 10 days"
+      remove_checked_from_group: "Remove checked users from their group"
+      no_users_selected: "No users selected."
       remove_from_challenge: "Remove from Challenge"
+      remove_from_group_button: "Remove from Group"
+      remove_from_group_confirmation: "Are you sure you want to remove %{username} from the group '%{group}'?"
+      removed_from_group: "%{username} has been removed from their group."
+      not_in_group: "User is not in any group in this challenge."
+      removed_from_groups:
+        one: "Removed 1 user from their group."
+        other: "Removed %{count} group memberships."
       remove_confirmation: "Are you sure you want to remove %{username} from this challenge?"
       removed: "%{username} has been removed from the challenge."
       not_enrolled: "User is not enrolled in this challenge."
@@ -648,6 +666,13 @@ en:
     no_groups: "No groups available yet"
     top_groups_message: "Create or join a group to see group rankings!"
     completion: "Completion"
+    perfect_record:
+      title: "Perfect Record"
+      days_in_a_row:
+        one: "%{count} day in a row"
+        other: "%{count} days in a row"
+      no_perfect_readers: "No perfect readers yet"
+      encouragement: "Read every chapter on its scheduled day to earn a perfect record!"
     most_liked_verse: "Most Liked Verse"
     most_liked_verse_today: "Most liked verses today"
     no_liked_verses: "No liked verses yet"

@@ -76,8 +76,12 @@ Rails.application.routes.draw do
       resources :users, only: [ :index, :show ] do
         member do
           delete :remove
+          delete :remove_from_group
           get :change_password
           patch :update_password
+        end
+        collection do
+          post :bulk_remove_from_groups
         end
       end
     end

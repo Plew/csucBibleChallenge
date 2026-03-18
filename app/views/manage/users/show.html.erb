@@ -27,10 +27,30 @@
           <label class="font-semibold"><%= t("manage.users.joined") %>:</label>
           <p><%= @enrollment&.created_at&.strftime("%b %d, %Y") %></p>
         </div>
+        <div class="flex gap-2">
+          <label class="font-semibold"><%= t("manage.users.group") %>:</label>
+          <p><%= @user_group&.name || t("manage.users.no_group") %></p>
+        </div>
+      </div>
+
+      <div class="mt-3">
+        <label class="font-semibold text-sm"><%= t("manage.users.last_15_days") %>:</label>
+        <div class="flex gap-px items-center mt-1">
+          <% last_15_days_activity(@user).each_with_index do |active, i| %>
+            <div class="w-3 h-3 rounded-sm <%= active ? 'bg-success' : 'bg-base-300' %>"
+                 title="<%= (Date.current - (14 - i).days).strftime('%b %d') %>"></div>
+          <% end %>
+        </div>
       </div>
 
       <div class="card-actions mt-4 flex flex-col gap-2">
         <%= link_to t("manage.users.change_password"), change_password_challenge_manage_user_path(@challenge, @user), class: "btn btn-sm btn-secondary w-full" %>
+        <% if @user_group %>
+          <%= button_to t("manage.users.remove_from_group_button"), remove_from_group_challenge_manage_user_path(@challenge, @user),
+              method: :delete,
+              data: { turbo_confirm: t("manage.users.remove_from_group_confirmation", username: @user.username, group: @user_group.name) },
+              class: "btn btn-sm btn-warning btn-outline w-full" %>
+        <% end %>
         <%= button_to t("manage.users.remove_from_challenge"), remove_challenge_manage_user_path(@challenge, @user),
             method: :delete,
             data: { turbo_confirm: t("manage.users.remove_confirmation", username: @user.username) },

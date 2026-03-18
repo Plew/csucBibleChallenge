@@ -17,6 +17,7 @@ class StatsController < ApplicationController
     @participant_count = cached_participant_count(current_challenge)
     @top_groups_data = cached_top_groups(current_challenge)
     @seven_day_leaderboard_data = cached_seven_day_window(current_challenge)
+    @perfect_record_data = cached_perfect_record(current_challenge)
     @most_liked_verse = cached_most_liked_verse(current_challenge)
     @most_liked_verse_today = calculate_most_liked_verse_today(current_challenge, current_user)
   end
@@ -75,6 +76,14 @@ class StatsController < ApplicationController
 
     Rails.cache.fetch("stats/seven_day_window/#{challenge.id}", expires_in: CACHE_EXPIRATION) do
       SevenDayWindowStatistics.call(challenge: challenge)
+    end
+  end
+
+  def cached_perfect_record(challenge)
+    return nil unless challenge
+
+    Rails.cache.fetch("stats/perfect_record/#{challenge.id}", expires_in: 1.day) do
+      PerfectRecordStatistics.call(challenge: challenge)
     end
   end
 

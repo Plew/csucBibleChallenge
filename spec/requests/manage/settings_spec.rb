@@ -25,6 +25,12 @@ RSpec.describe "Manage::Settings", type: :request do
         patch challenge_manage_settings_path(challenge), params: { challenge: { name: "Updated Name" } }
         expect(response).to redirect_to(challenge_manage_dashboard_path(challenge))
       end
+
+      it "updates auto_remove_inactive_from_groups" do
+        patch challenge_manage_settings_path(challenge), params: { challenge: { auto_remove_inactive_from_groups: true } }
+        challenge.reload
+        expect(challenge.auto_remove_inactive_from_groups).to be true
+      end
     end
 
     context "with invalid parameters" do

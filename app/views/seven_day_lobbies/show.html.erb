@@ -55,7 +55,7 @@
         <% end %>
 
         <%# Admin buttons - show even when lobby is empty %>
-        <% if current_user.admin? %>
+        <% if current_user.admin? || @challenge.owned_by?(current_user) %>
           <div class="mt-6 pt-4 border-t border-base-300 space-y-3">
             <% if @lobby_participants.any? %>
   <%# Pac-Man animation (default) %>

@@ -46,5 +46,12 @@
       <%= render SevenDayLeaderboardComponent.new(leaderboard_data: seven_day_leaderboard_data) %>
     </div>
 
+    <!-- Perfect Record -->
+    <% if perfect_record_data %>
+      <div>
+        <%= render Statistics::PerfectRecordComponent.new(perfect_record_data: perfect_record_data) %>
+      </div>
+    <% end %>
+
   </div>
 </div>
