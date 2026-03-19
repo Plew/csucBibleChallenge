@@ -1,0 +1,33 @@
+<% content_for :title, t('badges.title') %>
+
+<div class="container mx-auto px-2 py-4">
+  <h1 class="text-xl font-bold mb-4"><%= t('badges.title') %></h1>
+
+  <% BadgeCatalog.categories.each do |category| %>
+    <% badges_with_earners = BadgeCatalog.by_category(category).select { |b| (@earned_counts[b.key] || 0) > 0 } %>
+    <% next if badges_with_earners.empty? %>
+    <div class="mb-5">
+      <h2 class="text-sm font-semibold text-base-content/60 uppercase tracking-wide mb-2">
+        <%= t("badges.categories.#{category}") %>
+      </h2>
+      <div class="space-y-2">
+        <% badges_with_earners.each do |badge| %>
+          <% earned = @my_earned.include?(badge.key) %>
+          <% count = @earned_counts[badge.key] %>
+          <%= link_to badge_path(badge_key: badge.key), class: "flex items-center gap-3 p-3 rounded-lg bg-base-100 shadow-sm #{earned ? '' : 'opacity-50'} hover:bg-base-200 transition-colors" do %>
+            <span class="text-3xl flex-shrink-0"><%= badge_icon(badge.icon) %></span>
+            <div class="flex-1 min-w-0">
+              <div class="text-sm font-semibold"><%= t("badges.#{badge.key}.name") %></div>
+              <div class="text-xs text-base-content/60"><%= t("badges.#{badge.key}.description") %></div>
+            </div>
+            <div class="flex-shrink-0 text-right">
+              <div class="badge badge-sm badge-primary">
+                <%= t('badges.earner_count', count: count) %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

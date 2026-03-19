@@ -1,4 +1,24 @@
 module ApplicationHelper
+  BADGE_ICONS = {
+    "seedling" => "\u{1F331}",
+    "book" => "\u{1F4D6}",
+    "fire" => "\u{1F525}",
+    "clock" => "\u23F0",
+    "star" => "\u2B50",
+    "people" => "\u{1F465}",
+    "heart" => "\u2764\uFE0F",
+    "sunrise" => "\u{1F305}",
+    "moon" => "\u{1F319}",
+    "sweat" => "\u{1F605}",
+    "eyes" => "\u{1F440}",
+    "wave" => "\u{1F44B}",
+    "wolf" => "\u{1F43A}"
+  }.freeze
+
+  def badge_icon(icon_key)
+    BADGE_ICONS[icon_key.to_s] || "\u{1F3C6}"
+  end
+
   def flash_class(level)
     case level
     when "notice" then "alert-info"

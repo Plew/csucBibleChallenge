@@ -11,6 +11,13 @@
     <h1 class="text-xl font-bold text-base-content"><%= @user.name %></h1>
   </div>
 
+  <%# Badges section %>
+  <% if @challenge %>
+    <div class="mb-4">
+      <%= render BadgesDisplayComponent.new(user: @user, challenge: @challenge) %>
+    </div>
+  <% end %>
+
   <%# Liked verses section %>
   <div class="bg-base-100 rounded-lg shadow p-3">
     <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">

@@ -1,0 +1,27 @@
+<div class="collapse collapse-arrow border-base-300 bg-base-200 border">
+  <input type="checkbox" id="badges-collapse">
+  <label for="badges-collapse" class="collapse-title text-xl font-medium flex items-center gap-2 pr-12">
+    <span class="truncate"><%= t('badges.title') %> <% earned_badges.each do |ub| %><% b = BadgeCatalog.find(ub.badge_key) %><% next unless b %><%= badge_icon(b.icon) %><% end %></span>
+  </label>
+  <div class="collapse-content">
+    <div class="grid grid-cols-1 gap-2">
+      <% earned_badges.each do |user_badge| %>
+        <% badge = BadgeCatalog.find(user_badge.badge_key) %>
+        <% next unless badge %>
+        <%= helpers.link_to badge_path(badge_key: badge.key), class: "flex items-center gap-3 p-2 rounded-lg bg-base-100 hover:bg-base-300 transition-colors" do %>
+          <span class="text-2xl flex-shrink-0"><%= badge_icon(badge.icon) %></span>
+          <div class="min-w-0">
+            <div class="text-sm font-semibold leading-tight"><%= t("badges.#{badge.key}.name") %></div>
+            <div class="text-xs text-base-content/60 leading-tight"><%= t("badges.#{badge.key}.description") %></div>
+            <div class="text-xs text-success leading-tight mt-0.5">
+              <%= t('badges.earned_on', date: helpers.l(user_badge.created_at.to_date, format: :long)) %>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+    <div class="mt-2 text-center">
+      <%= helpers.link_to t('badges.view_all'), badges_path, class: "link link-primary text-sm" %>
+    </div>
+  </div>
+</div>

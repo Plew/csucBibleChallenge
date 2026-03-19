@@ -18,7 +18,7 @@ class UserReadingsController < ApplicationController
     @user_reading = current_user.user_readings.build(reading: @reading, completed_on: completed_on)
 
     if @user_reading.save
-      # flash[:notice] = "Marked as read."
+      CheckBadgesJob.perform_later(current_user.id, challenge.id)
     else
       # Handle potential errors, e.g., already marked as read
       flash[:alert] = @user_reading.errors.full_messages.to_sentence.presence || "Could not mark as read."

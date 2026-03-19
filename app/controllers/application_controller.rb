@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   before_action :set_locale
+  before_action :check_badge_notifications
   helper_method :current_user, :logged_in?
 
   private
@@ -39,6 +40,26 @@ class ApplicationController < ActionController::Base
   def require_login
     unless logged_in?
       redirect_to new_user_session_path
+    end
+  end
+
+  def check_badge_notifications
+    return unless current_user
+
+    cache_key = "badge_notifications/#{current_user.id}"
+    badge_keys = Rails.cache.read(cache_key)
+    return unless badge_keys.present?
+
+    badge_key = badge_keys.shift
+    if badge_keys.empty?
+      Rails.cache.delete(cache_key)
+    else
+      Rails.cache.write(cache_key, badge_keys, expires_in: 1.hour)
+    end
+
+    badge = BadgeCatalog.find(badge_key)
+    if badge
+      flash.now[:badge] = I18n.t("badges.earned_notification", badge: I18n.t("badges.#{badge_key}.name"))
     end
   end
 end

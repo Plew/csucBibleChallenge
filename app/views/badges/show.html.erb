@@ -1,0 +1,34 @@
+<% content_for :title, t("badges.#{@badge.key}.name") %>
+
+<div class="container mx-auto px-2 py-4">
+  <div class="mb-4">
+    <%= link_to t('stats.back_to_stats'), stats_path, class: "link link-hover text-sm" %>
+  </div>
+
+  <div class="flex flex-col items-center mb-6">
+    <span class="text-5xl mb-2"><%= badge_icon(@badge.icon) %></span>
+    <h1 class="text-xl font-bold text-base-content"><%= t("badges.#{@badge.key}.name") %></h1>
+    <p class="text-sm text-base-content/60"><%= t("badges.#{@badge.key}.description") %></p>
+  </div>
+
+  <div class="bg-base-100 rounded-lg shadow p-3">
+    <h2 class="text-lg font-semibold mb-3">
+      <%= t('badges.awarded_to', count: @awarded_users.size) %>
+    </h2>
+
+    <% if @awarded_users.any? %>
+      <div class="space-y-1">
+        <% @awarded_users.each do |user_badge| %>
+          <div class="flex items-center gap-3 px-3 py-2 bg-base-200 rounded-lg">
+            <%= avatar_image_tag(user_badge.user, :tiny, class: 'rounded-full') %>
+            <div class="flex-1 min-w-0">
+              <%= link_to user_badge.user.username, public_profile_path(user_badge.user), class: "font-medium truncate block link link-hover" %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-base-content/60 text-sm text-center py-4"><%= t('badges.no_one_yet') %></p>
+    <% end %>
+  </div>
+</div>

@@ -79,6 +79,8 @@ bin/docker-dev reset     # Full rebuild (removes volumes)
 
 **Note:** The `storage/` directory is bind-mounted, so `bin/pull_prod_db` works from the host and the container sees the updated database immediately.
 
+**CRITICAL: Never run `bin/rails runner`, `bin/rails console`, or any Rails command that touches the database directly on the host.** Always run these inside the Docker container using `docker compose exec app bin/rails runner "..."` or `bin/docker-dev shell`. Running Rails commands on the host while the Docker container is also accessing the same SQLite database causes WAL corruption and disk I/O errors. Similarly, never use `bin/rails db:migrate` on the host — use `docker compose exec app bin/rails db:migrate`.
+
 **Note:** Docker development does NOT affect Kamal deploys - production uses the separate `Dockerfile`.
 
 ### Deployment

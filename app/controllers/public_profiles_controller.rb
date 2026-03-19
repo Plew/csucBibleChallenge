@@ -11,6 +11,10 @@ class PublicProfilesController < ApplicationController
                           .includes(reading: :challenge)
                           .order(created_at: :desc)
                           .group_by { |like| like.created_at.to_date }
+
+    # Find a shared challenge for badge display
+    shared_challenges = current_user.challenges & @user.challenges
+    @challenge = shared_challenges.first
   end
 
   private

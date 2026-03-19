@@ -29,6 +29,13 @@
       ) %>
     </div>
 
+    <!-- Badges -->
+    <% if user && challenge %>
+      <div>
+        <%= render BadgesDisplayComponent.new(user: user, challenge: challenge) %>
+      </div>
+    <% end %>
+
     <!-- Challenge Stats (Leaderboard) -->
     <div>
       <%= render Statistics::TopReadersComponent.new(top_readers_data: top_readers_data) %>

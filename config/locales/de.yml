@@ -841,6 +841,69 @@ de:
     not_read: "Nicht gelesen"
     jump_to_date: "Zu Datum springen"
 
+  # Badges
+  badges:
+    title: "Abzeichen"
+    earned_notification: "Abzeichen erhalten: %{badge}"
+    earned_on: "Erhalten am %{date}"
+    view_all: "Alle Abzeichen anzeigen"
+    not_found: "Abzeichen nicht gefunden"
+    no_one_yet: "Noch niemand hat dieses Abzeichen erhalten"
+    earner_count:
+      one: "%{count} erhalten"
+      other: "%{count} erhalten"
+    awarded_to:
+      one: "Von 1 Person erhalten"
+      other: "Von %{count} Personen erhalten"
+    categories:
+      chapters: "Kapitel"
+      fun: "Spaß"
+      streak: "Serie"
+      perfect: "Perfekt"
+      social: "Sozial"
+    chapters_50:
+      name: "Bücherwurm"
+      description: "Schließe 50 Kapitel ab"
+    chapters_100:
+      name: "Jahrhundert-Leser"
+      description: "Schließe 100 Kapitel ab"
+    streak_7:
+      name: "Streak-7"
+      description: "7 Tage hintereinander gelesen"
+    streak_30:
+      name: "Streak-30"
+      description: "30 Tage hintereinander gelesen"
+    streak_50:
+      name: "Streak-50"
+      description: "50 Tage hintereinander gelesen"
+    perfect_week:
+      name: "Perfekte Woche"
+      description: "Alle Lesungen 7 aufeinanderfolgende Tage pünktlich"
+    perfect_month:
+      name: "Perfekter Monat"
+      description: "Alle Lesungen 30 aufeinanderfolgende Tage pünktlich"
+    verse_lover:
+      name: "Vers-Liebhaber"
+      description: "Like 20 Verse in der Challenge"
+    crack_of_dawn:
+      name: "Frühaufsteher"
+      description: "10 Lesungen zwischen 5 und 6 Uhr morgens eingetragen"
+    go_to_bed:
+      name: "Geh ins Bett"
+      description: "10 Lesungen zwischen 23:30 und Mitternacht eingetragen"
+    just_barely:
+      name: "Gerade noch"
+      description: "Eine Lesung zwischen 23:59 und Mitternacht eingetragen"
+    slightly_sus:
+      name: "Etwas verdächtig"
+      description: "10+ Kapitel an einem einzigen Tag eingetragen"
+    i_have_returned:
+      name: "Auferstanden"
+      description: "Nach einer 10+ tägigen Pause zurückgekehrt"
+    lone_wolf:
+      name: "Einsamer Wolf"
+      description: "15 aufeinanderfolgende perfekte Tage ohne einer Gruppe beizutreten"
+
   # Public Profile
   public_profile:
     liked_verses: "Gelikte Verse"

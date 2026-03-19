@@ -19,6 +19,7 @@ class VerseLikesController < ApplicationController
         verse_number: @verse_number
       )
       @liked = true
+      CheckBadgesJob.perform_later(current_user.id, @reading.challenge_id)
     end
 
     @like_count = VerseLike.for_verse(@reading.id, @verse_number).count

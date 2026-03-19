@@ -22,6 +22,7 @@ class User < ApplicationRecord
   has_many :blog_posts, dependent: :destroy
   has_many :blog_comments, dependent: :destroy
   has_many :verse_likes, dependent: :destroy
+  has_many :user_badges, dependent: :destroy
 
   attr_accessor :current_password, :skip_current_password_validation
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_19_064714) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_19_103554) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -319,6 +319,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_19_064714) do
     t.index ["challenge_id"], name: "index_sprints_on_challenge_id"
   end
 
+  create_table "user_badges", force: :cascade do |t|
+    t.string "badge_key", null: false
+    t.integer "challenge_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["badge_key"], name: "index_user_badges_on_badge_key"
+    t.index ["challenge_id"], name: "index_user_badges_on_challenge_id"
+    t.index ["user_id", "badge_key", "challenge_id"], name: "index_user_badges_on_user_id_and_badge_key_and_challenge_id", unique: true
+    t.index ["user_id"], name: "index_user_badges_on_user_id"
+  end
+
   create_table "user_challenge_enrollments", force: :cascade do |t|
     t.integer "challenge_id", null: false
     t.datetime "created_at", null: false
@@ -435,6 +447,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_19_064714) do
   add_foreign_key "sprint_winners", "groups"
   add_foreign_key "sprint_winners", "sprints"
   add_foreign_key "sprints", "challenges"
+  add_foreign_key "user_badges", "challenges"
+  add_foreign_key "user_badges", "users"
   add_foreign_key "user_challenge_enrollments", "challenges"
   add_foreign_key "user_challenge_enrollments", "users"
   add_foreign_key "user_group_enrollments", "groups"

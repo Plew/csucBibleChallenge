@@ -177,6 +177,9 @@ Rails.application.routes.draw do
   get "stats/personal", to: "stats#personal", as: :stats_personal
   get "stats/seven_day_window", to: "stats#seven_day_window", as: :stats_seven_day_window
 
+  get "badges", to: "badges#index", as: :badges
+  get "badges/:badge_key", to: "badges#show", as: :badge
+
   resources :user_readings, only: [ :create ]
 
   # Feedback

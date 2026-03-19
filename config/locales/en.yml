@@ -896,6 +896,69 @@ en:
     not_read: "Not read"
     jump_to_date: "Jump to Date"
 
+  # Badges
+  badges:
+    title: "Badges"
+    earned_notification: "Badge earned: %{badge}"
+    earned_on: "Earned %{date}"
+    view_all: "View All Badges"
+    not_found: "Badge not found"
+    no_one_yet: "No one has earned this badge yet"
+    earner_count:
+      one: "%{count} earned"
+      other: "%{count} earned"
+    awarded_to:
+      one: "Earned by 1 person"
+      other: "Earned by %{count} people"
+    categories:
+      chapters: "Chapters"
+      fun: "Fun"
+      streak: "Streak"
+      perfect: "Perfect"
+      social: "Social"
+    chapters_50:
+      name: "Bookworm"
+      description: "Complete 50 chapters"
+    chapters_100:
+      name: "Century Reader"
+      description: "Complete 100 chapters"
+    streak_7:
+      name: "Streak-7"
+      description: "Read 7 days in a row"
+    streak_30:
+      name: "Streak-30"
+      description: "Read 30 days in a row"
+    streak_50:
+      name: "Streak-50"
+      description: "Read 50 days in a row"
+    perfect_week:
+      name: "Perfect Week"
+      description: "All readings on-time for 7 consecutive days"
+    perfect_month:
+      name: "Perfect Month"
+      description: "All readings on-time for 30 consecutive days"
+    verse_lover:
+      name: "Verse Lover"
+      description: "Like 20 verses in the challenge"
+    crack_of_dawn:
+      name: "Crack of Dawn"
+      description: "Log 10 readings between 5am and 6am"
+    go_to_bed:
+      name: "Go to Bed"
+      description: "Log 10 readings between 11:30pm and midnight"
+    just_barely:
+      name: "Just Barely"
+      description: "Log a reading between 11:59pm and midnight"
+    slightly_sus:
+      name: "Slightly Sus"
+      description: "Log 10+ chapters in a single day"
+    i_have_returned:
+      name: "Resurrected"
+      description: "Come back after a 10+ day break"
+    lone_wolf:
+      name: "Lone Wolf"
+      description: "15 consecutive perfect days without joining a group"
+
   # Public Profile
   public_profile:
     liked_verses: "Liked Verses"
