@@ -480,6 +480,8 @@ en:
       no_groups: "No groups have been created in this challenge yet"
       winners: "Winners"
       no_winners_yet: "Winners not yet calculated"
+      override_winners: "Assign Winner Groups"
+      override_winners_hint: "Select the winning group(s) for this sprint. This overrides any automatic calculation."
       days_count:
         one: "%{count} day"
         other: "%{count} days"

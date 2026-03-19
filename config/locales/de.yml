@@ -425,6 +425,8 @@ de:
       no_groups: "In dieser Challenge wurden noch keine Gruppen erstellt"
       winners: "Gewinner"
       no_winners_yet: "Gewinner noch nicht berechnet"
+      override_winners: "Gewinnergruppen zuweisen"
+      override_winners_hint: "Wähle die Gewinnergruppe(n) für diesen Sprint. Dies überschreibt jede automatische Berechnung."
       days_count:
         one: "%{count} Tag"
         other: "%{count} Tage"

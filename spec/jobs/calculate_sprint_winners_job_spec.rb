@@ -32,7 +32,23 @@ RSpec.describe CalculateSprintWinnersJob, type: :job do
       expect { described_class.perform_now }.not_to change { SprintWinner.count }
     end
 
-    it "does not process sprints that did not end yesterday" do
+    it "calculates winners for older sprints without winners" do
+      tz = ActiveSupport::TimeZone["Berlin"]
+      two_weeks_ago = tz.now.to_date - 14.days
+
+      sprint = create(:sprint, challenge: challenge, begin_date: two_weeks_ago - 30.days, end_date: two_weeks_ago)
+      group = create(:group, challenge: challenge)
+      create(:user_group_enrollment, group: group)
+
+      allow_any_instance_of(GroupStatistics).to receive(:completion_percentage).and_return(90)
+      allow_any_instance_of(GroupStatistics).to receive(:on_schedule_percentage).and_return(80)
+
+      described_class.perform_now
+
+      expect(sprint.sprint_winners.count).to eq(1)
+    end
+
+    it "does not process sprints that have not ended yet" do
       tz = ActiveSupport::TimeZone["Berlin"]
       today = tz.now.to_date
 

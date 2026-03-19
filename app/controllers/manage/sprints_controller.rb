@@ -41,14 +41,23 @@ class Manage::SprintsController < Manage::BaseController
 
   def edit
     @readings = @challenge.readings.order(:scheduled_date)
+    @groups = @challenge.groups.order(:name) if @sprint.end_date < Date.current
   end
 
   def update
-    if @sprint.update(sprint_params)
-      redirect_to challenge_manage_sprints_path(@challenge), notice: t("manage.sprints.updated")
-    else
-      @readings = @challenge.readings.order(:scheduled_date)
+    ActiveRecord::Base.transaction do
+      assign_winner_groups! if params[:sprint].key?(:winner_group_ids)
+      unless @sprint.update(sprint_params)
+        @readings = @challenge.readings.order(:scheduled_date)
+        @groups = @challenge.groups.order(:name) if @sprint.end_date < Date.current
+        raise ActiveRecord::Rollback
+      end
+    end
+
+    if @sprint.errors.any?
       render :edit, status: :unprocessable_entity
+    else
+      redirect_to challenge_manage_sprints_path(@challenge), notice: t("manage.sprints.updated")
     end
   end
 
@@ -65,5 +74,20 @@ class Manage::SprintsController < Manage::BaseController
 
   def sprint_params
     params.require(:sprint).permit(:title, :begin_date, :end_date)
+  end
+
+  def assign_winner_groups!
+    group_ids = Array(params[:sprint][:winner_group_ids]).reject(&:blank?).map(&:to_i)
+    @sprint.sprint_winners.destroy_all
+
+    group_ids.each do |group_id|
+      group = @challenge.groups.find(group_id)
+      stats = GroupStatistics.new(group, @sprint.date_range)
+      @sprint.sprint_winners.create!(
+        group: group,
+        completion_percentage: stats.completion_percentage,
+        on_schedule_percentage: stats.on_schedule_percentage
+      )
+    end
   end
 end

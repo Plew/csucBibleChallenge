@@ -34,6 +34,28 @@
         </label>
       </div>
 
+        <% if @groups&.any? %>
+          <div class="divider"></div>
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text font-semibold"><%= t("admin.sprints.override_winners") %></span>
+            </label>
+            <p class="text-sm text-base-content/60 mb-2"><%= t("admin.sprints.override_winners_hint") %></p>
+            <div class="space-y-2">
+              <% @groups.each do |group| %>
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <%= check_box_tag "sprint[winner_group_ids][]", group.id,
+                      @sprint.winner_groups.include?(group),
+                      id: "winner_group_#{group.id}",
+                      class: "checkbox checkbox-sm checkbox-primary" %>
+                  <span class="label-text"><%= group.name %></span>
+                </label>
+              <% end %>
+            </div>
+            <%= hidden_field_tag "sprint[winner_group_ids][]", "" %>
+          </div>
+        <% end %>
+
         <div class="card-actions justify-end mt-4">
           <%= link_to t("common.cancel"), challenge_manage_sprints_path(@challenge), class: "btn btn-outline" %>
           <%= form.submit t("common.save"), class: "btn btn-primary" %>
