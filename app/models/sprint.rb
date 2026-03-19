@@ -44,7 +44,7 @@ class Sprint < ApplicationRecord
 
     transaction do
       winners.each do |w|
-        sprint_winners.create!(group: w[:group], completion_percentage: w[:completion], on_schedule_percentage: w[:on_schedule])
+        sprint_winners.create!(group: w[:group], group_name: w[:group].name, completion_percentage: w[:completion], on_schedule_percentage: w[:on_schedule])
       end
     end
   end

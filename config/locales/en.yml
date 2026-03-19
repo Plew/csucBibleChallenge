@@ -193,7 +193,7 @@ en:
     admin: "Admin"
     manage: "Manage"
     manage_challenge: "Manage Challenge"
-    creator_dashboard: "Manage: %{challenge}"
+    challenge_admin: "Challenge Admin"
 
   # Challenge Owner Management
   manage:
@@ -679,6 +679,10 @@ en:
     no_groups: "No groups available yet"
     top_groups_message: "Create or join a group to see group rankings!"
     completion: "Completion"
+    sprints: "Sprints"
+    no_sprints: "No sprints have been created yet"
+    on_schedule_short: "On Sched."
+    deleted_group: "Deleted Group"
     perfect_record:
       title: "Perfect Record"
       days_in_a_row:

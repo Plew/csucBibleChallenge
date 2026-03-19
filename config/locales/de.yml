@@ -26,7 +26,7 @@ de:
     admin: "Admin"
     manage: "Verwalten"
     manage_challenge: "Challenge verwalten"
-    creator_dashboard: "Verwalten: %{challenge}"
+    challenge_admin: "Challenge-Admin"
 
   bible_books:
     genesis: "Genesis"
@@ -624,6 +624,10 @@ de:
     no_groups: "Noch keine Gruppen verfügbar"
     top_groups_message: "Erstelle oder tritt einer Gruppe bei, um Gruppenrankings zu sehen!"
     completion: "Abschluss"
+    sprints: "Sprints"
+    no_sprints: "Es wurden noch keine Sprints erstellt"
+    on_schedule_short: "Pünktl."
+    deleted_group: "Gelöschte Gruppe"
     perfect_record:
       title: "Perfekte Bilanz"
       days_in_a_row:

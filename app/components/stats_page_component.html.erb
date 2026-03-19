@@ -41,6 +41,13 @@
       </div>
     <% end %>
 
+    <!-- Sprints -->
+    <% if sprints.any? %>
+      <div>
+        <%= render Statistics::SprintsComponent.new(sprints: sprints) %>
+      </div>
+    <% end %>
+
     <!-- 7 Day Stats -->
     <div>
       <%= render SevenDayLeaderboardComponent.new(leaderboard_data: seven_day_leaderboard_data) %>

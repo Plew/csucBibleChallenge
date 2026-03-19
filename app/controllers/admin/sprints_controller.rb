@@ -93,6 +93,7 @@ class Admin::SprintsController < Admin::BaseController
       stats = GroupStatistics.new(group, @sprint.date_range)
       @sprint.sprint_winners.create!(
         group: group,
+        group_name: group.name,
         completion_percentage: stats.completion_percentage,
         on_schedule_percentage: stats.on_schedule_percentage
       )

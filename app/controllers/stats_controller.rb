@@ -20,6 +20,7 @@ class StatsController < ApplicationController
     @perfect_record_data = cached_perfect_record(current_challenge)
     @most_liked_verse = cached_most_liked_verse(current_challenge)
     @most_liked_verse_today = calculate_most_liked_verse_today(current_challenge, current_user)
+    @sprints = cached_sprints(current_challenge)
   end
 
   def challenge
@@ -402,5 +403,13 @@ class StatsController < ApplicationController
       start_date: sprint.begin_date,
       current_day: current_day
     }
+  end
+
+  def cached_sprints(challenge)
+    return [] unless challenge
+
+    Rails.cache.fetch("stats/sprints/#{challenge.id}", expires_in: CACHE_EXPIRATION) do
+      challenge.sprints.ordered.includes(sprint_winners: { group: :users }).to_a
+    end
   end
 end

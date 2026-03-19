@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe SprintWinner, type: :model do
   describe "associations" do
     it { should belong_to(:sprint) }
-    it { should belong_to(:group) }
+    it { should belong_to(:group).optional }
   end
 
   describe "validations" do
