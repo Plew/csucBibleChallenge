@@ -53,6 +53,12 @@ class BadgeAwarder
       longest_gap_days > badge.threshold
     when :lone_wolf
       perfect_record_days >= badge.threshold && !user_in_group?
+    when :weekend_warrior
+      consecutive_weekend_days >= badge.threshold
+    when :catch_up
+      late_reading_count_by_date >= badge.threshold
+    when :completion_pct
+      completion_percentage >= badge.threshold
     else
       false
     end
@@ -123,6 +129,36 @@ class BadgeAwarder
       dates = reading_timestamps_in_tz.map(&:to_date).uniq.sort
       return 0 if dates.size < 2
       dates.each_cons(2).map { |a, b| (b - a).to_i }.max
+    end
+  end
+
+  def consecutive_weekend_days
+    @consecutive_weekend_days ||= begin
+      # Get all weekend dates (Sat/Sun) where the user completed a reading
+      weekend_dates = reading_timestamps_in_tz
+        .map(&:to_date)
+        .uniq
+        .select { |d| d.saturday? || d.sunday? }
+        .sort
+
+      consecutive_streak(weekend_dates)
+    end
+  end
+
+  def late_reading_count_by_date
+    @late_reading_count_by_date ||= user.user_readings
+      .joins(:reading)
+      .where(readings: { challenge_id: challenge.id })
+      .where("DATE(user_readings.completed_on) > readings.scheduled_date")
+      .count
+  end
+
+  def completion_percentage
+    @completion_percentage ||= begin
+      current_date = Time.current.in_time_zone(challenge.timezone).to_date
+      scheduled = challenge.readings.where("scheduled_date <= ?", current_date).count
+      return 0 if scheduled.zero?
+      (chapters_completed.to_f / scheduled * 100).floor
     end
   end
 

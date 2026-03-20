@@ -903,6 +903,15 @@ de:
     lone_wolf:
       name: "Einsamer Wolf"
       description: "15 aufeinanderfolgende perfekte Tage ohne einer Gruppe beizutreten"
+    weekend_warrior:
+      name: "Wochenend-Krieger"
+      description: "4 Wochen lang jeden Samstag und Sonntag gelesen"
+    catch_up_king:
+      name: "Nachholkönig"
+      description: "20+ Lesungen nach dem geplanten Datum abgeschlossen"
+    halfway_there:
+      name: "Halbzeit"
+      description: "50% aller geplanten Lesungen abgeschlossen"
 
   # Public Profile
   public_profile:

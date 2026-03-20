@@ -17,7 +17,10 @@ module BadgeCatalog
     Badge.new(key: "just_barely", category: "fun", icon: "sweat", threshold: 1, check_type: :last_minute),
     Badge.new(key: "slightly_sus", category: "fun", icon: "eyes", threshold: 10, check_type: :bulk_reading),
     Badge.new(key: "i_have_returned", category: "fun", icon: "wave", threshold: 10, check_type: :returned),
-    Badge.new(key: "lone_wolf", category: "fun", icon: "wolf", threshold: 15, check_type: :lone_wolf)
+    Badge.new(key: "lone_wolf", category: "fun", icon: "wolf", threshold: 15, check_type: :lone_wolf),
+    Badge.new(key: "weekend_warrior", category: "fun", icon: "flex", threshold: 8, check_type: :weekend_warrior),
+    Badge.new(key: "catch_up_king", category: "fun", icon: "runner", threshold: 20, check_type: :catch_up),
+    Badge.new(key: "halfway_there", category: "chapters", icon: "flag", threshold: 50, check_type: :completion_pct)
   ].freeze
 
   BADGE_MAP = BADGES.index_by(&:key).freeze

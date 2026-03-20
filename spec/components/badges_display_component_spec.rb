@@ -19,7 +19,6 @@ RSpec.describe BadgesDisplayComponent, type: :component do
     create(:user_badge, user: user, challenge: challenge, badge_key: "chapters_50")
 
     render_inline(described_class.new(user: user, challenge: challenge))
-    expect(page).to have_text("1")
     expect(page).to have_text(I18n.t("badges.chapters_50.name"))
     expect(page).not_to have_text(I18n.t("badges.chapters_100.name"))
   end

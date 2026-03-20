@@ -958,6 +958,15 @@ en:
     lone_wolf:
       name: "Lone Wolf"
       description: "15 consecutive perfect days without joining a group"
+    weekend_warrior:
+      name: "Weekend Warrior"
+      description: "Read every Saturday and Sunday for 4 weeks straight"
+    catch_up_king:
+      name: "Catch-Up King"
+      description: "Complete 20+ readings after their scheduled date"
+    halfway_there:
+      name: "Halfway There"
+      description: "Complete 50% of all scheduled readings"
 
   # Public Profile
   public_profile:
