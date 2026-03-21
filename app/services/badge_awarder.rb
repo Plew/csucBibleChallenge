@@ -59,6 +59,12 @@ class BadgeAwarder
       late_reading_count_by_date >= badge.threshold
     when :completion_pct
       completion_percentage >= badge.threshold
+    when :chatty_chapter
+      max_messages_on_one_reading >= badge.threshold
+    when :picky_liker
+      readings_with_exactly_one_like >= badge.threshold
+    when :conversation_starter
+      started_conversations_with_replies >= badge.threshold
     else
       false
     end
@@ -168,6 +174,40 @@ class BadgeAwarder
     challenge_group_ids = challenge.groups.pluck(:id)
     @user_in_group = challenge_group_ids.any? &&
       UserGroupEnrollment.where(user: user, group_id: challenge_group_ids).exists?
+  end
+
+  def max_messages_on_one_reading
+    @max_messages_on_one_reading ||= begin
+      reading_ids = challenge.readings.pluck(:id)
+      counts = VerseMessage.where(user: user, reading_id: reading_ids)
+        .group(:reading_id).count
+      counts.values.max || 0
+    end
+  end
+
+  def readings_with_exactly_one_like
+    @readings_with_exactly_one_like ||= begin
+      reading_ids = challenge.readings.pluck(:id)
+      counts = user.verse_likes.where(reading_id: reading_ids)
+        .group(:reading_id).count
+      counts.values.count { |c| c == 1 }
+    end
+  end
+
+  def started_conversations_with_replies
+    @started_conversations_with_replies ||= begin
+      reading_ids = challenge.readings.pluck(:id)
+      # Find verses where this user left a message
+      user_verse_keys = VerseMessage.where(user: user, reading_id: reading_ids)
+        .pluck(:reading_id, :verse_number)
+        .map { |r, v| [ r, v ] }
+        .uniq
+
+      user_verse_keys.count do |reading_id, verse_number|
+        total = VerseMessage.where(reading_id: reading_id, verse_number: verse_number).count
+        total >= 5
+      end
+    end
   end
 
   def calculate_longest_on_time_streak

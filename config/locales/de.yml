@@ -905,6 +905,15 @@ de:
     halfway_there:
       name: "Halbzeit"
       description: "50% aller geplanten Lesungen abgeschlossen"
+    chatty_chapter:
+      name: "Plauderkapitel"
+      description: "Mehr als 5 Kommentare zu einem einzelnen Kapitel hinterlassen"
+    love_is_not_cheap:
+      name: "Liebe ist nicht billig"
+      description: "Nur einen Vers in einem Kapitel liken, 5 verschiedene Male"
+    conversation_starter:
+      name: "Gesprächsstarter"
+      description: "Einen Vers-Kommentar-Thread starten, der 5+ Kommentare erreicht"
 
   # Public Profile
   public_profile:

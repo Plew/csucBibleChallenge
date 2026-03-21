@@ -960,6 +960,15 @@ en:
     halfway_there:
       name: "Halfway There"
       description: "Complete 50% of all scheduled readings"
+    chatty_chapter:
+      name: "Chatty Chapter"
+      description: "Leave more than 5 comments on a single chapter"
+    love_is_not_cheap:
+      name: "Love is Not Cheap"
+      description: "Like only one verse in a chapter, 5 different times"
+    conversation_starter:
+      name: "Conversation Starter"
+      description: "Start a verse comment thread that reaches 5+ comments"
 
   # Public Profile
   public_profile:
