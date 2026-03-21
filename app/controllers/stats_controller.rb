@@ -21,6 +21,7 @@ class StatsController < ApplicationController
     @most_liked_verse = cached_most_liked_verse(current_challenge)
     @most_liked_verse_today = calculate_most_liked_verse_today(current_challenge, current_user)
     @sprints = cached_sprints(current_challenge)
+    @recent_badges = cached_recent_badges(current_challenge)
   end
 
   def challenge
@@ -403,6 +404,18 @@ class StatsController < ApplicationController
       start_date: sprint.begin_date,
       current_day: current_day
     }
+  end
+
+  def cached_recent_badges(challenge)
+    return [] unless challenge
+
+    Rails.cache.fetch("stats/recent_badges/#{challenge.id}", expires_in: CACHE_EXPIRATION) do
+      UserBadge.where(challenge: challenge)
+        .includes(:user)
+        .order(created_at: :desc)
+        .limit(20)
+        .to_a
+    end
   end
 
   def cached_sprints(challenge)

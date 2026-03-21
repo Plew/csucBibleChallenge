@@ -902,6 +902,8 @@ en:
     earned_notification: "Badge earned: %{badge}"
     earned_on: "Earned %{date}"
     view_all: "View All Badges"
+    recent_badges: "Badges"
+    ago: "ago"
     not_found: "Badge not found"
     no_one_yet: "No one has earned this badge yet"
     earner_count:

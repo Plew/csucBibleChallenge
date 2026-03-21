@@ -1,0 +1,24 @@
+<div class="collapse collapse-arrow border-base-300 bg-base-200 border">
+  <input type="checkbox" id="recent-badges-collapse">
+  <label for="recent-badges-collapse" class="collapse-title text-xl font-medium flex items-center gap-2 pr-12">
+    <span class="truncate"><%= t('badges.recent_badges') %></span>
+  </label>
+  <div class="collapse-content">
+    <div class="grid grid-cols-1 gap-2">
+      <% recent_badges.each do |user_badge| %>
+        <% badge = BadgeCatalog.find(user_badge.badge_key) %>
+        <% next unless badge %>
+        <div class="flex items-center gap-3 p-2 rounded-lg bg-base-100">
+          <span class="text-2xl flex-shrink-0"><%= badge_icon(badge.icon) %></span>
+          <div class="min-w-0 flex-1">
+            <div class="text-sm font-semibold leading-tight"><%= t("badges.#{badge.key}.name") %></div>
+            <div class="text-xs text-base-content/60 leading-tight"><%= t("badges.#{badge.key}.description") %></div>
+            <div class="text-xs text-base-content/50 leading-tight mt-0.5">
+              <%= user_badge.user.username %> &middot; <%= helpers.time_ago_in_words(user_badge.created_at) %> <%= t('badges.ago') %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

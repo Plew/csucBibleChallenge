@@ -3,7 +3,7 @@
 class StatsPageComponent < ViewComponent::Base
   include ApplicationHelper
 
-  def initialize(challenge:, challenge_summary_stats:, personal_stats:, top_readers_data:, participant_count:, top_groups_data:, seven_day_leaderboard_data:, perfect_record_data: nil, current_sprint: nil, sprint_stats: nil, challenge_graph_data: nil, sprint_graph_data: nil, most_liked_verse: nil, most_liked_verse_today: nil, sprints: [], user: nil)
+  def initialize(challenge:, challenge_summary_stats:, personal_stats:, top_readers_data:, participant_count:, top_groups_data:, seven_day_leaderboard_data:, perfect_record_data: nil, current_sprint: nil, sprint_stats: nil, challenge_graph_data: nil, sprint_graph_data: nil, most_liked_verse: nil, most_liked_verse_today: nil, sprints: [], user: nil, recent_badges: [])
     @challenge = challenge
     @challenge_summary_stats = challenge_summary_stats
     @personal_stats = personal_stats
@@ -20,9 +20,10 @@ class StatsPageComponent < ViewComponent::Base
     @most_liked_verse_today = most_liked_verse_today
     @sprints = sprints
     @user = user
+    @recent_badges = recent_badges
   end
 
   private
 
-  attr_reader :challenge, :challenge_summary_stats, :personal_stats, :top_readers_data, :participant_count, :top_groups_data, :seven_day_leaderboard_data, :perfect_record_data, :current_sprint, :sprint_stats, :challenge_graph_data, :sprint_graph_data, :most_liked_verse, :most_liked_verse_today, :sprints, :user
+  attr_reader :challenge, :challenge_summary_stats, :personal_stats, :top_readers_data, :participant_count, :top_groups_data, :seven_day_leaderboard_data, :perfect_record_data, :current_sprint, :sprint_stats, :challenge_graph_data, :sprint_graph_data, :most_liked_verse, :most_liked_verse_today, :sprints, :user, :recent_badges
 end

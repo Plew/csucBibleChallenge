@@ -847,6 +847,8 @@ de:
     earned_notification: "Abzeichen erhalten: %{badge}"
     earned_on: "Erhalten am %{date}"
     view_all: "Alle Abzeichen anzeigen"
+    recent_badges: "Abzeichen"
+    ago: "her"
     not_found: "Abzeichen nicht gefunden"
     no_one_yet: "Noch niemand hat dieses Abzeichen erhalten"
     earner_count:
