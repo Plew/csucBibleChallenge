@@ -30,6 +30,7 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: { case_sensitive: false }, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :password, presence: true, length: { minimum: 6 }, if: -> { new_record? || !password.nil? }
   validates :version, inclusion: { in: VALID_VERSIONS, message: "must be a valid Bible version" }
+  validate :avatar_content_type_allowed
   validates :current_password, presence: true, if: :password_being_updated_and_not_resetting?
   validate :current_password_correct, if: :password_being_updated_and_not_resetting?
 
@@ -74,6 +75,15 @@ class User < ApplicationRecord
   end
 
   private
+
+  ALLOWED_AVATAR_TYPES = %w[image/png image/jpeg image/gif image/webp].freeze
+
+  def avatar_content_type_allowed
+    return unless avatar.attached?
+    unless ALLOWED_AVATAR_TYPES.include?(avatar.blob.content_type)
+      errors.add(:avatar, "must be a PNG, JPEG, GIF, or WebP image")
+    end
+  end
 
   def password_being_updated?
     !new_record? && password.present?

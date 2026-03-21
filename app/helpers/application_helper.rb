@@ -94,8 +94,8 @@ module ApplicationHelper
             user.avatar.variant(:medium).processed
           end
         image_tag(variant, options)
-      rescue ActiveStorage::FileNotFoundError
-        # Fall back to generated avatar if file is missing
+      rescue ActiveStorage::FileNotFoundError, ActiveStorage::InvariableError
+        # Fall back to generated avatar if file is missing or can't be transformed (e.g. SVG)
         image_tag(Avatarro.image(user.username), options)
       end
     else
