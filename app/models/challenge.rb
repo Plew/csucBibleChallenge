@@ -44,7 +44,8 @@ class Challenge < ApplicationRecord
   end
 
   def manageable_by?(user)
-    owned_by?(user) || challenge_admin?(user)
+    return false unless user.present?
+    user.admin? || owned_by?(user) || challenge_admin?(user)
   end
 
   def join_url

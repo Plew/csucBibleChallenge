@@ -86,8 +86,7 @@
         <h2 class="card-title mb-4"><%= t("admin.challenges.management_actions") %></h2>
         <div class="flex flex-wrap gap-2">
           <%= link_to t("challenges.edit_challenge"), edit_admin_challenge_path(@challenge), class: "btn btn-primary" %>
-          <%= link_to t("admin.sprints.manage_sprints"), admin_challenge_sprints_path(@challenge), class: "btn btn-secondary" %>
-          <%= link_to t("admin.challenges.manage_posts"), admin_challenge_blog_posts_path(@challenge), class: "btn btn-secondary" %>
+          <%= link_to t("navigation.manage_challenge"), challenge_manage_dashboard_path(@challenge), class: "btn btn-secondary" %>
           <%= link_to t("admin.seven_day_winner.title"), challenge_seven_day_lobby_path(@challenge), class: "btn btn-accent" %>
         </div>
       </div>

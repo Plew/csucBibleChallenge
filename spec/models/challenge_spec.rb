@@ -156,6 +156,11 @@ RSpec.describe Challenge, type: :model do
       expect(challenge.manageable_by?(admin_user)).to be true
     end
 
+    it 'returns true for a site admin' do
+      site_admin = create(:user, admin: true)
+      expect(challenge.manageable_by?(site_admin)).to be true
+    end
+
     it 'returns false for a regular member' do
       expect(challenge.manageable_by?(member_user)).to be false
     end

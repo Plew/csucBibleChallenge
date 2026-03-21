@@ -116,8 +116,6 @@ Rails.application.routes.draw do
       member do
         get :delete_confirmation
       end
-      resources :sprints, only: [ :index, :show, :new, :create, :edit, :update, :destroy ]
-      resources :blog_posts, only: [ :index, :new, :create, :edit, :update, :destroy ]
     end
     resources :users, only: [ :index, :show ] do
       member do
