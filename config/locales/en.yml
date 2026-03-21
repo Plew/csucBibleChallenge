@@ -914,7 +914,6 @@ en:
       chapters: "Chapters"
       fun: "Fun"
       streak: "Streak"
-      perfect: "Perfect"
       social: "Social"
     chapters_50:
       name: "Bookworm"
@@ -931,12 +930,6 @@ en:
     streak_50:
       name: "Streak-50"
       description: "Read 50 days in a row"
-    perfect_week:
-      name: "Perfect Week"
-      description: "All readings on-time for 7 consecutive days"
-    perfect_month:
-      name: "Perfect Month"
-      description: "All readings on-time for 30 consecutive days"
     verse_lover:
       name: "Verse Lover"
       description: "Like 20 verses in the challenge"

@@ -53,19 +53,6 @@ RSpec.describe BadgeAwarder do
       end
     end
 
-    context "perfect record badges" do
-      it "awards perfect_week for any 7 consecutive perfect days" do
-        7.times do |i|
-          date = challenge.start_date + 10.days + i.days
-          reading = create(:reading, challenge: challenge, scheduled_date: date, book_number: 1, chapter_number: i + 1)
-          create(:user_reading, user: user, reading: reading, completed_on: date)
-        end
-
-        result = BadgeAwarder.new(user, challenge).call
-        expect(result).to include("perfect_week")
-      end
-    end
-
     context "social badges" do
       it "awards verse_lover when user likes 20 verses" do
         20.times do |i|

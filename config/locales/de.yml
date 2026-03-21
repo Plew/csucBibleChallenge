@@ -859,7 +859,6 @@ de:
       chapters: "Kapitel"
       fun: "Spaß"
       streak: "Serie"
-      perfect: "Perfekt"
       social: "Sozial"
     chapters_50:
       name: "Bücherwurm"
@@ -876,12 +875,6 @@ de:
     streak_50:
       name: "Streak-50"
       description: "50 Tage hintereinander gelesen"
-    perfect_week:
-      name: "Perfekte Woche"
-      description: "Alle Lesungen 7 aufeinanderfolgende Tage pünktlich"
-    perfect_month:
-      name: "Perfekter Monat"
-      description: "Alle Lesungen 30 aufeinanderfolgende Tage pünktlich"
     verse_lover:
       name: "Vers-Liebhaber"
       description: "Like 20 Verse in der Challenge"
