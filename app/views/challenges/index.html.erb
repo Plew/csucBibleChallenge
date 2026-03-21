@@ -1,4 +1,9 @@
 <div class="container mx-auto">
-  <h1 class="text-base font-semibold mb-4 mt-8 text-center">Choose a Bible Challenge</h1>
+  <% if logged_in? && current_user.challenges.empty? %>
+    <div class="mb-4 mt-8">
+      <%= link_to t('challenges.create_new'), new_challenge_path, class: "btn btn-primary btn-sm w-full" %>
+    </div>
+  <% end %>
+  <h1 class="text-base font-semibold mb-4 <%= logged_in? && current_user.challenges.empty? ? '' : 'mt-8' %> text-center"><%= t('challenges.choose_challenge') %></h1>
   <%= render 'challenges/challenge_list', challenges: @challenges %>
 </div> 

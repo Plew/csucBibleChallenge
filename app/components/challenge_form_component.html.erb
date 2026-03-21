@@ -1,6 +1,6 @@
 <div class="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
   <div class="max-w-4xl mx-auto">
-    <h1 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-8">Create New Reading Challenge</h1>
+    <h1 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-8"><%= t("challenge_form.page_title") %></h1>
 
     <%= form_with model: challenge, url: form_url, local: true, class: "space-y-4 sm:space-y-6", data: { controller: "challenge-creator" } do |form| %>
       <% if challenge.errors.any? %>
@@ -13,93 +13,86 @@
         </div>
       <% end %>
 
+      <!-- Stepper Navigation -->
+      <ul class="steps steps-horizontal w-full" data-challenge-creator-target="stepper">
+        <li class="step step-primary cursor-pointer" data-action="click->challenge-creator#scrollToSection" data-section="section-details"><%= t("challenge_form.step_details") %></li>
+        <li class="step cursor-pointer" data-action="click->challenge-creator#scrollToSection" data-section="section-books"><%= t("challenge_form.step_books") %></li>
+        <li class="step cursor-pointer" data-action="click->challenge-creator#scrollToSection" data-section="section-preview"><%= t("challenge_form.step_preview") %></li>
+      </ul>
+
       <!-- Challenge Details Card -->
-      <div class="card bg-base-100 shadow-xl">
+      <div class="card bg-base-100 shadow-xl" id="section-details">
         <div class="card-body">
-          <h2 class="card-title mb-4">Challenge Details</h2>
-          
+          <h2 class="card-title mb-4"><%= t("challenge_form.challenge_details") %></h2>
+
           <div class="form-control w-full">
-            <%= form.label :name, "Challenge Title", class: "label" %>
-            <%= form.text_field :name, class: "input input-bordered w-full", placeholder: "Enter challenge title" %>
+            <%= form.label :name, t("challenge_form.challenge_title"), class: "label" %>
+            <%= form.text_field :name, class: "input input-bordered w-full", placeholder: t("challenge_form.title_placeholder") %>
           </div>
 
           <div class="form-control w-full">
-            <%= form.label :description, "Description (optional - Markdown supported)", class: "label" %>
-            <%= form.text_area :description, class: "textarea textarea-bordered w-full", placeholder: "Enter a brief description of the challenge", rows: 3 %>
+            <%= form.label :description, t("challenge_form.description_label"), class: "label" %>
+            <%= form.text_area :description, class: "textarea textarea-bordered w-full", placeholder: t("challenge_form.description_placeholder"), rows: 3 %>
             <div class="label">
               <span class="label-text-alt text-xs">
-                Markdown syntax: **bold**, *italic*, [link](url), ![image](url), - lists
+                <%= t("challenge_form.markdown_help") %>
               </span>
             </div>
           </div>
 
           <div class="form-control w-full">
-            <%= form.label :start_date, "Start Date", class: "label" %>
+            <%= form.label :start_date, t("challenge_form.start_date"), class: "label" %>
             <%= form.date_field :start_date, class: "input input-bordered w-full", data: { "challenge-creator-target": "startDate", action: "change->challenge-creator#updateSchedule" } %>
           </div>
 
           <div class="form-control w-full">
-            <%= form.label :timezone, "Timezone", class: "label" %>
+            <%= form.label :timezone, t("challenge_form.timezone"), class: "label" %>
             <%= form.select :timezone, options_for_select(timezone_options, default_timezone), {}, { class: "select select-bordered w-full" } %>
+            <div class="label">
+              <span class="label-text-alt text-xs"><%= t("challenge_form.timezone_help") %></span>
+            </div>
           </div>
 
           <div class="form-control">
             <label class="label cursor-pointer justify-start gap-2">
               <%= form.check_box :hidden, class: "checkbox" %>
-              <span class="label-text">Hide this challenge from public view</span>
+              <span class="label-text"><%= t("challenge_form.hide_challenge") %></span>
             </label>
+            <div class="label pt-0">
+              <span class="label-text-alt text-xs"><%= t("challenge_form.hidden_help") %></span>
+            </div>
           </div>
         </div>
       </div>
 
+      <!-- Selection Summary (sticky) -->
+      <div class="sticky top-0 z-10 bg-primary text-primary-content text-sm font-medium py-2 px-4 rounded-lg text-center" data-challenge-creator-target="selectionSummary" style="display: none;"></div>
+
       <!-- Book Selection Card -->
-      <div class="card bg-base-100 shadow-xl">
+      <div class="card bg-base-100 shadow-xl" id="section-books">
         <div class="card-body">
-          <h2 class="card-title mb-4">Select Bible Books</h2>
-          
-          <!-- Testament Selection Buttons -->
+          <h2 class="card-title mb-4"><%= t("challenge_form.select_books") %></h2>
+
+          <!-- Selection Buttons -->
           <div class="flex flex-col sm:flex-row gap-2 sm:gap-4 mb-4 sm:mb-6">
-            <button type="button" class="btn btn-outline btn-sm sm:btn-md" data-action="click->challenge-creator#selectOldTestament">
-              Select All Old Testament
-            </button>
-            <button type="button" class="btn btn-outline btn-sm sm:btn-md" data-action="click->challenge-creator#selectNewTestament">
-              Select All New Testament
+            <button type="button" class="btn btn-outline btn-sm sm:btn-md" data-action="click->challenge-creator#selectAllBooks">
+              <%= t("challenge_form.select_all") %>
             </button>
             <button type="button" class="btn btn-outline btn-sm sm:btn-md" data-action="click->challenge-creator#clearAllBooks">
-              Clear All
+              <%= t("challenge_form.clear_all") %>
             </button>
-          </div>
-
-          <!-- Old Testament Books -->
-          <div class="mb-6 sm:mb-8">
-            <h3 class="text-lg font-semibold mb-3 sm:mb-4">Old Testament</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
-              <% old_testament_books.each do |book| %>
-                <label class="flex items-center cursor-pointer">
-                  <input type="checkbox" 
-                         name="selected_books[]" 
-                         value="<%= book[:number] %>" 
-                         class="checkbox checkbox-primary mr-2" 
-                         data-challenge-creator-target="bookCheckbox"
-                         data-action="change->challenge-creator#updateSchedule"
-                         data-testament="old"
-                         data-chapters="<%= book[:chapters] %>">
-                  <span class="text-sm"><%= book[:name] %> (<%= book[:chapters] %>)</span>
-                </label>
-              <% end %>
-            </div>
           </div>
 
           <!-- New Testament Books -->
           <div class="mb-4 sm:mb-6">
-            <h3 class="text-lg font-semibold mb-3 sm:mb-4">New Testament</h3>
+            <h3 class="text-lg font-semibold mb-3 sm:mb-4"><%= t("challenge_form.new_testament") %></h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
               <% new_testament_books.each do |book| %>
                 <label class="flex items-center cursor-pointer">
-                  <input type="checkbox" 
-                         name="selected_books[]" 
-                         value="<%= book[:number] %>" 
-                         class="checkbox checkbox-primary mr-2" 
+                  <input type="checkbox"
+                         name="selected_books[]"
+                         value="<%= book[:number] %>"
+                         class="checkbox checkbox-primary mr-2"
                          data-challenge-creator-target="bookCheckbox"
                          data-action="change->challenge-creator#updateSchedule"
                          data-testament="new"
@@ -113,9 +106,9 @@
       </div>
 
       <!-- Reading Schedule Preview -->
-      <div class="card bg-base-100 shadow-xl" data-challenge-creator-target="schedulePreview" style="display: none;">
+      <div class="card bg-base-100 shadow-xl" id="section-preview" data-challenge-creator-target="schedulePreview" style="display: none;">
         <div class="card-body">
-          <h2 class="card-title mb-4">Reading Schedule Preview</h2>
+          <h2 class="card-title mb-4"><%= t("challenge_form.schedule_preview") %></h2>
           <div data-challenge-creator-target="scheduleContent">
             <!-- Schedule will be populated by JavaScript -->
           </div>
@@ -124,8 +117,8 @@
 
       <!-- Form Actions -->
       <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-6">
-        <%= form.submit "Create Challenge", class: "btn btn-primary w-full sm:w-auto" %>
-        <%= link_to "Cancel", cancel_url, class: "btn btn-ghost w-full sm:w-auto" %>
+        <%= form.submit t("challenge_form.create"), class: "btn btn-primary w-full sm:w-auto" %>
+        <%= link_to t("common.cancel"), cancel_url, class: "btn btn-ghost w-full sm:w-auto" %>
       </div>
     <% end %>
   </div>

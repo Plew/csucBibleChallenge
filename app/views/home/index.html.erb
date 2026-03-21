@@ -4,10 +4,14 @@
       <%= t('home.tagline') %>
     </p>
 
-    <div class="space-y-4 mb-12">
+    <div class="space-y-4 mb-8">
       <%= link_to t('navigation.log_in'), new_user_session_path, class: "btn btn-primary btn-lg w-full" %>
       <%= link_to t('navigation.sign_up'), new_user_registration_path, class: "btn btn-outline btn-lg w-full" %>
     </div>
+
+    <p class="text-sm text-base-content/60 text-center mb-12">
+      <%= t('home.or_create_your_own') %>
+    </p>
 
     <% if @challenges.present? %>
       <div class="text-left">

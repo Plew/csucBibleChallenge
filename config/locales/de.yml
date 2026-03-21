@@ -144,6 +144,13 @@ de:
   manage:
     access_denied: "Du hast keine Berechtigung, diese Challenge zu verwalten."
     challenge_created: "Challenge erfolgreich erstellt! Du kannst sie jetzt konfigurieren."
+    getting_started:
+      title: "Erste Schritte"
+      step_created: "Challenge erstellt"
+      step_share: "Einladungslink mit Freunden teilen"
+      step_groups: "Gruppen erstellen (optional)"
+      step_ready: "Alles bereit!"
+      share_hint: "Teile diesen Link, um andere einzuladen:"
     dashboard:
       title: "Challenge verwalten"
       participants: "Teilnehmer"
@@ -216,7 +223,8 @@ de:
 
   # Home page
   home:
-    tagline: "Nimm an einer Bibel-Lesechallenge teil und lies ein Kapitel pro Tag, mit Freunden."
+    tagline: "Nimm an einer Bibel-Lese-Challenge teil und lies ein Kapitel pro Tag mit Freunden — oder erstelle deine eigene."
+    or_create_your_own: "Oder erstelle deine eigene Challenge"
     active_challenges: "Aktive Challenges"
 
   # Challenges
@@ -279,6 +287,7 @@ de:
 
   # Challenge form
   challenge_form:
+    page_title: "Neue Lese-Challenge erstellen"
     challenge_details: "Challenge-Details"
     challenge_title: "Challenge-Titel"
     title_placeholder: "Challenge-Titel eingeben"
@@ -287,14 +296,27 @@ de:
     markdown_help: "Markdown-Syntax: **fett**, *kursiv*, [Link](url), ![Bild](url), - Listen"
     start_date: "Startdatum"
     timezone: "Zeitzone"
+    timezone_help: "Alle Lesezeiten basieren auf dieser Zeitzone. Wähle die Zeitzone, in der sich die meisten Teilnehmer befinden."
     hide_challenge: "Diese Challenge vor der Öffentlichkeit verbergen"
+    hidden_help: "Versteckte Challenges erscheinen nicht in der öffentlichen Liste. Teilnehmer können trotzdem über den Einladungslink beitreten."
     select_books: "Bibelbücher auswählen"
+    presets_label: "Schnellauswahl"
+    preset_whole_bible: "Ganze Bibel"
+    preset_gospels: "Evangelien"
+    preset_gospels_acts: "Evangelien + Apostelgeschichte"
+    preset_pauline: "Paulusbriefe"
+    preset_wisdom: "Weisheitsbücher"
+    preset_pentateuch: "Pentateuch"
+    select_all: "Alle auswählen"
     select_all_ot: "Alle AT-Bücher auswählen"
     select_all_nt: "Alle NT-Bücher auswählen"
     clear_all: "Alle löschen"
     old_testament: "Altes Testament"
     new_testament: "Neues Testament"
     schedule_preview: "Leseplan-Vorschau"
+    step_details: "Details"
+    step_books: "Bücher"
+    step_preview: "Vorschau"
     create: "Challenge erstellen"
     update: "Challenge aktualisieren"
 

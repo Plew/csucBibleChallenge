@@ -5,5 +5,6 @@ class Manage::DashboardController < Manage::BaseController
     @group_count = @challenge.groups.count
     @sprint_count = @challenge.sprints.count
     @blog_post_count = @challenge.blog_posts.count
+    @show_getting_started = @user_count <= 1
   end
 end

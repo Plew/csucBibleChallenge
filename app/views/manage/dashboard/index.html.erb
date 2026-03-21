@@ -49,6 +49,26 @@
     </div>
   </div>
 
+  <% if @show_getting_started %>
+    <div class="card bg-base-100 shadow-sm mb-4">
+      <div class="card-body p-3">
+        <h3 class="font-semibold mb-3"><%= t("manage.getting_started.title") %></h3>
+        <ul class="steps steps-vertical text-sm">
+          <li class="step step-primary"><%= t("manage.getting_started.step_created") %></li>
+          <li class="step"><%= t("manage.getting_started.step_share") %></li>
+          <li class="step"><%= t("manage.getting_started.step_groups") %></li>
+          <li class="step"><%= t("manage.getting_started.step_ready") %></li>
+        </ul>
+        <div class="mt-3 p-2 bg-base-200 rounded">
+          <p class="text-xs text-base-content/60 mb-1"><%= t("manage.getting_started.share_hint") %></p>
+          <div class="flex items-center gap-2">
+            <code class="text-xs break-all flex-1"><%= @challenge.join_url %></code>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
   <div class="space-y-2">
     <%= link_to edit_challenge_manage_settings_path(@challenge), class: "btn btn-primary btn-sm w-full" do %>
       <%= t("manage.dashboard.edit_settings") %>

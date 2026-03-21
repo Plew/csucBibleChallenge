@@ -1,26 +1,36 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["startDate", "bookCheckbox", "schedulePreview", "scheduleContent"]
+  static targets = ["startDate", "bookCheckbox", "schedulePreview", "scheduleContent", "stepper", "selectionSummary"]
+
+  static presets = {
+    whole_bible: Array.from({ length: 66 }, (_, i) => i + 1),
+    gospels: [ 40, 41, 42, 43 ],
+    gospels_acts: [ 40, 41, 42, 43, 44 ],
+    pauline: [ 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57 ],
+    wisdom: [ 18, 19, 20, 21, 22 ],
+    pentateuch: [ 1, 2, 3, 4, 5 ]
+  }
 
   connect() {
     this.updateSchedule()
+    this.setupStepObserver()
   }
 
-  selectOldTestament() {
+  selectPreset(event) {
+    const presetName = event.currentTarget.dataset.preset
+    const bookNumbers = this.constructor.presets[presetName]
+    if (!bookNumbers) return
+
     this.bookCheckboxTargets.forEach(checkbox => {
-      if (checkbox.dataset.testament === "old") {
-        checkbox.checked = true
-      }
+      checkbox.checked = bookNumbers.includes(parseInt(checkbox.value))
     })
     this.updateSchedule()
   }
 
-  selectNewTestament() {
+  selectAllBooks() {
     this.bookCheckboxTargets.forEach(checkbox => {
-      if (checkbox.dataset.testament === "new") {
-        checkbox.checked = true
-      }
+      checkbox.checked = true
     })
     this.updateSchedule()
   }
@@ -32,7 +42,69 @@ export default class extends Controller {
     this.updateSchedule()
   }
 
+  scrollToSection(event) {
+    const sectionId = event.currentTarget.dataset.section
+    const section = document.getElementById(sectionId)
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth", block: "start" })
+    }
+  }
+
+  setupStepObserver() {
+    if (!this.hasStepperTarget) return
+
+    const sections = [
+      document.getElementById("section-details"),
+      document.getElementById("section-books"),
+      document.getElementById("section-preview")
+    ].filter(Boolean)
+
+    if (sections.length === 0) return
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const sectionId = entry.target.id
+          this.updateStepper(sectionId)
+        }
+      })
+    }, { threshold: 0.3 })
+
+    sections.forEach(section => observer.observe(section))
+  }
+
+  updateStepper(activeSectionId) {
+    if (!this.hasStepperTarget) return
+
+    const steps = this.stepperTarget.querySelectorAll(".step")
+    const sectionOrder = [ "section-details", "section-books", "section-preview" ]
+    const activeIndex = sectionOrder.indexOf(activeSectionId)
+
+    steps.forEach((step, index) => {
+      if (index <= activeIndex) {
+        step.classList.add("step-primary")
+      } else {
+        step.classList.remove("step-primary")
+      }
+    })
+  }
+
+  updateSelectionSummary() {
+    if (!this.hasSelectionSummaryTarget) return
+
+    const selected = this.bookCheckboxTargets.filter(cb => cb.checked)
+    if (selected.length === 0) {
+      this.selectionSummaryTarget.style.display = "none"
+      return
+    }
+
+    const totalChapters = selected.reduce((sum, cb) => sum + parseInt(cb.dataset.chapters), 0)
+    this.selectionSummaryTarget.textContent = `${selected.length} books selected (${totalChapters} chapters)`
+    this.selectionSummaryTarget.style.display = "block"
+  }
+
   updateSchedule() {
+    this.updateSelectionSummary()
     const startDate = this.startDateTarget.value
     const selectedBooks = this.getSelectedBooks()
 
@@ -81,7 +153,7 @@ export default class extends Controller {
     const totalChapters = schedule.length
     const startDate = schedule[0]?.date
     const endDate = schedule[schedule.length - 1]?.date
-    
+
     let html = `
       <div class="stats shadow mb-6">
         <div class="stat">
@@ -135,10 +207,10 @@ export default class extends Controller {
   }
 
   formatDate(date) {
-    return date.toLocaleDateString('en-US', { 
-      weekday: 'short', 
-      month: 'short', 
-      day: 'numeric' 
+    return date.toLocaleDateString('en-US', {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric'
     })
   }
 }

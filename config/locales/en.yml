@@ -199,6 +199,13 @@ en:
   manage:
     access_denied: "You don't have permission to manage this challenge."
     challenge_created: "Challenge created successfully! You can now configure it."
+    getting_started:
+      title: "Getting Started"
+      step_created: "Challenge created"
+      step_share: "Share invite link with friends"
+      step_groups: "Create groups (optional)"
+      step_ready: "You're all set!"
+      share_hint: "Share this link to invite others:"
     dashboard:
       title: "Manage Challenge"
       participants: "Participants"
@@ -271,7 +278,8 @@ en:
 
   # Home page
   home:
-    tagline: "Join a Bible reading challenge and read one chapter a day, with friends."
+    tagline: "Join a Bible reading challenge and read one chapter a day, with friends — or create your own."
+    or_create_your_own: "Or create your own challenge"
     active_challenges: "Active Challenges"
 
   # Challenges
@@ -334,6 +342,7 @@ en:
 
   # Challenge form
   challenge_form:
+    page_title: "Create New Reading Challenge"
     challenge_details: "Challenge Details"
     challenge_title: "Challenge Title"
     title_placeholder: "Enter challenge title"
@@ -342,14 +351,27 @@ en:
     markdown_help: "Markdown syntax: **bold**, *italic*, [link](url), ![image](url), - lists"
     start_date: "Start Date"
     timezone: "Timezone"
+    timezone_help: "All readings are scheduled based on this timezone. Choose the timezone where most participants are located."
     hide_challenge: "Hide this challenge from public view"
+    hidden_help: "Hidden challenges won't appear on the public list. Participants can still join via invite link."
     select_books: "Select Bible Books"
+    presets_label: "Quick Presets"
+    preset_whole_bible: "Whole Bible"
+    preset_gospels: "Gospels"
+    preset_gospels_acts: "Gospels + Acts"
+    preset_pauline: "Pauline Epistles"
+    preset_wisdom: "Wisdom Books"
+    preset_pentateuch: "Pentateuch"
+    select_all: "Select All"
     select_all_ot: "Select All Old Testament"
     select_all_nt: "Select All New Testament"
     clear_all: "Clear All"
     old_testament: "Old Testament"
     new_testament: "New Testament"
     schedule_preview: "Reading Schedule Preview"
+    step_details: "Details"
+    step_books: "Books"
+    step_preview: "Preview"
     create: "Create Challenge"
     update: "Update Challenge"
 
