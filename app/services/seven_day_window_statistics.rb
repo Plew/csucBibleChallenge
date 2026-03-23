@@ -9,6 +9,29 @@ class SevenDayWindowStatistics
     @challenge = challenge
   end
 
+  # Per-user calculation used by seven_day_lobbies_controller
+  def calculate_seven_day_data(user)
+    return { completion_percentage: 0, on_schedule_percentage: 0, completed_days: 0, total_days: 0 } unless @challenge
+
+    current_date_in_tz = Time.current.in_time_zone(@challenge.timezone).to_date
+    seven_days_ago = current_date_in_tz - 6.days
+
+    reading_ids = @challenge.readings.where(scheduled_date: seven_days_ago..current_date_in_tz).pluck(:id)
+    scheduled_count = reading_ids.length
+    return { completion_percentage: 0, on_schedule_percentage: 0, completed_days: 0, total_days: 0 } if scheduled_count.zero?
+
+    completed_count = UserReading.where(reading_id: reading_ids, user_id: user.id).count
+    on_schedule_count = UserReading.joins(:reading)
+      .where(reading_id: reading_ids, user_id: user.id)
+      .where("DATE(user_readings.completed_on) = readings.scheduled_date")
+      .count
+
+    completion_pct = completed_count >= scheduled_count ? 100 : (completed_count.to_f / scheduled_count * 100).floor
+    on_schedule_pct = on_schedule_count >= scheduled_count ? 100 : (on_schedule_count.to_f / scheduled_count * 100).floor
+
+    { completion_percentage: completion_pct, on_schedule_percentage: on_schedule_pct, completed_days: completed_count, total_days: scheduled_count }
+  end
+
   def call
     return [] unless @challenge
 

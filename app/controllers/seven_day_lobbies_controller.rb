@@ -93,14 +93,14 @@ class SevenDayLobbiesController < ApplicationController
 
   def user_qualifies_for_lobby?
     # User must have 100% completion for the last 7 days
-    stats = SevenDayWindowStatistics.new(@challenge).send(:calculate_seven_day_data, current_user)
+    stats = SevenDayWindowStatistics.new(@challenge).calculate_seven_day_data(current_user)
     stats[:completion_percentage] == 100
   end
 
   def find_all_eligible_users
     seven_day_stats = SevenDayWindowStatistics.new(@challenge)
     @challenge.users.select do |user|
-      stats = seven_day_stats.send(:calculate_seven_day_data, user)
+      stats = seven_day_stats.calculate_seven_day_data(user)
       stats[:completion_percentage] == 100
     end
   end
