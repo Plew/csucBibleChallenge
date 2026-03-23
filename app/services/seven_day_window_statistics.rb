@@ -10,88 +10,61 @@ class SevenDayWindowStatistics
   end
 
   def call
-    users_with_readings = base_users_query
+    return [] unless @challenge
 
-    users_with_readings.map do |user|
-      seven_day_data = calculate_seven_day_data(user)
+    current_date_in_tz = Time.current.in_time_zone(@challenge.timezone).to_date
+    seven_days_ago = current_date_in_tz - 6.days
+
+    # Single query: reading IDs in the 7-day window
+    scheduled_readings = @challenge.readings.where(scheduled_date: seven_days_ago..current_date_in_tz)
+    reading_ids = scheduled_readings.pluck(:id)
+    scheduled_count = reading_ids.length
+
+    return [] if scheduled_count.zero?
+
+    # Single query: get all enrolled user IDs
+    user_ids = UserChallengeEnrollment.where(challenge_id: @challenge.id).pluck(:user_id)
+    return [] if user_ids.empty?
+
+    # Single query: batch completion counts per user for 7-day window
+    completion_counts = UserReading
+      .where(reading_id: reading_ids, user_id: user_ids)
+      .group(:user_id)
+      .count
+
+    # Only users with 100% completion in the window
+    perfect_user_ids = completion_counts.select { |_uid, count| count >= scheduled_count }.keys
+    return [] if perfect_user_ids.empty?
+
+    # Single query: batch on-schedule counts for perfect users
+    on_schedule_counts = UserReading
+      .joins(:reading)
+      .where(reading_id: reading_ids, user_id: perfect_user_ids)
+      .where("DATE(user_readings.completed_on) = readings.scheduled_date")
+      .group(:user_id)
+      .count
+
+    # Single query: load user names
+    users = User.where(id: perfect_user_ids).select(:id, :name).index_by(&:id)
+
+    perfect_user_ids.filter_map do |user_id|
+      user = users[user_id]
+      next unless user
+
+      on_schedule = on_schedule_counts[user_id] || 0
+      on_schedule_pct = if on_schedule >= scheduled_count
+        100
+      else
+        (on_schedule.to_f / scheduled_count * 100).floor
+      end
+
       {
         name: user.name,
-        completion_percentage: seven_day_data[:completion_percentage],
-        on_schedule_percentage: seven_day_data[:on_schedule_percentage],
-        completed_days: seven_day_data[:completed_days],
-        total_days: seven_day_data[:total_days]
+        completion_percentage: 100,
+        on_schedule_percentage: on_schedule_pct,
+        completed_days: scheduled_count,
+        total_days: scheduled_count
       }
-    end.select { |data| data[:completion_percentage] == 100 }
-      .sort_by { |data| [ -data[:on_schedule_percentage] ] }
-  end
-
-  private
-
-  def base_users_query
-    return User.none unless @challenge
-
-    User.joins(:challenges)
-        .where(challenges: { id: @challenge.id })
-        .where.not(challenges: { timezone: nil })
-        .distinct
-  end
-
-  def calculate_seven_day_data(user)
-    challenges_to_calculate = @challenge ? [ @challenge ] : user.challenges.includes(:readings)
-
-    total_scheduled_7_days = 0
-    total_completed_7_days = 0
-    total_on_schedule_7_days = 0
-
-    challenges_to_calculate.each do |challenge|
-      current_date_in_tz = Time.current.in_time_zone(challenge.timezone).to_date
-      seven_days_ago = current_date_in_tz - 6.days # Including today = 7 days
-
-      # Readings scheduled in the 7-day window
-      scheduled_readings = challenge.readings
-                                  .where(scheduled_date: seven_days_ago..current_date_in_tz)
-
-      scheduled_count = scheduled_readings.count
-
-      # Completed readings in the 7-day window
-      completed_readings = user.user_readings
-                              .joins(:reading)
-                              .where(readings: { challenge_id: challenge.id })
-                              .where(readings: { scheduled_date: seven_days_ago..current_date_in_tz })
-
-      completed_count = completed_readings.count
-
-      # On-schedule readings (completed on or before scheduled date)
-      on_schedule_count = completed_readings
-                         .where("date(user_readings.created_at) <= readings.scheduled_date")
-                         .count
-
-      total_scheduled_7_days += scheduled_count
-      total_completed_7_days += completed_count
-      total_on_schedule_7_days += on_schedule_count
-    end
-
-    completion_percentage = if total_scheduled_7_days.zero?
-                           0
-    elsif total_completed_7_days == total_scheduled_7_days
-                           100
-    else
-                           (total_completed_7_days.to_f / total_scheduled_7_days * 100).floor
-    end
-
-    on_schedule_percentage = if total_scheduled_7_days.zero?
-                            0
-    elsif total_on_schedule_7_days == total_scheduled_7_days
-                            100
-    else
-                            (total_on_schedule_7_days.to_f / total_scheduled_7_days * 100).floor
-    end
-
-    {
-      completion_percentage: completion_percentage,
-      on_schedule_percentage: on_schedule_percentage,
-      completed_days: total_completed_7_days,
-      total_days: total_scheduled_7_days
-    }
+    end.sort_by { |data| -data[:on_schedule_percentage] }
   end
 end

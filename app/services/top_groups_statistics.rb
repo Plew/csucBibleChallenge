@@ -11,37 +11,47 @@ class TopGroupsStatistics
   end
 
   def call
-    groups_scope = @challenge ? @challenge.groups : Group.joins(:challenge)
+    return [] unless @challenge
 
-    # Get today's date in the challenge timezone
-    today = @challenge ? Time.current.in_time_zone(@challenge.timezone).to_date : Date.current
+    today = Time.current.in_time_zone(@challenge.timezone).to_date
 
-    # Eager load users with their avatars for expandable group lists
-    groups_scope.includes(users: { avatar_attachment: :blob }, challenge: :readings).map do |group|
-      group_stats = GroupStatistics.new(group, @date_range)
+    # Single query: today's reading
+    todays_reading = @challenge.readings.find_by(scheduled_date: today)
+
+    # Single query: load all groups with user counts
+    groups = @challenge.groups.includes(:users)
+    return [] if groups.empty?
+
+    if todays_reading
+      # Single query: batch get all completions for today's reading
+      completed_user_ids = UserReading
+        .where(reading_id: todays_reading.id)
+        .pluck(:user_id)
+        .to_set
+    else
+      completed_user_ids = Set.new
+    end
+
+    groups.map do |group|
+      group_user_ids = group.users.map(&:id)
+      group_size = group_user_ids.length
+      next if group_size.zero?
+
+      today_completed = group_user_ids.count { |uid| completed_user_ids.include?(uid) }
+      today_pct = (today_completed.to_f / group_size * 100)
+
       {
         group: group,
-        completion_percentage: group_stats.completion_percentage,
-        on_schedule_percentage: group_stats.on_schedule_percentage,
-        group_size: group_stats.group_size,
-        total_chapters_read: group_stats.total_chapters_read,
-        today_check_in_percentage: group_stats.check_in_percentage(today),
-        today_members_completed: calculate_today_members_completed(group, today),
-        today_total_members: group_stats.group_size
+        completion_percentage: 0,
+        on_schedule_percentage: 0,
+        group_size: group_size,
+        total_chapters_read: 0,
+        today_check_in_percentage: today_pct,
+        today_members_completed: today_completed,
+        today_total_members: group_size
       }
-    end.sort_by { |group_data| -group_data[:today_check_in_percentage] }
+    end.compact
+       .sort_by { |d| -d[:today_check_in_percentage] }
        .first(20)
-  end
-
-  private
-
-  attr_reader :challenge
-
-  def calculate_today_members_completed(group, date)
-    reading = group.challenge.readings.find_by(scheduled_date: date)
-    return 0 unless reading
-
-    group_user_ids = group.users.pluck(:id)
-    UserReading.where(user_id: group_user_ids, reading_id: reading.id).count
   end
 end

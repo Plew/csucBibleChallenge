@@ -2,60 +2,20 @@
   <input type="checkbox" id="sprints-collapse">
   <label for="sprints-collapse" class="collapse-title text-xl font-medium flex items-center gap-2 pr-12">
     <span class="truncate"><%= t('stats.sprints') %></span>
+    <span class="text-sm font-normal opacity-60"><%= t('stats.sprints_completed', count: completed_count) %></span>
   </label>
   <div class="collapse-content">
     <% if sprints.any? %>
-      <div class="space-y-2">
+      <div class="space-y-1.5">
         <% sprints.each do |sprint| %>
-          <div class="bg-base-100 rounded-lg">
-            <% if sprint.winners_calculated? %>
-              <div class="collapse">
-                <input type="checkbox" id="sprint-<%= sprint.id %>-collapse">
-                <label for="sprint-<%= sprint.id %>-collapse" class="collapse-title min-h-0 py-2 px-3">
-                  <div class="flex items-center justify-between">
-                    <div class="min-w-0">
-                      <div class="font-medium text-base flex items-center gap-1">
-                        <span class="truncate"><%= sprint.title %></span>
-                        <span class="flex-shrink-0">🏆</span>
-                      </div>
-                      <div class="text-xs opacity-70">
-                        <%= format_date(sprint.begin_date) %> – <%= format_date(sprint.end_date) %>
-                      </div>
-                    </div>
-                  </div>
-                </label>
-                <div class="collapse-content px-3 pb-2">
-                  <div class="space-y-2">
-                    <% sprint.sprint_winners.each do |winner| %>
-                      <div class="bg-base-200 rounded-lg px-3 py-2">
-                        <div class="flex items-center justify-between">
-                          <div class="font-medium text-sm"><%= winner.display_group_name %></div>
-                          <div class="text-xs opacity-70">
-                            <%= winner.completion_percentage %>% · <%= t('stats.on_schedule_short') %> <%= winner.on_schedule_percentage %>%
-                          </div>
-                        </div>
-                        <% if winner.group %>
-                          <div class="flex flex-wrap gap-2 mt-2">
-                            <% winner.group.users.each do |user| %>
-                              <div class="flex items-center gap-1">
-                                <%= avatar_image_tag(user, :tiny, class: 'rounded-full') %>
-                                <span class="text-xs"><%= user.name %></span>
-                              </div>
-                            <% end %>
-                          </div>
-                        <% end %>
-                      </div>
-                    <% end %>
-                  </div>
-                </div>
-              </div>
-            <% else %>
-              <div class="py-2 px-3">
-                <div class="font-medium text-base truncate"><%= sprint.title %></div>
-                <div class="text-xs opacity-70">
-                  <%= format_date(sprint.begin_date) %> – <%= format_date(sprint.end_date) %>
-                </div>
-              </div>
+          <div class="flex items-center gap-3 px-3 py-2.5 rounded-lg <%= active?(sprint) ? 'bg-purple-500/20 border border-purple-400' : 'bg-base-100' %>">
+            <span class="text-base flex-shrink-0"><%= active?(sprint) ? '📍' : '🏆' %></span>
+            <div class="flex-grow min-w-0">
+              <div class="font-medium text-sm <%= active?(sprint) ? 'font-bold' : '' %> truncate"><%= sprint.title %></div>
+              <div class="text-[10px] opacity-50"><%= format_date(sprint.begin_date) %> – <%= format_date(sprint.end_date) %></div>
+            </div>
+            <% if active?(sprint) %>
+              <span class="text-[10px] font-semibold text-purple-400 bg-purple-500/20 px-2 py-0.5 rounded-full flex-shrink-0"><%= t('stats.active_label') %></span>
             <% end %>
           </div>
         <% end %>

@@ -3,5 +3,5 @@
     <%= link_to t('stats.back_to_stats'), stats_path, class: "btn btn-ghost btn-sm" %>
   </div>
 
-  <%= render Statistics::TopReadersComponent.new(top_readers_data: @top_readers_data) %>
+  <%= render Statistics::TopReadersComponent.new(top_readers_data: @top_readers_data, show_all: true) %>
 </div>

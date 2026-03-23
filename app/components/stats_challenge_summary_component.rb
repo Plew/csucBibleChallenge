@@ -3,15 +3,14 @@
 class StatsChallengeSummaryComponent < ViewComponent::Base
   include ApplicationHelper
 
-  def initialize(challenge:, statistics: nil, most_liked_verse_today: nil)
+  def initialize(challenge:, statistics: nil)
     @challenge = challenge
     @statistics = statistics || (challenge.is_a?(Challenge) ? StatsChallengeSummaryStatistics.new(challenge) : MockStatistics.new(challenge))
-    @most_liked_verse_today = most_liked_verse_today
   end
 
   private
 
-  attr_reader :challenge, :statistics, :most_liked_verse_today
+  attr_reader :challenge, :statistics
 
   def challenge_progress_percentage
     return 0 unless challenge.start_date && challenge.end_date

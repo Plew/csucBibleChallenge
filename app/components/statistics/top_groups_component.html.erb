@@ -1,61 +1,31 @@
 <div class="collapse collapse-arrow border-base-300 bg-base-200 border">
   <input type="checkbox" id="top-groups-collapse">
-  <label for="top-groups-collapse" class="collapse-title text-xl font-medium flex items-center gap-2 pr-12">
+  <label for="top-groups-collapse" class="collapse-title text-xl font-medium flex flex-col justify-center pr-12">
     <span class="truncate"><%= t('stats.top_groups') %></span>
+    <% if has_groups? %>
+      <% top = top_groups_data.first %>
+      <span class="text-xs font-normal opacity-60 truncate">Top: <%= top[:group].name %> <%= top[:today_check_in_percentage]&.round || 0 %>%</span>
+    <% end %>
   </label>
   <div class="collapse-content">
     <% if has_groups? %>
       <div class="space-y-2">
         <% top_groups_data.each_with_index do |group_data, index| %>
           <% group = group_data[:group] %>
-          <% percentage = group_data[:completion_percentage] %>
-          <% on_schedule = group_data[:on_schedule_percentage] %>
-          <% size = group_data[:group_size] %>
-          <% chapters = group_data[:total_chapters_read] %>
           <% today_percentage = group_data[:today_check_in_percentage]&.round || 0 %>
-          <% today_completed = group_data[:today_members_completed] || 0 %>
-          <% today_total = group_data[:today_total_members] || 0 %>
+          <% size = group_data[:group_size] %>
 
-          <div class="bg-base-100 rounded-lg">
-            <div class="collapse">
-              <input type="checkbox" id="group-<%= group.id %>-stats-collapse">
-              <label for="group-<%= group.id %>-stats-collapse" class="collapse-title min-h-0 py-2 px-3">
-                <div class="relative flex items-center space-x-3">
-                  <div class="absolute top-0 left-0 text-[9px] opacity-40 leading-none"><%= index + 1 %></div>
-
-                  <div class="flex-grow min-w-0 pl-2">
-                    <div class="font-medium text-base truncate"><%= group.name %></div>
-                    <% if group.motto.present? %>
-                      <div class="text-xs text-base-content/70 italic break-words"><%= group.motto %></div>
-                    <% end %>
-                    <div class="text-xs opacity-70">
-                      <%= pluralize(size, t('common.member_one'), t('common.member_other')) %>
-                    </div>
-                  </div>
-
-                  <div class="flex-shrink-0 flex items-center gap-3">
-                    <!-- Today's check-in squares -->
-                    <div class="flex flex-wrap gap-1 max-w-[120px]">
-                      <%= render_check_in_squares(today_completed, today_total) %>
-                    </div>
-                    <div class="radial-progress text-success" style="--value:<%= today_percentage %>; --size:2.5rem; --thickness:2px;" aria-valuenow="<%= today_percentage %>" role="progressbar">
-                      <span class="text-xs font-bold"><%= today_percentage %></span>
-                    </div>
-                  </div>
-                </div>
-              </label>
-              <div class="collapse-content px-3 pb-2">
-                <div class="space-y-1">
-                  <% group.users.each do |user| %>
-                    <div class="flex items-center gap-3 px-3 py-2 bg-base-200 rounded-lg">
-                      <div>
-                        <%= avatar_image_tag(user, :tiny, class: 'rounded-full') %>
-                      </div>
-                      <div class="font-medium text-sm"><%= user.name %></div>
-                    </div>
-                  <% end %>
-                </div>
+          <div class="flex items-center gap-3 p-2.5 bg-base-100 rounded-lg border border-base-300">
+            <span class="text-xs opacity-40 font-semibold w-5 text-center flex-shrink-0"><%= index + 1 %></span>
+            <div class="flex-grow min-w-0">
+              <div class="font-medium text-sm truncate"><%= group.name %></div>
+              <div class="text-[10px] opacity-50"><%= pluralize(size, t('common.member_one'), t('common.member_other')) %></div>
+            </div>
+            <div class="flex items-center gap-2 flex-shrink-0">
+              <div class="w-16 h-1.5 rounded-full bg-accent/20 overflow-hidden">
+                <div class="h-full rounded-full bg-accent" style="width: <%= today_percentage %>%"></div>
               </div>
+              <span class="text-sm font-bold text-accent w-9 text-right font-mono"><%= today_percentage %>%</span>
             </div>
           </div>
         <% end %>

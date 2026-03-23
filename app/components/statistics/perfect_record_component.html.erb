@@ -1,7 +1,8 @@
 <div class="collapse collapse-arrow border-base-300 bg-base-200 border">
   <input type="checkbox" id="perfect-record-collapse">
-  <label for="perfect-record-collapse" class="collapse-title text-xl font-medium flex items-center gap-2 pr-12">
-    <span class="truncate"><%= t('stats.perfect_record.title') %>: <%= t('stats.reader_count', count: user_count) %></span>
+  <label for="perfect-record-collapse" class="collapse-title text-xl font-medium flex flex-col justify-center pr-12">
+    <span class="truncate"><%= t('stats.perfect_record.title') %></span>
+    <span class="text-xs font-normal opacity-60"><%= t('stats.reader_count', count: user_count) %> · <%= t('stats.perfect_record.days_in_a_row', count: days_count) %></span>
   </label>
   <div class="collapse-content">
     <% if users.any? %>

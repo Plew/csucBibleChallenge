@@ -1,45 +1,58 @@
-<div class="collapse collapse-arrow border-base-300 bg-base-200 border">
-  <input type="checkbox" id="leaderboard-collapse">
-  <label for="leaderboard-collapse" class="collapse-title text-xl font-medium flex items-center gap-2 pr-12">
-    <span class="truncate"><%= t('stats.leaderboard') %> (<%= t('stats.over_50_percent') %>)</span>
-  </label>
-  <div class="collapse-content">
-    <% if has_readers? %>
-      <div class="space-y-1">
-        <% top_readers_data.each_with_index do |reader_data, index| %>
-          <% user = reader_data[:user] %>
-          <% chapters = reader_data[:total_chapters_read] %>
-          <% percentage = reader_data[:completion_percentage] %>
-          <% on_schedule = reader_data[:on_schedule_percentage] %>
+<div class="border-base-300 bg-base-200 border rounded-2xl p-4">
+  <div class="flex justify-between items-center mb-2">
+    <h2 class="text-xl font-medium"><%= t('stats.leaderboard') %></h2>
+    <span class="text-xs opacity-60"><%= t('stats.over_50_percent') %></span>
+  </div>
 
-          <div class="relative flex items-center space-x-3 p-1.5 bg-base-100 rounded">
-            <div class="absolute top-0.5 left-1 text-[9px] opacity-40 leading-none"><%= index + 1 %></div>
+  <% if has_readers? %>
+    <!-- Column headers -->
+    <div class="flex items-center gap-3 px-3 py-1 mb-1">
+      <span class="w-6"></span>
+      <span class="flex-grow text-[10px] uppercase tracking-wide opacity-40 font-semibold"></span>
+      <span class="w-[2.5rem] text-center text-[10px] uppercase tracking-wide text-accent font-semibold"><%= t('stats.column_comp') %></span>
+      <span class="w-[2.5rem] text-center text-[10px] uppercase tracking-wide text-info font-semibold"><%= t('stats.column_time') %></span>
+    </div>
 
-            <div class="flex-grow min-w-0">
-              <div class="font-medium text-base truncate"><%= user.username %></div>
-              <% if reader_data[:group_name].present? %>
-                <div class="text-xs opacity-70 truncate">
-                  <%= reader_data[:group_name] %>
-                </div>
-              <% end %>
+    <div class="space-y-1">
+      <% displayed_readers.each_with_index do |reader_data, index| %>
+        <% rank = index + 1 %>
+        <% user = reader_data[:user] %>
+        <% percentage = reader_data[:completion_percentage] %>
+        <% on_schedule = reader_data[:on_schedule_percentage] %>
+
+        <div class="flex items-center gap-3 p-1.5 rounded-lg <%= top_three?(rank) ? 'bg-base-100 border border-base-300' : '' %>">
+          <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 <%= rank_color(rank) %>">
+            <%= rank %>
+          </span>
+
+          <div class="flex-grow min-w-0">
+            <div class="font-medium text-sm truncate"><%= user.username %></div>
+            <% if reader_data[:group_name].present? %>
+              <div class="text-[10px] opacity-50 truncate"><%= reader_data[:group_name] %></div>
+            <% end %>
+          </div>
+
+          <div class="flex-shrink-0 flex gap-3 items-center">
+            <div class="radial-progress text-accent" style="--value:<%= percentage %>; --size:2.5rem; --thickness:2px;" aria-valuenow="<%= percentage %>" role="progressbar">
+              <span class="text-xs font-bold"><%= percentage %></span>
             </div>
-
-            <div class="flex-shrink-0 flex gap-3 items-center">
-              <div class="radial-progress text-accent" style="--value:<%= percentage %>; --size:2.5rem; --thickness:2px;" aria-valuenow="<%= percentage %>" role="progressbar">
-                <span class="text-xs font-bold"><%= percentage %></span>
-              </div>
-              <div class="radial-progress text-info" style="--value:<%= on_schedule %>; --size:2.5rem; --thickness:2px;" aria-valuenow="<%= on_schedule %>" role="progressbar">
-                <span class="text-xs font-bold"><%= on_schedule %></span>
-              </div>
+            <div class="radial-progress text-info" style="--value:<%= on_schedule %>; --size:2.5rem; --thickness:2px;" aria-valuenow="<%= on_schedule %>" role="progressbar">
+              <span class="text-xs font-bold"><%= on_schedule %></span>
             </div>
           </div>
-        <% end %>
-      </div>
-    <% else %>
-      <div class="text-center py-4">
-        <div class="text-base opacity-70"><%= t('stats.no_reading_data') %></div>
-        <div class="text-sm opacity-50"><%= t('stats.leaderboard_message') %></div>
+        </div>
+      <% end %>
+    </div>
+
+    <% if has_more_readers? %>
+      <div class="text-center pt-3">
+        <%= helpers.link_to t('stats.view_all'), helpers.stats_challenge_path, class: "text-sm font-semibold text-primary hover:underline", data: { turbo_frame: "_top" } %>
       </div>
     <% end %>
-  </div>
+  <% else %>
+    <div class="text-center py-4">
+      <div class="text-base opacity-70"><%= t('stats.no_reading_data') %></div>
+      <div class="text-sm opacity-50"><%= t('stats.leaderboard_message') %></div>
+    </div>
+  <% end %>
 </div>

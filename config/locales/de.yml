@@ -663,6 +663,25 @@ de:
     no_liked_verses: "Noch keine geliketen Verse"
     no_liked_verses_today: "Noch keine gelikten Verse heute"
     like_verses_message: "Like Verse beim Lesen, um den beliebtesten hier zu sehen!"
+    tabs:
+      my_stats: "Meine Statistiken"
+      community: "Gemeinschaft"
+    column_comp: "Fert."
+    column_time: "Zeit"
+    my_badges: "Meine Abzeichen"
+    earned_count:
+      one: "%{count} verdient"
+      other: "%{count} verdient"
+    sprints_completed:
+      one: "%{count} Sprint abgeschlossen"
+      other: "%{count} Sprints abgeschlossen"
+    active_label: "AKTIV"
+    recent_achievements: "Neueste Erfolge"
+    most_liked_verses_count:
+      one: "%{count} Vers"
+      other: "%{count} Verse"
+    view_all_readers: "Alle %{count}+ Leser anzeigen →"
+    view_all: "Alle anzeigen"
 
   # Profile
   profile:

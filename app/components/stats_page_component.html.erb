@@ -1,5 +1,8 @@
-<div class="px-2 py-3">
+<div class="px-2 py-3" data-controller="stats-tab">
   <div class="space-y-6">
+
+    <!-- Zone A: Always visible -->
+
     <!-- Message of the Day -->
     <% if challenge&.message_of_the_day.present? %>
       <div class="mx-4">
@@ -14,55 +17,77 @@
     <!-- Challenge Summary -->
     <% if challenge && challenge_summary_stats %>
       <div>
-        <%= render StatsChallengeSummaryComponent.new(challenge: challenge, statistics: challenge_summary_stats, most_liked_verse_today: most_liked_verse_today) %>
+        <%= render StatsChallengeSummaryComponent.new(challenge: challenge, statistics: challenge_summary_stats) %>
       </div>
     <% end %>
 
-    <!-- Personal Stats -->
-    <div>
-      <%= render Statistics::PersonalStatsComponent.new(
-        user_stats: personal_stats,
-        sprint_stats: sprint_stats,
-        current_sprint: current_sprint,
-        challenge_graph_data: challenge_graph_data,
-        sprint_graph_data: sprint_graph_data
-      ) %>
+    <!-- Tab Switcher -->
+    <div role="tablist" class="tabs tabs-boxed bg-base-200 p-1">
+      <a role="tab" class="tab tab-active font-semibold" data-stats-tab-target="communityTab" data-action="click->stats-tab#showCommunity"><%= t('stats.tabs.community') %></a>
+      <a role="tab" class="tab font-semibold" data-stats-tab-target="myStatsTab" data-action="click->stats-tab#showMyStats"><%= t('stats.tabs.my_stats') %></a>
     </div>
 
-    <!-- Challenge Stats (Leaderboard) -->
-    <div>
-      <%= render Statistics::TopReadersComponent.new(top_readers_data: top_readers_data) %>
+    <!-- Community Tab (visible by default) -->
+    <div data-stats-tab-target="communityPanel" class="space-y-6">
+      <!-- Leaderboard -->
+      <div>
+        <%= render Statistics::TopReadersComponent.new(top_readers_data: top_readers_data) %>
+      </div>
+
+      <!-- Most Liked Verses Today -->
+      <div>
+        <%= render Statistics::MostLikedVersesTodayComponent.new(most_liked_verse_today: most_liked_verse_today) %>
+      </div>
+
+      <!-- Group Stats (Top Groups) -->
+      <% if top_groups_data.length > 1 %>
+        <div>
+          <%= render Statistics::TopGroupsComponent.new(top_groups_data: top_groups_data) %>
+        </div>
+      <% end %>
+
+      <!-- Sprint History -->
+      <% if sprints.any? %>
+        <div>
+          <%= render Statistics::SprintsComponent.new(sprints: sprints, current_sprint: current_sprint) %>
+        </div>
+      <% end %>
+
+      <!-- 7 Day Streak -->
+      <div>
+        <%= render SevenDayLeaderboardComponent.new(leaderboard_data: seven_day_leaderboard_data) %>
+      </div>
+
+      <!-- Perfect Record -->
+      <% if perfect_record_data %>
+        <div>
+          <%= render Statistics::PerfectRecordComponent.new(perfect_record_data: perfect_record_data) %>
+        </div>
+      <% end %>
+
+      <!-- Recent Achievements -->
+      <div>
+        <%= render Statistics::RecentBadgesComponent.new(recent_badges: recent_badges) %>
+      </div>
     </div>
 
-    <!-- Group Stats (Top Groups) -->
-    <% if top_groups_data.length > 1 %>
+    <!-- My Stats Tab (hidden by default) -->
+    <div data-stats-tab-target="myStatsPanel" class="hidden space-y-6">
+      <!-- Personal Stats (sprint + challenge) -->
       <div>
-        <%= render Statistics::TopGroupsComponent.new(top_groups_data: top_groups_data) %>
+        <%= render Statistics::PersonalStatsComponent.new(
+          user_stats: personal_stats,
+          sprint_stats: sprint_stats,
+          current_sprint: current_sprint,
+          challenge_graph_data: challenge_graph_data,
+          sprint_graph_data: sprint_graph_data
+        ) %>
       </div>
-    <% end %>
 
-    <!-- Sprints -->
-    <% if sprints.any? %>
+      <!-- My Badges -->
       <div>
-        <%= render Statistics::SprintsComponent.new(sprints: sprints) %>
+        <%= render Statistics::MyBadgesComponent.new(user_badges: user_badges) %>
       </div>
-    <% end %>
-
-    <!-- 7 Day Stats -->
-    <div>
-      <%= render SevenDayLeaderboardComponent.new(leaderboard_data: seven_day_leaderboard_data) %>
-    </div>
-
-    <!-- Perfect Record -->
-    <% if perfect_record_data %>
-      <div>
-        <%= render Statistics::PerfectRecordComponent.new(perfect_record_data: perfect_record_data) %>
-      </div>
-    <% end %>
-
-    <!-- Recent Badges -->
-    <div>
-      <%= render Statistics::RecentBadgesComponent.new(recent_badges: recent_badges) %>
     </div>
 
   </div>

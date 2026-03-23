@@ -22,6 +22,7 @@ class StatsController < ApplicationController
     @most_liked_verse_today = calculate_most_liked_verse_today(current_challenge, current_user)
     @sprints = cached_sprints(current_challenge)
     @recent_badges = cached_recent_badges(current_challenge)
+    @user_badges = cached_user_badges(current_challenge, current_user)
   end
 
   def challenge
@@ -423,6 +424,15 @@ class StatsController < ApplicationController
 
     Rails.cache.fetch("stats/sprints/#{challenge.id}", expires_in: CACHE_EXPIRATION) do
       challenge.sprints.ordered.includes(sprint_winners: { group: :users }).to_a
+    end
+  end
+
+  def cached_user_badges(challenge, user)
+    return [] unless challenge && user
+
+    cache_key = "stats/user_badges/#{user.id}/#{challenge.id}"
+    Rails.cache.fetch(cache_key, expires_in: CACHE_EXPIRATION) do
+      user.user_badges.where(challenge: challenge).to_a
     end
   end
 end

@@ -29,7 +29,10 @@ module.exports = {
     'inset-0',
     'flex',
     'items-center',
-    'justify-center'
+    'justify-center',
+    'border-purple-400',
+    'bg-purple-500/20',
+    'text-purple-400'
   ],
   theme: {
     extend: {

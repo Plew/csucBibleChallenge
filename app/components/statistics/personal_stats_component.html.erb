@@ -1,10 +1,6 @@
-<div class="collapse collapse-arrow border-base-300 bg-base-200 border">
-  <input type="checkbox" id="personal-stats-collapse">
-  <label for="personal-stats-collapse" class="collapse-title text-xl font-medium flex items-center gap-2 pr-12">
-    <span class="truncate"><%= t('stats.personal') %></span>
-  </label>
-  <div class="collapse-content">
-    <div class="flex flex-col gap-6 pt-4">
+<div class="border-base-300 bg-base-200 border rounded-2xl p-4">
+  <h2 class="text-xl font-medium mb-4"><%= t('stats.personal') %></h2>
+  <div class="flex flex-col gap-6">
       <!-- Sprint Stats Section (only if there's an active sprint) -->
       <% if has_active_sprint? %>
         <div class="w-full">
@@ -64,5 +60,4 @@
         <% end %>
       </div>
     </div>
-  </div>
 </div>
