@@ -16,6 +16,6 @@ class Statistics::MostLikedVersesTodayComponent < ViewComponent::Base
   end
 
   def preview_text
-    t('stats.most_liked_verses_count', count: verse_count)
+    t("stats.most_liked_verses_count", count: verse_count)
   end
 end
