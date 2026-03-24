@@ -1,5 +1,12 @@
-<div class="flex flex-wrap gap-x-3 gap-y-0.5 text-xs opacity-70">
-  <% readers.each do |reader_data| %>
-    <span><%= reader_data[:user].username %> <span class="opacity-50"><%= abbreviated_time(reader_data[:time_ago]) %></span></span>
-  <% end %>
+<div class="px-4 mx-2">
+  <div class="text-xs font-semibold opacity-50 mb-1"><%= t("stats.last_10_readers") %></div>
+  <div class="text-xs leading-relaxed">
+    <% readers.each_with_index do |reader_data, index| %>
+      <%= helpers.link_to helpers.public_profile_path(reader_data[:user]), class: "inline-flex items-center gap-1 hover:underline" do %>
+        <%= render AvatarComponent.new(user: reader_data[:user], size: :xs, html_options: { class: "rounded-full" }) %>
+        <span class="font-medium"><%= reader_data[:user].username %></span>
+      <% end %>
+      <span class="opacity-40">(<%= abbreviated_time(reader_data[:time_ago]) %>)</span><% if index < readers.length - 1 %><span class="opacity-30">,</span><% end %>
+    <% end %>
+  </div>
 </div>

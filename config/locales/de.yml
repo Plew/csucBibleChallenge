@@ -682,6 +682,7 @@ de:
       other: "%{count} Verse"
     view_all_readers: "Alle %{count}+ Leser anzeigen →"
     view_all: "Alle anzeigen"
+    last_10_readers: "Letzte 10 Leser"
 
   # Profile
   profile:
