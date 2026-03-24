@@ -5,7 +5,7 @@ require "rails_helper"
 RSpec.describe BadgeCatalog do
   describe ".all" do
     it "returns all badges" do
-      expect(BadgeCatalog.all.size).to eq(18)
+      expect(BadgeCatalog.all.size).to eq(BadgeCatalog::BADGES.size)
     end
 
     it "returns frozen array" do
@@ -37,7 +37,7 @@ RSpec.describe BadgeCatalog do
   describe ".keys" do
     it "returns all badge keys" do
       expect(BadgeCatalog.keys).to include("chapters_50", "streak_7", "verse_lover")
-      expect(BadgeCatalog.keys.size).to eq(18)
+      expect(BadgeCatalog.keys.size).to eq(BadgeCatalog::BADGES.size)
     end
   end
 
