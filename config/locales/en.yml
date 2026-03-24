@@ -1014,6 +1014,12 @@ en:
     conversation_starter:
       name: "Conversation Starter"
       description: "Start a verse comment thread that reaches 5+ comments"
+    love_is_cheap:
+      name: "Love is Cheap"
+      description: "Like 10+ verses in a chapter, 5 different times"
+    just_sus:
+      name: "Just Sus"
+      description: "Log 25+ chapters in a single day"
 
   # Public Profile
   public_profile:

@@ -65,6 +65,8 @@ class BadgeAwarder
       readings_with_exactly_one_like >= badge.threshold
     when :conversation_starter
       started_conversations_with_replies >= badge.threshold
+    when :generous_liker
+      readings_with_many_likes >= badge.threshold
     else
       false
     end
@@ -191,6 +193,15 @@ class BadgeAwarder
       counts = user.verse_likes.where(reading_id: reading_ids)
         .group(:reading_id).count
       counts.values.count { |c| c == 1 }
+    end
+  end
+
+  def readings_with_many_likes
+    @readings_with_many_likes ||= begin
+      reading_ids = challenge.readings.pluck(:id)
+      counts = user.verse_likes.where(reading_id: reading_ids)
+        .group(:reading_id).count
+      counts.values.count { |c| c > 10 }
     end
   end
 

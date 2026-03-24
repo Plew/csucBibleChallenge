@@ -959,6 +959,12 @@ de:
     conversation_starter:
       name: "Gesprächsstarter"
       description: "Einen Vers-Kommentar-Thread starten, der 5+ Kommentare erreicht"
+    love_is_cheap:
+      name: "Liebe ist billig"
+      description: "10+ Verse in einem Kapitel liken, 5 verschiedene Male"
+    just_sus:
+      name: "Einfach verdächtig"
+      description: "25+ Kapitel an einem einzigen Tag eingetragen"
 
   # Public Profile
   public_profile:

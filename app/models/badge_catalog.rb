@@ -21,7 +21,9 @@ Badge.new(key: "verse_lover", category: "social", icon: "heart", threshold: 20, 
     Badge.new(key: "halfway_there", category: "chapters", icon: "flag", threshold: 50, check_type: :completion_pct),
     Badge.new(key: "chatty_chapter", category: "fun", icon: "speech", threshold: 5, check_type: :chatty_chapter),
     Badge.new(key: "love_is_not_cheap", category: "fun", icon: "diamond", threshold: 5, check_type: :picky_liker),
-    Badge.new(key: "conversation_starter", category: "fun", icon: "megaphone", threshold: 5, check_type: :conversation_starter)
+    Badge.new(key: "conversation_starter", category: "fun", icon: "megaphone", threshold: 5, check_type: :conversation_starter),
+    Badge.new(key: "love_is_cheap", category: "fun", icon: "broken_heart", threshold: 5, check_type: :generous_liker),
+    Badge.new(key: "just_sus", category: "fun", icon: "detective", threshold: 25, check_type: :bulk_reading)
   ].freeze
 
   BADGE_MAP = BADGES.index_by(&:key).freeze

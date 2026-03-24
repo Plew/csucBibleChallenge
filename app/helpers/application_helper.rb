@@ -18,7 +18,9 @@ module ApplicationHelper
     "flag" => "\u{1F6A9}",
     "speech" => "\u{1F4AC}",
     "diamond" => "\u{1F48E}",
-    "megaphone" => "\u{1F4E3}"
+    "megaphone" => "\u{1F4E3}",
+    "broken_heart" => "\u{1F494}",
+    "detective" => "\u{1F575}\uFE0F"
   }.freeze
 
   def badge_icon(icon_key)
