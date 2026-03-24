@@ -23,7 +23,9 @@
 
     <!-- Recent Readers -->
     <% if challenge_summary_stats %>
-      <%= render Statistics::RecentReadersComponent.new(readers: challenge_summary_stats.last_10_readers) %>
+      <div class="-mt-3">
+        <%= render Statistics::RecentReadersComponent.new(readers: challenge_summary_stats.last_10_readers) %>
+      </div>
     <% end %>
 
     <!-- Tab Switcher -->
