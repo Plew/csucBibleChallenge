@@ -15,17 +15,34 @@
           <% today_percentage = group_data[:today_check_in_percentage]&.round || 0 %>
           <% size = group_data[:group_size] %>
 
-          <div class="flex items-center gap-3 p-2.5 bg-base-100 rounded-lg border border-base-300">
-            <span class="text-xs opacity-40 font-semibold w-5 text-center flex-shrink-0"><%= index + 1 %></span>
-            <div class="flex-grow min-w-0">
-              <div class="font-medium text-sm truncate"><%= group.name %></div>
-              <div class="text-[10px] opacity-50"><%= pluralize(size, t('common.member_one'), t('common.member_other')) %></div>
-            </div>
-            <div class="flex items-center gap-2 flex-shrink-0">
-              <div class="w-16 h-1.5 rounded-full bg-accent/20 overflow-hidden">
-                <div class="h-full rounded-full bg-accent" style="width: <%= today_percentage %>%"></div>
+          <div class="bg-base-100 rounded-lg border border-base-300">
+            <div class="collapse">
+              <input type="checkbox" id="group-<%= group.id %>-expand">
+              <label for="group-<%= group.id %>-expand" class="collapse-title min-h-0 py-2 px-2.5 cursor-pointer">
+                <div class="flex items-center gap-3">
+                  <span class="text-xs opacity-40 font-semibold w-5 text-center flex-shrink-0"><%= index + 1 %></span>
+                  <div class="flex-grow min-w-0">
+                    <div class="font-medium text-sm truncate"><%= group.name %></div>
+                    <div class="text-[10px] opacity-50"><%= pluralize(size, t('common.member_one'), t('common.member_other')) %></div>
+                  </div>
+                  <div class="flex items-center gap-2 flex-shrink-0">
+                    <div class="w-16 h-1.5 rounded-full bg-accent/20 overflow-hidden">
+                      <div class="h-full rounded-full bg-accent" style="width: <%= today_percentage %>%"></div>
+                    </div>
+                    <span class="text-sm font-bold text-accent w-9 text-right font-mono"><%= today_percentage %>%</span>
+                  </div>
+                </div>
+              </label>
+              <div class="collapse-content px-3 pb-2">
+                <div class="space-y-1">
+                  <% group.users.each do |user| %>
+                    <div class="flex items-center gap-3 px-3 py-1.5 bg-base-200 rounded-lg">
+                      <%= avatar_image_tag(user, :tiny, class: 'rounded-full') %>
+                      <span class="font-medium text-sm"><%= user.name %></span>
+                    </div>
+                  <% end %>
+                </div>
               </div>
-              <span class="text-sm font-bold text-accent w-9 text-right font-mono"><%= today_percentage %>%</span>
             </div>
           </div>
         <% end %>
