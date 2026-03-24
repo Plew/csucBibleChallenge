@@ -14,7 +14,7 @@
         <% badges_with_earners.each do |badge| %>
           <% earned = @my_earned.include?(badge.key) %>
           <% count = @earned_counts[badge.key] %>
-          <%= link_to badge_path(badge_key: badge.key), class: "flex items-center gap-3 p-3 rounded-lg bg-base-100 shadow-sm #{earned ? '' : 'opacity-50'} hover:bg-base-200 transition-colors" do %>
+          <%= link_to badge_path(badge_key: badge.key), class: "flex items-center gap-3 p-3 rounded-lg bg-base-100 shadow-sm hover:bg-base-200 transition-colors" do %>
             <span class="text-3xl flex-shrink-0"><%= badge_icon(badge.icon) %></span>
             <div class="flex-1 min-w-0">
               <div class="text-sm font-semibold"><%= t("badges.#{badge.key}.name") %></div>
