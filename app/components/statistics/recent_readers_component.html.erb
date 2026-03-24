@@ -1,0 +1,5 @@
+<div class="flex flex-wrap gap-x-3 gap-y-0.5 text-xs opacity-70">
+  <% readers.each do |reader_data| %>
+    <span><%= reader_data[:user].username %> <span class="opacity-50"><%= abbreviated_time(reader_data[:time_ago]) %></span></span>
+  <% end %>
+</div>

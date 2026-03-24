@@ -21,6 +21,11 @@
       </div>
     <% end %>
 
+    <!-- Recent Readers -->
+    <% if challenge_summary_stats %>
+      <%= render Statistics::RecentReadersComponent.new(readers: challenge_summary_stats.last_10_readers) %>
+    <% end %>
+
     <!-- Tab Switcher -->
     <div role="tablist" class="tabs tabs-boxed bg-base-200 p-1">
       <a role="tab" class="tab tab-active font-semibold" data-stats-tab-target="communityTab" data-action="click->stats-tab#showCommunity"><%= t('stats.tabs.community') %></a>
