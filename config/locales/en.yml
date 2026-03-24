@@ -737,7 +737,7 @@ en:
       other: "%{count} verses"
     view_all_readers: "View all %{count}+ readers →"
     view_all: "View all"
-    last_10_readers: "Last 10 readers"
+    last_5_readers: "Last 5 readers"
 
   # Profile
   profile:
