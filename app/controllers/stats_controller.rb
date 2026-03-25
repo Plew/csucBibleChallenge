@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class StatsController < ApplicationController
+  before_action :require_login
+
   CACHE_EXPIRATION = 30.seconds
 
   def index
