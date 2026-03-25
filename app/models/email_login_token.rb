@@ -8,10 +8,10 @@ class EmailLoginToken < ApplicationRecord
   before_validation :generate_token, on: :create
 
   scope :unused, -> { where(clicked_at: nil) }
-  scope :recent, -> { where("created_at > ?", 24.hours.ago) }
+  scope :recent, -> { where("created_at > ?", 7.days.ago) }
 
   def mark_as_clicked!
-    update!(clicked_at: Time.current)
+    update!(clicked_at: Time.current) unless clicked?
   end
 
   def clicked?
@@ -19,8 +19,7 @@ class EmailLoginToken < ApplicationRecord
   end
 
   def valid_for_login?
-    # Token is valid if it was created within last 24 hours and hasn't been clicked
-    created_at > 24.hours.ago && !clicked?
+    created_at > 7.days.ago
   end
 
   private

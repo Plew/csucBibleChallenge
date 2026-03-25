@@ -9,7 +9,7 @@ class EmailLoginController < ApplicationController
     end
 
     unless @token.valid_for_login?
-      redirect_to root_path, alert: "This login link has expired or has already been used."
+      redirect_to root_path, alert: "This login link has expired."
       return
     end
 

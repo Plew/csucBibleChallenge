@@ -58,10 +58,10 @@ RSpec.describe EmailLoginToken, type: :model do
     end
 
     describe '.recent' do
-      let!(:old_token) { create(:email_login_token, created_at: 25.hours.ago) }
+      let!(:old_token) { create(:email_login_token, created_at: 8.days.ago) }
       let!(:recent_token) { create(:email_login_token, created_at: 1.hour.ago) }
 
-      it 'returns only tokens created within last 24 hours' do
+      it 'returns only tokens created within last 7 days' do
         expect(EmailLoginToken.recent).to include(recent_token)
         expect(EmailLoginToken.recent).not_to include(old_token)
       end
@@ -71,10 +71,19 @@ RSpec.describe EmailLoginToken, type: :model do
   describe '#mark_as_clicked!' do
     let(:token) { create(:email_login_token) }
 
-    it 'sets clicked_at to current time' do
+    it 'sets clicked_at to current time on first use' do
       expect(token.clicked_at).to be_nil
       token.mark_as_clicked!
       expect(token.clicked_at).to be_within(1.second).of(Time.current)
+    end
+
+    it 'does not overwrite clicked_at on subsequent uses' do
+      token.mark_as_clicked!
+      original_clicked_at = token.clicked_at
+      travel_to 1.hour.from_now do
+        token.mark_as_clicked!
+        expect(token.reload.clicked_at).to be_within(1.second).of(original_clicked_at)
+      end
     end
   end
 
@@ -91,32 +100,40 @@ RSpec.describe EmailLoginToken, type: :model do
   end
 
   describe '#valid_for_login?' do
-    context 'when token is recent and unused' do
-      let(:token) { create(:email_login_token, created_at: 1.hour.ago, clicked_at: nil) }
+    context 'when token was created within last 7 days' do
+      let(:token) { create(:email_login_token, created_at: 1.hour.ago) }
 
       it 'returns true' do
         expect(token.valid_for_login?).to be true
       end
     end
 
-    context 'when token is old' do
-      let(:token) { create(:email_login_token, created_at: 25.hours.ago, clicked_at: nil) }
+    context 'when token was created 6 days ago' do
+      let(:token) { create(:email_login_token, created_at: 6.days.ago) }
 
-      it 'returns false' do
-        expect(token.valid_for_login?).to be false
+      it 'returns true' do
+        expect(token.valid_for_login?).to be true
       end
     end
 
-    context 'when token has been clicked' do
+    context 'when token has been clicked but is within 7 days' do
       let(:token) { create(:email_login_token, created_at: 1.hour.ago, clicked_at: 30.minutes.ago) }
 
+      it 'returns true (reusable)' do
+        expect(token.valid_for_login?).to be true
+      end
+    end
+
+    context 'when token is older than 7 days' do
+      let(:token) { create(:email_login_token, created_at: 8.days.ago) }
+
       it 'returns false' do
         expect(token.valid_for_login?).to be false
       end
     end
 
-    context 'when token is old and has been clicked' do
-      let(:token) { create(:email_login_token, created_at: 25.hours.ago, clicked_at: 24.hours.ago) }
+    context 'when token is older than 7 days even if never clicked' do
+      let(:token) { create(:email_login_token, created_at: 8.days.ago, clicked_at: nil) }
 
       it 'returns false' do
         expect(token.valid_for_login?).to be false
