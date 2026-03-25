@@ -96,6 +96,8 @@ class StatsController < ApplicationController
     Rails.cache.fetch("stats/most_liked_verse/#{challenge.id}", expires_in: CACHE_EXPIRATION) do
       calculate_most_liked_verse(challenge)
     end
+  rescue Errno::ENOENT
+    calculate_most_liked_verse(challenge)
   end
 
   def calculate_most_liked_verse(challenge)
