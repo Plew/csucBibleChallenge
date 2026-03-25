@@ -43,7 +43,7 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 gem "bootsnap", require: false
 gem "factory_bot_rails"
 gem "view_component"
-gem "faker", "~> 3.5.3"
+gem "faker", "~> 3.6.1"
 gem "inline_svg"
 gem "chartkick", "~> 5.2.1"
 gem "redcarpet"
