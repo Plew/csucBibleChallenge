@@ -4,6 +4,7 @@ class Reading < ApplicationRecord
   has_many :completed_by_users, through: :user_readings, source: :user
   has_many :verse_messages, dependent: :destroy
   has_many :verse_likes, dependent: :destroy
+  has_many :reading_presence_records, dependent: :destroy
 
   validates :scheduled_date, presence: true
   validates :book_number, presence: true, numericality: { only_integer: true, greater_than: 0 }
