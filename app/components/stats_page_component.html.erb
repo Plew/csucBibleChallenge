@@ -45,6 +45,11 @@
         <%= render Statistics::TopReadersComponent.new(top_readers_data: top_readers_data) %>
       </div>
 
+      <!-- Recent Achievements -->
+      <div>
+        <%= render Statistics::RecentBadgesComponent.new(recent_badges: recent_badges) %>
+      </div>
+
       <!-- Most Liked Verses Today -->
       <div>
         <%= render Statistics::MostLikedVersesTodayComponent.new(most_liked_verse_today: most_liked_verse_today) %>
@@ -75,11 +80,6 @@
           <%= render Statistics::PerfectRecordComponent.new(perfect_record_data: perfect_record_data) %>
         </div>
       <% end %>
-
-      <!-- Recent Achievements -->
-      <div>
-        <%= render Statistics::RecentBadgesComponent.new(recent_badges: recent_badges) %>
-      </div>
     </div>
 
     <!-- My Stats Tab (hidden by default) -->

@@ -13,6 +13,11 @@
             <div class="flex-grow min-w-0">
               <div class="font-medium text-sm <%= active?(sprint) ? 'font-bold' : '' %> truncate"><%= sprint.title %></div>
               <div class="text-[10px] opacity-50"><%= format_date(sprint.begin_date) %> – <%= format_date(sprint.end_date) %></div>
+              <% if sprint.sprint_winners.any? %>
+                <div class="text-[10px] text-amber-400 mt-0.5">
+                  🏆 <%= sprint.sprint_winners.map(&:display_group_name).join(", ") %>
+                </div>
+              <% end %>
             </div>
             <% if active?(sprint) %>
               <span class="text-[10px] font-semibold text-purple-400 bg-purple-500/20 px-2 py-0.5 rounded-full flex-shrink-0"><%= t('stats.active_label') %></span>
