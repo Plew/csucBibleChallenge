@@ -42,6 +42,20 @@
       </div>
     <% end %>
 
+    <%# Push Notifications Card %>
+    <div class="card bg-base-100 shadow-xl w-full" data-controller="push-notification">
+      <div class="card-body p-4 flex flex-row items-center justify-between">
+        <div>
+          <h2 class="text-sm font-medium"><%= t('profile.push_notifications') %></h2>
+          <p class="text-xs text-base-content/70"><%= t('profile.push_notifications_desc') %></p>
+        </div>
+        <input type="checkbox"
+               class="toggle toggle-primary"
+               data-push-notification-target="toggle"
+               data-action="change->push-notification#toggle">
+      </div>
+    </div>
+
     <%# Change Password Card %>
     <%= link_to edit_profile_password_path, class: "card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow cursor-pointer w-full" do %>
       <div class="card-body p-4">

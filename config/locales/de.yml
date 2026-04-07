@@ -697,6 +697,8 @@ de:
     bible_version_desc: "Ändere deine bevorzugte Bibelübersetzung"
     email_preferences: "E-Mail-Einstellungen"
     email_preferences_desc: "Verwalte deine täglichen E-Mail-Benachrichtigungen"
+    push_notifications: "Push-Benachrichtigungen"
+    push_notifications_desc: "Benachrichtigung erhalten, wenn Gruppenmitglieder lesen"
     password: "Passwort"
     password_desc: "Ändere dein Konto-Passwort"
     log_out: "Abmelden"

@@ -19,6 +19,7 @@ class UserReadingsController < ApplicationController
 
     if @user_reading.save
       CheckBadgesJob.perform_later(current_user.id, challenge.id)
+      SendReadingNotificationJob.perform_later(current_user.id, @reading.id)
     else
       # Handle potential errors, e.g., already marked as read
       flash[:alert] = @user_reading.errors.full_messages.to_sentence.presence || "Could not mark as read."

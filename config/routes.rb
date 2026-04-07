@@ -179,6 +179,11 @@ Rails.application.routes.draw do
   get "badges/:badge_key", to: "badges#show", as: :badge
 
   resources :user_readings, only: [ :create ]
+  resources :push_subscriptions, only: [ :create ] do
+    collection do
+      delete :destroy
+    end
+  end
 
   # Feedback
   resources :feedbacks, only: [ :new, :create, :show ]

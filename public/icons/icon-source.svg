@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 260" width="512" height="512">
+  <rect x="0" y="0" width="260" height="260" rx="52" fill="#151a20"/>
+  <rect x="10" y="10" width="240" height="240" rx="44" fill="#1d232a"/>
+  <g transform="translate(50, 42)">
+    <!-- Checkbox outline -->
+    <rect x="10" y="10" width="140" height="140" rx="20" fill="none" stroke="#661AE6" stroke-width="5"/>
+    <!-- Book left page -->
+    <path d="M80 35 C80 35 42 28 25 40 L25 115 C42 103 80 112 80 112Z" fill="#c4b5fd" opacity="0.9"/>
+    <!-- Book right page -->
+    <path d="M80 35 C80 35 118 28 135 40 L135 115 C118 103 80 112 80 112Z" fill="#a78bfa" opacity="0.85"/>
+    <!-- Spine -->
+    <line x1="80" y1="35" x2="80" y2="112" stroke="#1d232a" stroke-width="1.5"/>
+    <!-- Checkmark badge -->
+    <circle cx="138" cy="138" r="32" fill="#661AE6"/>
+    <polyline points="120,138 133,152 158,124" fill="none" stroke="white" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

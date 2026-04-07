@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_19_103554) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_07_195723) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -99,6 +99,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_19_103554) do
     t.index ["user_id"], name: "index_email_login_tokens_on_user_id"
   end
 
+  create_table "export", id: false, force: :cascade do |t|
+    t.integer "book_number"
+    t.integer "chapter_number"
+    t.integer "verse_number"
+    t.text "verse_text"
+  end
+
   create_table "feedbacks", force: :cascade do |t|
     t.integer "category"
     t.datetime "created_at", null: false
@@ -131,6 +138,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_19_103554) do
     t.index ["challenge_id"], name: "index_groups_on_challenge_id"
     t.index ["creator_id"], name: "index_groups_on_creator_id"
     t.index ["token"], name: "index_groups_on_token", unique: true
+  end
+
+  create_table "push_subscriptions", force: :cascade do |t|
+    t.string "auth_key", null: false
+    t.datetime "created_at", null: false
+    t.string "endpoint", null: false
+    t.string "p256dh_key", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["endpoint"], name: "index_push_subscriptions_on_endpoint", unique: true
+    t.index ["user_id"], name: "index_push_subscriptions_on_user_id"
   end
 
   create_table "reading_presences", force: :cascade do |t|
@@ -435,6 +453,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_19_103554) do
   add_foreign_key "group_messages", "users"
   add_foreign_key "groups", "challenges"
   add_foreign_key "groups", "users", column: "creator_id"
+  add_foreign_key "push_subscriptions", "users"
   add_foreign_key "reading_presences", "readings"
   add_foreign_key "reading_presences", "users"
   add_foreign_key "readings", "challenges"

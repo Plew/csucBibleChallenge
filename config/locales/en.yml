@@ -752,6 +752,8 @@ en:
     bible_version_desc: "Change your preferred Bible version"
     email_preferences: "Email Preferences"
     email_preferences_desc: "Manage your daily email notifications"
+    push_notifications: "Push Notifications"
+    push_notifications_desc: "Get notified when group members log readings"
     password: "Password"
     password_desc: "Change your account password"
     log_out: "Log out"
