@@ -17,7 +17,9 @@ import "chartkick"
 import "Chart.bundle"
 import "chart.js"
 
-console.log('fooo');
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/service-worker", { scope: "/" })
+}
 
 document.addEventListener("turbo:before-stream-render", function(event) {
   console.log("Turbo Stream received:", event.target);
