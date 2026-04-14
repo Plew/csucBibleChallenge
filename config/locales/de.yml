@@ -968,6 +968,17 @@ de:
       name: "Einfach verdächtig"
       description: "25+ Kapitel an einem einzigen Tag eingetragen"
 
+  # Pokes
+  pokes:
+    poke: "Stupsen"
+    poked: "Gestupst"
+    notification: "%{username} erinnert dich daran, heute zu lesen!"
+    already_poked: "Heute schon gestupst"
+    too_early: "Stupsen ist erst nach 21 Uhr verfügbar"
+    no_push: "Dieser Benutzer hat keine Push-Benachrichtigungen aktiviert"
+    already_read: "Dieser Benutzer hat die heutige Lesung bereits abgeschlossen"
+    success: "Stupser gesendet!"
+
   # Public Profile
   public_profile:
     liked_verses: "Gelikte Verse"

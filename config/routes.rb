@@ -189,6 +189,7 @@ Rails.application.routes.draw do
   resources :feedbacks, only: [ :new, :create, :show ]
 
   resources :groups, only: [ :index, :new, :create, :show, :edit, :update ] do
+    resources :pokes, only: [ :create ]
     resources :group_messages, only: [ :index, :create ], path: "messages"
     member do
       post :join

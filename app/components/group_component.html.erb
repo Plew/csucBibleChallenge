@@ -193,8 +193,19 @@
               ) %>
             <% end %>
           </div>
-          <div class="flex-shrink-0">
-            <input type="checkbox" <%= 'checked' if has_read_today?(enrollment.user) %> class="checkbox checkbox-success checkbox-sm pointer-events-none" />
+          <div class="flex-shrink-0 flex items-center gap-1">
+            <% if has_read_today?(enrollment.user) %>
+              <input type="checkbox" checked class="checkbox checkbox-success checkbox-sm pointer-events-none" />
+            <% else %>
+              <input type="checkbox" class="checkbox checkbox-sm pointer-events-none" />
+              <% if pokeable?(enrollment.user) %>
+                <% if already_poked_today?(enrollment.user) %>
+                  <%= render partial: "pokes/poked_indicator", locals: { user: enrollment.user } %>
+                <% else %>
+                  <%= render partial: "pokes/poke_button", locals: { user: enrollment.user, group: group, simulate_9pm: simulate_9pm } %>
+                <% end %>
+              <% end %>
+            <% end %>
           </div>
         </li>
       <% end %>

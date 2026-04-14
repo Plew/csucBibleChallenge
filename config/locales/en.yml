@@ -1023,6 +1023,17 @@ en:
       name: "Just Sus"
       description: "Log 25+ chapters in a single day"
 
+  # Pokes
+  pokes:
+    poke: "Poke"
+    poked: "Poked"
+    notification: "%{username} is reminding you to read today!"
+    already_poked: "Already poked today"
+    too_early: "Poke is available after 9 PM"
+    no_push: "This user doesn't have push notifications enabled"
+    already_read: "This user has already completed today's reading"
+    success: "Poke sent!"
+
   # Public Profile
   public_profile:
     liked_verses: "Liked Verses"

@@ -106,6 +106,7 @@ class GroupsController < ApplicationController
 
   # GET /groups/:id
   def show
+    @simulate_9pm = params[:simulate_9pm] == "true"
     @group = @challenge.groups.includes(user_group_enrollments: { user: [ :avatar_attachment, :avatar_blob, :user_readings ] }).find(params[:id])
     @user_group = current_user.groups.where(challenge_id: @challenge.id).first
     @groups = @challenge.groups.order(:name)

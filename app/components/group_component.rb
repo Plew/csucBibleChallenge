@@ -1,18 +1,19 @@
 class GroupComponent < ViewComponent::Base
   include ApplicationHelper
 
-  def initialize(group:, current_user:, user_group:, group_stats: nil, sprint_stats: nil, current_sprint: nil)
+  def initialize(group:, current_user:, user_group:, group_stats: nil, sprint_stats: nil, current_sprint: nil, simulate_9pm: false)
     @group = group
     @current_user = current_user
     @user_group = user_group
     @group_stats = group_stats
     @sprint_stats = sprint_stats
     @current_sprint = current_sprint
+    @simulate_9pm = simulate_9pm
   end
 
   private
 
-  attr_reader :group, :current_user, :user_group, :group_stats, :sprint_stats, :current_sprint
+  attr_reader :group, :current_user, :user_group, :group_stats, :sprint_stats, :current_sprint, :simulate_9pm
 
   def can_join_group?
     !user_group && !group.closed_to_new_members
@@ -127,5 +128,40 @@ class GroupComponent < ViewComponent::Base
   def current_sprint_day_number
     return 0 unless current_sprint
     (today_in_challenge_timezone - sprint_start_date).to_i
+  end
+
+  def after_9pm?
+    return true if simulate_9pm
+
+    now = Time.current.in_time_zone(group.challenge.timezone)
+    now.hour >= 21
+  end
+
+  def pokeable?(user)
+    return false if user == current_user
+    return false unless is_user_in_this_group?
+    return false if has_read_today?(user)
+    return false unless after_9pm?
+    return false unless user_ids_with_push_subscriptions.include?(user.id)
+    true
+  end
+
+  def already_poked_today?(user)
+    poked_today_user_ids.include?(user.id)
+  end
+
+  def user_ids_with_push_subscriptions
+    @user_ids_with_push_subscriptions ||= begin
+      member_ids = group.users.pluck(:id)
+      PushSubscription.where(user_id: member_ids).distinct.pluck(:user_id).to_set
+    end
+  end
+
+  def poked_today_user_ids
+    @poked_today_user_ids ||= Poke.where(
+      poker: current_user,
+      challenge: group.challenge,
+      poked_on: today_in_challenge_timezone
+    ).pluck(:pokee_id).to_set
   end
 end

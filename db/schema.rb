@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_07_195723) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_14_101653) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -138,6 +138,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_07_195723) do
     t.index ["challenge_id"], name: "index_groups_on_challenge_id"
     t.index ["creator_id"], name: "index_groups_on_creator_id"
     t.index ["token"], name: "index_groups_on_token", unique: true
+  end
+
+  create_table "pokes", force: :cascade do |t|
+    t.integer "challenge_id", null: false
+    t.datetime "created_at", null: false
+    t.date "poked_on", null: false
+    t.integer "pokee_id", null: false
+    t.integer "poker_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["challenge_id"], name: "index_pokes_on_challenge_id"
+    t.index ["pokee_id"], name: "index_pokes_on_pokee_id"
+    t.index ["poker_id", "pokee_id", "challenge_id", "poked_on"], name: "index_pokes_uniqueness", unique: true
   end
 
   create_table "push_subscriptions", force: :cascade do |t|
