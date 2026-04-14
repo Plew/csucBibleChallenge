@@ -95,6 +95,24 @@ RSpec.describe SendReadingNotificationJob, type: :job do
     expect { SendReadingNotificationJob.perform_now(reader.id, reading.id) }.not_to raise_error
   end
 
+  it "does not send notifications for past readings" do
+    past_reading = create(:reading, challenge: challenge, book_number: 1, chapter_number: 5, scheduled_date: 3.days.ago.to_date)
+    create(:push_subscription, user: group_mate)
+
+    expect(WebPush).not_to receive(:payload_send)
+
+    SendReadingNotificationJob.perform_now(reader.id, past_reading.id)
+  end
+
+  it "does not send notifications for future readings" do
+    future_reading = create(:reading, challenge: challenge, book_number: 1, chapter_number: 6, scheduled_date: 3.days.from_now.to_date)
+    create(:push_subscription, user: group_mate)
+
+    expect(WebPush).not_to receive(:payload_send)
+
+    SendReadingNotificationJob.perform_now(reader.id, future_reading.id)
+  end
+
   it "handles missing user gracefully" do
     expect { SendReadingNotificationJob.perform_now(-1, reading.id) }.not_to raise_error
   end

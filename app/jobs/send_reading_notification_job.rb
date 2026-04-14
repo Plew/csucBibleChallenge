@@ -11,6 +11,10 @@ class SendReadingNotificationJob < ApplicationJob
     challenge = reading.challenge
     return unless challenge
 
+    # Only notify for today's readings
+    today = Time.current.in_time_zone(challenge.timezone).to_date
+    return unless reading.scheduled_date == today
+
     # Find the user's group for this challenge
     group = user.groups.find_by(challenge_id: challenge.id)
     return unless group
