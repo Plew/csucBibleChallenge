@@ -29,10 +29,23 @@ This is a Rails 8 application for managing Bible reading challenges. Users can j
 - `bundle exec rspec spec/models/` - Run model tests only
 - `bundle exec rspec spec/controllers/` - Run controller tests only
 - `bundle exec rspec spec/requests/` - Run request tests only
+- `bundle exec rspec spec/system/` - Run browser system tests (Cuprite + headless Chromium)
+
+**System tests (Cuprite):**
+- Driver is wired up in `spec/support/capybara.rb`. Default viewport is mobile (390×844); add `desktop: true` metadata to a describe/it block for 1400×1000.
+- Login helper for system specs: `system_login_as(user)` (in `spec/support/system_authentication_helpers.rb`) — drives the real `/users/sign_in` form. Use this instead of `login_via_session` (which only works for request specs).
+- The Docker container needs `init: true` and `shm_size: 1g` for Chromium to run reliably. The standard `docker-compose.yml` does not set these — `docker-compose.preview.yml` is provided for running system tests in an isolated copy of the environment (see "Preview compose for system tests" below).
+- **Important gotcha:** Rails' `driven_by :cuprite` overwrites any `Capybara.register_driver(:cuprite)` block, so options like `process_timeout`/`browser_path` must be passed via `driven_by(:cuprite, options: {...})`. This is already handled in the support file — don't add a competing `driven_by` call without the options hash.
 
 **Docker testing notes:**
 - If the development DB was pulled from production (`bin/pull_prod_db`), its `ar_internal_metadata` has `environment=production`. This causes `db:test:prepare` to fail with `ProtectedEnvironmentError`. Fix: `DISABLE_DATABASE_ENVIRONMENT_CHECK=1 bin/rails db:test:prepare` and run specs with the same env var.
 - The Docker container runs with `RAILS_ENV=development` by default. Always run specs with `RAILS_ENV=test` explicitly, otherwise CSRF protection is active and all POST/PATCH/DELETE request specs will fail with `ActionController::InvalidAuthenticityToken`. Correct command: `DISABLE_DATABASE_ENVIRONMENT_CHECK=1 docker compose exec -e RAILS_ENV=test app bundle exec rspec`
+
+**Preview compose for system tests:**
+- `docker-compose.preview.yml` is an isolated stack (project name `hiegra-preview`, ports 3002/6380, separate `storage_preview/` directory) that has `init: true` and `shm_size: 1g` so Chromium-driven system specs work. It overrides the `command:` to run `rails server` directly instead of `bin/dev` (the foreman css watcher exits and brings the container down).
+- Bring it up: `docker compose -f docker-compose.preview.yml -p hiegra-preview up -d`
+- Run system specs: `DISABLE_DATABASE_ENVIRONMENT_CHECK=1 docker compose -p hiegra-preview exec -e RAILS_ENV=test app bundle exec rspec spec/system/`
+- The `storage_preview/` directory is a copy of `storage/` and is gitignored so the main dev DB stays untouched.
 
 ### Assets & Styling
 

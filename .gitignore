@@ -29,6 +29,9 @@
 !/tmp/storage/
 !/tmp/storage/.keep
 
+# Isolated copy of storage used by docker-compose.preview.yml (system tests)
+/storage_preview/
+
 /public/assets
 
 # Ignore master key for decrypting credentials and more.

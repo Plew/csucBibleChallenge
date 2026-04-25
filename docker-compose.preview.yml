@@ -1,0 +1,43 @@
+name: hiegra-preview
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    init: true
+    shm_size: 1g
+    ports:
+      - "3002:3000"
+    volumes:
+      - .:/app:cached
+      - bundle_cache:/usr/local/bundle
+      - node_modules:/app/node_modules
+      - ./storage_preview:/app/storage
+    environment:
+      - RAILS_ENV=development
+      - NODE_ENV=development
+      - BINDING=0.0.0.0
+      - CHROME_BIN=/usr/bin/chromium
+      - CHROMIUM_BIN=/usr/bin/chromium
+    command: ["bash", "-lc", "rm -f tmp/pids/server.pid && bundle exec rails server -b 0.0.0.0"]
+    stdin_open: true
+    tty: true
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7.2-alpine
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6380:6379"
+
+volumes:
+  bundle_cache:
+    name: hiegra_preview_bundle_cache
+  node_modules:
+    name: hiegra_preview_node_modules
+  redis_data:
+    name: hiegra_preview_redis_data
