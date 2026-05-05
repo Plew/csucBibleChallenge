@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Turbo Drive page navigation progress bar */
+.turbo-progress-bar {
+  height: 4px;
+  background-color: hsl(var(--p));
+}
+
 /* Reading presence avatars */
 .presence-avatar {
   opacity: 1;

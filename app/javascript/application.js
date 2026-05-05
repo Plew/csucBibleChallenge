@@ -13,6 +13,8 @@ if (typeof window.process === 'undefined') {
 
 import "@hotwired/turbo-rails"
 import "controllers"
+
+window.Turbo.setProgressBarDelay(100)
 import "chartkick"
 import "Chart.bundle"
 import "chart.js"

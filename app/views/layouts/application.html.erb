@@ -142,5 +142,11 @@
   <main class="container mx-auto mt-1">
     <%= yield %>
   </main>
+
+  <div data-controller="loading-overlay"
+       data-loading-overlay-target="overlay"
+       class="hidden fixed inset-0 z-[100] bg-black/40 flex items-center justify-center pointer-events-none">
+    <span class="loading loading-spinner loading-lg text-primary"></span>
+  </div>
 </body>
 </html> 
