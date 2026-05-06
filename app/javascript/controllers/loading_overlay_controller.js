@@ -24,7 +24,8 @@ export default class extends Controller {
     this.clearTimer()
   }
 
-  scheduleShow() {
+  scheduleShow(event) {
+    if (event && event.target && event.target.tagName === "TURBO-FRAME") return
     this.clearTimer()
     this.showTimer = setTimeout(() => {
       this.overlayTarget.classList.remove("hidden")
