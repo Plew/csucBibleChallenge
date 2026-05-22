@@ -23,6 +23,17 @@
         <%= f.text_field :motto, class: 'input input-bordered w-full', placeholder: t('groups.motto_placeholder') %>
       </div>
 
+      <div>
+        <%= f.label :country_code, t('groups.adopted_country'), class: 'block font-semibold mb-1' %>
+        <% country_options = ISO3166::Country.all.map { |c|
+             name = c.translations[I18n.locale.to_s] || c.iso_short_name
+             [ "#{country_flag_emoji(c.alpha2)} #{name}", c.alpha2 ]
+           }.sort_by { |label, _| label } %>
+        <%= f.select :country_code, country_options,
+              { include_blank: t('groups.no_country') },
+              class: 'select select-bordered w-full' %>
+      </div>
+
       <div class="form-control">
         <label class="label cursor-pointer justify-start gap-3">
           <%= f.check_box :closed_to_new_members, class: "checkbox" %>

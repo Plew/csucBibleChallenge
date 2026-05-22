@@ -29,6 +29,22 @@ RSpec.describe Group, type: :model do
 
     it { should validate_presence_of(:name) }
     it { should validate_uniqueness_of(:name).scoped_to(:challenge_id).with_message("name should be unique within the challenge") }
+
+    it { should allow_value(nil, "", "US", "DE").for(:country_code) }
+    it { should_not allow_value("ZZ", "XX").for(:country_code) }
+  end
+
+  describe '#country' do
+    it 'returns the ISO3166::Country when country_code is set' do
+      group = FactoryBot.build(:group, country_code: "DE")
+      expect(group.country).to be_a(ISO3166::Country)
+      expect(group.country.alpha2).to eq("DE")
+    end
+
+    it 'returns nil when country_code is blank' do
+      group = FactoryBot.build(:group, country_code: nil)
+      expect(group.country).to be_nil
+    end
   end
 
   describe 'attributes' do

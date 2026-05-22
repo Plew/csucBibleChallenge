@@ -543,6 +543,8 @@ de:
     group_name: "Gruppenname"
     group_motto: "Gruppenmotto"
     motto_placeholder: "Optional: Füge ein Gruppenmotto oder einen Slogan hinzu"
+    adopted_country: "Für welches Land betet eure Gruppe?"
+    no_country: "Kein Land ausgewählt"
     closed_to_new: "Niemand sonst kann dieser Gruppe beitreten"
     update_group: "Gruppe aktualisieren"
     your_group_members: "Deine Gruppenmitglieder"

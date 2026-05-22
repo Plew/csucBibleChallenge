@@ -27,6 +27,16 @@ module ApplicationHelper
     BADGE_ICONS[icon_key.to_s] || "\u{1F3C6}"
   end
 
+  def country_flag_emoji(code)
+    return nil if code.blank?
+    code.to_s.upcase.each_char.map { |c| (c.ord + 127_397).chr(Encoding::UTF_8) }.join
+  end
+
+  def group_name_with_flag(group)
+    flag = country_flag_emoji(group.country_code)
+    safe_join([ flag, group.name ].compact, " ")
+  end
+
   def flash_class(level)
     case level
     when "notice" then "alert-info"

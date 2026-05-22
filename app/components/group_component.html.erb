@@ -8,7 +8,7 @@
   <div class="bg-base-100 rounded-lg shadow p-4">
     <div class="mb-4">
       <div class="flex items-center justify-between">
-        <h2 class="text-xl font-bold"><%= group.name %></h2>
+        <h2 class="text-xl font-bold"><%= helpers.group_name_with_flag(group) %></h2>
         <div class="flex gap-2">
           <% if can_join_group? %>
             <%= button_to 'Join', join_group_path(group), method: :post, class: 'btn btn-primary btn-sm', data: { turbo: true } %>

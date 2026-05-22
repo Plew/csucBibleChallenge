@@ -4,7 +4,7 @@
     <span class="truncate"><%= t('stats.top_groups') %></span>
     <% if has_groups? %>
       <% top = top_groups_data.first %>
-      <span class="text-xs font-normal opacity-60 truncate">Top: <%= top[:group].name %> <%= top[:today_check_in_percentage]&.round || 0 %>%</span>
+      <span class="text-xs font-normal opacity-60 truncate">Top: <%= group_name_with_flag(top[:group]) %> <%= top[:today_check_in_percentage]&.round || 0 %>%</span>
     <% end %>
   </label>
   <div class="collapse-content">
@@ -22,7 +22,7 @@
                 <div class="flex items-center gap-3">
                   <span class="text-xs opacity-40 font-semibold w-5 text-center flex-shrink-0"><%= index + 1 %></span>
                   <div class="flex-grow min-w-0">
-                    <div class="font-medium text-sm truncate"><%= group.name %></div>
+                    <div class="font-medium text-sm truncate"><%= group_name_with_flag(group) %></div>
                     <div class="text-[10px] opacity-50"><%= pluralize(size, t('common.member_one'), t('common.member_other')) %></div>
                   </div>
                   <div class="flex items-center gap-2 flex-shrink-0">
