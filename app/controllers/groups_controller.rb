@@ -218,6 +218,7 @@ class GroupsController < ApplicationController
     if @group.update(group_params)
       redirect_to group_path(@group), notice: "Group updated successfully."
     else
+      @members = @group.users.includes(:avatar_attachment, :avatar_blob).where.not(id: current_user.id)
       render :edit, status: :unprocessable_content
     end
   end
@@ -270,6 +271,6 @@ class GroupsController < ApplicationController
   end
 
   def group_params
-    params.require(:group).permit(:name, :closed_to_new_members, :motto)
+    params.require(:group).permit(:name, :closed_to_new_members, :motto, :country_code)
   end
 end

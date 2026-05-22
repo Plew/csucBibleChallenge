@@ -48,7 +48,7 @@
                       @sprint.winner_groups.include?(group),
                       id: "winner_group_#{group.id}",
                       class: "checkbox checkbox-sm checkbox-primary" %>
-                  <span class="label-text"><%= group.name %></span>
+                  <span class="label-text"><%= group_name_with_flag(group) %></span>
                 </label>
               <% end %>
             </div>

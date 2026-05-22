@@ -24,7 +24,7 @@
         <div class="flex items-center gap-3 flex-wrap">
           <label class="font-semibold text-sm whitespace-nowrap"><%= t("admin.sprints.winners") %></label>
           <% @sprint.winner_groups.each do |group| %>
-            <span class="badge badge-success gap-1">🏆 <%= group.name %></span>
+            <span class="badge badge-success gap-1">🏆 <%= group_name_with_flag(group) %></span>
           <% end %>
         </div>
       </div>
@@ -67,7 +67,7 @@
                     <% end %>
                   </td>
                   <td>
-                    <div class="font-semibold"><%= group_stats[:group].name %></div>
+                    <div class="font-semibold"><%= group_name_with_flag(group_stats[:group]) %></div>
                     <div class="text-xs text-base-content/60 mt-1">
                       <%= group_stats[:group].users.map(&:name).join(", ") %>
                     </div>

@@ -12,6 +12,7 @@ class Group < ApplicationRecord
                    uniqueness: { scope: :challenge_id, message: "name should be unique within the challenge" }
   validates :creator, presence: true
   validates :token, uniqueness: true, allow_nil: true
+  validates :country_code, inclusion: { in: ->(_) { ISO3166::Country.codes } }, allow_blank: true
 
   before_create :generate_token
 
@@ -29,5 +30,9 @@ class Group < ApplicationRecord
 
   def join_url
     Rails.application.routes.url_helpers.group_invitation_url(token, host: ENV.fetch("APP_HOST", "localhost:3000"))
+  end
+
+  def country
+    ISO3166::Country[country_code] if country_code.present?
   end
 end

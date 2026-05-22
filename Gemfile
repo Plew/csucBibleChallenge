@@ -30,6 +30,8 @@ gem "solid_cable"
 
 gem "swearjar"
 
+gem "countries", "~> 7.0"
+
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
 
