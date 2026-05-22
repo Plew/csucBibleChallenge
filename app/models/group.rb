@@ -12,7 +12,7 @@ class Group < ApplicationRecord
                    uniqueness: { scope: :challenge_id, message: "name should be unique within the challenge" }
   validates :creator, presence: true
   validates :token, uniqueness: true, allow_nil: true
-  validates :country_code, inclusion: { in: -> (_) { ISO3166::Country.codes } }, allow_blank: true
+  validates :country_code, inclusion: { in: ->(_) { ISO3166::Country.codes } }, allow_blank: true
 
   before_create :generate_token
 
