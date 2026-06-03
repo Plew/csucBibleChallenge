@@ -218,7 +218,17 @@ en:
       manage_sprints: "Manage Sprints"
       manage_blog: "Manage Blog Posts"
       manage_users: "Manage Users"
+      top_readers: "Top Readers"
       weekly_winner: "Weekly Winner"
+    top_readers:
+      title: "Top Readers"
+      reader: "Reader"
+      completion: "Completion"
+      on_time: "On Time"
+      count:
+        one: "%{count} reader"
+        other: "%{count} readers"
+      empty: "No one has completed a reading yet."
     settings:
       title: "Challenge Settings"
       updated: "Challenge settings updated successfully."

@@ -71,6 +71,7 @@ Rails.application.routes.draw do
     namespace :manage do
       root "dashboard#index", as: :dashboard
       resource :settings, only: [ :edit, :update ], controller: "settings"
+      resources :top_readers, only: [ :index ]
       resources :sprints, only: [ :index, :show, :new, :create, :edit, :update, :destroy ]
       resources :blog_posts, only: [ :index, :new, :create, :edit, :update, :destroy ]
       resources :users, only: [ :index, :show ] do

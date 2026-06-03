@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
 class TopReadersStatistics
-  def self.call(challenge:, date_range: nil)
-    new(challenge, date_range).call
+  def self.call(challenge:, date_range: nil, min_completion_percentage: 50)
+    new(challenge, date_range, min_completion_percentage).call
   end
 
-  def initialize(challenge, date_range = nil)
+  def initialize(challenge, date_range = nil, min_completion_percentage = 50)
     @challenge = challenge
     @date_range = date_range
+    @min_completion_percentage = min_completion_percentage
   end
 
   def call
@@ -31,9 +32,9 @@ class TopReadersStatistics
       .group(:user_id)
       .count
 
-    # Filter to users with >0 completions and >=50% completion
+    # Filter to users with >0 completions and >= the minimum completion percentage
     qualifying_user_ids = completion_counts.select { |_uid, count|
-      count > 0 && (count >= scheduled_count || (count.to_f / scheduled_count * 100).floor >= 50)
+      count > 0 && (count >= scheduled_count || (count.to_f / scheduled_count * 100).floor >= @min_completion_percentage)
     }.keys
 
     return [] if qualifying_user_ids.empty?
