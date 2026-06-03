@@ -1,0 +1,68 @@
+<div class="px-2 py-4">
+  <div class="text-sm breadcrumbs mb-4">
+    <ul>
+      <li><%= link_to @challenge.title, challenge_manage_dashboard_path(@challenge), class: "link link-hover" %></li>
+      <li><%= t("manage.top_readers.title") %></li>
+    </ul>
+  </div>
+
+  <div class="flex justify-between items-center mb-4">
+    <h1 class="text-2xl font-bold"><%= t("manage.top_readers.title") %></h1>
+    <%= link_to t("common.back"), challenge_manage_dashboard_path(@challenge), class: "btn btn-sm btn-outline" %>
+  </div>
+
+  <% if @readers.empty? %>
+    <div class="card bg-base-100 shadow-sm">
+      <div class="card-body p-4 text-center text-base-content/60 text-sm">
+        <%= t("manage.top_readers.empty") %>
+      </div>
+    </div>
+  <% else %>
+    <p class="text-sm text-base-content/60 mb-2"><%= t("manage.top_readers.count", count: @readers.size) %></p>
+
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body p-2">
+        <div class="overflow-x-auto">
+          <table class="table table-zebra table-sm w-full" data-controller="table-sort">
+            <thead>
+              <tr>
+                <th class="cursor-pointer select-none"
+                    data-action="click->table-sort#sort" data-table-sort-target="header"
+                    data-sort-key="name" data-sort-type="string">
+                  <%= t("manage.top_readers.reader") %> <span data-arrow></span>
+                </th>
+                <th class="text-right cursor-pointer select-none"
+                    data-action="click->table-sort#sort" data-table-sort-target="header"
+                    data-sort-key="completion" data-sort-type="number">
+                  <%= t("manage.top_readers.completion") %> <span data-arrow>▼</span>
+                </th>
+                <th class="text-right cursor-pointer select-none"
+                    data-action="click->table-sort#sort" data-table-sort-target="header"
+                    data-sort-key="ontime" data-sort-type="number">
+                  <%= t("manage.top_readers.on_time") %> <span data-arrow></span>
+                </th>
+              </tr>
+            </thead>
+            <tbody data-table-sort-target="body">
+              <% @readers.each do |reader| %>
+                <% user = reader[:user] %>
+                <tr data-name="<%= user.username.to_s.downcase %>"
+                    data-completion="<%= reader[:completion_percentage] %>"
+                    data-ontime="<%= reader[:on_schedule_percentage] %>">
+                  <td class="font-semibold text-sm">
+                    <div class="flex items-center gap-2">
+                      <%= avatar_image_tag(user, :tiny, class: 'rounded-full') %>
+                      <%= user.username %>
+                    </div>
+                  </td>
+                  <td class="text-right tabular-nums"><%= reader[:completion_percentage] %>%</td>
+                  <td class="text-right tabular-nums"><%= reader[:on_schedule_percentage] %>%</td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

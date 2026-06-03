@@ -82,6 +82,9 @@
     <%= link_to challenge_manage_users_path(@challenge), class: "btn btn-secondary btn-sm w-full" do %>
       <%= t("manage.dashboard.manage_users") %>
     <% end %>
+    <%= link_to challenge_manage_top_readers_path(@challenge), class: "btn btn-secondary btn-sm w-full" do %>
+      <%= t("manage.dashboard.top_readers") %>
+    <% end %>
     <%= link_to challenge_seven_day_lobby_path(@challenge), class: "btn btn-secondary btn-sm w-full" do %>
       <%= t("manage.dashboard.weekly_winner") %>
     <% end %>

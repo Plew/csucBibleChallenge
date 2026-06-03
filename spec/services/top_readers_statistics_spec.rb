@@ -79,6 +79,28 @@ RSpec.describe TopReadersStatistics, type: :service do
         expect(result.length).to eq(3)
       end
 
+      it 'includes sub-50% readers (but not zero-completion users) when min_completion_percentage is 0' do
+        # user4 has 40% completion (below the default 50% threshold)
+        user4 = create(:user)
+        create(:user_challenge_enrollment, user: user4, challenge: challenge)
+        readings.first(4).each do |reading|
+          create(:user_reading, user: user4, reading: reading, completed_on: reading.scheduled_date)
+        end
+
+        # user5 is enrolled but has completed nothing
+        user5 = create(:user)
+        create(:user_challenge_enrollment, user: user5, challenge: challenge)
+
+        result = described_class.call(challenge: challenge, min_completion_percentage: 0)
+
+        expect(result.map { |r| r[:user] }).to include(user4)
+        expect(result.map { |r| r[:user] }).not_to include(user5)
+        # user1 (100%), user3 (70%), user2 (50%), user4 (40%)
+        expect(result.length).to eq(4)
+        expect(result.last[:user]).to eq(user4)
+        expect(result.last[:completion_percentage]).to eq(40)
+      end
+
       it 'calculates correct completion percentages' do
         result = described_class.call(challenge: challenge)
 
