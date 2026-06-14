@@ -4,6 +4,7 @@ on:
   pull_request:
   push:
     branches: [ main ]
+    tags: [ "v*" ]
 
 jobs:
   scan_ruby:
@@ -109,7 +110,9 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # Production ships only when a version tag (v*) is pushed and CI passes.
+    # Pushing to main runs CI but does NOT deploy — main is a preview/integration branch.
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     needs: [ scan_ruby, scan_js, lint, test ]
     timeout-minutes: 20
 
