@@ -41,6 +41,32 @@ RSpec.describe "Manage::Settings", type: :request do
     end
   end
 
+  context "when logged in as a site admin (not the owner)" do
+    let(:site_admin) { create(:user, admin: true) }
+    before { login_via_session(site_admin) }
+
+    it "allows access to edit" do
+      get edit_challenge_manage_settings_path(challenge)
+      expect(response).to have_http_status(:success)
+    end
+
+    it "allows updating the challenge" do
+      patch challenge_manage_settings_path(challenge), params: { challenge: { name: "Admin Updated" } }
+      challenge.reload
+      expect(challenge.name).to eq("Admin Updated")
+    end
+
+    it "can update all settings including locked and verse_comments_enabled" do
+      patch challenge_manage_settings_path(challenge), params: {
+        challenge: { locked: true, verse_comments_enabled: false, auto_remove_inactive_from_groups: true }
+      }
+      challenge.reload
+      expect(challenge.locked).to be true
+      expect(challenge.verse_comments_enabled).to be false
+      expect(challenge.auto_remove_inactive_from_groups).to be true
+    end
+  end
+
   context "when logged in as a different user" do
     let(:other_user) { create(:user) }
     before { login_via_session(other_user) }

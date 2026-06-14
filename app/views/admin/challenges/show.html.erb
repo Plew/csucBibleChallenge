@@ -85,7 +85,7 @@
       <div class="card-body">
         <h2 class="card-title mb-4"><%= t("admin.challenges.management_actions") %></h2>
         <div class="flex flex-wrap gap-2">
-          <%= link_to t("challenges.edit_challenge"), edit_admin_challenge_path(@challenge), class: "btn btn-primary" %>
+          <%= link_to t("challenges.edit_challenge"), edit_challenge_manage_settings_path(@challenge), class: "btn btn-primary" %>
           <%= link_to t("navigation.manage_challenge"), challenge_manage_dashboard_path(@challenge), class: "btn btn-secondary" %>
           <%= link_to t("admin.seven_day_winner.title"), challenge_seven_day_lobby_path(@challenge), class: "btn btn-accent" %>
         </div>

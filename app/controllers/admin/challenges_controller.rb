@@ -1,7 +1,7 @@
 class Admin::ChallengesController < Admin::BaseController
   include ChallengeCreation
 
-  before_action :set_challenge, only: [ :show, :edit, :update, :delete_confirmation, :destroy ]
+  before_action :set_challenge, only: [ :show, :delete_confirmation, :destroy ]
   before_action :ensure_creator, only: [ :delete_confirmation, :destroy ]
 
   def index
@@ -9,17 +9,6 @@ class Admin::ChallengesController < Admin::BaseController
   end
 
   def show
-  end
-
-  def edit
-  end
-
-  def update
-    if @challenge.update(challenge_params)
-      redirect_to admin_challenges_path, notice: "Challenge was successfully updated."
-    else
-      render :edit, status: :unprocessable_entity
-    end
   end
 
   def new

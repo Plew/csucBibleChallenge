@@ -73,93 +73,10 @@ RSpec.describe "Admin::Challenges", type: :request do
       get admin_challenge_path(challenge)
       expect(response.body).to include(challenge.title)
     end
-  end
 
-  describe "GET /admin/challenges/:id/edit" do
-    before { login_via_session(admin_user) }
-
-    it "returns http success" do
-      get edit_admin_challenge_path(challenge)
-      expect(response).to have_http_status(:success)
-    end
-
-    it "displays edit form" do
-      get edit_admin_challenge_path(challenge)
-      expect(response.body).to include("Edit Challenge")
-      expect(response.body).to include(challenge.title)
-    end
-  end
-
-  describe "PATCH /admin/challenges/:id" do
-    before { login_via_session(admin_user) }
-
-    context "with valid parameters" do
-      let(:valid_attributes) do
-        {
-          title: "Updated Challenge Title",
-          description: "Updated description",
-          hidden: true
-        }
-      end
-
-      it "updates the challenge" do
-        patch admin_challenge_path(challenge), params: { challenge: valid_attributes }
-        challenge.reload
-        expect(challenge.title).to eq("Updated Challenge Title")
-        expect(challenge.description).to eq("Updated description")
-        expect(challenge.hidden).to be true
-      end
-
-      it "redirects to admin challenges index" do
-        patch admin_challenge_path(challenge), params: { challenge: valid_attributes }
-        expect(response).to redirect_to(admin_challenges_path)
-      end
-
-      it "displays success notice" do
-        patch admin_challenge_path(challenge), params: { challenge: valid_attributes }
-        follow_redirect!
-        expect(response.body).to include("Challenge was successfully updated")
-      end
-
-      it "updates only the description field when other fields unchanged" do
-        original_title = challenge.title
-        original_timezone = challenge.timezone
-        original_start_date = challenge.start_date
-
-        patch admin_challenge_path(challenge), params: {
-          challenge: {
-            title: original_title,
-            description: "Only description changed",
-            timezone: original_timezone,
-            start_date: original_start_date
-          }
-        }
-
-        challenge.reload
-        expect(challenge.description).to eq("Only description changed")
-        expect(challenge.title).to eq(original_title)
-        expect(challenge.timezone).to eq(original_timezone)
-      end
-    end
-
-    context "with invalid parameters" do
-      let(:invalid_attributes) do
-        {
-          title: "" # Assuming title is required
-        }
-      end
-
-      it "does not update the challenge" do
-        original_title = challenge.title
-        patch admin_challenge_path(challenge), params: { challenge: invalid_attributes }
-        challenge.reload
-        expect(challenge.title).to eq(original_title)
-      end
-
-      it "renders edit template" do
-        patch admin_challenge_path(challenge), params: { challenge: invalid_attributes }
-        expect(response).to have_http_status(:unprocessable_entity)
-      end
+    it "links to the manage settings form for editing" do
+      get admin_challenge_path(challenge)
+      expect(response.body).to include(edit_challenge_manage_settings_path(challenge))
     end
   end
 
