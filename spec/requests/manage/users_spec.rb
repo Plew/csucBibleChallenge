@@ -189,12 +189,24 @@ RSpec.describe "Manage::Users", type: :request do
       expect(flash[:alert]).to be_present
     end
 
-    context "when logged in as a challenge admin (not creator)" do
-      let(:admin_user) { create(:user) }
+    context "when logged in as a site admin" do
+      let(:site_admin) { create(:user, admin: true) }
+
+      before { login_as site_admin }
+
+      it "allows promote action" do
+        patch promote_challenge_manage_user_path(challenge, enrolled_user)
+        expect(enrolled_user.user_challenge_enrollments.find_by(challenge: challenge).role).to eq("admin")
+        expect(response).to redirect_to(challenge_manage_user_path(challenge, enrolled_user))
+      end
+    end
+
+    context "when logged in as a challenge organizer (not creator)" do
+      let(:organizer) { create(:user) }
 
       before do
-        create(:user_challenge_enrollment, :admin, user: admin_user, challenge: challenge)
-        login_as admin_user
+        create(:user_challenge_enrollment, :admin, user: organizer, challenge: challenge)
+        login_as organizer
       end
 
       it "denies promote action" do
@@ -216,12 +228,24 @@ RSpec.describe "Manage::Users", type: :request do
       expect(flash[:notice]).to include(enrolled_user.username)
     end
 
-    context "when logged in as a challenge admin (not creator)" do
-      let(:admin_user) { create(:user) }
+    context "when logged in as a site admin" do
+      let(:site_admin) { create(:user, admin: true) }
+
+      before { login_as site_admin }
+
+      it "allows demote action" do
+        patch demote_challenge_manage_user_path(challenge, enrolled_user)
+        expect(enrolled_user.user_challenge_enrollments.find_by(challenge: challenge).role).to eq("member")
+        expect(response).to redirect_to(challenge_manage_user_path(challenge, enrolled_user))
+      end
+    end
+
+    context "when logged in as a challenge organizer (not creator)" do
+      let(:organizer) { create(:user) }
 
       before do
-        create(:user_challenge_enrollment, :admin, user: admin_user, challenge: challenge)
-        login_as admin_user
+        create(:user_challenge_enrollment, :admin, user: organizer, challenge: challenge)
+        login_as organizer
       end
 
       it "denies demote action" do

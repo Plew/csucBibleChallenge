@@ -106,7 +106,7 @@ class Manage::UsersController < Manage::BaseController
   end
 
   def require_challenge_creator!
-    unless @challenge.owned_by?(current_user)
+    unless @challenge.owner_or_site_admin?(current_user)
       redirect_to challenge_manage_dashboard_path(@challenge), alert: t("manage.access_denied")
     end
   end

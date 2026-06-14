@@ -17,7 +17,7 @@ class Profile::EnrollmentsController < Profile::BaseController
     @challenge = @user_enrollment.challenge
 
     # Only allow challenge creator to delete
-    unless @challenge.creator == current_user
+    unless @challenge.owned_by?(current_user)
       redirect_to profile_enrollments_path, alert: "Only the challenge creator can delete challenges."
       nil
     end
@@ -29,7 +29,7 @@ class Profile::EnrollmentsController < Profile::BaseController
     @challenge = @user_enrollment.challenge
 
     # Only allow challenge creator to delete
-    unless @challenge.creator == current_user
+    unless @challenge.owned_by?(current_user)
       redirect_to profile_enrollments_path, alert: "Only the challenge creator can delete challenges."
       return
     end

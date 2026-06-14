@@ -144,24 +144,6 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe '#owns_challenge?' do
-    let(:user) { create(:user) }
-    let(:challenge) { create(:challenge, creator: user) }
-    let(:other_challenge) { create(:challenge) }
-
-    it 'returns true for a challenge the user created' do
-      expect(user.owns_challenge?(challenge)).to be true
-    end
-
-    it 'returns false for a challenge the user did not create' do
-      expect(user.owns_challenge?(other_challenge)).to be false
-    end
-
-    it 'returns false for nil' do
-      expect(user.owns_challenge?(nil)).to be false
-    end
-  end
-
   describe 'daily_email attribute' do
     it 'defaults to true for new users' do
       user = User.new

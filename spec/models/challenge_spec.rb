@@ -174,6 +174,44 @@ RSpec.describe Challenge, type: :model do
     end
   end
 
+  describe '#owner_or_site_admin?' do
+    let(:creator) { create(:user) }
+    let(:challenge) { create(:challenge, creator: creator) }
+    let(:organizer) { create(:user) }
+    let(:member) { create(:user) }
+    let(:outsider) { create(:user) }
+    let(:site_admin) { create(:user, admin: true) }
+
+    before do
+      create(:user_challenge_enrollment, :admin, user: organizer, challenge: challenge)
+      create(:user_challenge_enrollment, user: member, challenge: challenge)
+    end
+
+    it 'returns true for the creator' do
+      expect(challenge.owner_or_site_admin?(creator)).to be true
+    end
+
+    it 'returns true for a site admin' do
+      expect(challenge.owner_or_site_admin?(site_admin)).to be true
+    end
+
+    it 'returns false for a challenge organizer (not owner or site admin)' do
+      expect(challenge.owner_or_site_admin?(organizer)).to be false
+    end
+
+    it 'returns false for a plain member' do
+      expect(challenge.owner_or_site_admin?(member)).to be false
+    end
+
+    it 'returns false for an outsider' do
+      expect(challenge.owner_or_site_admin?(outsider)).to be false
+    end
+
+    it 'returns false for nil' do
+      expect(challenge.owner_or_site_admin?(nil)).to be false
+    end
+  end
+
   describe 'deletion' do
     let(:creator) { FactoryBot.create(:user, admin: true) }
     let(:challenge) { FactoryBot.create(:challenge, creator: creator) }

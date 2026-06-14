@@ -70,7 +70,7 @@ class Admin::ChallengesController < Admin::BaseController
   end
 
   def ensure_creator
-    unless @challenge.creator == current_user
+    unless @challenge.owned_by?(current_user)
       redirect_to root_path, alert: "You can only delete challenges you created."
     end
   end

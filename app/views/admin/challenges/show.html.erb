@@ -93,7 +93,7 @@
     </div>
   </div>
 
-  <% if @challenge.creator == current_user %>
+  <% if @challenge.owned_by?(current_user) %>
     <!-- Danger Zone -->
     <div class="mt-8">
       <div class="card bg-base-100 shadow-xl border border-error">

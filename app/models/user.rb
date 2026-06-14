@@ -73,10 +73,6 @@ class User < ApplicationRecord
     admin? || can_create_challenges
   end
 
-  def owns_challenge?(challenge)
-    challenge.present? && challenge.creator_id == id
-  end
-
   private
 
   ALLOWED_AVATAR_TYPES = %w[image/png image/jpeg image/gif image/webp].freeze

@@ -106,7 +106,7 @@ class SevenDayLobbiesController < ApplicationController
   end
 
   def require_admin
-    unless current_user.admin? || @challenge.owned_by?(current_user)
+    unless @challenge.owner_or_site_admin?(current_user)
       redirect_to challenge_seven_day_lobby_path(@challenge), alert: t("seven_day_lobby.admin_only")
     end
   end

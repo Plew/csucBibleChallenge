@@ -48,6 +48,11 @@ class Challenge < ApplicationRecord
     user.admin? || owned_by?(user) || challenge_admin?(user)
   end
 
+  def owner_or_site_admin?(user)
+    return false unless user.present?
+    owned_by?(user) || user.admin?
+  end
+
   def join_url
     Rails.application.routes.url_helpers.challenge_invitation_url(invitation_token, host: ENV.fetch("APP_HOST", "localhost:3000"))
   end
