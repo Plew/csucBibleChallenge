@@ -1,0 +1,33 @@
+<div class="px-2 py-4 max-w-2xl mx-auto">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold"><%= t('catch_up.title') %></h1>
+    <%= link_to t('common.back'), reading_path, class: "btn btn-sm btn-outline" %>
+  </div>
+
+  <% if @missed_readings.any? %>
+    <p class="text-lg mb-4">
+      <%= t('catch_up.heading', count: @missed_readings.size) %>
+    </p>
+
+    <ul class="menu bg-base-100 rounded-box shadow w-full p-0">
+      <% @missed_readings.each do |reading| %>
+        <li>
+          <%= link_to reading_path(date: reading.scheduled_date),
+                      class: "flex justify-between items-center" do %>
+            <span class="font-medium">
+              <%= book_number_to_name(reading.book_number) %> <%= reading.chapter_number %>
+            </span>
+            <span class="text-sm text-base-content/60">
+              <%= l(reading.scheduled_date, format: "%a, %b %-d") %>
+            </span>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <div class="text-center py-12">
+      <p class="text-xl font-semibold mb-4"><%= t('catch_up.all_caught_up') %></p>
+      <%= link_to t('catch_up.go_to_today'), reading_path, class: "btn btn-primary" %>
+    </div>
+  <% end %>
+</div>

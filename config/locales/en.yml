@@ -184,6 +184,7 @@ en:
     create_challenge: "Create Challenge"
     manage_feedback: "Manage Feedback"
     seven_day_win: "Weekly Winner"
+    catch_up: "Catch Up"
     settings: "Settings"
     send_feedback: "Send Feedback"
     view_feedback: "View Feedback"
@@ -520,6 +521,14 @@ en:
         other: "%{count} days"
 
   # Seven Day Lobby
+  catch_up:
+    title: "Catch Up"
+    heading:
+      one: "You need to read 1 chapter to catch up."
+      other: "You need to read %{count} chapters to catch up."
+    all_caught_up: "You're all caught up! 🎉"
+    go_to_today: "Go to today's reading"
+    must_be_enrolled: "You must be enrolled in this challenge to view this page."
   seven_day_lobby:
     title: "Weekly Winner"
     description: "Join the Weekly Winner lobby to compete with others who have achieved 100% completion in the last 7 days."
