@@ -20,6 +20,10 @@ _Avoid_: participant, member (use these for raw enrollment regardless of activit
 **Completion** (UserReading):
 The record that a reader marked a given reading done, stamped with `completed_on` (a date, in the challenge's timezone).
 
+**Missed reading**:
+A reading whose `scheduled_date` is strictly **before today** (in the challenge timezone) that the reader has **not** completed. Today's reading is never "missed" — it can still be completed on time. Future readings are not missed. The Catch Up page lists a reader's missed readings.
+_Avoid_: "behind", "overdue" (acceptable in prose, but "missed reading" is canonical)
+
 ### Scoring
 
 **Completion percentage**:

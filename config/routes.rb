@@ -60,6 +60,7 @@ Rails.application.routes.draw do
     resources :blog_posts, only: [ :index, :show ], controller: "blog_posts" do
       resources :blog_comments, only: [ :create, :destroy ]
     end
+    resource :catch_up, only: [ :show ]
     member do
       get :summary
     end

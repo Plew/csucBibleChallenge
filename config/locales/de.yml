@@ -17,6 +17,7 @@ de:
     create_challenge: "Challenge erstellen"
     manage_feedback: "Feedback verwalten"
     seven_day_win: "Wöchentlicher Gewinner"
+    catch_up: "Aufholen"
     settings: "Einstellungen"
     send_feedback: "Feedback senden"
     view_feedback: "Feedback ansehen"
@@ -464,6 +465,14 @@ de:
         one: "%{count} Tag"
         other: "%{count} Tage"
 
+  catch_up:
+    title: "Aufholen"
+    heading:
+      one: "Du musst 1 Kapitel lesen, um aufzuholen."
+      other: "Du musst %{count} Kapitel lesen, um aufzuholen."
+    all_caught_up: "Du bist auf dem neuesten Stand! 🎉"
+    go_to_today: "Zur heutigen Lesung"
+    must_be_enrolled: "Du musst an dieser Challenge teilnehmen, um diese Seite zu sehen."
   # Seven Day Lobby
   seven_day_lobby:
     title: "Wöchentlicher Gewinner"
