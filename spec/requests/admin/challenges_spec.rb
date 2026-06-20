@@ -61,22 +61,14 @@ RSpec.describe "Admin::Challenges", type: :request do
     end
   end
 
-  describe "GET /admin/challenges/:id" do
+  describe "GET /admin/challenges (directory links to Console)" do
     before { login_via_session(admin_user) }
 
-    it "returns http success" do
-      get admin_challenge_path(challenge)
-      expect(response).to have_http_status(:success)
-    end
+    let!(:listed_challenge) { create(:challenge, title: "Listed Challenge") }
 
-    it "displays challenge details" do
-      get admin_challenge_path(challenge)
-      expect(response.body).to include(challenge.title)
-    end
-
-    it "links to the manage settings form for editing" do
-      get admin_challenge_path(challenge)
-      expect(response.body).to include(edit_challenge_manage_settings_path(challenge))
+    it "links each challenge to its manage console" do
+      get admin_challenges_path
+      expect(response.body).to include(challenge_manage_dashboard_path(listed_challenge))
     end
   end
 
