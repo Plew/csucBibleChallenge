@@ -141,7 +141,7 @@
   <% end %>
 
   <main class="container mx-auto mt-1">
-    <%= yield %>
+    <%= content_for?(:content) ? yield(:content) : yield %>
   </main>
 
   <div data-controller="loading-overlay"

@@ -1,4 +1,6 @@
 class Manage::BaseController < ApplicationController
+  layout "manage"
+
   helper Admin::UsersHelper
 
   before_action :require_login

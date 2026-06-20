@@ -146,6 +146,34 @@ de:
   manage:
     access_denied: "Du hast keine Berechtigung, diese Challenge zu verwalten."
     challenge_created: "Challenge erfolgreich erstellt! Du kannst sie jetzt konfigurieren."
+    nav:
+      console: "Challenge-Konsole"
+      view_challenge: "Challenge ansehen"
+      overview: "Übersicht"
+      settings: "Einstellungen"
+      users: "Teilnehmer"
+      sprints: "Sprints"
+      blog: "Blog"
+      top_readers: "Top-Leser"
+      weekly_winner: "Wochensieger"
+      delete_challenge: "Challenge löschen"
+      group:
+        challenge: "Challenge"
+        people: "Personen"
+        content: "Inhalte"
+        engagement: "Engagement"
+        danger: "Gefahr"
+    overview:
+      title: "Übersicht"
+      blog_posts: "Blogbeiträge"
+    danger:
+      title: "Gefahrenzone"
+      heading: "Diese Challenge löschen"
+      warning: "Beim Löschen einer Challenge werden alle Lesungen, Abschlüsse, Gruppen, Sprints und Blogbeiträge dauerhaft entfernt. Dies kann nicht rückgängig gemacht werden."
+      delete_button: "Challenge löschen"
+      type_to_confirm: "Gib zur Bestätigung genau diesen Satz ein:"
+      confirm: "„%{title}“ endgültig löschen? Dies kann nicht rückgängig gemacht werden."
+      deleted: "Challenge gelöscht."
     getting_started:
       title: "Erste Schritte"
       step_created: "Challenge erstellt"

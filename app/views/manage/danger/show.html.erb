@@ -1,0 +1,20 @@
+<div class="px-1">
+  <h1 class="text-xl font-bold mb-3 text-error"><%= t("manage.danger.title") %></h1>
+
+  <div class="card bg-base-100 border border-error/40 shadow-sm">
+    <div class="card-body p-4">
+      <h3 class="font-semibold text-error"><%= t("manage.danger.heading") %></h3>
+      <p class="text-sm text-base-content/70 mb-2"><%= t("manage.danger.warning") %></p>
+
+      <%= form_with url: challenge_manage_danger_path(@challenge), method: :delete, class: "space-y-3" do |f| %>
+        <div>
+          <label class="block text-sm mb-1"><%= t("manage.danger.type_to_confirm") %></label>
+          <code class="text-sm bg-base-200 px-2 py-1 rounded inline-block mb-2"><%= Manage::DangerController::CONFIRMATION_TEXT %></code>
+          <%= f.text_field :confirmation_text, autocomplete: "off",
+                class: "input input-bordered input-sm w-full" %>
+        </div>
+        <%= f.submit t("manage.danger.delete_button"), class: "btn btn-error btn-sm w-full" %>
+      <% end %>
+    </div>
+  </div>
+</div>
