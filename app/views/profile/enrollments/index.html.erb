@@ -5,49 +5,45 @@
 
   <div class="bg-base-100">
     <div class="p-4">
-        <% if @user_enrollment %>
-          <p class="mb-4"><%= t('profile.you_are_enrolled') %> <strong class="font-semibold"><%= @user_enrollment.challenge.name %></strong></p>
-          <div class="card-actions justify-start mb-6">
-            <%= button_to t('profile.leave_challenge'), profile_enrollment_path(@user_enrollment), method: :delete, data: { confirm: t('profile.leave_confirmation') }, class: "btn btn-error btn-outline" %>
-
-            <% if @user_enrollment.challenge.owned_by?(current_user) %>
-              <%= link_to t('challenges.delete_challenge'), delete_challenge_confirmation_profile_enrollment_path(@user_enrollment), class: "btn btn-error ml-2" %>
-            <% end %>
-          </div>
-
-          <% if @user_enrollment.challenge.readings.any? %>
-            <div class="mt-6">
-              <h3 class="text-lg font-semibold mb-3"><%= t('profile.reading_schedule') %></h3>
-              <div class="overflow-x-auto">
-                <table class="table table-xs table-zebra">
-                  <thead>
-                    <tr>
-                      <th><%= t('profile.date') %></th>
-                      <th><%= t('profile.reading') %></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <% @user_enrollment.challenge.readings.order(:scheduled_date).each do |reading| %>
-                      <tr>
-                        <td class="text-sm">
-                          <%= reading.scheduled_date.strftime("%b %d") %>
-                        </td>
-                        <td class="text-sm">
-                          <%= book_number_to_name(reading.book_number) %> <%= reading.chapter_number %>
-                        </td>
-                      </tr>
-                    <% end %>
-                  </tbody>
-                </table>
+      <% if @current_enrollments.any? %>
+        <h2 class="text-lg font-semibold mb-3"><%= t('profile.current_challenges') %></h2>
+        <% @current_enrollments.each do |enrollment| %>
+          <div class="card bg-base-200 mb-4">
+            <div class="card-body p-4">
+              <h3 class="font-semibold"><%= enrollment.challenge.name %></h3>
+              <p class="text-sm text-base-content/70">
+                <%= enrollment.challenge.start_date.strftime("%b %d, %Y") %> &ndash; <%= enrollment.challenge.end_date.strftime("%b %d, %Y") %>
+              </p>
+              <div class="card-actions justify-start mt-2">
+                <%= button_to t('profile.leave_challenge'), profile_enrollment_path(enrollment), method: :delete, data: { confirm: t('profile.leave_confirmation') }, class: "btn btn-error btn-outline btn-sm" %>
+                <% if enrollment.challenge.owned_by?(current_user) %>
+                  <%= link_to t('challenges.delete_challenge'), delete_challenge_confirmation_profile_enrollment_path(enrollment), class: "btn btn-error btn-sm ml-2" %>
+                <% end %>
               </div>
             </div>
-          <% end %>
-        <% else %>
-          <p class="mb-4"><%= t('profile.not_enrolled') %></p>
-          <div class="card-actions justify-start">
-            <%= link_to t('profile.browse_challenges'), root_path, class: "btn btn-primary" %>
           </div>
         <% end %>
+      <% else %>
+        <p class="mb-4"><%= t('profile.not_enrolled') %></p>
+        <div class="card-actions justify-start mb-6">
+          <%= link_to t('profile.browse_challenges'), root_path, class: "btn btn-primary" %>
+        </div>
+      <% end %>
+
+      <% if @past_enrollments.any? %>
+        <h2 class="text-lg font-semibold mb-3 mt-6"><%= t('profile.past_challenges') %></h2>
+        <% @past_enrollments.each do |enrollment| %>
+          <%= link_to profile_enrollment_path(enrollment), class: "card bg-base-200 mb-3 block hover:bg-base-300 transition-colors" do %>
+            <div class="card-body p-4">
+              <h3 class="font-semibold"><%= enrollment.challenge.name %></h3>
+              <p class="text-sm text-base-content/70">
+                <%= enrollment.challenge.start_date.strftime("%b %d, %Y") %> &ndash; <%= enrollment.challenge.end_date.strftime("%b %d, %Y") %>
+              </p>
+              <p class="text-xs text-base-content/50 mt-1"><%= t('profile.view_archive') %> &rarr;</p>
+            </div>
+          <% end %>
+        <% end %>
+      <% end %>
     </div>
   </div>
 </div>

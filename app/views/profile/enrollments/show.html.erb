@@ -1,0 +1,59 @@
+<div class="px-2 py-4">
+  <div class="mb-4">
+    <%= link_to t('common.back'), profile_enrollments_path, class: "btn btn-ghost btn-sm" %>
+  </div>
+
+  <div class="bg-base-100">
+    <div class="p-4">
+      <h1 class="text-xl font-semibold mb-1"><%= @challenge.name %></h1>
+      <p class="text-sm text-base-content/60 mb-4">
+        <%= @challenge.start_date.strftime("%b %d, %Y") %> &ndash; <%= @challenge.end_date.strftime("%b %d, %Y") %>
+      </p>
+
+      <%# Stats %>
+      <div class="grid grid-cols-2 gap-3 mb-6">
+        <div class="stat bg-base-200 rounded-box p-3">
+          <div class="stat-title text-xs"><%= t('profile.archive.completion') %></div>
+          <div class="stat-value text-2xl"><%= @stats.completion_percentage %>%</div>
+        </div>
+        <div class="stat bg-base-200 rounded-box p-3">
+          <div class="stat-title text-xs"><%= t('profile.archive.chapters_read') %></div>
+          <div class="stat-value text-2xl"><%= @completed_readings.size %></div>
+        </div>
+      </div>
+
+      <%# Group %>
+      <% if @group %>
+        <div class="mb-6">
+          <h2 class="text-base font-semibold mb-1"><%= t('profile.archive.your_group') %></h2>
+          <p class="text-sm"><%= @group.name %></p>
+        </div>
+      <% end %>
+
+      <%# Reading history %>
+      <h2 class="text-base font-semibold mb-2"><%= t('profile.archive.reading_history') %></h2>
+      <% if @completed_readings.any? %>
+        <div class="overflow-x-auto">
+          <table class="table table-xs table-zebra">
+            <thead>
+              <tr>
+                <th><%= t('profile.date') %></th>
+                <th><%= t('profile.reading') %></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @completed_readings.each do |user_reading| %>
+                <tr>
+                  <td class="text-sm"><%= user_reading.reading.scheduled_date.strftime("%b %d") %></td>
+                  <td class="text-sm"><%= book_number_to_name(user_reading.reading.book_number) %> <%= user_reading.reading.chapter_number %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <p class="text-sm text-base-content/60"><%= t('profile.archive.no_readings') %></p>
+      <% end %>
+    </div>
+  </div>
+</div>

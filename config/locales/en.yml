@@ -857,6 +857,16 @@ en:
     daily_notifications: "Daily email notifications"
     daily_notifications_help: "Receive daily reading reminders and encouragement via email"
     save_preferences: "Save Preferences"
+    current_challenges: "Current Challenges"
+    past_challenges: "Past Challenges"
+    view_archive: "View archive"
+    left_challenge: "Successfully left the challenge."
+    archive:
+      completion: "Completion"
+      chapters_read: "Chapters Read"
+      your_group: "Your Group"
+      reading_history: "Reading History"
+      no_readings: "No readings completed."
 
   # Sessions (Login/Signup)
   sessions:

@@ -802,6 +802,16 @@ de:
     save_preferences: "Einstellungen speichern"
     versions:
       rcv: "Recovery Version (RcV)"
+    current_challenges: "Aktuelle Challenges"
+    past_challenges: "Vergangene Challenges"
+    view_archive: "Archiv anzeigen"
+    left_challenge: "Challenge erfolgreich verlassen."
+    archive:
+      completion: "Abschluss"
+      chapters_read: "Gelesene Kapitel"
+      your_group: "Deine Gruppe"
+      reading_history: "Leseverlauf"
+      no_readings: "Keine Lesungen abgeschlossen."
 
   # Sessions (Login/Signup)
   sessions:
