@@ -57,7 +57,7 @@ class ChallengesController < ApplicationController
 
     if @challenge.save
       create_readings_for_challenge(@challenge, params[:selected_books])
-      @challenge.user_challenge_enrollments.create!(user: current_user, role: "admin")
+      @challenge.user_challenge_enrollments.create!(user: current_user, role: "organizer")
       redirect_to challenge_manage_dashboard_path(@challenge), notice: t("manage.challenge_created")
     else
       render :new, status: :unprocessable_content

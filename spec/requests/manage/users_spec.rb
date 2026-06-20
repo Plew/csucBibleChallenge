@@ -175,9 +175,9 @@ RSpec.describe "Manage::Users", type: :request do
   end
 
   describe "PATCH /challenges/:challenge_id/manage/users/:id/promote" do
-    it "promotes a user to admin" do
+    it "promotes a user to organizer" do
       patch promote_challenge_manage_user_path(challenge, enrolled_user)
-      expect(enrolled_user.user_challenge_enrollments.find_by(challenge: challenge).role).to eq("admin")
+      expect(enrolled_user.user_challenge_enrollments.find_by(challenge: challenge).role).to eq("organizer")
       expect(response).to redirect_to(challenge_manage_user_path(challenge, enrolled_user))
       expect(flash[:notice]).to include(enrolled_user.username)
     end
@@ -196,7 +196,7 @@ RSpec.describe "Manage::Users", type: :request do
 
       it "allows promote action" do
         patch promote_challenge_manage_user_path(challenge, enrolled_user)
-        expect(enrolled_user.user_challenge_enrollments.find_by(challenge: challenge).role).to eq("admin")
+        expect(enrolled_user.user_challenge_enrollments.find_by(challenge: challenge).role).to eq("organizer")
         expect(response).to redirect_to(challenge_manage_user_path(challenge, enrolled_user))
       end
     end
@@ -205,7 +205,7 @@ RSpec.describe "Manage::Users", type: :request do
       let(:organizer) { create(:user) }
 
       before do
-        create(:user_challenge_enrollment, :admin, user: organizer, challenge: challenge)
+        create(:user_challenge_enrollment, :organizer, user: organizer, challenge: challenge)
         login_as organizer
       end
 
@@ -218,10 +218,10 @@ RSpec.describe "Manage::Users", type: :request do
 
   describe "PATCH /challenges/:challenge_id/manage/users/:id/demote" do
     before do
-      enrolled_user.user_challenge_enrollments.find_by(challenge: challenge).update!(role: "admin")
+      enrolled_user.user_challenge_enrollments.find_by(challenge: challenge).update!(role: "organizer")
     end
 
-    it "demotes a user from admin" do
+    it "demotes a user from organizer" do
       patch demote_challenge_manage_user_path(challenge, enrolled_user)
       expect(enrolled_user.user_challenge_enrollments.find_by(challenge: challenge).role).to eq("member")
       expect(response).to redirect_to(challenge_manage_user_path(challenge, enrolled_user))
@@ -244,7 +244,7 @@ RSpec.describe "Manage::Users", type: :request do
       let(:organizer) { create(:user) }
 
       before do
-        create(:user_challenge_enrollment, :admin, user: organizer, challenge: challenge)
+        create(:user_challenge_enrollment, :organizer, user: organizer, challenge: challenge)
         login_as organizer
       end
 
@@ -255,12 +255,12 @@ RSpec.describe "Manage::Users", type: :request do
     end
   end
 
-  context "when logged in as a challenge admin" do
-    let(:admin_user) { create(:user) }
+  context "when logged in as a challenge organizer" do
+    let(:organizer_user) { create(:user) }
 
     before do
-      create(:user_challenge_enrollment, :admin, user: admin_user, challenge: challenge)
-      login_as admin_user
+      create(:user_challenge_enrollment, :organizer, user: organizer_user, challenge: challenge)
+      login_as organizer_user
     end
 
     it "allows access to user list" do

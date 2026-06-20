@@ -84,7 +84,7 @@ class Manage::UsersController < Manage::BaseController
     end
 
     enrollment = @user.user_challenge_enrollments.find_by(challenge: @challenge)
-    enrollment.update!(role: "admin")
+    enrollment.update!(role: "organizer")
     redirect_to challenge_manage_user_path(@challenge, @user), notice: t("manage.users.promoted", username: @user.username)
   end
 

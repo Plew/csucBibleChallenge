@@ -24,10 +24,10 @@ RSpec.describe "Manage::Danger", type: :request do
       end
     end
 
-    context "as a challenge admin who is not the owner" do
+    context "as a challenge organizer who is not the owner" do
       let(:organizer) { create(:user) }
       before do
-        create(:user_challenge_enrollment, :admin, user: organizer, challenge: challenge)
+        create(:user_challenge_enrollment, :organizer, user: organizer, challenge: challenge)
         login_via_session(organizer)
       end
 

@@ -19,7 +19,7 @@
         <div>
           <h2 class="font-semibold">
             <%= @user.username %>
-            <% if @enrollment&.admin? %>
+            <% if @enrollment&.organizer? %>
               <span class="badge badge-sm badge-primary"><%= t('manage.users.admin_badge') %></span>
             <% end %>
           </h2>
@@ -50,7 +50,7 @@
 
       <div class="card-actions mt-4 flex flex-col gap-2">
         <% if @challenge.owned_by?(current_user) && @user != @challenge.creator %>
-          <% if @enrollment&.admin? %>
+          <% if @enrollment&.organizer? %>
             <%= button_to t("manage.users.demote_admin"), demote_challenge_manage_user_path(@challenge, @user),
                 method: :patch,
                 data: { turbo_confirm: t("manage.users.demote_confirmation", username: @user.username) },

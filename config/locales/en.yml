@@ -195,7 +195,7 @@ en:
     admin: "Admin"
     manage: "Manage"
     manage_challenge: "Manage Challenge"
-    challenge_admin: "Challenge Admin"
+    challenge_admin: "Console"
 
   # Challenge Owner Management
   manage:
@@ -308,13 +308,13 @@ en:
       remove_confirmation: "Are you sure you want to remove %{username} from this challenge?"
       removed: "%{username} has been removed from the challenge."
       not_enrolled: "User is not enrolled in this challenge."
-      admin_badge: "Admin"
-      promote_admin: "Make Admin"
-      demote_admin: "Remove Admin"
-      promoted: "%{username} has been promoted to admin."
-      demoted: "%{username} has been removed as admin."
-      promote_confirmation: "Are you sure you want to make %{username} an admin of this challenge?"
-      demote_confirmation: "Are you sure you want to remove %{username} as an admin of this challenge?"
+      admin_badge: "Organizer"
+      promote_admin: "Make Organizer"
+      demote_admin: "Remove Organizer"
+      promoted: "%{username} has been promoted to organizer."
+      demoted: "%{username} has been removed as organizer."
+      promote_confirmation: "Are you sure you want to make %{username} an organizer of this challenge?"
+      demote_confirmation: "Are you sure you want to remove %{username} as an organizer of this challenge?"
 
   # Home page
   home:

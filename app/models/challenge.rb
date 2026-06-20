@@ -37,15 +37,15 @@ class Challenge < ApplicationRecord
     user.present? && creator_id == user.id
   end
 
-  def challenge_admin?(user)
+  def challenge_organizer?(user)
     return false unless user.present?
 
-    user_challenge_enrollments.exists?(user: user, role: "admin")
+    user_challenge_enrollments.exists?(user: user, role: "organizer")
   end
 
   def manageable_by?(user)
     return false unless user.present?
-    user.admin? || owned_by?(user) || challenge_admin?(user)
+    user.admin? || owned_by?(user) || challenge_organizer?(user)
   end
 
   def owner_or_site_admin?(user)
