@@ -32,7 +32,7 @@ class BadgesController < ApplicationController
   private
 
   def set_challenge
-    @challenge = current_user.challenges.first
+    @challenge = current_user.active_challenge
     redirect_to root_path unless @challenge
   end
 end

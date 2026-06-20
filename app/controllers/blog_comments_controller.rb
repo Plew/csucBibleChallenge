@@ -31,7 +31,7 @@ class BlogCommentsController < ApplicationController
   private
 
   def set_challenge
-    @challenge = current_user.challenges.first
+    @challenge = current_user.active_challenge
     redirect_to root_path, alert: I18n.t("blog.not_enrolled") unless @challenge
   end
 
