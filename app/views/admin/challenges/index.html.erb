@@ -1,57 +1,100 @@
-<div class="container mx-auto px-4 py-8">
-  <div class="text-sm breadcrumbs mb-4">
+<div class="px-2 py-4">
+  <div class="text-sm breadcrumbs mb-2">
     <ul>
-      <li><%= link_to "Admin Dashboard", admin_root_path, class: "link link-hover" %></li>
-      <li>Challenges</li>
+      <li><%= link_to t("admin.dashboard"), admin_root_path, class: "link link-hover" %></li>
+      <li><%= t("admin.challenges.directory.title") %></li>
     </ul>
   </div>
 
-  <div class="flex justify-between items-center mb-8">
-    <h1 class="text-3xl font-bold">Challenges</h1>
-    <div class="space-x-2">
-      <%= link_to "New Challenge", new_admin_challenge_path, class: "btn btn-primary" %>
-    </div>
+  <div class="flex justify-between items-center mb-4">
+    <h1 class="text-2xl font-bold"><%= t("admin.challenges.directory.title") %></h1>
+    <%= link_to t("admin.challenges.directory.new_challenge"), new_admin_challenge_path, class: "btn btn-primary btn-sm" %>
   </div>
 
-  <div class="card bg-base-100 shadow-xl">
-    <div class="card-body p-0">
-      <div class="overflow-x-auto">
-        <table class="table table-xs table-zebra w-full">
-          <thead>
-            <tr>
-              <th class="px-2 py-2">Title</th>
-              <th class="px-2 py-2">Description</th>
-              <th class="px-2 py-2">Start</th>
-              <th class="px-2 py-2">End</th>
-              <th class="px-2 py-2">TZ</th>
-              <th class="px-2 py-2">Status</th>
-              <th class="px-2 py-2"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <% @challenges.each do |challenge| %>
-              <tr class="hover">
-                <td class="font-semibold px-2 py-1"><%= challenge.title %></td>
-                <td class="max-w-xs px-2 py-1">
-                  <div class="truncate"><%= challenge.description %></div>
-                </td>
-                <td class="px-2 py-1 whitespace-nowrap"><%= challenge.start_date.strftime("%m/%d/%y") if challenge.start_date %></td>
-                <td class="px-2 py-1 whitespace-nowrap"><%= challenge.end_date.strftime("%m/%d/%y") if challenge.end_date %></td>
-                <td class="px-2 py-1 text-xs"><%= challenge.timezone&.split('/')&.last %></td>
-                <td class="px-2 py-1">
-                  <% if challenge.hidden? %>
-                    <span class="badge badge-warning badge-xs">Hidden</span>
-                  <% else %>
-                    <span class="badge badge-success badge-xs">Visible</span>
-                  <% end %>
-                </td>
-                <td class="px-2 py-1">
-                  <%= link_to "Console", challenge_manage_dashboard_path(challenge), class: "btn btn-xs btn-outline" %>
-                </td>
+  <div data-controller="table-filter">
+    <input type="text"
+           data-table-filter-target="input"
+           data-action="input->table-filter#filter"
+           placeholder="<%= t("admin.challenges.directory.search_placeholder") %>"
+           class="input input-bordered input-sm w-full mb-3" />
+
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body p-0">
+        <div class="overflow-x-auto">
+          <table class="table table-xs table-zebra w-full" data-controller="table-sort">
+            <thead>
+              <tr>
+                <th class="px-2 py-2 cursor-pointer"
+                    data-action="click->table-sort#sort"
+                    data-table-sort-target="header"
+                    data-sort-key="title"
+                    data-sort-type="string">
+                  <%= t("admin.challenges.directory.col_title") %> <span data-arrow></span>
+                </th>
+                <th class="px-2 py-2 cursor-pointer"
+                    data-action="click->table-sort#sort"
+                    data-table-sort-target="header"
+                    data-sort-key="start"
+                    data-sort-type="string">
+                  <%= t("admin.challenges.directory.col_start") %> <span data-arrow></span>
+                </th>
+                <th class="px-2 py-2 cursor-pointer"
+                    data-action="click->table-sort#sort"
+                    data-table-sort-target="header"
+                    data-sort-key="end"
+                    data-sort-type="string">
+                  <%= t("admin.challenges.directory.col_end") %> <span data-arrow></span>
+                </th>
+                <th class="px-2 py-2 cursor-pointer"
+                    data-action="click->table-sort#sort"
+                    data-table-sort-target="header"
+                    data-sort-key="status"
+                    data-sort-type="string">
+                  <%= t("admin.challenges.directory.col_status") %> <span data-arrow></span>
+                </th>
+                <th class="px-2 py-2 cursor-pointer"
+                    data-action="click->table-sort#sort"
+                    data-table-sort-target="header"
+                    data-sort-key="participants"
+                    data-sort-type="number">
+                  <%= t("admin.challenges.directory.col_participants") %> <span data-arrow></span>
+                </th>
+                <th class="px-2 py-2"></th>
               </tr>
-            <% end %>
-          </tbody>
-        </table>
+            </thead>
+            <tbody data-table-sort-target="body">
+              <% @challenges.each do |challenge| %>
+                <% participants_count = challenge.user_challenge_enrollments.size %>
+                <tr class="hover"
+                    data-table-filter-target="row"
+                    data-search-text="<%= "#{challenge.name} #{challenge.creator&.email}".downcase %>"
+                    data-title="<%= challenge.name %>"
+                    data-start="<%= challenge.start_date.to_s %>"
+                    data-end="<%= challenge.end_date.to_s %>"
+                    data-status="<%= challenge.hidden? ? "hidden" : "visible" %>"
+                    data-participants="<%= participants_count %>">
+                  <td class="font-semibold px-2 py-1"><%= challenge.title %></td>
+                  <td class="px-2 py-1 whitespace-nowrap"><%= challenge.start_date.strftime("%m/%d/%y") if challenge.start_date %></td>
+                  <td class="px-2 py-1 whitespace-nowrap"><%= challenge.end_date.strftime("%m/%d/%y") if challenge.end_date %></td>
+                  <td class="px-2 py-1">
+                    <% if challenge.hidden? %>
+                      <span class="badge badge-warning badge-xs">Hidden</span>
+                    <% else %>
+                      <span class="badge badge-success badge-xs">Visible</span>
+                    <% end %>
+                  </td>
+                  <td class="px-2 py-1 text-center">
+                    <%= participants_count %>
+                    <span class="hidden"><%= challenge.creator&.email %></span>
+                  </td>
+                  <td class="px-2 py-1">
+                    <%= link_to "Console", challenge_manage_dashboard_path(challenge), class: "btn btn-xs btn-outline" %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>

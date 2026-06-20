@@ -72,6 +72,42 @@ RSpec.describe "Admin::Challenges", type: :request do
     end
   end
 
+  describe "GET /admin/challenges (directory features)" do
+    before { login_via_session(admin_user) }
+
+    let(:creator) { create(:user, email: "creator@example.com", admin: true) }
+    let!(:challenge_with_members) { create(:challenge, title: "Member Challenge", creator: creator) }
+    let!(:member1) { create(:user) }
+    let!(:member2) { create(:user) }
+
+    before do
+      create(:user_challenge_enrollment, challenge: challenge_with_members, user: member1)
+      create(:user_challenge_enrollment, challenge: challenge_with_members, user: member2)
+    end
+
+    it "shows a search input" do
+      get admin_challenges_path
+      expect(response.body).to include("table-filter")
+    end
+
+    it "includes creator email in row data for search" do
+      get admin_challenges_path
+      expect(response.body).to include("creator@example.com")
+    end
+
+    it "shows participant count for each challenge" do
+      get admin_challenges_path
+      expect(response.body).to include("data-participants=\"2\"")
+    end
+
+    it "renders sortable column headers" do
+      get admin_challenges_path
+      expect(response.body).to include("table-sort")
+      expect(response.body).to include("data-sort-key=\"title\"")
+      expect(response.body).to include("data-sort-key=\"participants\"")
+    end
+  end
+
   describe "GET /admin/challenges/new" do
     before { login_via_session(admin_user) }
 

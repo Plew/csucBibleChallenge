@@ -5,7 +5,7 @@ class Admin::ChallengesController < Admin::BaseController
   before_action :ensure_creator, only: [ :delete_confirmation, :destroy ]
 
   def index
-    @challenges = Challenge.all.order(created_at: :desc)
+    @challenges = Challenge.includes(:creator, :user_challenge_enrollments).order(created_at: :desc)
   end
 
   def new
