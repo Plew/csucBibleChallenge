@@ -146,6 +146,8 @@ de:
   manage:
     access_denied: "Du hast keine Berechtigung, diese Challenge zu verwalten."
     challenge_created: "Challenge erfolgreich erstellt! Du kannst sie jetzt konfigurieren."
+    chooser:
+      title: "Wähle eine Challenge zum Verwalten"
     nav:
       console: "Challenge-Konsole"
       view_challenge: "Challenge ansehen"

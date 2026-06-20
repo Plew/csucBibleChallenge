@@ -67,6 +67,9 @@ Rails.application.routes.draw do
   end
   resources :user_challenge_enrollments, only: [ :destroy ] # DELETE /user_challenge_enrollments/:id
 
+  # Multi-challenge management chooser (shown when user manages more than one challenge)
+  get "manage", to: "manage/chooser#index", as: :manage_chooser
+
   # Challenge owner management
   resources :challenges, only: [] do
     namespace :manage do

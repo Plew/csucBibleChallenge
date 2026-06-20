@@ -46,9 +46,18 @@ module ApplicationHelper
     end
   end
 
-  def current_challenge_for_navbar
-    return unless logged_in?
-    current_user.challenges.first
+  # Resolves the active challenge for the current user per CONTEXT.md spec.
+  # Memoized per request so the nav layout can call it multiple times cheaply.
+  def active_challenge_for_nav
+    return nil unless logged_in?
+    @active_challenge_for_nav ||= current_user.active_challenge
+  end
+
+  # Challenges this user directly manages (as creator or challenge organizer).
+  # Returns an ActiveRecord::Relation ordered by name.
+  def managed_challenges_for_nav
+    return Challenge.none unless logged_in?
+    @managed_challenges_for_nav ||= current_user.directly_managed_challenges
   end
 
   # Returns the English Bible book name for a given book number (1-based, 1 = Genesis, 66 = Revelation)

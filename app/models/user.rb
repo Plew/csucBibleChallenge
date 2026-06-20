@@ -73,6 +73,26 @@ class User < ApplicationRecord
     admin? || can_create_challenges
   end
 
+  # Resolves the single "active" challenge for single-challenge UI surfaces (reading
+  # page, bottom nav, etc.) per the CONTEXT.md definition:
+  #   1. In-progress today (start_date <= today <= end_date), most-recently-joined first.
+  #   2. If none in progress, most-recently-joined overall.
+  def active_challenge
+    today = Date.current
+    by_recency = user_challenge_enrollments.includes(:challenge).order(created_at: :desc)
+    in_progress = by_recency.select { |e| e.challenge.start_date <= today && e.challenge.end_date >= today }
+    return in_progress.first&.challenge if in_progress.any?
+    by_recency.first&.challenge
+  end
+
+  # Challenges this user directly manages (as creator or challenge organizer).
+  # Does not expand to all challenges for global admins — they access others via /admin.
+  def directly_managed_challenges
+    created_ids = created_challenges.pluck(:id)
+    organizer_ids = user_challenge_enrollments.where(role: "organizer").pluck(:challenge_id)
+    Challenge.where(id: (created_ids + organizer_ids).uniq).order(:name)
+  end
+
   private
 
   ALLOWED_AVATAR_TYPES = %w[image/png image/jpeg image/gif image/webp].freeze
