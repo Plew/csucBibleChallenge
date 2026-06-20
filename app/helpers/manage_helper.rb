@@ -20,7 +20,7 @@ module ManageHelper
       ] },
       { key: "engagement", items: [
         console_nav_item("top_readers", challenge_manage_top_readers_path(challenge), %w[top_readers]),
-        console_nav_item("weekly_winner", challenge_seven_day_lobby_path(challenge), %w[])
+        console_nav_item("weekly_winner", challenge_seven_day_lobby_path(challenge), %w[seven_day_winner])
       ] }
     ]
   end

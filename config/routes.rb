@@ -94,6 +94,7 @@ Rails.application.routes.draw do
           post :bulk_remove_from_groups
         end
       end
+      get "seven_day_winner/draw", to: "seven_day_winner#draw", as: :seven_day_winner_draw
     end
   end
 
@@ -143,8 +144,6 @@ Rails.application.routes.draw do
     get "change_challenge", to: "challenge_transfers#new", as: :change_challenge
     post "change_challenge", to: "challenge_transfers#create"
 
-    # 7 Day Winner routes (admin-only draw endpoint)
-    get "seven_day_winner/draw", to: "seven_day_winner#draw", as: :seven_day_winner_draw
   end
 
   # 7 Day Lobby routes (available to all users)

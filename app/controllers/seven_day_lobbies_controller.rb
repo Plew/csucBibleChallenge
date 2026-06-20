@@ -52,8 +52,8 @@ class SevenDayLobbiesController < ApplicationController
     animation_type = params[:animation_type] || "pacman"
 
     # Redirect to the draw page with lobby participants
-    redirect_to admin_seven_day_winner_draw_path(
-      challenge_id: @challenge.id,
+    redirect_to challenge_manage_seven_day_winner_draw_path(
+      @challenge,
       user_ids: lobby_participants.map(&:id),
       animation_type: animation_type
     )

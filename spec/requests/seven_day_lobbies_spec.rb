@@ -164,8 +164,8 @@ RSpec.describe 'SevenDayLobbies', type: :request do
     context 'when user is admin' do
       it 'redirects to draw page with participants' do
         post start_challenge_seven_day_lobby_path(challenge)
-        expect(response).to redirect_to(admin_seven_day_winner_draw_path(
-          challenge_id: challenge.id,
+        expect(response).to redirect_to(challenge_manage_seven_day_winner_draw_path(
+          challenge,
           user_ids: [ participant1.id, participant2.id ],
           animation_type: "pacman"
         ))
@@ -186,8 +186,8 @@ RSpec.describe 'SevenDayLobbies', type: :request do
 
       it 'allows starting the draw' do
         post start_challenge_seven_day_lobby_path(challenge)
-        expect(response).to redirect_to(admin_seven_day_winner_draw_path(
-          challenge_id: challenge.id,
+        expect(response).to redirect_to(challenge_manage_seven_day_winner_draw_path(
+          challenge,
           user_ids: [ participant1.id, participant2.id ],
           animation_type: "pacman"
         ))
