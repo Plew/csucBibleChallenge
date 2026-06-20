@@ -34,10 +34,10 @@ RSpec.describe "Manage::Groups", type: :request do
       end
     end
 
-    context "as a challenge organizer (admin)" do
+    context "as a challenge organizer" do
       let(:organizer) { create(:user) }
       before do
-        create(:user_challenge_enrollment, :admin, user: organizer, challenge: challenge)
+        create(:user_challenge_enrollment, :organizer, user: organizer, challenge: challenge)
         login_as organizer
       end
 
