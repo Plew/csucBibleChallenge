@@ -1,0 +1,80 @@
+<div class="px-2 py-4">
+  <div class="text-sm breadcrumbs mb-4">
+    <ul>
+      <li><%= link_to @challenge.title, challenge_manage_dashboard_path(@challenge), class: "link link-hover" %></li>
+      <li><%= t("manage.groups.title") %></li>
+    </ul>
+  </div>
+
+  <div class="flex justify-between items-center mb-4">
+    <h1 class="text-2xl font-bold"><%= t("manage.groups.title") %></h1>
+  </div>
+
+  <% if @groups.any? %>
+    <% @groups.each do |group| %>
+      <div class="card bg-base-100 shadow mb-4">
+        <div class="card-body p-3">
+          <%# Group header with inline rename form %>
+          <%= form_with url: challenge_manage_group_path(@challenge, group), method: :patch, local: true, class: "flex items-center gap-2 mb-3" do |f| %>
+            <%= f.text_field :name, value: group.name, class: "input input-bordered input-sm flex-1", required: true %>
+            <%= f.submit t("manage.groups.rename"), class: "btn btn-sm btn-primary" %>
+            <%= button_to t("manage.groups.delete"), challenge_manage_group_path(@challenge, group),
+                method: :delete,
+                data: { turbo_confirm: t("manage.groups.delete_confirm", name: group.name) },
+                class: "btn btn-sm btn-error btn-outline" %>
+          <% end %>
+
+          <%# Members list %>
+          <% if group.users.any? %>
+            <div class="overflow-x-auto">
+              <table class="table table-sm w-full">
+                <tbody>
+                  <% group.users.each do |user| %>
+                    <tr>
+                      <td class="font-semibold text-sm">
+                        <div class="flex items-center gap-2">
+                          <%= avatar_image_tag(user, :tiny, class: "rounded-full") %>
+                          <%= user.username %>
+                        </div>
+                      </td>
+                      <td class="text-right">
+                        <div class="flex gap-1 justify-end">
+                          <%# Move to another group %>
+                          <% other_groups = @groups.reject { |g| g.id == group.id } %>
+                          <% if other_groups.any? %>
+                            <%= form_with url: move_member_challenge_manage_group_path(@challenge, group), method: :patch, local: true, class: "flex items-center gap-1" do |f| %>
+                              <%= f.hidden_field :user_id, value: user.id %>
+                              <%= f.select :target_group_id,
+                                    other_groups.map { |g| [ g.name, g.id ] },
+                                    {},
+                                    class: "select select-bordered select-xs" %>
+                              <%= f.submit t("manage.groups.move"), class: "btn btn-xs btn-outline" %>
+                            <% end %>
+                          <% end %>
+                          <%= button_to t("manage.groups.remove_member"),
+                                remove_member_challenge_manage_group_path(@challenge, group),
+                                method: :delete,
+                                params: { user_id: user.id },
+                                data: { turbo_confirm: t("manage.groups.remove_member_confirm", username: user.username, group: group.name) },
+                                class: "btn btn-xs btn-error btn-outline" %>
+                        </div>
+                      </td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          <% else %>
+            <p class="text-sm text-base-content/60 py-1"><%= t("manage.groups.no_members") %></p>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  <% else %>
+    <div class="card bg-base-100 shadow">
+      <div class="card-body p-4">
+        <p class="text-base-content/60"><%= t("manage.groups.no_groups") %></p>
+      </div>
+    </div>
+  <% end %>
+</div>

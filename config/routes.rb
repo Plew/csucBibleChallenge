@@ -95,6 +95,12 @@ Rails.application.routes.draw do
         end
       end
       get "seven_day_winner/draw", to: "seven_day_winner#draw", as: :seven_day_winner_draw
+      resources :groups, only: [ :index, :update, :destroy ] do
+        member do
+          delete :remove_member
+          patch :move_member
+        end
+      end
     end
   end
 
