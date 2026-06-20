@@ -1,9 +1,8 @@
-require "nokogiri"
-require "csv"
-
 namespace :convert_schlachter do
   desc "Convert Schlachter XML to CSV format for Import"
   task xml_to_csv: :environment do
+    require "nokogiri"
+    require "csv"
     xml_path = Rails.root.join("db", "fixtures", "de_schlachter.xml")
     csv_path = Rails.root.join("db", "texts", "schlachter_2000.csv")
 

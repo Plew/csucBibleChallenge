@@ -2,12 +2,12 @@
   <div class="text-sm breadcrumbs mb-4">
     <ul>
       <li><%= link_to "Admin Dashboard", admin_root_path, class: "link link-hover" %></li>
-      <li>Manage Challenges</li>
+      <li>Challenges</li>
     </ul>
   </div>
 
   <div class="flex justify-between items-center mb-8">
-    <h1 class="text-3xl font-bold">Manage Challenges</h1>
+    <h1 class="text-3xl font-bold">Challenges</h1>
     <div class="space-x-2">
       <%= link_to "New Challenge", new_admin_challenge_path, class: "btn btn-primary" %>
     </div>
@@ -25,11 +25,12 @@
               <th class="px-2 py-2">End</th>
               <th class="px-2 py-2">TZ</th>
               <th class="px-2 py-2">Status</th>
+              <th class="px-2 py-2"></th>
             </tr>
           </thead>
           <tbody>
             <% @challenges.each do |challenge| %>
-              <tr class="hover cursor-pointer" onclick="window.location='<%= admin_challenge_path(challenge) %>'">
+              <tr class="hover">
                 <td class="font-semibold px-2 py-1"><%= challenge.title %></td>
                 <td class="max-w-xs px-2 py-1">
                   <div class="truncate"><%= challenge.description %></div>
@@ -43,6 +44,9 @@
                   <% else %>
                     <span class="badge badge-success badge-xs">Visible</span>
                   <% end %>
+                </td>
+                <td class="px-2 py-1">
+                  <%= link_to "Console", challenge_manage_dashboard_path(challenge), class: "btn btn-xs btn-outline" %>
                 </td>
               </tr>
             <% end %>

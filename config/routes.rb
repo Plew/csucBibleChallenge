@@ -121,7 +121,7 @@ Rails.application.routes.draw do
   # Admin routes
   namespace :admin do
     root "dashboard#index"
-    resources :challenges, only: [ :index, :show, :new, :create, :destroy ] do
+    resources :challenges, only: [ :index, :new, :create, :destroy ] do
       member do
         get :delete_confirmation
       end

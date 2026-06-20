@@ -1,14 +1,11 @@
 class Admin::ChallengesController < Admin::BaseController
   include ChallengeCreation
 
-  before_action :set_challenge, only: [ :show, :delete_confirmation, :destroy ]
+  before_action :set_challenge, only: [ :delete_confirmation, :destroy ]
   before_action :ensure_creator, only: [ :delete_confirmation, :destroy ]
 
   def index
     @challenges = Challenge.all.order(created_at: :desc)
-  end
-
-  def show
   end
 
   def new
