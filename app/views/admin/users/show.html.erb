@@ -1,67 +1,67 @@
-<div class="container mx-auto px-2 py-4">
+<div class="px-2 py-4">
   <div class="text-sm breadcrumbs mb-4">
     <ul>
-      <li><%= link_to "Admin Dashboard", admin_root_path, class: "link link-hover" %></li>
-      <li><%= link_to "Manage Users", admin_users_path, class: "link link-hover" %></li>
+      <li><%= link_to t('admin.dashboard'), admin_root_path, class: "link link-hover" %></li>
+      <li><%= link_to t('admin.manage_users'), admin_users_path, class: "link link-hover" %></li>
       <li><%= @user.username %></li>
     </ul>
   </div>
 
   <div class="flex justify-between items-center mb-4">
     <h1 class="text-2xl font-bold"><%= @user.username %></h1>
-    <%= link_to "Back", admin_users_path, class: "btn btn-sm btn-outline" %>
+    <%= link_to t('common.back'), admin_users_path, class: "btn btn-sm btn-outline" %>
   </div>
 
   <div class="card bg-base-100 shadow-xl mb-4">
     <div class="card-body p-4">
-      <h2 class="card-title text-lg">User Information</h2>
+      <h2 class="card-title text-lg"><%= t('admin.user_information') %></h2>
 
       <div class="space-y-2 text-sm">
         <div class="flex gap-2">
-          <label class="font-semibold">ID:</label>
+          <label class="font-semibold"><%= t('admin.user_id') %>:</label>
           <p><%= @user.id %></p>
         </div>
 
         <div class="flex gap-2">
-          <label class="font-semibold">Username:</label>
+          <label class="font-semibold"><%= t('admin.users.username_label') %>:</label>
           <p><%= @user.username %></p>
         </div>
 
         <div class="flex gap-2">
-          <label class="font-semibold">Email:</label>
+          <label class="font-semibold"><%= t('admin.users.email_label') %>:</label>
           <p><%= @user.email %></p>
         </div>
 
         <div class="flex gap-2">
-          <label class="font-semibold">Admin:</label>
+          <label class="font-semibold"><%= t('admin.users.admin_label') %>:</label>
           <% if @user.admin? %>
-            <span class="badge badge-error badge-sm">Admin</span>
+            <span class="badge badge-error badge-sm"><%= t('admin.admin_status') %></span>
           <% else %>
-            <span class="badge badge-ghost badge-sm">User</span>
+            <span class="badge badge-ghost badge-sm"><%= t('admin.user_role') %></span>
           <% end %>
         </div>
 
         <div class="flex gap-2">
-          <label class="font-semibold">Created:</label>
+          <label class="font-semibold"><%= t('admin.users.created_label') %>:</label>
           <p><%= @user.created_at.strftime("%b %d, %Y at %I:%M %p") %></p>
         </div>
 
         <div class="flex gap-2">
-          <label class="font-semibold">Challenges:</label>
+          <label class="font-semibold"><%= t('admin.users.challenges_label') %>:</label>
           <div>
             <% if @user.challenges.any? %>
               <% @user.challenges.each do |challenge| %>
                 <div class="badge badge-primary badge-sm"><%= challenge.name %></div>
               <% end %>
             <% else %>
-              <span class="text-gray-400">None</span>
+              <span class="text-base-content/40"><%= t('common.none') %></span>
             <% end %>
           </div>
         </div>
       </div>
 
       <div class="flex gap-2 items-center mt-2">
-        <label class="font-semibold text-sm">Challenge Creator:</label>
+        <label class="font-semibold text-sm"><%= t('admin.users.challenge_creator_label') %>:</label>
         <% if @user.admin? %>
           <span class="badge badge-success badge-sm"><%= t("admin.users.challenge_creator_via_admin") %></span>
         <% elsif @user.can_create_challenges %>
@@ -83,7 +83,7 @@
   <% if @challenge_enrollments.any? %>
     <div class="card bg-base-100 shadow-xl mb-4">
       <div class="card-body p-4">
-        <h2 class="card-title text-lg mb-3">Reading Progress</h2>
+        <h2 class="card-title text-lg mb-3"><%= t('admin.users.reading_progress') %></h2>
 
         <div class="space-y-4">
           <% @challenge_enrollments.each do |enrollment| %>
@@ -101,7 +101,7 @@
                 current_day: current_day_number_for_challenge(challenge)
               ) %>
               <div class="text-xs text-base-content/60 mt-2">
-                <%= completed_days_for_user_challenge(@user, challenge).count %> / <%= challenge.readings.count %> days completed
+                <%= t('admin.users.days_completed', completed: completed_days_for_user_challenge(@user, challenge).count, total: challenge.readings.count) %>
               </div>
             </div>
           <% end %>

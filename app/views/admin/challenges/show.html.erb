@@ -1,54 +1,54 @@
-<div class="container mx-auto px-4 py-8">
+<div class="px-2 py-4">
   <div class="text-sm breadcrumbs mb-4">
     <ul>
-      <li><%= link_to "Admin Dashboard", admin_root_path, class: "link link-hover" %></li>
-      <li><%= link_to "Manage Challenges", admin_challenges_path, class: "link link-hover" %></li>
+      <li><%= link_to t('admin.dashboard'), admin_root_path, class: "link link-hover" %></li>
+      <li><%= link_to t('admin.manage_challenges'), admin_challenges_path, class: "link link-hover" %></li>
       <li><%= @challenge.title %></li>
     </ul>
   </div>
 
-  <div class="flex justify-between items-center mb-8">
-    <h1 class="text-3xl font-bold"><%= @challenge.title %></h1>
-    <%= link_to "Back to Challenges", admin_challenges_path, class: "btn btn-outline" %>
+  <div class="flex justify-between items-center mb-4">
+    <h1 class="text-2xl font-bold"><%= @challenge.title %></h1>
+    <%= link_to t('admin.challenges.back_to_challenges'), admin_challenges_path, class: "btn btn-sm btn-outline" %>
   </div>
 
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+  <div class="flex flex-col gap-4">
     <div class="card bg-base-100 shadow-xl">
-      <div class="card-body">
-        <h2 class="card-title">Challenge Details</h2>
+      <div class="card-body p-4">
+        <h2 class="card-title"><%= t('challenges.challenge_details') %></h2>
 
-        <div class="space-y-4">
+        <div class="space-y-3 text-sm">
           <div>
-            <label class="font-semibold">Title:</label>
+            <label class="font-semibold"><%= t('challenges.title') %>:</label>
             <p><%= @challenge.title %></p>
           </div>
 
           <div>
-            <label class="font-semibold">Description:</label>
+            <label class="font-semibold"><%= t('challenges.description') %>:</label>
             <p><%= @challenge.description %></p>
           </div>
 
           <div>
-            <label class="font-semibold">Start Date:</label>
+            <label class="font-semibold"><%= t('challenges.start_date') %>:</label>
             <p><%= @challenge.start_date.strftime("%B %d, %Y") if @challenge.start_date %></p>
           </div>
 
           <div>
-            <label class="font-semibold">End Date:</label>
+            <label class="font-semibold"><%= t('challenges.end_date') %>:</label>
             <p><%= @challenge.end_date.strftime("%B %d, %Y") if @challenge.end_date %></p>
           </div>
 
           <div>
-            <label class="font-semibold">Timezone:</label>
+            <label class="font-semibold"><%= t('challenges.timezone') %>:</label>
             <p><%= @challenge.timezone %></p>
           </div>
 
           <div>
-            <label class="font-semibold">Status:</label>
+            <label class="font-semibold"><%= t('challenges.status') %>:</label>
             <% if @challenge.hidden? %>
-              <span class="badge badge-warning">Hidden</span>
+              <span class="badge badge-warning"><%= t('challenges.hidden') %></span>
             <% else %>
-              <span class="badge badge-success">Visible</span>
+              <span class="badge badge-success"><%= t('challenges.visible') %></span>
             <% end %>
           </div>
         </div>
@@ -56,51 +56,49 @@
     </div>
 
     <div class="card bg-base-100 shadow-xl">
-      <div class="card-body">
-        <h2 class="card-title">Statistics</h2>
+      <div class="card-body p-4">
+        <h2 class="card-title"><%= t('challenges.statistics') %></h2>
 
-        <div class="space-y-4">
+        <div class="space-y-3 text-sm">
           <div>
-            <label class="font-semibold">Total Readings:</label>
+            <label class="font-semibold"><%= t('challenges.total_readings') %>:</label>
             <p><%= @challenge.readings.count %></p>
           </div>
 
           <div>
-            <label class="font-semibold">Created:</label>
+            <label class="font-semibold"><%= t('challenges.created') %>:</label>
             <p><%= @challenge.created_at.strftime("%B %d, %Y at %I:%M %p") %></p>
           </div>
 
           <div>
-            <label class="font-semibold">Creator:</label>
-            <p><%= @challenge.creator&.email || "Unknown" %></p>
+            <label class="font-semibold"><%= t('challenges.creator') %>:</label>
+            <p><%= @challenge.creator&.email || t('challenges.unknown_creator') %></p>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Management Actions -->
-  <div class="mt-8">
+  <div class="mt-4">
     <div class="card bg-base-100 shadow-xl">
-      <div class="card-body">
-        <h2 class="card-title mb-4"><%= t("admin.challenges.management_actions") %></h2>
+      <div class="card-body p-4">
+        <h2 class="card-title mb-3"><%= t("admin.challenges.management_actions") %></h2>
         <div class="flex flex-wrap gap-2">
-          <%= link_to t("challenges.edit_challenge"), edit_challenge_manage_settings_path(@challenge), class: "btn btn-primary" %>
-          <%= link_to t("navigation.manage_challenge"), challenge_manage_dashboard_path(@challenge), class: "btn btn-secondary" %>
-          <%= link_to t("admin.seven_day_winner.title"), challenge_seven_day_lobby_path(@challenge), class: "btn btn-accent" %>
+          <%= link_to t("challenges.edit_challenge"), edit_challenge_manage_settings_path(@challenge), class: "btn btn-primary btn-sm" %>
+          <%= link_to t("navigation.manage_challenge"), challenge_manage_dashboard_path(@challenge), class: "btn btn-secondary btn-sm" %>
+          <%= link_to t("admin.seven_day_winner.title"), challenge_seven_day_lobby_path(@challenge), class: "btn btn-accent btn-sm" %>
         </div>
       </div>
     </div>
   </div>
 
   <% if @challenge.owned_by?(current_user) %>
-    <!-- Danger Zone -->
-    <div class="mt-8">
+    <div class="mt-4">
       <div class="card bg-base-100 shadow-xl border border-error">
-        <div class="card-body">
-          <h2 class="card-title text-error mb-4"><%= t("admin.challenges.danger_zone") %></h2>
-          <p class="text-sm text-base-content/70 mb-4"><%= t("admin.challenges.delete_warning") %></p>
-          <%= link_to t("admin.challenges.delete_challenge"), delete_confirmation_admin_challenge_path(@challenge), class: "btn btn-error btn-outline" %>
+        <div class="card-body p-4">
+          <h2 class="card-title text-error mb-3"><%= t("admin.challenges.danger_zone") %></h2>
+          <p class="text-sm text-base-content/70 mb-3"><%= t("admin.challenges.delete_warning") %></p>
+          <%= link_to t("admin.challenges.delete_challenge"), delete_confirmation_admin_challenge_path(@challenge), class: "btn btn-error btn-outline btn-sm" %>
         </div>
       </div>
     </div>

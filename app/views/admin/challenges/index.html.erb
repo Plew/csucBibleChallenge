@@ -1,15 +1,15 @@
-<div class="container mx-auto px-4 py-8">
+<div class="px-2 py-4">
   <div class="text-sm breadcrumbs mb-4">
     <ul>
-      <li><%= link_to "Admin Dashboard", admin_root_path, class: "link link-hover" %></li>
-      <li>Manage Challenges</li>
+      <li><%= link_to t('admin.dashboard'), admin_root_path, class: "link link-hover" %></li>
+      <li><%= t('admin.manage_challenges') %></li>
     </ul>
   </div>
 
-  <div class="flex justify-between items-center mb-8">
-    <h1 class="text-3xl font-bold">Manage Challenges</h1>
-    <div class="space-x-2">
-      <%= link_to "New Challenge", new_admin_challenge_path, class: "btn btn-primary" %>
+  <div class="flex justify-between items-center mb-4">
+    <h1 class="text-2xl font-bold"><%= t('admin.manage_challenges') %></h1>
+    <div>
+      <%= link_to t('admin.challenges.new_challenge'), new_admin_challenge_path, class: "btn btn-primary btn-sm" %>
     </div>
   </div>
 
@@ -19,12 +19,12 @@
         <table class="table table-xs table-zebra w-full">
           <thead>
             <tr>
-              <th class="px-2 py-2">Title</th>
-              <th class="px-2 py-2">Description</th>
-              <th class="px-2 py-2">Start</th>
-              <th class="px-2 py-2">End</th>
-              <th class="px-2 py-2">TZ</th>
-              <th class="px-2 py-2">Status</th>
+              <th class="px-2 py-2"><%= t('admin.challenges.title_header') %></th>
+              <th class="px-2 py-2"><%= t('challenges.description') %></th>
+              <th class="px-2 py-2"><%= t('admin.challenges.start_header') %></th>
+              <th class="px-2 py-2"><%= t('admin.challenges.end_header') %></th>
+              <th class="px-2 py-2"><%= t('admin.challenges.tz_header') %></th>
+              <th class="px-2 py-2"><%= t('challenges.status') %></th>
             </tr>
           </thead>
           <tbody>
@@ -39,9 +39,9 @@
                 <td class="px-2 py-1 text-xs"><%= challenge.timezone&.split('/')&.last %></td>
                 <td class="px-2 py-1">
                   <% if challenge.hidden? %>
-                    <span class="badge badge-warning badge-xs">Hidden</span>
+                    <span class="badge badge-warning badge-xs"><%= t('challenges.hidden') %></span>
                   <% else %>
-                    <span class="badge badge-success badge-xs">Visible</span>
+                    <span class="badge badge-success badge-xs"><%= t('challenges.visible') %></span>
                   <% end %>
                 </td>
               </tr>

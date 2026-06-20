@@ -1,54 +1,54 @@
-<div class="container mx-auto max-w-md p-4">
+<div class="px-2 py-4">
   <div class="card bg-base-100 shadow-xl">
-    <div class="card-body">
-      <h2 class="card-title text-error mb-4">Delete Challenge</h2>
-      
-      <div class="alert alert-error mb-6">
+    <div class="card-body p-4">
+      <h2 class="card-title text-error mb-4"><%= t('admin.delete_confirmation_heading') %></h2>
+
+      <div class="alert alert-error mb-4">
         <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.962-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
         </svg>
         <div>
-          <h3 class="font-bold">This action cannot be undone!</h3>
-          <div class="text-sm">All user progress and data will be permanently lost.</div>
+          <h3 class="font-bold"><%= t('admin.cannot_undo') %></h3>
+          <div class="text-sm"><%= t('admin.all_data_lost') %></div>
         </div>
       </div>
 
       <div class="mb-4">
-        <p class="font-semibold mb-2">Challenge to be deleted:</p>
+        <p class="font-semibold mb-2"><%= t('admin.challenge_to_delete') %></p>
         <p class="text-lg"><%= @challenge.name %></p>
-        <p class="text-sm text-gray-600">
-          <%= @challenge.start_date.strftime("%B %d, %Y") %> - 
+        <p class="text-sm text-base-content/60">
+          <%= @challenge.start_date.strftime("%B %d, %Y") %> -
           <%= @challenge.end_date.strftime("%B %d, %Y") %>
         </p>
       </div>
 
-      <div class="mb-6">
-        <p class="font-semibold mb-2 text-error">What will be deleted:</p>
+      <div class="mb-4">
+        <p class="font-semibold mb-2 text-error"><%= t('admin.what_deleted') %></p>
         <ul class="list-disc list-inside text-sm space-y-1">
-          <li>The challenge and all its settings</li>
-          <li>All reading schedules and assignments</li>
-          <li>All user progress and completed readings</li>
-          <li>All groups within this challenge</li>
-          <li>All user enrollments in this challenge</li>
+          <li><%= t('admin.delete_item_challenge') %></li>
+          <li><%= t('admin.delete_item_schedules') %></li>
+          <li><%= t('admin.delete_item_progress') %></li>
+          <li><%= t('admin.delete_item_groups') %></li>
+          <li><%= t('admin.delete_item_enrollments') %></li>
         </ul>
       </div>
 
       <%= form_with model: @challenge, url: admin_challenge_path(@challenge), method: :delete, local: true, class: "space-y-4" do |form| %>
         <div class="form-control">
           <%= form.label :confirmation_text, class: "label" do %>
-            <span class="label-text">Type <strong>"i want this"</strong> to confirm deletion:</span>
+            <span class="label-text"><%= t('admin.type_to_confirm').gsub('**', '') %></span>
           <% end %>
-          <%= form.text_field :confirmation_text, 
-              class: "input input-bordered w-full", 
-              placeholder: "i want this",
+          <%= form.text_field :confirmation_text,
+              class: "input input-bordered w-full",
+              placeholder: t('admin.confirm_placeholder'),
               required: true %>
         </div>
 
         <div class="card-actions justify-between">
-          <%= link_to "Cancel", root_path, class: "btn btn-ghost" %>
-          <%= form.submit "Delete Challenge", 
-              class: "btn btn-error",
-              data: { confirm: "Are you absolutely sure? This cannot be undone!" } %>
+          <%= link_to t('common.cancel'), root_path, class: "btn btn-ghost btn-sm" %>
+          <%= form.submit t('admin.challenges.delete_challenge'),
+              class: "btn btn-error btn-sm",
+              data: { confirm: t('admin.final_confirmation') } %>
         </div>
       <% end %>
     </div>
