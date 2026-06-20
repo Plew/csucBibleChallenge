@@ -1,0 +1,10 @@
+<% content_for :content do %>
+  <div class="lg:flex lg:gap-6 lg:items-start px-2 py-3 lg:px-3">
+    <%= render "manage/shared/console_nav" %>
+
+    <section class="min-w-0 flex-1">
+      <%= yield %>
+    </section>
+  </div>
+<% end %>
+<%= render template: "layouts/application" %>

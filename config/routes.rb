@@ -71,6 +71,8 @@ Rails.application.routes.draw do
   resources :challenges, only: [] do
     namespace :manage do
       root "dashboard#index", as: :dashboard
+      get "danger", to: "danger#show", as: :danger
+      delete "danger", to: "danger#destroy"
       resource :settings, only: [ :edit, :update ], controller: "settings"
       resources :top_readers, only: [ :index ]
       resources :sprints, only: [ :index, :show, :new, :create, :edit, :update, :destroy ]

@@ -1,0 +1,63 @@
+<%# Challenge Console secondary navigation — sidebar on desktop, scrollable strip on mobile. %>
+<nav aria-label="<%= t('manage.nav.console') %>" class="lg:w-56 lg:shrink-0 mb-3 lg:mb-0">
+  <div class="mb-3 px-1">
+    <div class="text-[11px] uppercase tracking-wide text-base-content/40"><%= t("manage.nav.console") %></div>
+    <h2 class="font-bold text-base leading-tight truncate" title="<%= @challenge.title %>"><%= @challenge.title %></h2>
+    <%= link_to challenge_path(@challenge), class: "text-xs text-base-content/60 hover:text-base-content inline-flex items-center gap-1 mt-0.5" do %>
+      <span aria-hidden="true">&larr;</span> <%= t("manage.nav.view_challenge") %>
+    <% end %>
+  </div>
+
+  <%# Mobile: horizontal scrollable strip of all sections %>
+  <div class="lg:hidden -mx-2 px-2 overflow-x-auto pb-1">
+    <ul class="flex gap-1 w-max">
+      <% console_nav_groups(@challenge).each do |group| %>
+        <% group[:items].each do |item| %>
+          <li>
+            <%= link_to item[:path], class: "btn btn-xs #{item[:active] ? 'btn-primary' : 'btn-ghost'} gap-1 whitespace-nowrap" do %>
+              <%= console_nav_icon(item[:key]) %><%= item[:label] %>
+            <% end %>
+          </li>
+        <% end %>
+      <% end %>
+      <% if console_danger_visible?(@challenge) %>
+        <li>
+          <%= link_to challenge_manage_danger_path(@challenge), class: "btn btn-xs btn-ghost text-error gap-1 whitespace-nowrap" do %>
+            <%= console_nav_icon_for_danger %><%= t("manage.nav.group.danger") %>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+
+  <%# Desktop: grouped sidebar %>
+  <div class="hidden lg:block">
+    <% console_nav_groups(@challenge).each do |group| %>
+      <div class="mb-3">
+        <div class="px-2 text-[11px] uppercase tracking-wide text-base-content/40 mb-1"><%= t("manage.nav.group.#{group[:key]}") %></div>
+        <ul class="menu menu-sm bg-base-100 rounded-box shadow-sm p-1 gap-0.5">
+          <% group[:items].each do |item| %>
+            <li>
+              <%= link_to item[:path], class: ("active font-semibold" if item[:active]), "aria-current": (item[:active] ? "page" : nil) do %>
+                <%= console_nav_icon(item[:key]) %><%= item[:label] %>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <% if console_danger_visible?(@challenge) %>
+      <div class="mb-3">
+        <div class="px-2 text-[11px] uppercase tracking-wide text-error/60 mb-1"><%= t("manage.nav.group.danger") %></div>
+        <ul class="menu menu-sm bg-base-100 rounded-box shadow-sm p-1">
+          <li>
+            <%= link_to challenge_manage_danger_path(@challenge), class: "text-error" do %>
+              <%= console_nav_icon_for_danger %><%= t("manage.nav.delete_challenge") %>
+            <% end %>
+          </li>
+        </ul>
+      </div>
+    <% end %>
+  </div>
+</nav>

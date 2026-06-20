@@ -201,6 +201,34 @@ en:
   manage:
     access_denied: "You don't have permission to manage this challenge."
     challenge_created: "Challenge created successfully! You can now configure it."
+    nav:
+      console: "Challenge Console"
+      view_challenge: "View challenge"
+      overview: "Overview"
+      settings: "Settings"
+      users: "Users"
+      sprints: "Sprints"
+      blog: "Blog"
+      top_readers: "Top Readers"
+      weekly_winner: "Weekly Winner"
+      delete_challenge: "Delete challenge"
+      group:
+        challenge: "Challenge"
+        people: "People"
+        content: "Content"
+        engagement: "Engagement"
+        danger: "Danger"
+    overview:
+      title: "Overview"
+      blog_posts: "Blog posts"
+    danger:
+      title: "Danger zone"
+      heading: "Delete this challenge"
+      warning: "Deleting a challenge permanently removes all of its readings, completions, groups, sprints, and blog posts. This cannot be undone."
+      delete_button: "Delete challenge"
+      type_to_confirm: "To confirm, type this phrase exactly:"
+      confirm: "Permanently delete \"%{title}\"? This cannot be undone."
+      deleted: "Challenge deleted."
     getting_started:
       title: "Getting Started"
       step_created: "Challenge created"

@@ -24,6 +24,22 @@ The record that a reader marked a given reading done, stamped with `completed_on
 A reading whose `scheduled_date` is strictly **before today** (in the challenge timezone) that the reader has **not** completed. Today's reading is never "missed" — it can still be completed on time. Future readings are not missed. The Catch Up page lists a reader's missed readings.
 _Avoid_: "behind", "overdue" (acceptable in prose, but "missed reading" is canonical)
 
+### Groups & Sprints
+
+**Group**:
+A named sub-team within a challenge that members join (via `UserGroupEnrollment`) and that competes in sprints. A member belongs to **at most one group per challenge** — an invariant the UI assumes, though the schema does not enforce it. Deleting a group leaves its former members enrolled in the challenge but group-less, and preserves past sprint-winner history (the winning group's name is denormalized onto the `sprint_winner` record).
+_Avoid_: team, squad
+
+**Sprint**:
+A bounded date window inside a challenge during which **groups** compete on completion % and on-time %, scored **only over readings scheduled within the window**. Because scoring is window-scoped, a sprint gives a reader who has fallen behind a **fresh start** — readings missed before the sprint do not count against them during it. The top group by completion % (on-time % as tie-breaker) wins; ties yield co-winners; sprints within a challenge cannot overlap.
+_Avoid_: contest, round, season
+
+### Multi-challenge
+
+**Active challenge**:
+The single challenge that drives a logged-in user's single-challenge surfaces (reading page, bottom nav, daily context) when they hold multiple enrollments. Resolved as: the enrollment whose challenge is **in progress today** (`start_date <= today <= end_date`); if several are in progress, the **most-recently-joined**; if none is in progress (between challenges), the most-recently-joined enrollment overall. Replaces the legacy `current_user.challenges.first`. A manual switcher may be added later.
+_Avoid_: "current challenge" (ambiguous), "first challenge"
+
 ### Scoring
 
 **Completion percentage**:
@@ -52,6 +68,10 @@ A user granted the `"admin"` role on a specific challenge via `UserChallengeEnro
 
 **Manageable-by**:
 The union that can manage a challenge: global admin OR creator OR challenge admin (`Challenge#manageable_by?`). Governs the `/challenges/:id/manage/...` namespace, including the Top Readers page.
+
+**Management hub**:
+The single management interface for a challenge, living in the `/challenges/:id/manage` namespace (NOT the `/admin` namespace). It is the one place creators, challenge admins, and global admins all manage a challenge — there is no separate management UI for global admins. The `/admin/challenges` area is reserved for cross-challenge listing/operations, not per-challenge management.
+_Avoid_: "Manage Challenge page", "admin challenge page" (ambiguous — name the hub)
 
 ## Flagged ambiguities
 
