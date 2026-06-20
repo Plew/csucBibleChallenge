@@ -2,7 +2,7 @@ class HomeController < ApplicationController
   # GET /
   def index
     if logged_in?
-      user_challenge = current_user.challenges.first
+      user_challenge = current_user.active_challenge
 
       # If user has a challenge that hasn't started yet, redirect to challenge show page
       if user_challenge && Date.current < user_challenge.start_date
@@ -25,7 +25,7 @@ class HomeController < ApplicationController
       redirect_to challenges_path and return
     end
 
-    @user_challenge = current_user.challenges.first # User can only be in one challenge as per user_query
+    @user_challenge = current_user.active_challenge
 
     # If user is not enrolled in any challenge, redirect to challenges page
     if !@user_challenge

@@ -224,4 +224,87 @@ RSpec.describe User, type: :model do
       end
     end
   end
+
+  describe '#active_challenge' do
+    let(:user) { create(:user) }
+    let(:today) { Date.current }
+
+    context 'with zero enrollments' do
+      it 'returns nil' do
+        expect(user.active_challenge).to be_nil
+      end
+    end
+
+    context 'with one in-progress enrollment' do
+      let!(:challenge) { create(:challenge, start_date: today - 5.days, end_date: today + 25.days) }
+
+      before { create(:user_challenge_enrollment, user: user, challenge: challenge) }
+
+      it 'returns that challenge' do
+        expect(user.active_challenge).to eq(challenge)
+      end
+    end
+
+    context 'with one ended enrollment (not in progress)' do
+      let!(:challenge) { create(:challenge, start_date: today - 60.days, end_date: today - 30.days) }
+
+      before { create(:user_challenge_enrollment, user: user, challenge: challenge) }
+
+      it 'falls back to the most-recently-joined enrollment' do
+        expect(user.active_challenge).to eq(challenge)
+      end
+    end
+
+    context 'with one upcoming enrollment (not yet started)' do
+      let!(:challenge) { create(:challenge, start_date: today + 5.days, end_date: today + 35.days) }
+
+      before { create(:user_challenge_enrollment, user: user, challenge: challenge) }
+
+      it 'falls back to the most-recently-joined enrollment' do
+        expect(user.active_challenge).to eq(challenge)
+      end
+    end
+
+    context 'with one in-progress and one ended enrollment' do
+      let!(:ended_challenge) { create(:challenge, start_date: today - 60.days, end_date: today - 30.days) }
+      let!(:active_ch) { create(:challenge, start_date: today - 5.days, end_date: today + 25.days) }
+
+      before do
+        create(:user_challenge_enrollment, user: user, challenge: ended_challenge, created_at: 2.months.ago)
+        create(:user_challenge_enrollment, user: user, challenge: active_ch, created_at: 1.week.ago)
+      end
+
+      it 'returns the in-progress challenge' do
+        expect(user.active_challenge).to eq(active_ch)
+      end
+    end
+
+    context 'with multiple in-progress enrollments' do
+      let!(:older_active) { create(:challenge, start_date: today - 10.days, end_date: today + 20.days) }
+      let!(:newer_active) { create(:challenge, start_date: today - 5.days, end_date: today + 25.days) }
+
+      before do
+        create(:user_challenge_enrollment, user: user, challenge: older_active, created_at: 2.weeks.ago)
+        create(:user_challenge_enrollment, user: user, challenge: newer_active, created_at: 1.week.ago)
+      end
+
+      it 'returns the most-recently-joined in-progress challenge' do
+        expect(user.active_challenge).to eq(newer_active)
+      end
+    end
+
+    context 'with multiple ended enrollments and none in progress' do
+      let!(:older_ended) { create(:challenge, start_date: today - 120.days, end_date: today - 90.days) }
+      let!(:newer_ended) { create(:challenge, start_date: today - 60.days, end_date: today - 30.days) }
+
+      before do
+        create(:user_challenge_enrollment, user: user, challenge: older_ended, created_at: 4.months.ago)
+        create(:user_challenge_enrollment, user: user, challenge: newer_ended, created_at: 2.months.ago)
+      end
+
+      it 'returns the most-recently-joined enrollment overall' do
+        expect(user.active_challenge).to eq(newer_ended)
+      end
+    end
+  end
 end

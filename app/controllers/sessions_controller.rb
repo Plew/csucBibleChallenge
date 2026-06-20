@@ -41,7 +41,7 @@ class SessionsController < ApplicationController
 
       # Redirect to reading page if user has an active challenge, otherwise to challenge show page
       if user.challenges.any?
-        first_challenge = user.challenges.first
+        first_challenge = user.active_challenge
         if first_challenge.start_date <= Date.current && first_challenge.end_date >= Date.current
           redirect_to reading_path
         else

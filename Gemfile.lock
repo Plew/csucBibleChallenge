@@ -112,6 +112,7 @@ GEM
       addressable
     cssbundling-rails (1.4.3)
       railties (>= 6.0.0)
+    csv (3.3.5)
     cuprite (0.17)
       capybara (~> 3.0)
       ferrum (~> 0.17.0)
@@ -494,6 +495,7 @@ DEPENDENCIES
   chartkick (~> 5.2.1)
   countries (~> 7.0)
   cssbundling-rails (~> 1.4.3)
+  csv
   cuprite (~> 0.17)
   debug (~> 1.11.1)
   exception_notification
