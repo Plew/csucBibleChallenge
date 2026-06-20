@@ -66,21 +66,21 @@
           role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
         <div class="py-1" role="none">
           <% if logged_in? %>
-            <% unless current_user.challenges.any? %>
+            <% unless active_challenge_for_nav %>
               <%= link_to t('navigation.create_challenge'), new_challenge_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
             <% end %>
             <% if current_user.admin? %>
               <%= link_to t('navigation.admin'), admin_root_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
-              <%= link_to t('navigation.view_feedback'), admin_feedbacks_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
             <% end %>
-            <% if @challenge&.persisted? && @challenge.manageable_by?(current_user) %>
-              <%= link_to t('navigation.challenge_admin'), challenge_manage_dashboard_path(@challenge), class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
+            <% managed = managed_challenges_for_nav %>
+            <% if managed.any? %>
+              <% manage_path = managed.count == 1 ? challenge_manage_dashboard_path(managed.first) : manage_chooser_path %>
+              <%= link_to t('navigation.manage_challenge'), manage_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
             <% end %>
-            <%# TODO: When multi-challenge support is added, these links should show per-challenge or let user choose %>
-            <% if current_user.challenges.any? %>
-              <%= link_to t('navigation.catch_up'), challenge_catch_up_path(current_user.challenges.first), class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
-              <%= link_to t('blog.posts'), challenge_blog_posts_path(current_user.challenges.first), class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
-              <%= link_to t('navigation.seven_day_win'), challenge_seven_day_lobby_path(current_user.challenges.first), class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
+            <% if (nav_ch = active_challenge_for_nav) %>
+              <%= link_to t('navigation.catch_up'), challenge_catch_up_path(nav_ch), class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
+              <%= link_to t('blog.posts'), challenge_blog_posts_path(nav_ch), class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
+              <%= link_to t('navigation.seven_day_win'), challenge_seven_day_lobby_path(nav_ch), class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
             <% end %>
             <%= link_to t('navigation.about'), about_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
             <%= link_to t('navigation.faq'), faq_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
@@ -98,9 +98,8 @@
 
   </div>
 
-  <% if logged_in? && current_user.challenges.any? && !controller.class.name.start_with?('Admin::') %>
-    <% user_challenge = current_user.challenges.first %>
-    <% if user_challenge && Date.current >= user_challenge.start_date %>
+  <% if logged_in? && !controller.class.name.start_with?('Admin::') %>
+    <% if (bottom_nav_ch = active_challenge_for_nav) && Date.current >= bottom_nav_ch.start_date %>
       <%= render(NavBarComponent.new) %>
     <% end %>
   <% end %>

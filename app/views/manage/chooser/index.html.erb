@@ -1,0 +1,13 @@
+<div class="px-3 py-4 max-w-lg mx-auto">
+  <h1 class="text-xl font-bold mb-4"><%= t('manage.chooser.title') %></h1>
+  <ul class="flex flex-col gap-2">
+    <% @manageable_challenges.each do |challenge| %>
+      <li>
+        <%= link_to challenge_manage_dashboard_path(challenge), class: "block card bg-base-200 p-4 hover:bg-base-300 transition-colors" do %>
+          <div class="font-semibold"><%= challenge.name %></div>
+          <div class="text-sm text-base-content/60"><%= challenge.start_date.strftime("%b %-d, %Y") %> – <%= challenge.end_date.strftime("%b %-d, %Y") %></div>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+</div>

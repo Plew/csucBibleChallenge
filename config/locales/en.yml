@@ -201,6 +201,8 @@ en:
   manage:
     access_denied: "You don't have permission to manage this challenge."
     challenge_created: "Challenge created successfully! You can now configure it."
+    chooser:
+      title: "Choose a challenge to manage"
     nav:
       console: "Challenge Console"
       view_challenge: "View challenge"
