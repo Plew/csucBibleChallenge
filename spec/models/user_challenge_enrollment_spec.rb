@@ -14,15 +14,15 @@ RSpec.describe UserChallengeEnrollment, type: :model do
     it { should validate_inclusion_of(:role).in_array(UserChallengeEnrollment::ROLES) }
   end
 
-  describe '#admin?' do
-    it 'returns true when role is admin' do
-      enrollment = FactoryBot.build(:user_challenge_enrollment, :admin)
-      expect(enrollment.admin?).to be true
+  describe '#organizer?' do
+    it 'returns true when role is organizer' do
+      enrollment = FactoryBot.build(:user_challenge_enrollment, :organizer)
+      expect(enrollment.organizer?).to be true
     end
 
     it 'returns false when role is member' do
       enrollment = FactoryBot.build(:user_challenge_enrollment)
-      expect(enrollment.admin?).to be false
+      expect(enrollment.organizer?).to be false
     end
   end
 

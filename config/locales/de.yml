@@ -28,7 +28,7 @@ de:
     admin: "Admin"
     manage: "Verwalten"
     manage_challenge: "Challenge verwalten"
-    challenge_admin: "Challenge-Admin"
+    challenge_admin: "Konsole"
 
   bible_books:
     genesis: "Genesis"
@@ -262,13 +262,13 @@ de:
       remove_confirmation: "Bist du sicher, dass du %{username} aus dieser Challenge entfernen möchtest?"
       removed: "%{username} wurde aus der Challenge entfernt."
       not_enrolled: "Benutzer ist nicht in dieser Challenge angemeldet."
-      admin_badge: "Admin"
-      promote_admin: "Zum Admin machen"
-      demote_admin: "Admin entfernen"
-      promoted: "%{username} wurde zum Admin befördert."
-      demoted: "%{username} wurde als Admin entfernt."
-      promote_confirmation: "Bist du sicher, dass du %{username} zum Admin dieser Challenge machen möchtest?"
-      demote_confirmation: "Bist du sicher, dass du %{username} als Admin dieser Challenge entfernen möchtest?"
+      admin_badge: "Organisator"
+      promote_admin: "Zum Organisator machen"
+      demote_admin: "Organisator entfernen"
+      promoted: "%{username} wurde zum Organisator befördert."
+      demoted: "%{username} wurde als Organisator entfernt."
+      promote_confirmation: "Bist du sicher, dass du %{username} zum Organisator dieser Challenge machen möchtest?"
+      demote_confirmation: "Bist du sicher, dass du %{username} als Organisator dieser Challenge entfernen möchtest?"
 
   # Home page
   home:

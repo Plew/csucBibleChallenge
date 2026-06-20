@@ -3,8 +3,8 @@ FactoryBot.define do
     user # Assumes a :user factory exists
     challenge # Assumes a :challenge factory exists
 
-    trait :admin do
-      role { "admin" }
+    trait :organizer do
+      role { "organizer" }
     end
   end
 end

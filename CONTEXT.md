@@ -63,19 +63,20 @@ A site-wide admin (`User#admin?`). Governs the `/admin/...` namespace.
 The single user who owns a challenge (`Challenge#owned_by?`, `creator_id`).
 _Avoid_: owner (acceptable as alias, but "creator" is canonical)
 
-**Challenge admin**:
-A user granted the `"admin"` role on a specific challenge via `UserChallengeEnrollment` — not a global admin.
+**Challenge organizer**:
+A user granted the `"organizer"` role on a specific challenge via `UserChallengeEnrollment` — not a global admin.
+_Avoid_: challenge admin (legacy term, superseded by organizer)
 
 **Manageable-by**:
-The union that can manage a challenge: global admin OR creator OR challenge admin (`Challenge#manageable_by?`). Governs the `/challenges/:id/manage/...` namespace, including the Top Readers page.
+The union that can manage a challenge: global admin OR creator OR challenge organizer (`Challenge#manageable_by?`). Governs the `/challenges/:id/manage/...` namespace, including the Top Readers page.
 
 **Management hub**:
-The single management interface for a challenge, living in the `/challenges/:id/manage` namespace (NOT the `/admin` namespace). It is the one place creators, challenge admins, and global admins all manage a challenge — there is no separate management UI for global admins. The `/admin/challenges` area is reserved for cross-challenge listing/operations, not per-challenge management.
+The single management interface for a challenge, living in the `/challenges/:id/manage` namespace (NOT the `/admin` namespace). It is the one place creators, challenge organizers, and global admins all manage a challenge — there is no separate management UI for global admins. The `/admin/challenges` area is reserved for cross-challenge listing/operations, not per-challenge management.
 _Avoid_: "Manage Challenge page", "admin challenge page" (ambiguous — name the hub)
 
 ## Flagged ambiguities
 
-- **"Admin"** is overloaded: it can mean *global admin* or *per-challenge challenge-admin*. When a feature should be visible to "any admin," confirm whether it means global admins only or the full `manageable_by?` set. The Top Readers page uses `manageable_by?`.
+- **"Admin"** now refers exclusively to *global admin* (`User#admin?`). The per-challenge co-manager role is **organizer** (`UserChallengeEnrollment#organizer?`). When a feature should be visible to "any admin," confirm whether it means global admins only or the full `manageable_by?` set. The Top Readers page uses `manageable_by?`.
 - **"On-time %"** sounds like "of what you read, how much was punctual," but the project defines it against scheduled-to-date. See Scoring above.
 
 ## Example dialogue
