@@ -149,7 +149,6 @@ Rails.application.routes.draw do
     # Challenge transfer routes
     get "change_challenge", to: "challenge_transfers#new", as: :change_challenge
     post "change_challenge", to: "challenge_transfers#create"
-
   end
 
   # 7 Day Lobby routes (available to all users)
