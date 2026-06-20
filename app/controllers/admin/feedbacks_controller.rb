@@ -10,7 +10,7 @@ class Admin::FeedbacksController < ApplicationController
 
     if params[:search].present?
       @feedbacks = @feedbacks.where(
-        "subject ILIKE ? OR message ILIKE ?",
+        "LOWER(subject) LIKE LOWER(?) OR LOWER(message) LIKE LOWER(?)",
         "%#{params[:search]}%",
         "%#{params[:search]}%"
       )

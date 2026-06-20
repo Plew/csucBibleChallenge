@@ -1,16 +1,16 @@
 <div class="container mx-auto px-2 py-4">
   <div class="text-sm breadcrumbs mb-4">
     <ul>
-      <li><%= link_to "Admin Dashboard", admin_root_path, class: "link link-hover" %></li>
-      <li>Manage Users</li>
+      <li><%= link_to t('admin.dashboard'), admin_root_path, class: "link link-hover" %></li>
+      <li><%= t('admin.manage_users') %></li>
     </ul>
   </div>
 
   <div class="flex justify-between items-center mb-4">
-    <h1 class="text-2xl font-bold">Manage Users</h1>
+    <h1 class="text-2xl font-bold"><%= t('admin.manage_users') %></h1>
     <div class="flex gap-2">
       <%= link_to t('admin.export_csv'), admin_users_path(format: :csv, search: params[:search], challenge_id: params[:challenge_id]), class: "btn btn-sm btn-success" %>
-      <%= link_to "Admin Dashboard", admin_root_path, class: "btn btn-sm btn-outline" %>
+      <%= link_to t('admin.dashboard'), admin_root_path, class: "btn btn-sm btn-outline" %>
     </div>
   </div>
 
@@ -26,7 +26,7 @@
           </div>
           <div class="form-control flex-1">
             <%= form.select :challenge_id,
-                  options_for_select([['All Challenges', '']] + @challenges.map { |c| [c.name, c.id] }, params[:challenge_id]),
+                  options_for_select([ [ t('admin.users.all_challenges'), '' ] ] + @challenges.map { |c| [ c.name, c.id ] }, params[:challenge_id]),
                   {},
                   { class: "select select-bordered select-sm w-full", onchange: "this.form.submit()" } %>
           </div>
@@ -64,10 +64,10 @@
                 <th class="w-8">
                   <input type="checkbox" class="checkbox checkbox-sm" data-action="change->admin-users#toggleAll" data-admin-users-target="selectAll" />
                 </th>
-                <th>Username</th>
+                <th><%= t('admin.users.username_header') %></th>
                 <th><%= t('admin.users.last_15_days') %></th>
-                <th>Challenge</th>
-                <th>Actions</th>
+                <th><%= t('admin.users.challenge_header') %></th>
+                <th><%= t('admin.users.actions_header') %></th>
               </tr>
             </thead>
             <tbody>
@@ -91,7 +91,7 @@
                         <div class="badge badge-primary badge-xs"><%= challenge.name %></div>
                       <% end %>
                     <% else %>
-                      <span class="text-gray-400 text-xs">None</span>
+                      <span class="text-gray-400 text-xs"><%= t('admin.users.none') %></span>
                     <% end %>
                   </td>
                   <td>
