@@ -274,6 +274,11 @@ en:
       created: "Sprint was successfully created."
       updated: "Sprint was successfully updated."
       deleted: "Sprint was successfully deleted."
+      intro_heading: "What is a sprint?"
+      intro_what: "A sprint is a short, date-bounded contest inside a challenge where groups compete against each other."
+      intro_scoring: "Groups are ranked by completion % — the share of readings scheduled within the sprint window that members marked complete. On-time % (readings completed on their exact scheduled day) breaks ties."
+      intro_winner: "The group with the highest completion % wins. Ties are allowed — multiple groups can be co-winners. Sprints within a challenge cannot overlap."
+      intro_fresh_start: "Because only readings scheduled inside the sprint window count, a sprint gives every reader a fresh start. Readings missed before the sprint don't affect your sprint score."
     blog_posts:
       title: "Blog Posts"
     users:
