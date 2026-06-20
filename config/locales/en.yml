@@ -207,6 +207,7 @@ en:
       overview: "Overview"
       settings: "Settings"
       users: "Users"
+      chapters: "Chapters"
       sprints: "Sprints"
       blog: "Blog"
       top_readers: "Top Readers"
@@ -221,6 +222,14 @@ en:
     overview:
       title: "Overview"
       blog_posts: "Blog posts"
+    chapters:
+      title: "Chapters"
+      date: "Date"
+      reading: "Reading"
+      no_chapters: "No readings have been added to this challenge yet."
+      count:
+        one: "%{count} chapter"
+        other: "%{count} chapters"
     danger:
       title: "Danger zone"
       heading: "Delete this challenge"

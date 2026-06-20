@@ -152,6 +152,7 @@ de:
       overview: "Übersicht"
       settings: "Einstellungen"
       users: "Teilnehmer"
+      chapters: "Kapitel"
       sprints: "Sprints"
       blog: "Blog"
       top_readers: "Top-Leser"
@@ -166,6 +167,14 @@ de:
     overview:
       title: "Übersicht"
       blog_posts: "Blogbeiträge"
+    chapters:
+      title: "Kapitel"
+      date: "Datum"
+      reading: "Lesung"
+      no_chapters: "Es wurden noch keine Lesungen zu dieser Challenge hinzugefügt."
+      count:
+        one: "%{count} Kapitel"
+        other: "%{count} Kapitel"
     danger:
       title: "Gefahrenzone"
       heading: "Diese Challenge löschen"
