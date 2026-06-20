@@ -230,6 +230,11 @@ de:
       created: "Sprint wurde erfolgreich erstellt."
       updated: "Sprint wurde erfolgreich aktualisiert."
       deleted: "Sprint wurde erfolgreich gelöscht."
+      intro_heading: "Was ist ein Sprint?"
+      intro_what: "Ein Sprint ist ein kurzer, zeitlich begrenzter Wettbewerb innerhalb einer Challenge, bei dem Gruppen gegeneinander antreten."
+      intro_scoring: "Gruppen werden nach Abschluss-% gewertet — dem Anteil der im Sprint-Zeitraum geplanten Lesungen, den die Mitglieder abgeschlossen haben. Pünktlichkeits-% (Lesungen, die genau am geplanten Tag abgeschlossen wurden) bricht Gleichstände."
+      intro_winner: "Die Gruppe mit dem höchsten Abschluss-% gewinnt. Gleichstände sind erlaubt — mehrere Gruppen können gemeinsam gewinnen. Sprints innerhalb einer Challenge dürfen sich nicht überschneiden."
+      intro_fresh_start: "Da nur Lesungen innerhalb des Sprint-Zeitraums zählen, gibt ein Sprint jedem Leser einen Neustart. Verpasste Lesungen vor dem Sprint beeinflussen die Sprint-Wertung nicht."
     blog_posts:
       title: "Blog-Beiträge"
     users:

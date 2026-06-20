@@ -17,6 +17,12 @@ RSpec.describe "Manage::Sprints", type: :request do
       get challenge_manage_sprints_path(challenge)
       expect(response.body).to include("Q1 Sprint")
     end
+
+    it "shows the explanatory callout" do
+      get challenge_manage_sprints_path(challenge)
+      expect(response.body).to include("What is a sprint?")
+      expect(response.body).to include("fresh start")
+    end
   end
 
   describe "GET /challenges/:challenge_id/manage/sprints/new" do
