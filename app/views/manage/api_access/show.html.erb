@@ -36,6 +36,14 @@
           <code class="text-xs break-all bg-base-200 rounded p-2 block">curl -H "Authorization: Bearer <%= @challenge.api_key %>" <%= report_api_v1_challenge_url(@challenge) %></code>
         </div>
 
+        <div class="form-control">
+          <label class="label"><span class="label-text font-semibold"><%= t("manage.api_access.discover_label") %></span></label>
+          <code class="text-xs break-all bg-base-200 rounded p-2 block">curl -H "Authorization: Bearer <%= @challenge.api_key %>" <%= api_v1_meta_url %></code>
+          <div class="label">
+            <span class="label-text-alt text-xs"><%= t("manage.api_access.discover_help") %></span>
+          </div>
+        </div>
+
         <div class="pt-2">
           <%= button_to t("manage.api_access.regenerate"),
                 regenerate_challenge_manage_api_access_path(@challenge),

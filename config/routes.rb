@@ -174,6 +174,7 @@ Rails.application.routes.draw do
         resources :readings, only: [ :index, :create ]
         resources :groups, only: [ :index, :create ]
       end
+      get "meta", to: "meta#show"
       get "chapter_verses", to: "chapter_verses#show"
     end
   end
