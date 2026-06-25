@@ -3,21 +3,7 @@
 # summary stats, the reading schedule with completion counts, participants with
 # their progress, groups, and the most-liked verses.
 class ChallengeReport
-  TOP_LIKED_VERSES_LIMIT = 50
-
-  BOOK_NAMES = [
-    "Genesis", "Exodus", "Leviticus", "Numbers", "Deuteronomy", "Joshua",
-    "Judges", "Ruth", "1 Samuel", "2 Samuel", "1 Kings", "2 Kings",
-    "1 Chronicles", "2 Chronicles", "Ezra", "Nehemiah", "Esther", "Job",
-    "Psalms", "Proverbs", "Ecclesiastes", "Song of Songs", "Isaiah", "Jeremiah",
-    "Lamentations", "Ezekiel", "Daniel", "Hosea", "Joel", "Amos", "Obadiah",
-    "Jonah", "Micah", "Nahum", "Habakkuk", "Zephaniah", "Haggai", "Zechariah",
-    "Malachi", "Matthew", "Mark", "Luke", "John", "Acts", "Romans",
-    "1 Corinthians", "2 Corinthians", "Galatians", "Ephesians", "Philippians",
-    "Colossians", "1 Thessalonians", "2 Thessalonians", "1 Timothy", "2 Timothy",
-    "Titus", "Philemon", "Hebrews", "James", "1 Peter", "2 Peter", "1 John",
-    "2 John", "3 John", "Jude", "Revelation"
-  ].freeze
+  TOP_VERSES_LIMIT = 50
 
   def initialize(challenge)
     @challenge = challenge
@@ -31,6 +17,7 @@ class ChallengeReport
       participants: participants_list,
       groups: groups_list,
       top_liked_verses: top_liked_verses,
+      top_commented_verses: top_commented_verses,
       generated_at: Time.current.iso8601
     }
   end
@@ -107,9 +94,9 @@ class ChallengeReport
         id: reading.id,
         scheduled_date: reading.scheduled_date,
         book_number: reading.book_number,
-        book_name: book_name(reading.book_number),
+        book_name: BibleBooks.name_for(reading.book_number),
         chapter_number: reading.chapter_number,
-        reference: "#{book_name(reading.book_number)} #{reading.chapter_number}",
+        reference: BibleBooks.reference(reading.book_number, reading.chapter_number),
         completions: completions_by_reading[reading.id] || 0
       }
     end
@@ -144,27 +131,34 @@ class ChallengeReport
   end
 
   def top_liked_verses
-    reading_location = challenge.readings.pluck(:id, :book_number, :chapter_number)
-                                .each_with_object({}) { |(id, book, chapter), h| h[id] = [ book, chapter ] }
-
-    VerseLike.where(reading_id: reading_ids)
-             .group(:reading_id, :verse_number)
-             .count
-             .sort_by { |(reading_id, verse_number), likes| [ -likes, reading_id, verse_number ] }
-             .first(TOP_LIKED_VERSES_LIMIT)
-             .map do |(reading_id, verse_number), likes|
-               book, chapter = reading_location[reading_id]
-               {
-                 reference: "#{book_name(book)} #{chapter}:#{verse_number}",
-                 book_number: book,
-                 chapter_number: chapter,
-                 verse_number: verse_number,
-                 likes: likes
-               }
-             end
+    top_verses(VerseLike.where(reading_id: reading_ids), :likes)
   end
 
-  def book_name(book_number)
-    BOOK_NAMES[book_number - 1] || "Book #{book_number}"
+  def top_commented_verses
+    top_verses(VerseMessage.where(reading_id: reading_ids), :comments)
+  end
+
+  # Ranks the verses with the most rows in `relation` (grouped by reading +
+  # verse), returning the top entries with the count under `count_key`.
+  def top_verses(relation, count_key)
+    relation.group(:reading_id, :verse_number)
+            .count
+            .sort_by { |(reading_id, verse_number), count| [ -count, reading_id, verse_number ] }
+            .first(TOP_VERSES_LIMIT)
+            .map do |(reading_id, verse_number), count|
+              book, chapter = reading_location[reading_id]
+              {
+                reference: BibleBooks.reference(book, chapter, verse_number),
+                book_number: book,
+                chapter_number: chapter,
+                verse_number: verse_number,
+                count_key => count
+              }
+            end
+  end
+
+  def reading_location
+    @reading_location ||= challenge.readings.pluck(:id, :book_number, :chapter_number)
+                                   .each_with_object({}) { |(id, book, chapter), h| h[id] = [ book, chapter ] }
   end
 end

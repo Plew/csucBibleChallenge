@@ -15,15 +15,6 @@ class Api::V1::ChallengeReportsController < Api::BaseController
   private
 
   def authenticate_challenge!
-    challenge = api_key_challenge
-
-    if challenge.nil?
-      render_invalid_api_key
-    elsif challenge.id.to_s != params[:id].to_s
-      # The key is valid but for a different challenge — don't expose other data.
-      render json: { error: "API key is not valid for this challenge" }, status: :forbidden
-    else
-      @challenge = challenge
-    end
+    authenticate_api_challenge!(params[:id])
   end
 end

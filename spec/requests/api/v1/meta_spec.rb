@@ -29,7 +29,10 @@ RSpec.describe "Api::V1::Meta", type: :request do
         expect(body.dig("challenge", "id")).to eq(challenge.id)
         expect(body).to include("auth", "endpoints", "field_glossary", "example_report_shape")
         paths = body["endpoints"].map { |e| e["path"] }
-        expect(paths).to include("/api/v1/challenges/#{challenge.id}/report")
+        expect(paths).to include(
+          "/api/v1/challenges/#{challenge.id}/report",
+          "/api/v1/challenges/#{challenge.id}/participants/:user_id"
+        )
       end
     end
   end
