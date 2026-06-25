@@ -170,6 +170,7 @@ Rails.application.routes.draw do
       resources :users, only: [ :create ]
       resources :challenges, only: [ :index, :show, :create ] do
         get :report, on: :member, to: "challenge_reports#show"
+        resources :participants, only: [ :show ], controller: "challenge_participants"
         resources :enrollments, only: [ :create, :update ], controller: "challenge_enrollments"
         resources :readings, only: [ :index, :create ]
         resources :groups, only: [ :index, :create ]

@@ -20,6 +20,7 @@ class ApiMeta
       endpoints: endpoints,
       field_glossary: field_glossary,
       example_report_shape: example_report_shape,
+      example_participant_shape: example_participant_shape,
       notes: notes,
       generated_at: Time.current.iso8601
     }
@@ -29,6 +30,10 @@ class ApiMeta
 
   def report_path
     "/api/v1/challenges/#{@challenge.id}/report"
+  end
+
+  def participant_path
+    "/api/v1/challenges/#{@challenge.id}/participants/:user_id"
   end
 
   def meta_path
@@ -59,7 +64,17 @@ class ApiMeta
         url: "#{@base_url}#{report_path}",
         auth_required: true,
         summary: "Everything about the challenge: metadata, summary stats, the reading schedule with " \
-                 "per-reading completion counts, participants with their progress, groups, and the most-liked verses."
+                 "per-reading completion counts, participants with their progress, groups, and the most-liked " \
+                 "and most-commented verses."
+      },
+      {
+        method: "GET",
+        path: participant_path,
+        url: "#{@base_url}#{participant_path}",
+        auth_required: true,
+        summary: "Full per-participant graph: profile, complete reading history, group memberships, and every " \
+                 "verse like and comment they made in this challenge. Get :user_id values from the report's " \
+                 "participants[].user_id."
       }
     ]
   end
@@ -80,7 +95,18 @@ class ApiMeta
       "participants[].last_completed_on" => "Date of the participant's most recent completion, or null.",
       "groups[].members" => "Number of users enrolled in the group.",
       "top_liked_verses" => "Up to 50 verses ranked by like count, descending.",
-      "top_liked_verses[].reference" => "Book chapter:verse, e.g. '2 Corinthians 5:17'."
+      "top_liked_verses[].reference" => "Book chapter:verse, e.g. '2 Corinthians 5:17'.",
+      "top_commented_verses" => "Up to 50 verses ranked by number of comments, descending.",
+      "top_commented_verses[].comments" => "Number of comments on that verse.",
+      "participant.role" => "Enrollment role: 'member' or 'organizer'.",
+      "reading_history" => "Every reading the participant completed in this challenge, ordered by completion date.",
+      "reading_history[].completed_on" => "Date the participant marked that reading complete.",
+      "groups[].joined_at" => "When the participant joined that group.",
+      "likes" => "Every verse the participant liked in this challenge, ordered by time.",
+      "likes[].reference" => "Liked verse, e.g. 'John 3:16'.",
+      "comments" => "Every verse comment the participant wrote in this challenge, ordered by time.",
+      "comments[].content" => "Text of the participant's comment.",
+      "comments[].reference" => "Verse the comment is on."
     }
   end
 
@@ -88,14 +114,25 @@ class ApiMeta
   # is generated from the real ChallengeReport, the shape stays accurate
   # automatically as the report evolves.
   def example_report_shape
-    ChallengeReport.new(@challenge).as_json.transform_values do |value|
-      value.is_a?(Array) ? value.first(1) : value
-    end
+    truncate_arrays(ChallengeReport.new(@challenge).as_json)
+  end
+
+  # A live participant graph (first enrollment) with arrays truncated to one
+  # sample row, or nil when the challenge has no participants.
+  def example_participant_shape
+    enrollment = @challenge.user_challenge_enrollments.includes(:user).first
+    return nil unless enrollment
+
+    truncate_arrays(ParticipantReport.new(@challenge, enrollment).as_json)
+  end
+
+  def truncate_arrays(hash)
+    hash.transform_values { |value| value.is_a?(Array) ? value.first(1) : value }
   end
 
   def notes
     [
-      "Arrays in example_report_shape are truncated to one sample row; call the report endpoint for the full data.",
+      "Arrays in example_report_shape and example_participant_shape are truncated to one sample row; call the endpoints for the full data.",
       "Breaking changes will be published under /api/v2; /api/v1 remains stable.",
       "An API key grants read-only access only to the challenge that owns it.",
       "Participant emails are intentionally not exposed."

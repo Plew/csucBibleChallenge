@@ -17,14 +17,24 @@ RSpec.describe ApiMeta do
     expect(meta[:challenge][:id]).to eq(challenge.id)
   end
 
-  it "lists the meta and report endpoints with absolute URLs" do
+  it "lists the meta, report, and participant endpoints with absolute URLs" do
     paths = meta[:endpoints].map { |e| e[:path] }
-    expect(paths).to include("/api/v1/meta", "/api/v1/challenges/#{challenge.id}/report")
+    expect(paths).to include(
+      "/api/v1/meta",
+      "/api/v1/challenges/#{challenge.id}/report",
+      "/api/v1/challenges/#{challenge.id}/participants/:user_id"
+    )
     expect(meta[:endpoints]).to all(include(url: a_string_starting_with("https://example.test")))
   end
 
-  it "includes a field glossary" do
-    expect(meta[:field_glossary]).to include("stats.completion_rate", "top_liked_verses")
+  it "includes a field glossary covering report and participant fields" do
+    expect(meta[:field_glossary]).to include("stats.completion_rate", "top_liked_verses", "reading_history", "comments[].content")
+  end
+
+  it "includes a live participant shape with arrays truncated" do
+    shape = meta[:example_participant_shape]
+    expect(shape).to include(:participant, :reading_history, :likes, :comments, :groups)
+    expect(shape[:reading_history].size).to be <= 1
   end
 
   it "includes a live report shape with arrays truncated to one sample row" do

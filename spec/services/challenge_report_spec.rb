@@ -22,6 +22,11 @@ RSpec.describe ChallengeReport do
       create(:verse_like, reading: romans8,  user: alice, verse_number: 1)
       create(:verse_like, reading: romans8,  user: bob,   verse_number: 1)
       create(:verse_like, reading: romans12, user: alice, verse_number: 5)
+
+      # Romans 8:28 commented twice, Romans 12:2 commented once
+      create(:verse_message, reading: romans8,  user: alice, verse_number: 28, content: "a")
+      create(:verse_message, reading: romans8,  user: bob,   verse_number: 28, content: "b")
+      create(:verse_message, reading: romans12, user: alice, verse_number: 2,  content: "c")
     end
 
     it "includes challenge metadata and creator" do
@@ -59,6 +64,12 @@ RSpec.describe ChallengeReport do
       top = report[:top_liked_verses].first
       expect(top[:reference]).to eq("Romans 8:1")
       expect(top[:likes]).to eq(2)
+    end
+
+    it "ranks the most-commented verses" do
+      top = report[:top_commented_verses].first
+      expect(top[:reference]).to eq("Romans 8:28")
+      expect(top[:comments]).to eq(2)
     end
   end
 end
