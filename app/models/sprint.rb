@@ -18,6 +18,17 @@ class Sprint < ApplicationRecord
     begin_date..end_date
   end
 
+  # upcoming (not started), active (running today), or past (finished).
+  def status
+    if begin_date > Date.current
+      "upcoming"
+    elsif end_date < Date.current
+      "past"
+    else
+      "active"
+    end
+  end
+
   def days_count
     (end_date - begin_date).to_i + 1
   end

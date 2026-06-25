@@ -21,6 +21,9 @@ class ApiMeta
       field_glossary: field_glossary,
       example_report_shape: example_report_shape,
       example_participant_shape: example_participant_shape,
+      example_group_shape: example_group_shape,
+      example_sprints_shape: example_sprints_shape,
+      example_sprint_standings_shape: example_sprint_standings_shape,
       notes: notes,
       generated_at: Time.current.iso8601
     }
@@ -34,6 +37,18 @@ class ApiMeta
 
   def participant_path
     "/api/v1/challenges/#{@challenge.id}/participants/:user_id"
+  end
+
+  def group_path
+    "/api/v1/challenges/#{@challenge.id}/groups/:group_id/report"
+  end
+
+  def sprints_path
+    "/api/v1/challenges/#{@challenge.id}/sprints"
+  end
+
+  def sprint_path
+    "/api/v1/challenges/#{@challenge.id}/sprints/:sprint_id"
   end
 
   def meta_path
@@ -75,6 +90,31 @@ class ApiMeta
         summary: "Full per-participant graph: profile, complete reading history, group memberships, and every " \
                  "verse like and comment they made in this challenge. Get :user_id values from the report's " \
                  "participants[].user_id."
+      },
+      {
+        method: "GET",
+        path: group_path,
+        url: "#{@base_url}#{group_path}",
+        auth_required: true,
+        summary: "Full per-group graph: profile, members with their progress, aggregate group stats, and how the " \
+                 "group performed in each sprint (completion and on-schedule percentage, and whether it won). " \
+                 "Get :group_id values from the report's groups[].id."
+      },
+      {
+        method: "GET",
+        path: sprints_path,
+        url: "#{@base_url}#{sprints_path}",
+        auth_required: true,
+        summary: "All sprints in the challenge with their start and end dates, status, and recorded winners."
+      },
+      {
+        method: "GET",
+        path: sprint_path,
+        url: "#{@base_url}#{sprint_path}",
+        auth_required: true,
+        summary: "Live ranked standings for one sprint: every group with members ranked 1st, 2nd, 3rd… by " \
+                 "reading completion percentage then on-schedule percentage, over the sprint's date range. " \
+                 "Get :sprint_id values from the sprints list."
       }
     ]
   end
@@ -106,7 +146,22 @@ class ApiMeta
       "likes[].reference" => "Liked verse, e.g. 'John 3:16'.",
       "comments" => "Every verse comment the participant wrote in this challenge, ordered by time.",
       "comments[].content" => "Text of the participant's comment.",
-      "comments[].reference" => "Verse the comment is on."
+      "comments[].reference" => "Verse the comment is on.",
+      "group.country" => "Full country name for the group's country_code, or null.",
+      "group.stats.completion_percentage" => "Average percentage of due readings completed across the group's members (0–100).",
+      "group.stats.on_schedule_percentage" => "Average percentage of readings members completed on or before their scheduled date (0–100).",
+      "group.stats.longest_group_streak" => "Longest run of consecutive days every member completed the reading.",
+      "group.members[].role" => "The member's challenge enrollment role: 'member' or 'organizer'.",
+      "group.members[].joined_group_at" => "When the member joined this group.",
+      "group.sprints[].won" => "True when this group is a recorded winner of that sprint.",
+      "sprints[].status" => "One of: upcoming, active, past.",
+      "sprints[].days" => "Number of days the sprint spans, inclusive of both endpoints.",
+      "sprints[].winners_calculated" => "True once the sprint's winners have been computed and stored.",
+      "sprints[].winners" => "Recorded winning group(s) — the groups tied for 1st place.",
+      "sprint.standings" => "Every group with at least one member, ranked by completion then on-schedule percentage.",
+      "sprint.standings[].rank" => "Competition rank (1, 2, 2, 4…); groups tied on both metrics share a rank.",
+      "sprint.standings[].completion_percentage" => "The group's reading completion percentage over the sprint (0–100).",
+      "sprint.standings[].on_schedule_percentage" => "The group's on-schedule percentage over the sprint (0–100)."
     }
   end
 
@@ -126,13 +181,37 @@ class ApiMeta
     truncate_arrays(ParticipantReport.new(@challenge, enrollment).as_json)
   end
 
+  # A live group graph (a group with members, else the first group) with arrays
+  # truncated to one sample row, or nil when the challenge has no groups.
+  def example_group_shape
+    group = @challenge.groups.joins(:user_group_enrollments).distinct.first || @challenge.groups.first
+    return nil unless group
+
+    truncate_arrays(GroupReport.new(@challenge, group).as_json)
+  end
+
+  # The live sprints list with the sprints array truncated to one sample.
+  def example_sprints_shape
+    truncate_arrays(SprintsReport.new(@challenge).as_json)
+  end
+
+  # Live standings for the first sprint with arrays truncated to one sample row,
+  # or nil when the challenge has no sprints.
+  def example_sprint_standings_shape
+    sprint = @challenge.sprints.ordered.first
+    return nil unless sprint
+
+    truncate_arrays(SprintStandings.new(sprint).as_json)
+  end
+
   def truncate_arrays(hash)
     hash.transform_values { |value| value.is_a?(Array) ? value.first(1) : value }
   end
 
   def notes
     [
-      "Arrays in example_report_shape and example_participant_shape are truncated to one sample row; call the endpoints for the full data.",
+      "Arrays in every example_*_shape are truncated to one sample row; call the endpoints for the full data.",
+      "Sprint standings are computed live at request time, so an in-progress sprint reflects current progress; only groups with at least one member are ranked.",
       "Breaking changes will be published under /api/v2; /api/v1 remains stable.",
       "An API key grants read-only access only to the challenge that owns it.",
       "Participant emails are intentionally not exposed."
