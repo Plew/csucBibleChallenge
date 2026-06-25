@@ -175,6 +175,8 @@ de:
       keep_secret: "Halte ihn geheim. Wer diesen Schlüssel besitzt, kann alle Daten dieser Challenge lesen."
       endpoint_label: "Endpunkt"
       usage_label: "Beispielanfrage"
+      discover_label: "API erkunden"
+      discover_help: "Liefert eine maschinenlesbare Beschreibung aller Endpunkte und Felder sowie eine Beispielantwort — nützlich für Integrationen, die auch bei Änderungen der API weiterfunktionieren."
       no_key_yet: "Für diese Challenge wurde noch kein API-Schlüssel erstellt."
       generate: "API-Schlüssel erstellen"
       regenerate: "Schlüssel neu erstellen"

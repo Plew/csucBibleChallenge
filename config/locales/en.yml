@@ -230,6 +230,8 @@ en:
       keep_secret: "Keep this secret. Anyone with this key can read all data for this challenge."
       endpoint_label: "Endpoint"
       usage_label: "Example request"
+      discover_label: "Discover the API"
+      discover_help: "Returns a machine-readable description of every endpoint and field, plus a sample response — useful for building integrations that keep working when the API changes."
       no_key_yet: "No API key has been generated for this challenge yet."
       generate: "Generate API key"
       regenerate: "Regenerate key"
