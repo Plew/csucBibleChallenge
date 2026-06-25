@@ -1,0 +1,57 @@
+<div class="px-2 py-4 max-w-2xl mx-auto">
+  <div class="text-sm breadcrumbs mb-4">
+    <ul>
+      <li><%= link_to @challenge.title, challenge_manage_dashboard_path(@challenge), class: "link link-hover" %></li>
+      <li><%= t("manage.api_access.title") %></li>
+    </ul>
+  </div>
+
+  <div class="flex justify-between items-center mb-4">
+    <h1 class="text-2xl font-bold"><%= t("manage.api_access.title") %></h1>
+    <%= link_to t("common.back"), challenge_manage_dashboard_path(@challenge), class: "btn btn-sm btn-outline" %>
+  </div>
+
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body p-4 space-y-4">
+      <p class="text-sm text-base-content/70"><%= t("manage.api_access.description") %></p>
+
+      <% if @challenge.api_key.present? %>
+        <div class="form-control">
+          <label class="label"><span class="label-text font-semibold"><%= t("manage.api_access.your_key") %></span></label>
+          <input type="text" readonly value="<%= @challenge.api_key %>"
+                 onclick="this.select()"
+                 class="input input-bordered w-full font-mono text-xs" />
+          <div class="label">
+            <span class="label-text-alt text-xs text-warning"><%= t("manage.api_access.keep_secret") %></span>
+          </div>
+        </div>
+
+        <div class="form-control">
+          <label class="label"><span class="label-text font-semibold"><%= t("manage.api_access.endpoint_label") %></span></label>
+          <code class="text-xs break-all bg-base-200 rounded p-2 block"><%= report_api_v1_challenge_url(@challenge) %></code>
+        </div>
+
+        <div class="form-control">
+          <label class="label"><span class="label-text font-semibold"><%= t("manage.api_access.usage_label") %></span></label>
+          <code class="text-xs break-all bg-base-200 rounded p-2 block">curl -H "Authorization: Bearer <%= @challenge.api_key %>" <%= report_api_v1_challenge_url(@challenge) %></code>
+        </div>
+
+        <div class="pt-2">
+          <%= button_to t("manage.api_access.regenerate"),
+                regenerate_challenge_manage_api_access_path(@challenge),
+                method: :post,
+                class: "btn btn-warning btn-sm",
+                data: { turbo_confirm: t("manage.api_access.regenerate_warning") } %>
+        </div>
+      <% else %>
+        <p class="text-sm text-base-content/60"><%= t("manage.api_access.no_key_yet") %></p>
+        <div>
+          <%= button_to t("manage.api_access.generate"),
+                regenerate_challenge_manage_api_access_path(@challenge),
+                method: :post,
+                class: "btn btn-primary btn-sm" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

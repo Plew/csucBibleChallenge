@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_20_103822) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_25_120000) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -65,6 +65,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_20_103822) do
   end
 
   create_table "challenges", force: :cascade do |t|
+    t.string "api_key"
     t.boolean "auto_remove_inactive_from_groups", default: false, null: false
     t.datetime "created_at", null: false
     t.integer "creator_id", null: false
@@ -80,6 +81,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_20_103822) do
     t.string "timezone"
     t.datetime "updated_at", null: false
     t.boolean "verse_comments_enabled", default: true, null: false
+    t.index ["api_key"], name: "index_challenges_on_api_key", unique: true
     t.index ["creator_id"], name: "index_challenges_on_creator_id"
     t.index ["invitation_token"], name: "index_challenges_on_invitation_token", unique: true
   end

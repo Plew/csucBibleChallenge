@@ -77,6 +77,9 @@ Rails.application.routes.draw do
       get "danger", to: "danger#show", as: :danger
       delete "danger", to: "danger#destroy"
       resource :settings, only: [ :edit, :update ], controller: "settings"
+      resource :api_access, only: [ :show ], controller: "api_access" do
+        post :regenerate
+      end
       resources :top_readers, only: [ :index ]
       resources :chapters, only: [ :index ]
       resources :sprints, only: [ :index, :show, :new, :create, :edit, :update, :destroy ]
@@ -166,6 +169,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :users, only: [ :create ]
       resources :challenges, only: [ :index, :show, :create ] do
+        get :report, on: :member, to: "challenge_reports#show"
         resources :enrollments, only: [ :create, :update ], controller: "challenge_enrollments"
         resources :readings, only: [ :index, :create ]
         resources :groups, only: [ :index, :create ]

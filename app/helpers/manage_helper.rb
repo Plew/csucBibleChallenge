@@ -8,7 +8,8 @@ module ManageHelper
     [
       { key: "challenge", items: [
         console_nav_item("overview", challenge_manage_dashboard_path(challenge), %w[dashboard]),
-        console_nav_item("settings", edit_challenge_manage_settings_path(challenge), %w[settings])
+        console_nav_item("settings", edit_challenge_manage_settings_path(challenge), %w[settings]),
+        console_nav_item("api_access", challenge_manage_api_access_path(challenge), %w[api_access])
       ] },
       { key: "people", items: [
         console_nav_item("users", challenge_manage_users_path(challenge), %w[users]),
@@ -45,7 +46,8 @@ module ManageHelper
       "sprints" => "M13 10V3L4 14h7v7l9-11h-7z",
       "blog" => "M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z",
       "top_readers" => "M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z",
-      "weekly_winner" => "M5 3h14M5 3v4a7 7 0 0014 0V3M9 21h6m-3-4v4M8 3v4a4 4 0 008 0V3"
+      "weekly_winner" => "M5 3h14M5 3v4a7 7 0 0014 0V3M9 21h6m-3-4v4M8 3v4a4 4 0 008 0V3",
+      "api_access" => "M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"
     }
     content_tag(:svg, content_tag(:path, "", "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: paths[key]),
       class: "h-4 w-4 shrink-0", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor")
