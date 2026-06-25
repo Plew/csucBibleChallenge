@@ -173,7 +173,10 @@ Rails.application.routes.draw do
         resources :participants, only: [ :show ], controller: "challenge_participants"
         resources :enrollments, only: [ :create, :update ], controller: "challenge_enrollments"
         resources :readings, only: [ :index, :create ]
-        resources :groups, only: [ :index, :create ]
+        resources :groups, only: [ :index, :create ] do
+          get :report, on: :member, to: "group_reports#show"
+        end
+        resources :sprints, only: [ :index, :show ], controller: "challenge_sprints"
       end
       get "meta", to: "meta#show"
       get "chapter_verses", to: "chapter_verses#show"
