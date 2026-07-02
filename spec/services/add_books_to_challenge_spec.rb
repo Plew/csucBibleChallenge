@@ -219,6 +219,65 @@ RSpec.describe AddBooksToChallenge, type: :service do
     end
   end
 
+  describe '#preview' do
+    before do
+      (1..28).each do |chapter|
+        create(:reading,
+               challenge: challenge,
+               book_number: 40,
+               chapter_number: chapter,
+               scheduled_date: start_date + (chapter - 1).days)
+      end
+    end
+
+    it 'returns the total chapter count and new end date without persisting anything' do
+      service = described_class.new(challenge)
+
+      expect {
+        result = service.preview([ 41 ]) # Mark, 16 chapters
+
+        expect(result).to eq(total_chapters: 16, new_end_date: challenge.end_date + 16.days)
+      }.not_to change { challenge.readings.count }
+
+      expect(challenge.reload.end_date).to eq(start_date + 27.days)
+    end
+
+    it 'sums chapters across multiple selected books' do
+      service = described_class.new(challenge)
+
+      result = service.preview([ 41, 42 ]) # Mark (16) + Luke (24)
+
+      expect(result[:total_chapters]).to eq(40)
+      expect(result[:new_end_date]).to eq(challenge.end_date + 40.days)
+    end
+
+    it 'returns nil for an invalid book number' do
+      service = described_class.new(challenge)
+
+      expect(service.preview([ 0 ])).to be_nil
+      expect(service.preview([ 67 ])).to be_nil
+    end
+
+    it 'returns nil when no books are given' do
+      service = described_class.new(challenge)
+
+      expect(service.preview([])).to be_nil
+    end
+
+    it 'returns nil when a selected book is already in the challenge' do
+      service = described_class.new(challenge)
+
+      expect(service.preview([ 40, 41 ])).to be_nil
+    end
+
+    it 'returns nil when the challenge has no existing readings' do
+      empty_challenge = create(:challenge, creator: user, start_date: start_date, end_date: start_date + 30.days)
+      service = described_class.new(empty_challenge)
+
+      expect(service.preview([ 41 ])).to be_nil
+    end
+  end
+
   describe 'chapter counts' do
     it 'sources chapter counts from db/bible_structure.yml, matching known values' do
       service = described_class.new(challenge)

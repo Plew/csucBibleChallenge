@@ -7,6 +7,7 @@ class Manage::ChaptersController < Manage::BaseController
 
   def add_books
     @bible_books = books_not_in_challenge
+    @last_reading_date = last_reading_date
   end
 
   def create_add_books
@@ -19,6 +20,9 @@ class Manage::ChaptersController < Manage::BaseController
     else
       @bible_books = books_not_in_challenge
       @errors = service.errors
+      @selected_books = selected_books.map(&:to_i)
+      @last_reading_date = last_reading_date
+      @preview = AddBooksToChallenge.new(@challenge).preview(@selected_books)
       render :add_books, status: :unprocessable_content
     end
   end
@@ -28,5 +32,9 @@ class Manage::ChaptersController < Manage::BaseController
   def books_not_in_challenge
     existing_book_numbers = @challenge.readings.distinct.pluck(:book_number)
     load_bible_books.reject { |book| existing_book_numbers.include?(book[:number]) }
+  end
+
+  def last_reading_date
+    @challenge.readings.order(:scheduled_date).last&.scheduled_date
   end
 end

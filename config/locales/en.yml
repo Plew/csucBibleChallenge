@@ -254,6 +254,11 @@ en:
         submit: "Add books"
         no_books_left: "Every book of the Bible is already in this challenge."
         success: "Added: %{books}."
+        preview:
+          heading: "You're about to extend this challenge"
+          chapters_label: "Chapters to add"
+          new_end_date_label: "New end date"
+          prompt: "Select at least one book to preview the new end date."
     danger:
       title: "Danger zone"
       heading: "Delete this challenge"

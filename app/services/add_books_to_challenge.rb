@@ -66,6 +66,24 @@ class AddBooksToChallenge
     false
   end
 
+  # Computes what #call would do, without persisting anything.
+  #
+  # @param book_numbers [Array<Integer>] The book numbers to preview (1-66)
+  # @return [Hash, nil] { total_chapters:, new_end_date: }, or nil if the selection is invalid
+  def preview(book_numbers)
+    book_numbers = Array(book_numbers).map(&:to_i).uniq
+
+    return nil unless valid_book_numbers?(book_numbers)
+    return nil if (book_numbers & challenge.readings.distinct.pluck(:book_number)).any?
+
+    last_reading = challenge.readings.order(:scheduled_date).last
+    return nil unless last_reading
+
+    total_chapters = book_numbers.sum { |book_number| chapter_counts[book_number] }
+
+    { total_chapters: total_chapters, new_end_date: last_reading.scheduled_date + total_chapters.days }
+  end
+
   private
 
   def valid_book_numbers?(book_numbers)

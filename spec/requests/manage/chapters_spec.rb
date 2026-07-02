@@ -73,6 +73,15 @@ RSpec.describe "Manage::Chapters", type: :request do
       get add_books_challenge_manage_chapters_path(challenge)
       expect(response).to redirect_to(root_path)
     end
+
+    it "renders a disabled submit button and hidden preview until books are selected" do
+      create(:reading, challenge: challenge, book_number: 40, chapter_number: 1, scheduled_date: Date.current)
+
+      get add_books_challenge_manage_chapters_path(challenge)
+
+      expect(response.body).to include(I18n.t("manage.chapters.add_books.preview.prompt"))
+      expect(response.body).to match(/<input[^>]*type="submit"[^>]*disabled="disabled"/)
+    end
   end
 
   describe "POST /challenges/:challenge_id/manage/chapters/add_books" do
@@ -114,6 +123,24 @@ RSpec.describe "Manage::Chapters", type: :request do
 
       expect(response).to have_http_status(:unprocessable_content)
       expect(response.body).to include("Matthew")
+    end
+
+    it "re-checks the previously selected books and keeps the preview hidden when the selection is invalid" do
+      post create_add_books_challenge_manage_chapters_path(challenge), params: { selected_books: [ "41", "40" ] } # Mark (new) + Matthew (already present)
+
+      mark_label = response.body[/<label.*?value="41".*?<\/label>/m]
+      expect(mark_label).to include("checked")
+      expect(response.body).to include(I18n.t("manage.chapters.add_books.preview.prompt"))
+    end
+
+    it "shows the chapter count and new end date preview when re-rendering a valid selection" do
+      allow_any_instance_of(Reading).to receive(:save!).and_raise(ActiveRecord::RecordInvalid.new(Reading.new))
+
+      post create_add_books_challenge_manage_chapters_path(challenge), params: { selected_books: [ "41" ] }
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include("16")
+      expect(response.body).to include((Date.current + 16.days).strftime("%B %d, %Y"))
     end
 
     it "denies access to non-managers" do

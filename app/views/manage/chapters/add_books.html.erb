@@ -26,14 +26,18 @@
       </div>
     </div>
   <% else %>
-    <%= form_with url: create_add_books_challenge_manage_chapters_path(@challenge), method: :post, local: true, class: "space-y-4" do %>
+    <%= form_with url: create_add_books_challenge_manage_chapters_path(@challenge), method: :post, local: true, class: "space-y-4",
+                  data: { controller: "add-books-preview", "add-books-preview-last-reading-date-value": @last_reading_date&.iso8601 } do %>
       <div class="card bg-base-100 shadow-xl">
         <div class="card-body">
           <h3 class="text-lg font-semibold mb-3"><%= t("challenge_form.old_testament") %></h3>
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3 mb-6">
             <% @bible_books.select { |book| book[:testament] == "old" }.each do |book| %>
               <label class="flex items-center cursor-pointer">
-                <input type="checkbox" name="selected_books[]" value="<%= book[:number] %>" class="checkbox checkbox-primary mr-2">
+                <input type="checkbox" name="selected_books[]" value="<%= book[:number] %>" class="checkbox checkbox-primary mr-2"
+                       data-add-books-preview-target="bookCheckbox" data-action="change->add-books-preview#update"
+                       data-chapters="<%= book[:chapters] %>"
+                       <%= "checked" if @selected_books&.include?(book[:number]) %>>
                 <span class="text-sm"><%= book[:name] %> (<%= book[:chapters] %>)</span>
               </label>
             <% end %>
@@ -43,7 +47,10 @@
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
             <% @bible_books.select { |book| book[:testament] == "new" }.each do |book| %>
               <label class="flex items-center cursor-pointer">
-                <input type="checkbox" name="selected_books[]" value="<%= book[:number] %>" class="checkbox checkbox-primary mr-2">
+                <input type="checkbox" name="selected_books[]" value="<%= book[:number] %>" class="checkbox checkbox-primary mr-2"
+                       data-add-books-preview-target="bookCheckbox" data-action="change->add-books-preview#update"
+                       data-chapters="<%= book[:chapters] %>"
+                       <%= "checked" if @selected_books&.include?(book[:number]) %>>
                 <span class="text-sm"><%= book[:name] %> (<%= book[:chapters] %>)</span>
               </label>
             <% end %>
@@ -51,8 +58,29 @@
         </div>
       </div>
 
+      <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+          <p data-add-books-preview-target="prompt" class="text-base-content/60 text-sm" <%= "style=\"display: none;\"".html_safe if @preview %>>
+            <%= t("manage.chapters.add_books.preview.prompt") %>
+          </p>
+          <div data-add-books-preview-target="preview" <%= "style=\"display: none;\"".html_safe unless @preview %>>
+            <h3 class="text-lg font-semibold mb-3"><%= t("manage.chapters.add_books.preview.heading") %></h3>
+            <div class="stats stats-vertical sm:stats-horizontal shadow w-full">
+              <div class="stat">
+                <div class="stat-title"><%= t("manage.chapters.add_books.preview.chapters_label") %></div>
+                <div class="stat-value text-2xl" data-add-books-preview-target="chapterCount"><%= @preview&.dig(:total_chapters) %></div>
+              </div>
+              <div class="stat">
+                <div class="stat-title"><%= t("manage.chapters.add_books.preview.new_end_date_label") %></div>
+                <div class="stat-value text-2xl" data-add-books-preview-target="endDate"><%= @preview&.dig(:new_end_date)&.strftime("%B %d, %Y") %></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="flex flex-col sm:flex-row gap-3">
-        <%= submit_tag t("manage.chapters.add_books.submit"), class: "btn btn-primary w-full sm:w-auto" %>
+        <%= submit_tag t("manage.chapters.add_books.submit"), class: "btn btn-primary w-full sm:w-auto", data: { "add-books-preview-target": "submit" }, disabled: @preview.blank? %>
         <%= link_to t("common.cancel"), challenge_manage_chapters_path(@challenge), class: "btn btn-ghost w-full sm:w-auto" %>
       </div>
     <% end %>

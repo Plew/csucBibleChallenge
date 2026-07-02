@@ -199,6 +199,11 @@ de:
         submit: "Bücher hinzufügen"
         no_books_left: "Jedes Buch der Bibel ist bereits in dieser Challenge enthalten."
         success: "Hinzugefügt: %{books}."
+        preview:
+          heading: "Du bist dabei, diese Challenge zu verlängern"
+          chapters_label: "Hinzuzufügende Kapitel"
+          new_end_date_label: "Neues Enddatum"
+          prompt: "Wähle mindestens ein Buch aus, um das neue Enddatum in der Vorschau zu sehen."
     danger:
       title: "Gefahrenzone"
       heading: "Diese Challenge löschen"
