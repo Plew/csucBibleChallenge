@@ -15,6 +15,9 @@ Rails.application.configure do
   # Whitelist all GitHub.dev hosts
   config.hosts << /.*\.app\.github\.dev/
 
+  # Allow access over Tailscale (dev VPS)
+  config.hosts << "phildev-hetzner.tail61490c.ts.net"
+
   # Enable server timing.
   config.server_timing = true
 
