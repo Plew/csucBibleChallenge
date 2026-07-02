@@ -248,6 +248,12 @@ en:
       count:
         one: "%{count} chapter"
         other: "%{count} chapters"
+      add_books:
+        action: "Add books"
+        title: "Add books to this challenge"
+        submit: "Add books"
+        no_books_left: "Every book of the Bible is already in this challenge."
+        success: "Added: %{books}."
     danger:
       title: "Danger zone"
       heading: "Delete this challenge"

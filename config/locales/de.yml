@@ -193,6 +193,12 @@ de:
       count:
         one: "%{count} Kapitel"
         other: "%{count} Kapitel"
+      add_books:
+        action: "Bücher hinzufügen"
+        title: "Bücher zu dieser Challenge hinzufügen"
+        submit: "Bücher hinzufügen"
+        no_books_left: "Jedes Buch der Bibel ist bereits in dieser Challenge enthalten."
+        success: "Hinzugefügt: %{books}."
     danger:
       title: "Gefahrenzone"
       heading: "Diese Challenge löschen"

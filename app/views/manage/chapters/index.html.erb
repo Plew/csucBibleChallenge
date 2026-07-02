@@ -11,6 +11,10 @@
     <span class="text-sm text-base-content/60"><%= t("manage.chapters.count", count: @readings.size) %></span>
   </div>
 
+  <div class="mb-4">
+    <%= link_to t("manage.chapters.add_books.action"), add_books_challenge_manage_chapters_path(@challenge), class: "btn btn-primary btn-sm" %>
+  </div>
+
   <% if @readings.any? %>
     <div class="card bg-base-100 shadow-xl">
       <div class="card-body p-3">

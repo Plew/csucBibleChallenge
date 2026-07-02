@@ -1,0 +1,60 @@
+<div class="px-2 py-4">
+  <div class="text-sm breadcrumbs mb-4">
+    <ul>
+      <li><%= link_to @challenge.title, challenge_manage_dashboard_path(@challenge), class: "link link-hover" %></li>
+      <li><%= link_to t("manage.chapters.title"), challenge_manage_chapters_path(@challenge), class: "link link-hover" %></li>
+      <li><%= t("manage.chapters.add_books.title") %></li>
+    </ul>
+  </div>
+
+  <h1 class="text-2xl font-bold mb-4"><%= t("manage.chapters.add_books.title") %></h1>
+
+  <% if @errors.present? %>
+    <div class="alert alert-error mb-4">
+      <ul class="list-disc list-inside">
+        <% @errors.each do |error| %>
+          <li><%= error %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <% if @bible_books.empty? %>
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body p-4">
+        <p class="text-base-content/60"><%= t("manage.chapters.add_books.no_books_left") %></p>
+      </div>
+    </div>
+  <% else %>
+    <%= form_with url: create_add_books_challenge_manage_chapters_path(@challenge), method: :post, local: true, class: "space-y-4" do %>
+      <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+          <h3 class="text-lg font-semibold mb-3"><%= t("challenge_form.old_testament") %></h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3 mb-6">
+            <% @bible_books.select { |book| book[:testament] == "old" }.each do |book| %>
+              <label class="flex items-center cursor-pointer">
+                <input type="checkbox" name="selected_books[]" value="<%= book[:number] %>" class="checkbox checkbox-primary mr-2">
+                <span class="text-sm"><%= book[:name] %> (<%= book[:chapters] %>)</span>
+              </label>
+            <% end %>
+          </div>
+
+          <h3 class="text-lg font-semibold mb-3"><%= t("challenge_form.new_testament") %></h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
+            <% @bible_books.select { |book| book[:testament] == "new" }.each do |book| %>
+              <label class="flex items-center cursor-pointer">
+                <input type="checkbox" name="selected_books[]" value="<%= book[:number] %>" class="checkbox checkbox-primary mr-2">
+                <span class="text-sm"><%= book[:name] %> (<%= book[:chapters] %>)</span>
+              </label>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-3">
+        <%= submit_tag t("manage.chapters.add_books.submit"), class: "btn btn-primary w-full sm:w-auto" %>
+        <%= link_to t("common.cancel"), challenge_manage_chapters_path(@challenge), class: "btn btn-ghost w-full sm:w-auto" %>
+      </div>
+    <% end %>
+  <% end %>
+</div>

@@ -51,4 +51,78 @@ RSpec.describe "Manage::Chapters", type: :request do
       expect(response).to redirect_to(root_path)
     end
   end
+
+  describe "GET /challenges/:challenge_id/manage/chapters/add_books" do
+    it "returns success" do
+      get add_books_challenge_manage_chapters_path(challenge)
+      expect(response).to have_http_status(:success)
+    end
+
+    it "lists books not already in the challenge, grouped by testament" do
+      create(:reading, challenge: challenge, book_number: 40, chapter_number: 1, scheduled_date: Date.current)
+
+      get add_books_challenge_manage_chapters_path(challenge)
+
+      expect(response.body).to include("Genesis")
+      expect(response.body).not_to include("Matthew")
+    end
+
+    it "denies access to non-managers" do
+      other_user = create(:user)
+      login_via_session(other_user)
+      get add_books_challenge_manage_chapters_path(challenge)
+      expect(response).to redirect_to(root_path)
+    end
+  end
+
+  describe "POST /challenges/:challenge_id/manage/chapters/add_books" do
+    before do
+      create(:reading, challenge: challenge, book_number: 40, chapter_number: 1, scheduled_date: Date.current)
+      challenge.update!(end_date: Date.current)
+    end
+
+    it "appends the selected books and redirects with a success flash" do
+      expect {
+        post create_add_books_challenge_manage_chapters_path(challenge), params: { selected_books: [ "41" ] }
+      }.to change { challenge.readings.where(book_number: 41).count }.from(0).to(16)
+
+      expect(response).to redirect_to(challenge_manage_chapters_path(challenge))
+      follow_redirect!
+      expect(response.body).to include(I18n.t("manage.chapters.add_books.success", books: "Mark"))
+    end
+
+    it "extends the challenge end_date" do
+      original_end_date = challenge.end_date
+
+      post create_add_books_challenge_manage_chapters_path(challenge), params: { selected_books: [ "41" ] }
+
+      expect(challenge.reload.end_date).to be > original_end_date
+    end
+
+    it "shows an error and persists nothing when no books are selected" do
+      expect {
+        post create_add_books_challenge_manage_chapters_path(challenge), params: { selected_books: [] }
+      }.not_to change { challenge.readings.count }
+
+      expect(response).to have_http_status(:unprocessable_content)
+    end
+
+    it "shows an error and persists nothing when a selected book is already in the challenge" do
+      expect {
+        post create_add_books_challenge_manage_chapters_path(challenge), params: { selected_books: [ "40" ] }
+      }.not_to change { challenge.readings.count }
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include("Matthew")
+    end
+
+    it "denies access to non-managers" do
+      other_user = create(:user)
+      login_via_session(other_user)
+
+      post create_add_books_challenge_manage_chapters_path(challenge), params: { selected_books: [ "41" ] }
+
+      expect(response).to redirect_to(root_path)
+    end
+  end
 end

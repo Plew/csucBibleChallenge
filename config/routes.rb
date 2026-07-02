@@ -81,7 +81,12 @@ Rails.application.routes.draw do
         post :regenerate
       end
       resources :top_readers, only: [ :index ]
-      resources :chapters, only: [ :index ]
+      resources :chapters, only: [ :index ] do
+        collection do
+          get :add_books
+          post :add_books, action: :create_add_books, as: :create_add_books
+        end
+      end
       resources :sprints, only: [ :index, :show, :new, :create, :edit, :update, :destroy ]
       resources :blog_posts, only: [ :index, :new, :create, :edit, :update, :destroy ]
       resources :users, only: [ :index, :show ] do
