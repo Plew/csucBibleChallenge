@@ -1,11 +1,13 @@
 <div class="container mx-auto">
   <% if @user_challenge %>
     <% if @show_banquet_banner %>
-      <div class="alert alert-success mb-4 mx-2" role="alert">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        <span class="text-sm"><%= t('reading.banquet_invitation') %></span>
+      <div class="px-2 mb-4">
+        <div class="alert alert-success max-w-md mx-auto" role="alert">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span class="text-sm"><%= t('reading.banquet_invitation') %></span>
+        </div>
       </div>
     <% end %>
 
