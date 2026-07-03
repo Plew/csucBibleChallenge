@@ -24,9 +24,12 @@
           <%= form.submit t("common.search"), class: "btn btn-sm btn-primary" %>
         </div>
         <div class="flex flex-wrap gap-2">
-          <% if params[:search].present? || params[:inactive_days].present? %>
+          <% if params[:search].present? || params[:inactive_days].present? || params[:completion].present? %>
             <%= link_to t("common.clear"), challenge_manage_users_path(@challenge), class: "btn btn-sm btn-outline" %>
           <% end %>
+          <%= link_to t("manage.users.completed_100"),
+                challenge_manage_users_path(@challenge, completion: 100, search: params[:search]),
+                class: "btn btn-sm #{params[:completion] == '100' ? 'btn-success' : 'btn-outline btn-success'}" %>
           <%= link_to t("manage.users.no_activity_7_days"),
                 challenge_manage_users_path(@challenge, inactive_days: 7, search: params[:search]),
                 class: "btn btn-sm #{params[:inactive_days] == '7' ? 'btn-warning' : 'btn-outline btn-warning'}" %>
@@ -41,10 +44,15 @@
   <%= form_with url: bulk_remove_from_groups_challenge_manage_users_path(@challenge), method: :post, local: true, data: { controller: "admin-users" } do |form| %>
     <div class="flex justify-between items-center mb-2">
       <p class="text-sm text-base-content/60"><%= @users.count %> <%= t("manage.users.participants") %></p>
-      <button type="submit" class="btn btn-sm btn-error" data-admin-users-target="removeBtn" style="display:none;"
-              data-action="click->admin-users#confirmRemove">
-        <%= t("manage.users.remove_checked_from_group") %>
-      </button>
+      <div class="flex items-center gap-2">
+        <%= link_to t("manage.users.export_csv"),
+              challenge_manage_users_path(@challenge, format: :csv, search: params[:search], inactive_days: params[:inactive_days], completion: params[:completion]),
+              class: "btn btn-sm btn-outline" %>
+        <button type="submit" class="btn btn-sm btn-error" data-admin-users-target="removeBtn" style="display:none;"
+                data-action="click->admin-users#confirmRemove">
+          <%= t("manage.users.remove_checked_from_group") %>
+        </button>
+      </div>
     </div>
 
     <div class="card bg-base-100 shadow-xl">

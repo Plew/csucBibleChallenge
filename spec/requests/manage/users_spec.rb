@@ -52,6 +52,44 @@ RSpec.describe "Manage::Users", type: :request do
     end
   end
 
+  describe "100% completion filter and CSV export" do
+    let(:completer) { create(:user, username: "xcompleter", email: "completer@example.com") }
+    let(:partial) { create(:user, username: "xpartial", email: "partial@example.com") }
+
+    before do
+      create(:user_challenge_enrollment, user: completer, challenge: challenge)
+      create(:user_challenge_enrollment, user: partial, challenge: challenge)
+
+      r1 = create(:reading, challenge: challenge, scheduled_date: 3.days.ago, chapter_number: 1)
+      r2 = create(:reading, challenge: challenge, scheduled_date: 2.days.ago, chapter_number: 2)
+
+      # completer finished every past-due reading; partial completed only one
+      create(:user_reading, user: completer, reading: r1, completed_on: 3.days.ago)
+      create(:user_reading, user: completer, reading: r2, completed_on: 2.days.ago)
+      create(:user_reading, user: partial, reading: r1, completed_on: 3.days.ago)
+    end
+
+    it "shows only fully caught-up users when completion=100" do
+      get challenge_manage_users_path(challenge, completion: 100)
+      expect(response.body).to include("xcompleter")
+      expect(response.body).not_to include("xpartial")
+    end
+
+    it "exports the filtered users as CSV including their email" do
+      get challenge_manage_users_path(challenge, completion: 100, format: :csv)
+      expect(response.media_type).to eq("text/csv")
+      expect(response.body).to include("Email")
+      expect(response.body).to include("completer@example.com")
+      expect(response.body).not_to include("partial@example.com")
+    end
+
+    it "exports all users as CSV when unfiltered" do
+      get challenge_manage_users_path(challenge, format: :csv)
+      expect(response.body).to include("completer@example.com")
+      expect(response.body).to include("partial@example.com")
+    end
+  end
+
   describe "GET /challenges/:challenge_id/manage/users/:id" do
     it "returns success" do
       get challenge_manage_user_path(challenge, enrolled_user)

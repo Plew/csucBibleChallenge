@@ -312,6 +312,8 @@ de:
       removed: "%{username} wurde aus der Challenge entfernt."
       not_enrolled: "Benutzer ist nicht in dieser Challenge angemeldet."
       admin_badge: "Organisator"
+      completed_100: "100% abgeschlossen"
+      export_csv: "CSV exportieren"
       promote_admin: "Zum Organisator machen"
       demote_admin: "Organisator entfernen"
       promoted: "%{username} wurde zum Organisator befördert."

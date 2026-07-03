@@ -3,20 +3,15 @@ class Manage::UsersController < Manage::BaseController
   before_action :require_challenge_creator!, only: [ :promote, :demote ]
 
   def index
-    @users = @challenge.users.includes(:user_challenge_enrollments, :groups).order("user_challenge_enrollments.created_at DESC")
+    @users = filtered_users
 
-    if params[:search].present?
-      @users = @users.where("email LIKE ? OR username LIKE ?", "%#{params[:search]}%", "%#{params[:search]}%")
-    end
-
-    if params[:inactive_days].present?
-      days = params[:inactive_days].to_i
-      cutoff_date = days.days.ago.to_date
-      active_user_ids = UserReading.joins(:reading)
-        .where(readings: { challenge_id: @challenge.id })
-        .where("user_readings.completed_on >= ?", cutoff_date)
-        .distinct.pluck(:user_id)
-      @users = @users.where.not(id: active_user_ids)
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data generate_csv(@users),
+                  filename: "challenge-#{@challenge.id}-users-#{Date.current}.csv",
+                  type: "text/csv"
+      end
     end
   end
 
@@ -103,6 +98,63 @@ class Manage::UsersController < Manage::BaseController
 
   def set_user
     @user = @challenge.users.find(params[:id])
+  end
+
+  def filtered_users
+    users = @challenge.users.includes(:user_challenge_enrollments, :groups).order("user_challenge_enrollments.created_at DESC")
+
+    if params[:search].present?
+      users = users.where("email LIKE ? OR username LIKE ?", "%#{params[:search]}%", "%#{params[:search]}%")
+    end
+
+    if params[:inactive_days].present?
+      days = params[:inactive_days].to_i
+      cutoff_date = days.days.ago.to_date
+      active_user_ids = UserReading.joins(:reading)
+        .where(readings: { challenge_id: @challenge.id })
+        .where("user_readings.completed_on >= ?", cutoff_date)
+        .distinct.pluck(:user_id)
+      users = users.where.not(id: active_user_ids)
+    end
+
+    if params[:completion] == "100"
+      users = users.where(id: fully_caught_up_user_ids)
+    end
+
+    users
+  end
+
+  # User IDs who have completed every reading scheduled before today (in the
+  # challenge's timezone) — i.e. 100% caught up. Today is excluded because it is
+  # still in progress (mirrors PerfectRecordStatistics). For a finished
+  # challenge this is everyone who completed the entire schedule.
+  def fully_caught_up_user_ids
+    today = Time.current.in_time_zone(@challenge.timezone).to_date
+    due_count = @challenge.readings.where("scheduled_date < ?", today).count
+    return [] if due_count.zero?
+
+    UserReading.joins(:reading)
+      .where(readings: { challenge_id: @challenge.id })
+      .where("readings.scheduled_date < ?", today)
+      .group(:user_id)
+      .having("COUNT(DISTINCT user_readings.reading_id) = ?", due_count)
+      .pluck(:user_id)
+  end
+
+  def generate_csv(users)
+    require "csv"
+
+    user_ids = users.map(&:id)
+    completed_counts = UserReading.joins(:reading)
+      .where(readings: { challenge_id: @challenge.id }, user_id: user_ids)
+      .group(:user_id).count
+
+    CSV.generate(headers: true) do |csv|
+      csv << [ "Username", "Email", "Readings Completed" ]
+      users.each do |user|
+        csv << [ user.username, user.email, completed_counts[user.id] || 0 ]
+      end
+    end
   end
 
   def require_challenge_creator!

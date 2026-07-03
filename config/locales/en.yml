@@ -367,6 +367,8 @@ en:
       removed: "%{username} has been removed from the challenge."
       not_enrolled: "User is not enrolled in this challenge."
       admin_badge: "Organizer"
+      completed_100: "100% Complete"
+      export_csv: "Export CSV"
       promote_admin: "Make Organizer"
       demote_admin: "Remove Organizer"
       promoted: "%{username} has been promoted to organizer."
