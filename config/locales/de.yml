@@ -758,6 +758,7 @@ de:
     no_verses: "Keine Verse für diese Lesung gefunden."
     unread: "ungelesen"
     active_readers: "lesen gerade"
+    banquet_invitation: "Herzlichen Glückwunsch! Du hast die Challenge rechtzeitig abgeschlossen und bist nun zum Festbankett eingeladen. Eine Einladung ist per E-Mail zu dir unterwegs. Bitte halte Ausschau danach und überprüfe unbedingt auch deinen Spam-Ordner."
 
   # Verse likes
   verse_likes:

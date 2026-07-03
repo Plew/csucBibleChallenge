@@ -813,6 +813,7 @@ en:
     no_verses: "No verses found for this reading."
     unread: "unread"
     active_readers: "reading now"
+    banquet_invitation: "Congratulations, you have completed the Challenge on time and you are now invited to the celebration banquet. An invitation is on its way to you via email. Please look for this and make sure to check your spam folder."
 
   # Verse likes
   verse_likes:

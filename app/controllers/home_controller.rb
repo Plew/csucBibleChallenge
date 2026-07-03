@@ -32,6 +32,9 @@ class HomeController < ApplicationController
       redirect_to challenges_path and return
     end
 
+    # Celebration banquet banner: shown to anyone who finished Challenge #9 on time
+    @show_banquet_banner = current_user.qualified_for_banquet?
+
     if @user_challenge
       today_in_challenge_tz = Time.current.in_time_zone(@user_challenge.timezone).to_date
 
