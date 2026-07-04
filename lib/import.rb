@@ -5,7 +5,9 @@ class Import
   FILE_PATHS = [
     Rails.root.join("db", "texts", "lubbock_texts.csv"),
     Rails.root.join("db", "texts", "elberfelder_2006.csv"),
-    Rails.root.join("db", "texts", "schlachter_2000.csv")
+    Rails.root.join("db", "texts", "schlachter_2000.csv"),
+    Rails.root.join("db", "texts", "esv_ot.csv"),
+    Rails.root.join("db", "texts", "nasb_ot.csv")
   ]
 
   # Map book names to book numbers based on ApplicationHelper.book_number_to_name
@@ -41,16 +43,16 @@ class Import
     "1 John" => 62, "2 John" => 63, "3 John" => 64
   }.freeze
 
-  def self.call
-    new.call
+  def self.call(file_paths = FILE_PATHS)
+    new.call(file_paths)
   end
 
-  def call
+  def call(file_paths = FILE_PATHS)
     verses = []
     total_line_count = 0
     total_skipped_count = 0
 
-    FILE_PATHS.each do |file_path|
+    file_paths.each do |file_path|
       next unless File.exist?(file_path)
 
       line_count = 0
