@@ -7,7 +7,8 @@ class Import
     Rails.root.join("db", "texts", "elberfelder_2006.csv"),
     Rails.root.join("db", "texts", "schlachter_2000.csv"),
     Rails.root.join("db", "texts", "esv_ot.csv"),
-    Rails.root.join("db", "texts", "nasb_ot.csv")
+    Rails.root.join("db", "texts", "nasb_ot.csv"),
+    Rails.root.join("db", "texts", "asv_ot.csv")
   ]
 
   # Map book names to book numbers based on ApplicationHelper.book_number_to_name
