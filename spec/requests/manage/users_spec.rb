@@ -90,6 +90,34 @@ RSpec.describe "Manage::Users", type: :request do
     end
   end
 
+  describe "100% completion filter for Challenge #9 (pinned cutoff)" do
+    let(:challenge) { create(:challenge, id: User::BANQUET_CHALLENGE_ID, creator: owner) }
+    let(:finisher) { create(:user, username: "xfinisher") }
+    let(:straggler) { create(:user, username: "xstraggler") }
+
+    before do
+      create(:user_challenge_enrollment, user: finisher, challenge: challenge)
+      create(:user_challenge_enrollment, user: straggler, challenge: challenge)
+
+      r1 = create(:reading, challenge: challenge, scheduled_date: User::BANQUET_CUTOFF_DATE - 1.day, chapter_number: 1)
+      r2 = create(:reading, challenge: challenge, scheduled_date: User::BANQUET_CUTOFF_DATE, chapter_number: 2)
+      # a reading added after the original schedule must not affect the stat
+      create(:reading, challenge: challenge, scheduled_date: User::BANQUET_CUTOFF_DATE + 10.days, chapter_number: 3)
+
+      # finisher completed everything through the cutoff (including cutoff day);
+      # straggler missed the cutoff-day reading
+      create(:user_reading, user: finisher, reading: r1, completed_on: r1.scheduled_date)
+      create(:user_reading, user: finisher, reading: r2, completed_on: r2.scheduled_date)
+      create(:user_reading, user: straggler, reading: r1, completed_on: r1.scheduled_date)
+    end
+
+    it "counts readings up to and including the cutoff, ignoring readings added after it" do
+      get challenge_manage_users_path(challenge, completion: 100)
+      expect(response.body).to include("xfinisher")
+      expect(response.body).not_to include("xstraggler")
+    end
+  end
+
   describe "GET /challenges/:challenge_id/manage/users/:id" do
     it "returns success" do
       get challenge_manage_user_path(challenge, enrolled_user)

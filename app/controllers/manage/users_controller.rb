@@ -124,21 +124,30 @@ class Manage::UsersController < Manage::BaseController
     users
   end
 
-  # User IDs who have completed every reading scheduled before today (in the
-  # challenge's timezone) — i.e. 100% caught up. Today is excluded because it is
-  # still in progress (mirrors PerfectRecordStatistics). For a finished
-  # challenge this is everyone who completed the entire schedule.
+  # User IDs who have completed every reading scheduled on or before the
+  # completion cutoff date — i.e. 100% complete through that date.
   def fully_caught_up_user_ids
-    today = Time.current.in_time_zone(@challenge.timezone).to_date
-    due_count = @challenge.readings.where("scheduled_date < ?", today).count
+    cutoff = completion_cutoff_date
+    due_count = @challenge.readings.where("scheduled_date <= ?", cutoff).count
     return [] if due_count.zero?
 
     UserReading.joins(:reading)
       .where(readings: { challenge_id: @challenge.id })
-      .where("readings.scheduled_date < ?", today)
+      .where("readings.scheduled_date <= ?", cutoff)
       .group(:user_id)
       .having("COUNT(DISTINCT user_readings.reading_id) = ?", due_count)
       .pluck(:user_id)
+  end
+
+  # Challenge #9 is pinned to the end of its original schedule (2026-07-03,
+  # the same rule as the banquet qualification), so readings added after that
+  # date never change who counts as 100% complete. Other challenges use
+  # yesterday in the challenge's timezone — today is excluded because it is
+  # still in progress (mirrors PerfectRecordStatistics).
+  def completion_cutoff_date
+    return User::BANQUET_CUTOFF_DATE if @challenge.id == User::BANQUET_CHALLENGE_ID
+
+    Time.current.in_time_zone(@challenge.timezone).to_date - 1
   end
 
   def generate_csv(users)
