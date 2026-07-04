@@ -92,7 +92,11 @@ RSpec.describe SevenDayWindowStatistics, type: :service do
       let!(:enrollment) { create(:user_challenge_enrollment, user: user, challenge: challenge) }
 
       let!(:seven_day_readings) do
-        dates = (Date.current - 6..Date.current).to_a
+        # Use the challenge timezone's current date: around midnight UTC,
+        # Date.current is a day ahead of Central time, which shifts the
+        # service's 7-day window and made this spec flaky in nighttime CI runs.
+        current_date_in_tz = Time.current.in_time_zone(timezone).to_date
+        dates = (current_date_in_tz - 6..current_date_in_tz).to_a
         dates.map { |date| create(:reading, challenge: challenge, scheduled_date: date) }
       end
 
