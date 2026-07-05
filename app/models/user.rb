@@ -1,9 +1,10 @@
 class User < ApplicationRecord
   VALID_VERSIONS = [ "ASV", "ELB2006", "ESV", "KJV", "NASB", "NKJV", "RCV", "SCHL2000" ].freeze
 
-  # Banquet invitation banner for Challenge #9 ("CSM Bible Challenge (NT)").
-  # Qualification is measured against readings scheduled on or before the cutoff
-  # date, so chapters added after the cutoff never affect who qualifies.
+  # Challenge #9 ("CSM Bible Challenge (NT)") is pinned to its original end date
+  # so that readings added after the cutoff never change who counts as 100%
+  # complete. Used by the Manage users completion filter (see
+  # Manage::UsersController#completion_cutoff_date).
   BANQUET_CHALLENGE_ID = 9
   BANQUET_CUTOFF_DATE = Date.new(2026, 7, 3)
 
@@ -97,23 +98,6 @@ class User < ApplicationRecord
     created_ids = created_challenges.pluck(:id)
     organizer_ids = user_challenge_enrollments.where(role: "organizer").pluck(:challenge_id)
     Challenge.where(id: (created_ids + organizer_ids).uniq).order(:name)
-  end
-
-  # True once the user has completed every Challenge #9 reading scheduled on or
-  # before BANQUET_CUTOFF_DATE. Drives the celebration-banquet banner on the
-  # reading screen. Readings scheduled after the cutoff are ignored.
-  def qualified_for_banquet?
-    challenge = Challenge.find_by(id: BANQUET_CHALLENGE_ID)
-    return false unless challenge
-
-    required = challenge.readings.where("scheduled_date <= ?", BANQUET_CUTOFF_DATE).count
-    return false if required.zero?
-
-    completed = user_readings.joins(:reading)
-                             .where(readings: { challenge_id: challenge.id })
-                             .where("readings.scheduled_date <= ?", BANQUET_CUTOFF_DATE)
-                             .count
-    completed == required
   end
 
   private

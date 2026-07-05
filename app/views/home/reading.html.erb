@@ -1,16 +1,5 @@
 <div class="container mx-auto">
   <% if @user_challenge %>
-    <% if @show_banquet_banner %>
-      <div class="px-2 mb-4">
-        <div class="alert alert-success max-w-md mx-auto" role="alert">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span class="text-sm"><%= t('reading.banquet_invitation') %></span>
-        </div>
-      </div>
-    <% end %>
-
     <div class="flex items-center justify-between mb-4 px-2">
       <!-- Previous Day Arrow -->
       <a href="/reading?date=<%= @previous_date %>" class="flex-shrink-0 p-2 hover:bg-base-200 rounded-full transition-colors">
