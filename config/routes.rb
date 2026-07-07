@@ -170,15 +170,14 @@ Rails.application.routes.draw do
     end
   end
 
+  # Read-only challenge data API, authenticated with a per-challenge API key
+  # (see Api::ApiKeyAuthentication). Endpoints are described by /api/v1/meta.
   namespace :api do
     namespace :v1 do
-      resources :users, only: [ :create ]
-      resources :challenges, only: [ :index, :show, :create ] do
+      resources :challenges, only: [] do
         get :report, on: :member, to: "challenge_reports#show"
         resources :participants, only: [ :show ], controller: "challenge_participants"
-        resources :enrollments, only: [ :create, :update ], controller: "challenge_enrollments"
-        resources :readings, only: [ :index, :create ]
-        resources :groups, only: [ :index, :create ] do
+        resources :groups, only: [] do
           get :report, on: :member, to: "group_reports#show"
         end
         resources :sprints, only: [ :index, :show ], controller: "challenge_sprints"
