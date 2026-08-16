@@ -1,8 +1,0 @@
----
-description: 
-globs: 
-alwaysApply: false
----
-# Automatic Commit Messages
-
-When the user says "make a commit", analyze the staged changes and generate a concise, descriptive commit message. Do not ask the user to provide a commit message.

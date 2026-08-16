@@ -1,8 +1,0 @@
----
-description:
-globs:
-alwaysApply: false
----
-# Run Specs
-
-You should run specs any time you write them.
