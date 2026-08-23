@@ -3,8 +3,8 @@ name: CI
 on:
   pull_request:
   push:
-    branches: [ main ]
-    tags: [ "v*" ]
+    branches: [main]
+    tags: ["v*"]
 
 jobs:
   scan_ruby:
@@ -113,7 +113,7 @@ jobs:
     # Production ships only when a version tag (v*) is pushed and CI passes.
     # Pushing to main runs CI but does NOT deploy — main is a preview/integration branch.
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-    needs: [ scan_ruby, scan_js, lint, test ]
+    needs: [scan_ruby, scan_js, lint, test]
     timeout-minutes: 20
 
     steps:
@@ -138,7 +138,7 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Add server to known_hosts
-        run: ssh-keyscan 178.156.131.96 >> ~/.ssh/known_hosts
+        run: ssh-keyscan 64.225.50.86 >> ~/.ssh/known_hosts
 
       - name: Deploy with Kamal
         env:
