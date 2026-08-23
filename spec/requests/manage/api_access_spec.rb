@@ -40,7 +40,7 @@ RSpec.describe "Manage::ApiAccess", type: :request do
         post regenerate_challenge_manage_api_access_path(challenge)
       }.to change { challenge.reload.api_key }.from(nil).to(be_present)
 
-      expect(challenge.reload.api_key).to start_with("andgodsaidbc_")
+      expect(challenge.reload.api_key).to start_with("andgodsaid_")
       expect(response).to redirect_to(challenge_manage_api_access_path(challenge))
     end
 

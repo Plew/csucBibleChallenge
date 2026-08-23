@@ -15,7 +15,7 @@ RSpec.describe "Api::V1::ChallengeReports", type: :request do
     end
 
     it "returns 401 with an invalid key" do
-      get report_api_v1_challenge_path(challenge), headers: auth_header("andgodsaidbc_not_a_real_key")
+      get report_api_v1_challenge_path(challenge), headers: auth_header("andgodsaid_not_a_real_key")
       expect(response).to have_http_status(:unauthorized)
     end
 
