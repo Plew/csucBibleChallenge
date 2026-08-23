@@ -7,7 +7,7 @@ class UserMailer < ApplicationMailer
   def password_reset(user, token)
     @user = user
     @token = token
-    mail(to: user.email, subject: "Password Reset - CSM Bible Challenge")
+    mail(to: user.email, subject: "Password Reset - And God Said Bible Challenge")
   end
 
   def daily_reading(user, reading, login_token)

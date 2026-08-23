@@ -1026,8 +1026,8 @@ en:
   # FAQ
   faq:
     title: "Frequently Asked Questions"
-    what_is_csm: "What is CSM Bible Challenge?"
-    what_is_csm_answer: "CSM Bible Challenge is a Bible reading challenge platform that helps you track your progress through organized reading plans and group participation."
+    what_is_andgodsaid: "What is And God Said Bible Challenges?"
+    what_is_andgodsaid_answer: "And God Said Bible Challenges is a Bible reading challenge platform that helps you track your progress through organized reading plans and group participation."
     how_to_join: "How do I join a challenge?"
     how_to_join_answer: "Browse available challenges on the challenges page and click 'Join' on any challenge that interests you. You can participate individually or join a group within the challenge."
     track_progress: "Can I track my reading progress?"
@@ -1096,9 +1096,9 @@ en:
 
   # About
   about:
-    title: "About CSM Bible Challenge"
-    what_is_title: "What is CSM Bible Challenge?"
-    what_is_description: "CSM Bible Challenge is a platform for daily Bible reading with friends. Join a reading challenge, track your progress, and encourage one another as you read through the Bible together."
+    title: "About And God Said Bible Challenge"
+    what_is_title: "What is And God Said Bible Challenge?"
+    what_is_description: "And God Said Bible Challenge is a platform for daily Bible reading with friends. Join a reading challenge, track your progress, and encourage one another as you read through the Bible together."
     how_it_works_title: "How it works"
     how_it_works_description: "Join a challenge, receive a daily email with your assigned chapter, read it, and mark it complete. Each day brings a new chapter, keeping everyone on the same page."
     groups_title: "Groups"

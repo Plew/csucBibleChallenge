@@ -1,7 +1,7 @@
 class User < ApplicationRecord
   VALID_VERSIONS = [ "ASV", "ELB2006", "ESV", "KJV", "NASB", "NKJV", "RCV", "SCHL2000" ].freeze
 
-  # Challenge #9 ("CSM Bible Challenge (NT)") is pinned to its original end date
+  # Challenge #9 ("And God Said Bible Challenge (NT)") is pinned to its original end date
   # so that readings added after the cutoff never change who counts as 100%
   # complete. Used by the Manage users completion filter (see
   # Manage::UsersController#completion_cutoff_date).

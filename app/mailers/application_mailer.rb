@@ -1,5 +1,5 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: "noreply@mail.csmbiblechallenge.com"
+  default from: "noreply@andgodsaid.org"
   layout "mailer"
 
   helper_method :unsubscribe_url_for

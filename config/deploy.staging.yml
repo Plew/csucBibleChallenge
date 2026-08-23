@@ -4,13 +4,13 @@
 # Override proxy hosts for staging
 proxy:
   hosts:
-    - staging.csmbiblechallenge.com
+    - staging.andgodsaid.org
 
 # Override environment variables for staging
 env:
   clear:
     RAILS_ENV: staging
-    APP_HOST: staging.csmbiblechallenge.com
+    APP_HOST: staging.andgodsaid.org
     JOB_CONCURRENCY: 1
     RAILS_MAX_THREADS: 5
   secret:

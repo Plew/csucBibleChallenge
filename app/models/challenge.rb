@@ -45,7 +45,7 @@ class Challenge < ApplicationRecord
   # Read-only API key used by challenge organizers to query challenge data via
   # the Api::V1::ChallengeReportsController. Generated on demand (nil until then).
   def self.generate_api_key
-    "csmbc_#{SecureRandom.urlsafe_base64(32)}"
+    "andgodsaid_#{SecureRandom.urlsafe_base64(32)}"
   end
 
   def regenerate_api_key!

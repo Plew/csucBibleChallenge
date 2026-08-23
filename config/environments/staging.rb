@@ -74,5 +74,5 @@ Rails.application.configure do
 
   # Disable email delivery in staging to prevent accidental emails
   config.action_mailer.perform_deliveries = false
-  config.action_mailer.default_url_options = { host: "staging.csmbiblechallenge.com" }
+  config.action_mailer.default_url_options = { host: "staging.andgodsaid.org" }
 end

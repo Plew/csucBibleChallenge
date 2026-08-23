@@ -14,7 +14,7 @@ RSpec.describe "Api::V1::Meta", type: :request do
     end
 
     it "returns 401 with an invalid key" do
-      get api_v1_meta_path, headers: auth_header("csmbc_not_real")
+      get api_v1_meta_path, headers: auth_header("andgodsaidbc_not_real")
       expect(response).to have_http_status(:unauthorized)
     end
 

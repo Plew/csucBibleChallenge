@@ -1,13 +1,16 @@
 # Name of your application. Used to uniquely configure containers.
-service: reverse
+service: andgodsaid
 
 # Name of the container image.
-image: it1189/reverse
+image: plewwatson/andgodsaid
 
 # Deploy to these servers.
 servers:
   web:
-    - 178.156.131.96
+    - 64.225.50.86
+
+ssh:
+  user: deploy
 
 # Enable SSL auto certification via Let's Encrypt (and allow for multiple apps on one server).
 # If using something like Cloudflare, it is recommended to set encryption mode
@@ -15,9 +18,8 @@ servers:
 proxy:
   ssl: true
   hosts:
-    - www.hiegra.com
-    - www.csmbiblechallenge.com
-    - csmbiblechallenge.com
+    - www.andgodsaid.org
+    - andgodsaid.org
   # kamal-proxy connects to your container over port 80, use `app_port` to specify a different port.
   app_port: 3000
   healthcheck:
@@ -27,9 +29,8 @@ proxy:
 
 # Credentials for your image host.
 registry:
-  # Specify the registry server, if you're not using Docker Hub
-  # server: registry.digitalocean.com / ghcr.io / ...
-  username: it1189
+  server: ghcr.io
+  username: plewwatson
 
   # Always use an access token rather than real password (pulled from .kamal/secrets).
   password:
@@ -44,7 +45,7 @@ builder:
 env:
   clear:
     RAILS_ENV: production
-    APP_HOST: csmbiblechallenge.com
+    APP_HOST: andgodsaid.org
     JOB_CONCURRENCY: 1
     RAILS_MAX_THREADS: 5
     SOLID_QUEUE_IN_PUMA: true
@@ -65,9 +66,9 @@ env:
 # Use a persistent storage volume.
 
 volumes:
-  # host path:container path
-  - "/db/reverse:/rails/sqlite"
-  - "/storage/reverse:/rails/storage"
+  - "andgodsaid_db:/rails/sqlite"
+  - "andgodsaid_storage:/rails/storage"
+  - "/home/deploy/texts:/rails/db/texts"
 # Bridge fingerprinted assets, like JS and CSS, between versions to avoid
 # hitting 404 on in-flight requests. Combines all files from new and old
 # version inside the asset_path.

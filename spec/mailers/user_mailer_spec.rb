@@ -11,9 +11,9 @@ RSpec.describe UserMailer, type: :mailer do
     let(:mail) { UserMailer.password_reset(user, token) }
 
     it "renders the headers" do
-      expect(mail.subject).to eq("Password Reset - CSM Bible Challenge")
+      expect(mail.subject).to eq("Password Reset - And God Said Bible Challenge")
       expect(mail.to).to eq([ "to@example.org" ])
-      expect(mail.from).to eq([ "noreply@mail.csmbiblechallenge.com" ])
+      expect(mail.from).to eq([ "noreply@andgodsaid.org" ])
     end
 
     it "renders the body" do
@@ -31,7 +31,7 @@ RSpec.describe UserMailer, type: :mailer do
     it "renders the headers" do
       expect(mail.subject).to eq("Bible Reading: Romans 7")
       expect(mail.to).to eq([ "reader@example.org" ])
-      expect(mail.from).to eq([ "noreply@mail.csmbiblechallenge.com" ])
+      expect(mail.from).to eq([ "noreply@andgodsaid.org" ])
     end
 
     it "includes the user's name in the body" do

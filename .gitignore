@@ -58,3 +58,7 @@
 db/fixtures/de_schlachter.xml
 db/texts/
 .kamal/secrets-common
+
+# Ignore key files for decrypting credentials and more.
+/config/*.key
+
