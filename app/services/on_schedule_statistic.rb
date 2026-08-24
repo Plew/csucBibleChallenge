@@ -40,7 +40,7 @@ class OnScheduleStatistic
       if on_schedule_count == total_scheduled
         percentages[result.id] = 100
       else
-        percentages[result.id] = (on_schedule_count.to_f / total_scheduled * 100).floor
+        percentages[result.id] = (on_schedule_count.to_f / total_scheduled * 100).round(2)
       end
     end
 
@@ -62,7 +62,7 @@ class OnScheduleStatistic
     scheduled = scheduled_readings_to_date
     return 100 if on_schedule == scheduled
 
-    (on_schedule.to_f / scheduled * 100).floor
+    (on_schedule.to_f / scheduled * 100).round(2)
   end
 
   # Count of readings completed on their scheduled date (only for readings scheduled up to current date)
