@@ -3,6 +3,15 @@
 require 'rails_helper'
 
 RSpec.describe OnScheduleStatistic, type: :service do
+  include ActiveSupport::Testing::TimeHelpers
+
+  around do |example|
+    # Freeze time to noon to avoid UTC midnight boundary mismatches
+    travel_to(Time.current.middle_of_day) do
+      example.run
+    end
+  end
+  
   let(:challenge) { create(:challenge, start_date: Date.current - 10, end_date: Date.current + 10, timezone: 'Eastern Time (US & Canada)') }
   let(:user) { create(:user) }
   let!(:enrollment) { create(:user_challenge_enrollment, user: user, challenge: challenge) }
