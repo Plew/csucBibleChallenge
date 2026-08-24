@@ -2,7 +2,7 @@
 service: andgodsaid
 
 # Name of the container image.
-image: plewwatson/csucbiblechallenge
+image: plew/csucbiblechallenge
 
 # Deploy to these servers.
 servers:
