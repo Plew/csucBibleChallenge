@@ -11,7 +11,7 @@ RSpec.describe OnScheduleStatistic, type: :service do
       example.run
     end
   end
-  
+
   let(:challenge) { create(:challenge, start_date: Date.current - 10, end_date: Date.current + 10, timezone: 'Eastern Time (US & Canada)') }
   let(:user) { create(:user) }
   let!(:enrollment) { create(:user_challenge_enrollment, user: user, challenge: challenge) }
