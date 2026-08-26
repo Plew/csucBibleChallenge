@@ -12,17 +12,9 @@ export default class extends Controller {
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
     const isStandalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true
 
-    // On iOS outside standalone mode, Web Push is not supported by Apple
     if (isIOS && !isStandalone) {
-      if (this.hasIosNoticeTarget) {
-        this.iosNoticeTarget.classList.remove("hidden")
-      }
-      if (this.hasToggleTarget) {
-        this.toggleTarget.disabled = true
-      }
-      if (this.hasTestButtonTarget) {
-        this.testButtonTarget.classList.add("hidden")
-      }
+      if (this.hasIosNoticeTarget) this.iosNoticeTarget.classList.remove("hidden")
+      if (this.hasToggleTarget) this.toggleTarget.disabled = true
       return
     }
 
@@ -30,9 +22,7 @@ export default class extends Controller {
       if (this.hasStatusMessageTarget) {
         this.statusMessageTarget.textContent = "Push notifications are not supported on this browser."
       }
-      if (this.hasToggleTarget) {
-        this.toggleTarget.disabled = true
-      }
+      if (this.hasToggleTarget) this.toggleTarget.disabled = true
       return
     }
 
@@ -40,14 +30,11 @@ export default class extends Controller {
       const registration = await navigator.serviceWorker.ready
       const subscription = await registration.pushManager.getSubscription()
 
-      if (subscription) {
-        if (this.hasToggleTarget) {
-          this.toggleTarget.checked = true
-        }
-        await this.syncSubscription(subscription)
+      if (subscription && this.hasToggleTarget) {
+        this.toggleTarget.checked = true
       }
     } catch (e) {
-      console.warn("Could not check push subscription:", e)
+      console.warn("Push subscription check error:", e)
     }
   }
 
@@ -59,60 +46,22 @@ export default class extends Controller {
     }
   }
 
-  async syncSubscription(subscription) {
-    try {
-      const json = subscription.toJSON()
-      const csrfMeta = document.querySelector('meta[name="csrf-token"]')
-      const csrfToken = csrfMeta ? csrfMeta.content : ""
-
-      await fetch("/push_subscriptions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRF-Token": csrfToken
-        },
-        body: JSON.stringify({
-          endpoint: json.endpoint,
-          p256dh_key: json.keys?.p256dh,
-          auth_key: json.keys?.auth
-        })
-      })
-    } catch (e) {
-      console.warn("Failed to sync subscription with server:", e)
-    }
-  }
-
   async subscribe() {
     try {
-      if (this.hasStatusMessageTarget) {
-        this.statusMessageTarget.textContent = "Requesting notification permission..."
-      }
-
       const permission = await Notification.requestPermission()
       if (permission !== "granted") {
         if (this.hasToggleTarget) this.toggleTarget.checked = false
         if (this.hasStatusMessageTarget) {
-          this.statusMessageTarget.textContent = "Notification permission was denied in browser/device settings."
+          this.statusMessageTarget.textContent = "Notification permission was denied."
         }
         return null
       }
 
       const registration = await navigator.serviceWorker.ready
-      const vapidMeta = document.querySelector('meta[name="vapid-public-key"]')
-      const vapidPublicKey = vapidMeta ? vapidMeta.content : ""
+      const vapidPublicKey = document.querySelector('meta[name="vapid-public-key"]')?.content
 
       if (!vapidPublicKey) {
-        throw new Error("VAPID public key not configured on server.")
-      }
-
-      // Unsubscribe any previous/stale subscription to guarantee key alignment
-      const existingSubscription = await registration.pushManager.getSubscription()
-      if (existingSubscription) {
-        try {
-          await existingSubscription.unsubscribe()
-        } catch (unsubErr) {
-          console.warn("Could not unsubscribe previous subscription:", unsubErr)
-        }
+        throw new Error("VAPID public key not found on page.")
       }
 
       const subscription = await registration.pushManager.subscribe({
@@ -120,24 +69,34 @@ export default class extends Controller {
         applicationServerKey: this.urlBase64ToUint8Array(vapidPublicKey)
       })
 
-      await this.syncSubscription(subscription)
+      const json = subscription.toJSON()
+      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content
+
+      await fetch("/push_subscriptions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-Token": csrfToken || ""
+        },
+        body: JSON.stringify({
+          endpoint: json.endpoint,
+          p256dh_key: json.keys?.p256dh,
+          auth_key: json.keys?.auth
+        })
+      })
 
       if (this.hasToggleTarget) this.toggleTarget.checked = true
       if (this.hasStatusMessageTarget) {
-        this.statusMessageTarget.textContent = "Notifications enabled successfully!"
-        setTimeout(() => {
-          if (this.hasStatusMessageTarget && this.statusMessageTarget.textContent.includes("successfully")) {
-            this.statusMessageTarget.textContent = ""
-          }
-        }, 4000)
+        this.statusMessageTarget.textContent = "Notifications enabled!"
+        setTimeout(() => { if (this.hasStatusMessageTarget) this.statusMessageTarget.textContent = "" }, 3000)
       }
 
       return subscription
     } catch (error) {
-      console.error("Failed to subscribe to push notifications:", error)
+      console.error("Subscribe error:", error)
       if (this.hasToggleTarget) this.toggleTarget.checked = false
       if (this.hasStatusMessageTarget) {
-        this.statusMessageTarget.textContent = "Error: " + error.message
+        this.statusMessageTarget.textContent = error.message
       }
       return null
     }
@@ -152,14 +111,13 @@ export default class extends Controller {
         const endpoint = subscription.endpoint
         await subscription.unsubscribe()
 
-        const csrfMeta = document.querySelector('meta[name="csrf-token"]')
-        const csrfToken = csrfMeta ? csrfMeta.content : ""
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content
 
         await fetch("/push_subscriptions", {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
-            "X-CSRF-Token": csrfToken
+            "X-CSRF-Token": csrfToken || ""
           },
           body: JSON.stringify({ endpoint: endpoint })
         })
@@ -168,49 +126,27 @@ export default class extends Controller {
       if (this.hasToggleTarget) this.toggleTarget.checked = false
       if (this.hasStatusMessageTarget) {
         this.statusMessageTarget.textContent = "Notifications disabled."
-        setTimeout(() => {
-          if (this.hasStatusMessageTarget && this.statusMessageTarget.textContent.includes("disabled")) {
-            this.statusMessageTarget.textContent = ""
-          }
-        }, 3000)
+        setTimeout(() => { if (this.hasStatusMessageTarget) this.statusMessageTarget.textContent = "" }, 3000)
       }
     } catch (error) {
-      console.error("Failed to unsubscribe:", error)
+      console.error("Unsubscribe error:", error)
     }
   }
 
   async sendTestPush() {
     if (this.hasTestButtonTarget) {
       this.testButtonTarget.disabled = true
-      this.testButtonTarget.textContent = "Sending test..."
-    }
-
-    if (this.hasStatusMessageTarget) {
-      this.statusMessageTarget.textContent = "Verifying device subscription..."
+      this.testButtonTarget.textContent = "Sending..."
     }
 
     try {
-      const registration = await navigator.serviceWorker.ready
-      let subscription = await registration.pushManager.getSubscription()
-
-      // If not yet subscribed, subscribe fresh
-      if (!subscription) {
-        subscription = await this.subscribe()
-        if (!subscription) {
-          throw new Error("Could not subscribe device for notifications.")
-        }
-      } else {
-        await this.syncSubscription(subscription)
-      }
-
-      const csrfMeta = document.querySelector('meta[name="csrf-token"]')
-      const csrfToken = csrfMeta ? csrfMeta.content : ""
+      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content
 
       const response = await fetch("/push_subscriptions/test", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-CSRF-Token": csrfToken
+          "X-CSRF-Token": csrfToken || ""
         }
       })
 
@@ -218,41 +154,16 @@ export default class extends Controller {
 
       if (response.ok && data.success) {
         if (this.hasStatusMessageTarget) {
-          this.statusMessageTarget.textContent = "🔔 Test notification sent! Check your device notification bar."
+          this.statusMessageTarget.textContent = "🔔 Test push notification sent!"
         }
       } else {
-        // If FCM / WNS rejected stale keys (403 invalid JWT / 401 Unauthorized), auto-renew
-        const errText = data.error || ""
-        if (errText.includes("403") || errText.includes("401") || errText.includes("JWT") || errText.includes("re-subscribe") || errText.includes("expired")) {
-          if (this.hasStatusMessageTarget) {
-            this.statusMessageTarget.textContent = "Renewing subscription credentials with server..."
-          }
-          await this.subscribe()
-
-          const retryResp = await fetch("/push_subscriptions/test", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "X-CSRF-Token": csrfToken
-            }
-          })
-          const retryData = await retryResp.json()
-          if (retryResp.ok && retryData.success) {
-            if (this.hasStatusMessageTarget) {
-              this.statusMessageTarget.textContent = "🔔 Test notification sent! Check your notification bar."
-            }
-            return
-          }
-        }
-
         if (this.hasStatusMessageTarget) {
-          this.statusMessageTarget.textContent = "⚠️ " + (data.error || "Failed to deliver test notification.")
+          this.statusMessageTarget.textContent = data.error || "Failed to send test push."
         }
       }
     } catch (error) {
-      console.error("Error sending test push:", error)
       if (this.hasStatusMessageTarget) {
-        this.statusMessageTarget.textContent = "⚠️ " + error.message
+        this.statusMessageTarget.textContent = error.message
       }
     } finally {
       if (this.hasTestButtonTarget) {

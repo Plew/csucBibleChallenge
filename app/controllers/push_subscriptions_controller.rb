@@ -12,9 +12,9 @@ class PushSubscriptionsController < ApplicationController
     subscription.auth_key = auth_key
 
     if subscription.save
-      render json: { success: true, id: subscription.id }, status: :ok
+      head :ok
     else
-      render json: { success: false, errors: subscription.errors.full_messages }, status: :unprocessable_entity
+      head :unprocessable_entity
     end
   end
 
@@ -28,19 +28,17 @@ class PushSubscriptionsController < ApplicationController
   def test
     subscriptions = current_user.push_subscriptions
     if subscriptions.empty?
-      render json: { success: false, error: "No active push subscriptions found on this account. Please toggle notifications off and on to re-subscribe." }, status: :unprocessable_entity
+      render json: { success: false, error: "No active push subscriptions found on this account." }, status: :unprocessable_entity
       return
     end
 
     vapid = {
       subject: Rails.application.config.webpush.vapid_subject || "mailto:admin@andgodsaid.org",
-      public_key: Rails.application.config.webpush.vapid_public_key || ENV["VAPID_PUBLIC_KEY"],
-      private_key: Rails.application.config.webpush.vapid_private_key || ENV["VAPID_PRIVATE_KEY"]
+      public_key: Rails.application.config.webpush.vapid_public_key,
+      private_key: Rails.application.config.webpush.vapid_private_key
     }
 
     sent_count = 0
-    errors = []
-
     subscriptions.find_each do |subscription|
       begin
         WebPush.payload_send(
@@ -61,26 +59,15 @@ class PushSubscriptionsController < ApplicationController
         sent_count += 1
       rescue WebPush::ExpiredSubscription
         subscription.destroy
-        errors << "Subscription expired"
       rescue WebPush::Error => e
-        # Prune dead/invalid subscriptions (401 Unauthorized, 403 Forbidden, 404 Not Found, 410 Gone)
-        if e.message.include?("401") || e.message.include?("403") || e.message.include?("404") || e.message.include?("410")
-          subscription.destroy
-          Rails.logger.warn("Destroyed invalid push subscription #{subscription.id}: #{e.message}")
-        else
-          Rails.logger.warn("Web push test failed for subscription #{subscription.id}: #{e.message}")
-        end
-        errors << e.message
-      rescue => e
-        Rails.logger.error("Web push unexpected error: #{e.message}")
-        errors << e.message
+        Rails.logger.warn("Web push test failed for subscription #{subscription.id}: #{e.message}")
       end
     end
 
     if sent_count > 0
       render json: { success: true, sent_count: sent_count }
     else
-      render json: { success: false, error: errors.join(", ").presence || "Failed to deliver push notification. Please toggle notifications off and on." }, status: :unprocessable_entity
+      render json: { success: false, error: "Failed to deliver push notification." }, status: :unprocessable_entity
     end
   end
 end
