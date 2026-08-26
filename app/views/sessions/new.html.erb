@@ -18,7 +18,7 @@
       </div>
     </div>
 
-    <%= form_with(url: user_session_path, scope: :session, local: true, html: { class: "space-y-5" }) do |f| %>
+    <%= form_with(url: user_session_path, scope: :session, local: true, html: { class: "space-y-5", autocomplete: "on" }) do |f| %>
       <div class="space-y-4">
         <!-- Email Input with Gold Icon -->
         <div>
@@ -30,7 +30,7 @@
                 <path d="M22.5 6.908V6.75a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3v.158l9.714 5.978a1.5 1.5 0 0 0 1.572 0L22.5 6.908Z" />
               </svg>
             </div>
-            <%= f.text_field :email, value: @email, class: "input input-bordered w-full pl-10 bg-base-100 focus:border-secondary focus:ring-1 focus:ring-secondary/30", placeholder: "you@example.com", required: true %>
+            <%= f.email_field :email, value: @email, autocomplete: "username email", id: "session_email", class: "input input-bordered w-full pl-10 bg-base-100 focus:border-secondary focus:ring-1 focus:ring-secondary/30", placeholder: "you@example.com", required: true %>
           </div>
         </div>
 
@@ -48,6 +48,7 @@
               :type="showPassword ? 'text' : 'password'" 
               name="session[password]" 
               id="session_password" 
+              autocomplete="current-password"
               class="input input-bordered w-full pl-10 pr-10 bg-base-100 focus:border-secondary focus:ring-1 focus:ring-secondary/30" 
               placeholder="Enter your password" 
               required

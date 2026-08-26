@@ -79,4 +79,37 @@ RSpec.describe "PushSubscriptions", type: :request do
       end
     end
   end
+
+  describe "POST /push_subscriptions/test" do
+    context "when logged in" do
+      before { login_via_session(user) }
+
+      it "returns unprocessable entity if user has no subscriptions" do
+        post test_push_subscriptions_path, as: :json
+        expect(response).to have_http_status(:unprocessable_entity)
+        json = JSON.parse(response.body)
+        expect(json["success"]).to be false
+      end
+
+      it "sends a test webpush payload when subscriptions exist" do
+        create(:push_subscription, user: user)
+        allow(WebPush).to receive(:payload_send).and_return(true)
+
+        post test_push_subscriptions_path, as: :json
+
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json["success"]).to be true
+        expect(json["sent_count"]).to eq(1)
+        expect(WebPush).to have_received(:payload_send)
+      end
+    end
+
+    context "when not logged in" do
+      it "redirects to login" do
+        post test_push_subscriptions_path, as: :json
+        expect(response).to have_http_status(:redirect)
+      end
+    end
+  end
 end

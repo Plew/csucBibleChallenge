@@ -143,6 +143,10 @@
     <% end %>
   </div>
 
+  <% if logged_in? %>
+    <%= render "shared/pwa_prompts" %>
+  <% end %>
+
   <main class="container mx-auto mt-1 pb-24 md:pb-6">
     <%= content_for?(:content) ? yield(:content) : yield %>
   </main>

@@ -13,7 +13,7 @@
       <div class="space-y-4">
         <div>
           <%= f.label :password, "New Password", class: "label" %>
-          <%= f.password_field :password, class: "input input-bordered w-full", placeholder: "Enter new password", required: true %>
+          <%= f.password_field :password, autocomplete: "new-password", class: "input input-bordered w-full", placeholder: "Enter new password", required: true %>
           <% if @user&.errors&.any? %>
             <% @user.errors.full_messages_for(:password).each do |message| %>
               <div class="text-error text-sm mt-1"><%= message %></div>
@@ -22,7 +22,7 @@
         </div>
         <div>
           <%= f.label :password_confirmation, "Confirm New Password", class: "label" %>
-          <%= f.password_field :password_confirmation, class: "input input-bordered w-full", placeholder: "Confirm new password", required: true %>
+          <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "input input-bordered w-full", placeholder: "Confirm new password", required: true %>
           <% if @user&.errors&.any? %>
             <% @user.errors.full_messages_for(:password_confirmation).each do |message| %>
               <div class="text-error text-sm mt-1"><%= message %></div>

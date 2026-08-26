@@ -1,0 +1,109 @@
+<div data-controller="pwa-install" class="relative z-40">
+  
+  <%# 1. Mobile Install App Banner (Shown in mobile browsers when NOT standalone) %>
+  <div data-pwa-install-target="installBanner" class="hidden fixed bottom-20 md:bottom-6 left-4 right-4 md:left-auto md:right-6 md:max-w-md bg-base-100 border-2 border-secondary/30 rounded-2xl p-4 shadow-xl flex items-center justify-between gap-3 animate-fade-in">
+    <div class="flex items-center gap-3 min-w-0">
+      <div class="w-11 h-11 rounded-xl bg-secondary/15 border border-secondary/20 flex items-center justify-center shrink-0 p-1">
+        <img src="/icons/icon-96x96.png" alt="AGS Icon" class="w-full h-full object-contain rounded-lg">
+      </div>
+      <div class="min-w-0">
+        <h4 class="text-sm font-bold text-neutral truncate">Install AGS App</h4>
+        <p class="text-xs text-neutral/60 line-clamp-1">Add to home screen for daily reminders</p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2 shrink-0">
+      <button type="button" 
+              data-action="click->pwa-install#promptInstall" 
+              class="btn btn-secondary btn-sm rounded-full px-3 text-xs font-bold shadow-xs">
+        Install
+      </button>
+      <button type="button" 
+              data-action="click->pwa-install#dismissInstall" 
+              class="btn btn-ghost btn-xs btn-circle text-neutral/40 hover:text-neutral">
+        ✕
+      </button>
+    </div>
+  </div>
+
+  <%# 2. Standalone Mode Notifications Onboarding Card (Shown inside installed app when notifications not yet enabled) %>
+  <div data-pwa-install-target="standaloneNotificationCard" class="hidden fixed top-4 left-4 right-4 md:top-auto md:bottom-6 md:right-6 md:left-auto md:max-w-md bg-base-100 border-2 border-primary/40 rounded-2xl p-4 shadow-2xl space-y-3 animate-fade-in">
+    <div class="flex items-start gap-3">
+      <div class="w-9 h-9 rounded-xl bg-primary/15 text-primary flex items-center justify-center shrink-0 mt-0.5">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 fill-current" viewBox="0 0 24 24">
+          <path d="M5.85 3.5a.75.75 0 0 0-1.117-1 9.719 9.719 0 0 0-2.348 4.876.75.75 0 0 0 1.479.248A8.219 8.219 0 0 1 5.85 3.5ZM19.267 2.5a.75.75 0 1 0-1.118 1 8.22 8.22 0 0 1 2.086 4.124.75.75 0 0 0 1.48-.248A9.72 9.72 0 0 0 19.266 2.5Z" />
+          <path fill-rule="evenodd" d="M12 2.25A6.75 6.75 0 0 0 5.25 9v3.93c0 .54-.214 1.058-.595 1.44l-.97.97A1.5 1.5 0 0 0 4.75 18h14.5a1.5 1.5 0 0 0 1.06-2.56l-.97-.97a2.035 2.035 0 0 1-.595-1.44V9A6.75 6.75 0 0 0 12 2.25ZM9.75 19.5a2.25 2.25 0 0 0 4.5 0h-4.5Z" clip-rule="evenodd" />
+        </svg>
+      </div>
+      <div class="flex-1 min-w-0">
+        <h4 class="text-sm font-bold text-neutral">Turn On Reading Notifications</h4>
+        <p class="text-xs text-neutral/70 mt-0.5 leading-relaxed">
+          Stay on track with daily reading reminders, group progress updates, and evening catch-up pokes.
+        </p>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-end gap-2 pt-1">
+      <button type="button"
+              data-pwa-install-target="enableNotificationButton"
+              data-action="click->pwa-install#enablePushNotifications"
+              class="btn btn-primary btn-sm rounded-full px-4 text-xs font-semibold shadow-sm w-full sm:w-auto">
+        Enable Notifications
+      </button>
+      <div data-pwa-install-target="notificationSuccess" class="hidden text-xs text-success font-semibold flex items-center gap-1.5 py-1">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+        </svg>
+        <span>Notifications Enabled!</span>
+      </div>
+    </div>
+  </div>
+
+  <%# 3. iOS Step-by-Step Installation Modal Sheet %>
+  <dialog data-pwa-install-target="iosModal" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box bg-base-100 p-6 rounded-3xl border border-base-200 shadow-2xl max-w-sm mx-auto space-y-5">
+      <div class="flex items-center justify-between border-b border-base-200 pb-3">
+        <div class="flex items-center gap-2.5">
+          <img src="/icons/icon-96x96.png" alt="AGS" class="w-8 h-8 rounded-lg object-contain">
+          <h3 class="font-bold text-base text-neutral">Install on iPhone / iPad</h3>
+        </div>
+        <button type="button" data-action="click->pwa-install#closeIosModal" class="btn btn-ghost btn-xs btn-circle">✕</button>
+      </div>
+
+      <div class="space-y-3.5 text-xs text-neutral/80">
+        <div class="flex items-start gap-3 bg-base-200/60 p-3 rounded-xl">
+          <div class="w-6 h-6 rounded-full bg-secondary/20 text-secondary flex items-center justify-center font-bold text-xs shrink-0">1</div>
+          <div class="space-y-0.5">
+            <p class="font-semibold text-neutral">Tap the Share Button</p>
+            <p class="text-neutral/60">Tap the Share icon <svg class="inline w-4 h-4 text-primary align-sub" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg> at the bottom of Safari.</p>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-3 bg-base-200/60 p-3 rounded-xl">
+          <div class="w-6 h-6 rounded-full bg-secondary/20 text-secondary flex items-center justify-center font-bold text-xs shrink-0">2</div>
+          <div class="space-y-0.5">
+            <p class="font-semibold text-neutral">Select "Add to Home Screen"</p>
+            <p class="text-neutral/60">Scroll down the menu and tap <strong>Add to Home Screen</strong> <svg class="inline w-4 h-4 text-primary align-sub" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>.</p>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-3 bg-base-200/60 p-3 rounded-xl">
+          <div class="w-6 h-6 rounded-full bg-secondary/20 text-secondary flex items-center justify-center font-bold text-xs shrink-0">3</div>
+          <div class="space-y-0.5">
+            <p class="font-semibold text-neutral">Open App & Enable Notifications</p>
+            <p class="text-neutral/60">Launch <strong>AGS</strong> from your Home Screen to enjoy the full app and turn on notifications.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-2">
+        <button type="button" data-action="click->pwa-install#closeIosModal" class="btn btn-primary rounded-full w-full font-semibold btn-sm shadow-sm">
+          Got it
+        </button>
+      </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+      <button>close</button>
+    </form>
+  </dialog>
+</div>
