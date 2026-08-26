@@ -45,7 +45,7 @@ RSpec.describe SendDailyReadingEmailsJob, type: :job do
     end
 
     context 'when it is 6am in the challenge timezone' do
-      let!(:berlin_reading) { create(:reading, challenge: berlin_challenge, scheduled_date: Date.new(2026, 9, 1)) }
+      let!(:berlin_reading) { create(:reading, challenge: berlin_challenge, book_number: 40, chapter_number: 1, scheduled_date: Date.new(2026, 9, 1)) }
 
       around do |example|
         travel_to(Time.find_zone!(berlin_timezone).parse("2026-09-01 06:00:00")) { example.run }

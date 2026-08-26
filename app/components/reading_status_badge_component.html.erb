@@ -60,7 +60,7 @@
   <% elsif st[:has_reading] %>
     <span class="inline-flex items-center gap-1.5 text-[11px] font-medium text-warning bg-warning/15 px-2 py-0.5 rounded-md">
       <span class="w-1.5 h-1.5 rounded-full bg-warning"></span>
-      <span><%= st[:reading_title] || 'Unread today' %></span>
+      <span>Unread today<%= " (#{st[:reading_title]})" if st[:reading_title].present? %></span>
     </span>
   <% else %>
     <span class="text-[11px] text-neutral/50">Rest day</span>
