@@ -77,7 +77,7 @@ class User < ApplicationRecord
   end
 
   def can_create_challenges?
-    admin? || can_create_challenges
+    true
   end
 
   # Resolves the single "active" challenge for single-challenge UI surfaces (reading

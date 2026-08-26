@@ -4,10 +4,11 @@
               local: false,
               class: "flex gap-2 items-center px-2" do |form| %>
   <%= form.text_area :content,
-                    placeholder: "Type your message...",
-                    rows: 2,
-                    class: "textarea textarea-bordered textarea-sm flex-1 resize-none text-sm",
+                    placeholder: "Type your message... (Enter to send, Shift+Enter for newline)",
+                    rows: 1,
+                    class: "textarea textarea-bordered textarea-sm flex-1 resize-none text-sm bg-base-100 focus:border-secondary focus:ring-1 focus:ring-secondary/30",
+                    onkeydown: "if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); if(this.value.trim().length > 0) { this.form.requestSubmit(); } }",
                     required: true %>
   <%= form.submit "Send",
-                 class: "btn btn-primary btn-sm" %>
+                 class: "btn btn-primary btn-sm rounded-lg" %>
 <% end %>

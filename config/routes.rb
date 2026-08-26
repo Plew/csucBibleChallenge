@@ -221,6 +221,7 @@ Rails.application.routes.draw do
   resources :push_subscriptions, only: [ :create ] do
     collection do
       delete :destroy
+      post :test
     end
   end
 

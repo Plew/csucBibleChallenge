@@ -44,15 +44,32 @@
 
     <%# Push Notifications Card %>
     <div class="card bg-base-100 shadow-xl w-full" data-controller="push-notification">
-      <div class="card-body p-4 flex flex-row items-center justify-between">
-        <div>
-          <h2 class="text-sm font-medium"><%= t('profile.push_notifications') %></h2>
-          <p class="text-xs text-base-content/70"><%= t('profile.push_notifications_desc') %></p>
+      <div class="card-body p-4 space-y-3">
+        <div class="flex flex-row items-center justify-between">
+          <div>
+            <h2 class="text-sm font-medium"><%= t('profile.push_notifications') %></h2>
+            <p class="text-xs text-base-content/70"><%= t('profile.push_notifications_desc') %></p>
+          </div>
+          <input type="checkbox"
+                 class="checkbox checkbox-primary"
+                 data-push-notification-target="toggle"
+                 data-action="change->push-notification#toggle">
         </div>
-        <input type="checkbox"
-               class="checkbox checkbox-primary"
-               data-push-notification-target="toggle"
-               data-action="change->push-notification#toggle">
+
+        <div data-push-notification-target="statusMessage" class="text-xs font-medium text-primary"></div>
+
+        <div data-push-notification-target="iosNotice" class="hidden text-xs bg-secondary/10 border border-secondary/20 p-2.5 rounded-xl text-neutral/80">
+          📌 <strong>iPhone / iPad Notice</strong>: Apple requires adding the app to your Home Screen before Web Push notifications can be activated.
+        </div>
+
+        <div>
+          <button type="button"
+                  data-push-notification-target="testButton"
+                  data-action="click->push-notification#sendTestPush"
+                  class="hidden btn btn-outline btn-xs rounded-full hover:btn-primary">
+            Send Test Notification
+          </button>
+        </div>
       </div>
     </div>
 
