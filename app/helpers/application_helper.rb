@@ -38,19 +38,27 @@ module ApplicationHelper
   end
 
   def flash_class(level)
-    case level
-    when "notice" then "alert-info"
+    case level.to_s
+    when "notice", "info" then "alert-info"
     when "success" then "alert-success"
-    when "error" then "alert-error"
-    when "alert" then "alert-warning"
+    when "error", "danger" then "alert-error"
+    when "alert", "warning" then "alert-warning"
+    when "badge" then "alert-success"
+    else "alert-info"
     end
   end
 
-  # Resolves the active challenge for the current user per CONTEXT.md spec.
+  # Resolves the active challenge for the current user.
   # Memoized per request so the nav layout can call it multiple times cheaply.
   def active_challenge_for_nav
     return nil unless logged_in?
-    @active_challenge_for_nav ||= current_user.active_challenge
+    @active_challenge_for_nav ||= current_active_challenge
+  end
+
+  # All challenges the current user is enrolled in.
+  def enrolled_challenges_for_nav
+    return [] unless logged_in?
+    @enrolled_challenges_for_nav ||= current_user.challenges.order(end_date: :desc, name: :asc)
   end
 
   # Challenges this user directly manages (as creator or challenge organizer).
@@ -58,6 +66,17 @@ module ApplicationHelper
   def managed_challenges_for_nav
     return Challenge.none unless logged_in?
     @managed_challenges_for_nav ||= current_user.directly_managed_challenges
+  end
+
+  # Calculates today's reading completion status for a given challenge and user
+  def reading_status_for_challenge(challenge, user = current_user)
+    return { has_reading: false, read_today: false, read_count: 0, total_count: 0, reading_title: nil } unless user && challenge
+    challenge.daily_reading_status(user)
+  end
+
+  # Renders the reusable reading status badge component
+  def reading_status_badge(challenge = nil, user: current_user, variant: :compact, status: nil)
+    render(ReadingStatusBadgeComponent.new(challenge: challenge, user: user, variant: variant, status: status))
   end
 
   # Returns the English Bible book name for a given book number (1-based, 1 = Genesis, 66 = Revelation)
@@ -312,24 +331,20 @@ module ApplicationHelper
   end
 
   # Returns timezone options for select boxes
-  # Includes all ActiveSupport timezones plus Munich mapped to Berlin
+  # Prioritizes US timezones at the top, followed by all others alphabetically.
   #
-  # @return [Array<Array>] Array of [display_name, timezone_identifier] pairs sorted alphabetically
+  # @return [Array<Array>] Array of [display_name, timezone_identifier] pairs
   #
   # @example
   #   timezone_options_for_select
   #   # => [["Abu Dhabi", "Abu Dhabi"], ["America/New_York", "America/New_York"], ..., ["Munich", "Berlin"]]
   def timezone_options_for_select
-    options = ActiveSupport::TimeZone.all.map { |tz| [ tz.name, tz.name ] }
+    us_zones = ActiveSupport::TimeZone.us_zones.map { |tz| [ tz.name, tz.name ] }
+    other_zones = (ActiveSupport::TimeZone.all - ActiveSupport::TimeZone.us_zones).map { |tz| [ tz.name, tz.name ] }
 
-    # Add Munich as an option that maps to Berlin timezone
-    berlin_tz = ActiveSupport::TimeZone["Berlin"]
-    if berlin_tz
-      options << [ "Munich", berlin_tz.name ]
-    end
+    other_zones.sort_by!(&:first)
 
-    # Sort alphabetically for better UX
-    options.sort_by(&:first)
+    us_zones + [ [ "-------------", "" ] ] + other_zones
   end
 
   # Converts URLs in text to clickable links

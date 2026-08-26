@@ -54,10 +54,11 @@ class DatePickerComponent < ViewComponent::Base
 
   def build_day_data(date)
     in_month = date.month == display_month.month
-    reading = in_month ? challenge.readings.find_by(scheduled_date: date) : nil
-    completed = reading && user.user_readings.exists?(reading_id: reading.id)
+    day_readings = in_month ? challenge.readings.where(scheduled_date: date) : []
+    has_reading = day_readings.any?
+    completed = has_reading && day_readings.all? { |r| user.user_readings.exists?(reading_id: r.id) }
+    partial_completed = has_reading && !completed && day_readings.any? { |r| user.user_readings.exists?(reading_id: r.id) }
     is_selected = date == selected_date
-    has_reading = reading.present?
 
     {
       date: date,
@@ -65,6 +66,7 @@ class DatePickerComponent < ViewComponent::Base
       in_month: in_month,
       has_reading: has_reading,
       completed: completed,
+      partial_completed: partial_completed,
       is_selected: is_selected
     }
   end
@@ -77,6 +79,9 @@ class DatePickerComponent < ViewComponent::Base
     if day[:completed]
       # Completed: green background
       "#{base} bg-success text-success-content cursor-pointer hover:opacity-80"
+    elsif day[:partial_completed]
+      # Partially completed: warning background
+      "#{base} bg-warning text-warning-content cursor-pointer hover:opacity-80"
     elsif day[:has_reading]
       # Has reading but not completed: show date number, clickable
       if day[:is_selected]

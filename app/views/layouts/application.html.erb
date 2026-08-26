@@ -1,18 +1,41 @@
 <!DOCTYPE html>
-<html data-theme="light">
+<html data-theme="andgodsaid" lang="<%= I18n.locale %>">
 <%= render 'layouts/head' %>
 
-<body>
+<body class="overflow-x-hidden">
   <div class="navbar bg-base-100 shadow-lg" x-data="{ mobileMenuIsOpen: false }">
     <div class="navbar-start flex items-center min-w-0">
-      <%= link_to root_path, class: "btn btn-ghost normal-case text-lg flex items-center gap-2 p-0" do %>
-        <span class="font-mono">
-          And God Said Bible Challenge
+      <%= link_to root_path, class: "btn btn-ghost normal-case flex items-center gap-2.5 px-1 hover:bg-transparent group" do %>
+        <div class="w-8 h-8 rounded-lg bg-secondary/15 flex items-center justify-center text-secondary group-hover:scale-105 transition-transform shrink-0">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+            <path d="M11.25 4.533A9.707 9.707 0 0 0 6 3a9.735 9.735 0 0 0-3.25.555.75.75 0 0 0-.5.707v14.25a.75.75 0 0 0 1 .707A8.237 8.237 0 0 1 6 18.75c1.995 0 3.823.707 5.25 1.886V4.533ZM12.75 20.636A8.214 8.214 0 0 1 18 18.75c.966 0 1.89.166 2.75.47a.75.75 0 0 0 1-.708V4.262a.75.75 0 0 0-.5-.707A9.735 9.735 0 0 0 18 3a9.707 9.707 0 0 0-5.25 1.533v16.103Z" />
+          </svg>
+        </div>
+        <span class="font-serif font-bold text-brand-dark tracking-tight text-lg md:text-xl group-hover:opacity-80 transition-opacity whitespace-nowrap">
+          And God Said
         </span>
       <% end %>
     </div>
 
     <div class="navbar-end flex items-center gap-2">
+      <% unless logged_in? %>
+        <%= link_to t('navigation.log_in', default: 'Log In'), new_user_session_path, class: "btn btn-primary btn-sm rounded-full px-4 text-xs font-semibold shadow-sm" %>
+      <% end %>
+
+      <%# Theme Toggle %>
+      <div data-controller="theme">
+        <label class="swap swap-rotate btn btn-ghost btn-circle">
+          <!-- Added 'hidden' class here to fix the checkbox overlay bug -->
+          <input type="checkbox" class="hidden" data-theme-target="checkbox" data-action="change->theme#toggle" />
+          
+          <%# Sun icon %>
+          <svg class="swap-off fill-current w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5.64,17l-.71.71a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71A1,1,0,0,0,5.64,17ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm7-7a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41l-.71-.71A1,1,0,0,0,4.93,6.34Zm12,.29a1,1,0,0,0,.7-.29l.71-.71a1,1,0,1,0-1.41-1.41L17,5.64a1,1,0,0,0,0,1.41A1,1,0,0,0,17.66,7.34ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-9,8a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19ZM18.36,17A1,1,0,0,0,17,18.36l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM12,6.5A5.5,5.5,0,1,0,17.5,12,5.51,5.51,0,0,0,12,6.5Zm0,9A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z"/></svg>
+          
+          <%# Moon icon %>
+          <svg class="swap-on fill-current w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/></svg>
+        </label>
+      </div>
+
       <%# Language Selector - Temporarily Disabled %>
       <% if false %>
         <div data-controller="language-selector"
@@ -54,6 +77,7 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
         </svg>
       </button>
+      
       <%# Mobile Menu Dropdown - Positioned absolutely, controlled by AlpineJS %>
       <div x-show="mobileMenuIsOpen" 
           @click.away="mobileMenuIsOpen = false"
@@ -64,7 +88,7 @@
           x-transition:leave-start="opacity-100 scale-100"
           x-transition:leave-end="opacity-0 scale-95"
           class="absolute top-16 right-0 w-48 mt-2 origin-top-right bg-base-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50"
-          style="display: none;" <%# Keep display:none here, x-show handles visibility %>
+          style="display: none;"
           role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
         <div class="py-1" role="none">
           <% if logged_in? %>
@@ -74,15 +98,18 @@
             <% if current_user.admin? %>
               <%= link_to t('navigation.admin'), admin_root_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
             <% end %>
+            <% active_ch = active_challenge_for_nav %>
             <% managed = managed_challenges_for_nav %>
-            <% if managed.any? %>
+            <% if active_ch && active_ch.manageable_by?(current_user) %>
+              <%= link_to t('navigation.manage_challenge'), challenge_manage_dashboard_path(active_ch), class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
+            <% elsif managed.any? %>
               <% manage_path = managed.count == 1 ? challenge_manage_dashboard_path(managed.first) : manage_chooser_path %>
               <%= link_to t('navigation.manage_challenge'), manage_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
             <% end %>
-            <% if (nav_ch = active_challenge_for_nav) %>
-              <%= link_to t('navigation.catch_up'), challenge_catch_up_path(nav_ch), class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
-              <%= link_to t('blog.posts'), challenge_blog_posts_path(nav_ch), class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
-              <%= link_to t('navigation.seven_day_win'), challenge_seven_day_lobby_path(nav_ch), class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
+            <% if active_ch %>
+              <%= link_to t('navigation.catch_up'), challenge_catch_up_path(active_ch), class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
+              <%= link_to t('blog.posts'), challenge_blog_posts_path(active_ch), class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
+              <%= link_to t('navigation.seven_day_win'), challenge_seven_day_lobby_path(active_ch), class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
             <% end %>
             <%= link_to t('navigation.about'), about_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
             <%= link_to t('navigation.faq'), faq_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
@@ -90,6 +117,7 @@
             <%= link_to t('navigation.send_feedback'), new_feedback_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
             <%= link_to t('navigation.log_out'), destroy_user_session_path, data: { turbo_method: :delete }, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
           <% else %>
+            <%= link_to t('navigation.log_in', default: 'Log In'), new_user_session_path, class: "block px-4 py-2 text-sm text-primary font-semibold hover:bg-base-200 hover:text-primary", role: "menuitem", tabindex: "-1" %>
             <%= link_to t('navigation.about'), about_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
             <%= link_to t('navigation.send_feedback'), new_feedback_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
             <%= link_to t('navigation.faq'), faq_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
@@ -101,47 +129,21 @@
   </div>
 
   <% if logged_in? && !controller.class.name.start_with?('Admin::') %>
-    <% if (bottom_nav_ch = active_challenge_for_nav) && Date.current >= bottom_nav_ch.start_date %>
-      <%= render(NavBarComponent.new) %>
-    <% end %>
-  <% end %>
-
-  <%# Flash Messages %>
-  <% flash.each do |type, message| %>
-    <div x-data="{ 
-           show: true, 
-           timer: null,
-           startTimer() { 
-             this.timer = setTimeout(() => this.show = false, 2000) 
-           },
-           pauseTimer() { 
-             if (this.timer) clearTimeout(this.timer) 
-           },
-           resumeTimer() { 
-             this.startTimer() 
-           }
-         }"
-         x-init="startTimer(); 
-                document.addEventListener('turbo:load', () => { show = true; startTimer() });
-                document.addEventListener('turbo:render', () => { show = true; startTimer() })"
-         x-show="show"
-         @mouseenter="pauseTimer()"
-         @mouseleave="resumeTimer()"
-         x-transition:enter="transition ease-out duration-500 transform"
-         x-transition:enter-start="opacity-0 translate-y-4 scale-95"
-         x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-         x-transition:leave="transition ease-in duration-500 transform"
-         x-transition:leave-start="opacity-100 translate-y-0 scale-100"
-         x-transition:leave-end="opacity-0 translate-y-4 scale-95"
-         class="fixed top-20 left-4 right-4 z-50 bg-primary text-primary-content shadow-lg rounded-box cursor-pointer px-4 py-3">
-      <div class="flex items-center justify-between">
-        <span><%= message %></span>
-        <button @click="show = false" class="ml-4 text-lg font-bold hover:opacity-70">×</button>
-      </div>
+    <div id="main_nav_bar">
+      <% if active_challenge_for_nav %>
+        <%= render(NavBarComponent.new) %>
+      <% end %>
     </div>
   <% end %>
 
-  <main class="container mx-auto mt-1">
+  <%# Flash Messages Container %>
+  <div id="flash_messages" class="fixed top-4 left-4 right-4 md:top-auto md:bottom-6 md:right-6 md:left-auto md:max-w-md z-50 space-y-2 pointer-events-none">
+    <% flash.each do |type, message| %>
+      <%= render "layouts/flash_message", type: type, message: message %>
+    <% end %>
+  </div>
+
+  <main class="container mx-auto mt-1 pb-24 md:pb-6">
     <%= content_for?(:content) ? yield(:content) : yield %>
   </main>
 
@@ -151,4 +153,4 @@
     <span class="loading loading-spinner loading-lg text-primary"></span>
   </div>
 </body>
-</html> 
+</html>

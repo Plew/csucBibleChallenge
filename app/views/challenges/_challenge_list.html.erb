@@ -1,36 +1,40 @@
-<% if challenges.any? %>
-  <div class="grid grid-cols-1 gap-3">
-    <% challenges.each do |challenge| %>
-      <%= link_to challenge_path(challenge), class: "block" do %>
-        <div class="bg-base-100 shadow-sm rounded-lg p-3 hover:bg-base-200 transition-colors">
-          <div class="flex justify-between items-start mb-2">
-            <h2 class="text-sm font-semibold line-clamp-2 flex-1"><%= challenge.name %></h2>
-            <span class="btn btn-primary btn-xs h-6 ml-2 flex-shrink-0"><%= t('challenges.details') %></span>
+<% challenges.each do |challenge| %>
+  <%= link_to challenge_path(challenge), class: "block bg-base-200 border border-base-300 rounded-2xl shadow-sm hover:shadow-md transition-shadow p-5 group relative overflow-hidden" do %>
+    
+    <!-- Top Row: Title & Button -->
+    <div class="flex justify-between items-start mb-3">
+      <div class="flex items-center gap-3 pr-4">
+        <h3 class="text-lg md:text-xl font-bold font-serif text-neutral group-hover:text-primary transition-colors">
+          <%= challenge.name %>
+        </h3>
+        <% if challenge.locked? %>
+          <div class="badge badge-sm badge-neutral font-medium" title="This challenge is locked">
+            Locked
           </div>
+        <% end %>
+      </div>
+      
+      <!-- Details Button -->
+      <span class="btn btn-xs md:btn-sm btn-outline hover:btn-primary rounded-full text-xs shrink-0 font-medium border-base-300">Details</span>
+    </div>
 
-          <% first_reading = challenge.readings.min_by(&:scheduled_date) %>
-          <% last_reading = challenge.readings.max_by(&:scheduled_date) %>
-
-          <div class="text-xs text-base-content/70 space-y-0.5">
-            <% if first_reading && last_reading %>
-              <div><%= book_number_to_name(first_reading.book_number) %> <%= first_reading.chapter_number %> — <%= book_number_to_name(last_reading.book_number) %> <%= last_reading.chapter_number %></div>
-            <% end %>
-            <div class="flex flex-wrap gap-x-3">
-              <span><%= t('challenges.participants') %>: <%= challenge.users.size %></span>
-              <span><%= t('navigation.groups') %>: <%= challenge.groups.size %></span>
-            </div>
-            <div class="flex flex-wrap gap-x-3">
-              <span><%= t('challenges.start_date') %>: <%= challenge.start_date.strftime('%-d %b %Y') %></span>
-              <span><%= t('challenges.end_date') %>: <%= challenge.end_date.strftime('%-d %b %Y') %></span>
-            </div>
-          </div>
-        </div>
+    <!-- Bottom Row: Meta Data -->
+    <div class="text-xs md:text-sm font-medium text-neutral/60 space-y-1">
+      <% if challenge.readings.any? %>
+        <p class="text-neutral/80 mb-1.5">
+          <%= book_number_to_name(challenge.readings.minimum(:book_number)) %> <%= challenge.readings.minimum(:chapter_number) %> &mdash;
+          <%= book_number_to_name(challenge.readings.maximum(:book_number)) %> <%= challenge.readings.maximum(:chapter_number) %>
+        </p>
       <% end %>
-    <% end %>
-  </div>
-<% else %>
-  <div class="bg-base-100 shadow-sm rounded-lg p-3 flex flex-col items-center text-center">
-    <h2 class="text-sm font-medium mb-2"><%= t('challenges.no_challenges') %></h2>
-    <p class="text-xs"><%= t('challenges.no_challenges_message') %></p>
-  </div>
+      
+      <p>
+        Participants: <%= challenge.users.count %> &nbsp;&nbsp;|&nbsp;&nbsp; Groups: <%= challenge.groups.count %>
+      </p>
+      
+      <p>
+        Start Date: <%= challenge.start_date.strftime("%d %b %Y") %> &nbsp;&nbsp;|&nbsp;&nbsp; End Date: <%= challenge.end_date.strftime("%d %b %Y") %>
+      </p>
+    </div>
+    
+  <% end %>
 <% end %>

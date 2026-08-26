@@ -1,7 +1,29 @@
 class ApplicationController < ActionController::Base
   before_action :set_locale
   before_action :check_badge_notifications
-  helper_method :current_user, :logged_in?
+  helper_method :current_user, :logged_in?, :current_active_challenge
+
+  def current_active_challenge
+    return nil unless logged_in?
+
+    if session[:active_challenge_id].present?
+      @current_active_challenge ||= current_user.challenges.find_by(id: session[:active_challenge_id])
+    end
+
+    @current_active_challenge ||= current_user.active_challenge
+
+    if @current_active_challenge && session[:active_challenge_id] != @current_active_challenge.id
+      session[:active_challenge_id] = @current_active_challenge.id
+    end
+
+    @current_active_challenge
+  end
+
+  def set_active_challenge(challenge_or_id)
+    id = challenge_or_id.is_a?(Challenge) ? challenge_or_id.id : challenge_or_id.to_i
+    session[:active_challenge_id] = id
+    @current_active_challenge = nil
+  end
 
   private
 
@@ -34,7 +56,9 @@ class ApplicationController < ActionController::Base
 
   def log_out
     session.delete(:user_id)
+    session.delete(:active_challenge_id)
     @current_user = nil
+    @current_active_challenge = nil
   end
 
   def require_login

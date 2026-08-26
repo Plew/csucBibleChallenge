@@ -11,7 +11,7 @@ RSpec.describe UserMailer, type: :mailer do
     let(:mail) { UserMailer.password_reset(user, token) }
 
     it "renders the headers" do
-      expect(mail.subject).to eq("Password Reset - And God Said Bible Challenge")
+      expect(mail.subject).to eq("Password Reset - And God Said")
       expect(mail.to).to eq([ "to@example.org" ])
       expect(mail.from).to eq([ "noreply@andgodsaid.org" ])
     end
@@ -57,6 +57,22 @@ RSpec.describe UserMailer, type: :mailer do
     it "does not include the verse text" do
       # Verify that the actual Bible text is not in the email
       expect(mail.body.encoded).not_to match(/verse_text/)
+    end
+
+    context "when multiple chapters are scheduled for today" do
+      let(:reading2) { create(:reading, challenge: challenge, book_number: 45, chapter_number: 8) }
+      let(:reading3) { create(:reading, challenge: challenge, book_number: 45, chapter_number: 9) }
+      let(:reading4) { create(:reading, challenge: challenge, book_number: 45, chapter_number: 10) }
+      let(:mail_multi) { UserMailer.daily_reading(user, [ reading, reading2, reading3, reading4 ], login_token) }
+
+      it "lists all 4 chapters in the subject" do
+        expect(mail_multi.subject).to eq("Bible Reading: Romans 7, Romans 8, Romans 9, Romans 10")
+      end
+
+      it "includes all chapters in the body with plural phrasing" do
+        expect(mail_multi.body.encoded).to match("Romans 7, Romans 8, Romans 9, Romans 10")
+        expect(mail_multi.body.encoded).to match("today's chapters")
+      end
     end
   end
 end

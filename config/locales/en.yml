@@ -180,6 +180,7 @@ en:
     reading: "Reading"
     stats: "Stats"
     group: "Group"
+    challenges: "Challenges"
     blog: "Blog"
     create_challenge: "Create Challenge"
     manage_feedback: "Manage Feedback"
@@ -208,6 +209,7 @@ en:
       view_challenge: "View challenge"
       overview: "Overview"
       settings: "Settings"
+      schedule: "Schedule"
       api_access: "API Access"
       users: "Users"
       chapters: "Chapters"
@@ -237,6 +239,9 @@ en:
       regenerate: "Regenerate key"
       regenerate_warning: "Regenerating will immediately invalidate the current key. Any integrations using it will stop working. Continue?"
       regenerated: "A new API key has been generated. The previous key no longer works."
+    schedule:
+      title: "Reading Schedule"
+      updated: "Schedule updated and readings rescheduled successfully."
     overview:
       title: "Overview"
       blog_posts: "Blog posts"
@@ -378,9 +383,22 @@ en:
 
   # Home page
   home:
-    tagline: "Join a Bible reading challenge and read one chapter a day, with friends — or create your own."
-    or_create_your_own: "Or create your own challenge"
+    title: "Read the Bible. Build the Habit. Do it Together."
+    subtitle: "Do it Together."
+    verse_start: "And God said"
+    verse_end: ", 'Let there be light,' and there was light."
+    verse_ref: "— Genesis 1:3"
+    sign_up_cta: "SIGN UP (Start Your Journey)"
+    or_create: "Or create your own challenge"
     active_challenges: "Active Challenges"
+    featured_subtitle: "Featured Bible Reading Challenges"
+    pillars:
+      community_title: "Community"
+      community_desc: "Connect with Friends, Stay Accountable."
+      consistency_title: "Consistency"
+      consistency_desc: "One Chapter a Day, Sustainable Habit."
+      focus_title: "Focus"
+      focus_desc: "Zero Distractions, Focused Scripture."
 
   # Challenges
   challenges:
@@ -389,7 +407,7 @@ en:
     leave_challenge: "Leave Challenge"
     delete_challenge: "Delete Challenge"
     edit_challenge: "Edit Challenge"
-    create_new: "Create New Reading Challenge"
+    create_new: "Create New Challenge"
     not_permitted_to_create: "You don't have permission to create challenges."
     already_enrolled_cannot_create: "You are already enrolled in a challenge. Leave your current challenge to create a new one."
     no_challenges: "No Challenges Available"
@@ -439,6 +457,11 @@ en:
     signups_closed: "Signups closed"
     all_challenges: "All Challenges"
     start_reading: "Start Reading"
+    my_challenges: "My Challenges"
+    switch_to: "Switch"
+    switch_challenge: "Switch Active Challenge"
+    currently_active: "Active"
+    browse_all: "Browse All"
 
   # Challenge form
   challenge_form:
@@ -1026,8 +1049,8 @@ en:
   # FAQ
   faq:
     title: "Frequently Asked Questions"
-    what_is_andgodsaid: "What is And God Said Bible Challenges?"
-    what_is_andgodsaid_answer: "And God Said Bible Challenges is a Bible reading challenge platform that helps you track your progress through organized reading plans and group participation."
+    what_is_andgodsaid: "What is And God Said?"
+    what_is_andgodsaid_answer: "And God Said is a Bible reading challenge platform that helps you track your progress through organized reading plans and group participation."
     how_to_join: "How do I join a challenge?"
     how_to_join_answer: "Browse available challenges on the challenges page and click 'Join' on any challenge that interests you. You can participate individually or join a group within the challenge."
     track_progress: "Can I track my reading progress?"
@@ -1096,9 +1119,9 @@ en:
 
   # About
   about:
-    title: "About And God Said Bible Challenge"
-    what_is_title: "What is And God Said Bible Challenge?"
-    what_is_description: "And God Said Bible Challenge is a platform for daily Bible reading with friends. Join a reading challenge, track your progress, and encourage one another as you read through the Bible together."
+    title: "About And God Said"
+    what_is_title: "What is And God Said?"
+    what_is_description: "And God Said is a platform for daily Bible reading with friends. Join a reading challenge, track your progress, and encourage one another as you read through the Bible together."
     how_it_works_title: "How it works"
     how_it_works_description: "Join a challenge, receive a daily email with your assigned chapter, read it, and mark it complete. Each day brings a new chapter, keeping everyone on the same page."
     groups_title: "Groups"

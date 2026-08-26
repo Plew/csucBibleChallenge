@@ -11,7 +11,7 @@ class ApiMeta
 
   def as_json(*)
     {
-      api: "And God Said Bible Challenge — Challenge Data API",
+      api: "And God Said — Challenge Data API",
       version: "v1",
       description: "Read-only API for challenge organizers to retrieve everything about their challenge. " \
                    "Authenticate every request with the per-challenge API key.",

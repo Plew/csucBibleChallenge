@@ -15,24 +15,24 @@ RSpec.describe SendDailyReadingEmailsJob, type: :job do
     let!(:berlin_challenge) do
       create(:challenge,
         timezone: berlin_timezone,
-        start_date: 1.week.ago,
-        end_date: 1.week.from_now
+        start_date: Date.new(2026, 8, 25),
+        end_date: Date.new(2026, 9, 8)
       )
     end
 
     let!(:tokyo_challenge) do
       create(:challenge,
         timezone: tokyo_timezone,
-        start_date: 1.week.ago,
-        end_date: 1.week.from_now
+        start_date: Date.new(2026, 8, 25),
+        end_date: Date.new(2026, 9, 8)
       )
     end
 
     let!(:completed_challenge) do
       create(:challenge,
         timezone: berlin_timezone,
-        start_date: 2.weeks.ago,
-        end_date: 1.day.ago
+        start_date: Date.new(2026, 8, 10),
+        end_date: Date.new(2026, 8, 24)
       )
     end
 
@@ -45,11 +45,10 @@ RSpec.describe SendDailyReadingEmailsJob, type: :job do
     end
 
     context 'when it is 6am in the challenge timezone' do
-      let!(:berlin_reading) { create(:reading, challenge: berlin_challenge, scheduled_date: Date.current) }
+      let!(:berlin_reading) { create(:reading, challenge: berlin_challenge, book_number: 40, chapter_number: 1, scheduled_date: Date.new(2026, 9, 1)) }
 
       around do |example|
-        berlin_6am = Time.current.in_time_zone(berlin_timezone).change(hour: 6, min: 0)
-        travel_to(berlin_6am) { example.run }
+        travel_to(Time.find_zone!(berlin_timezone).parse("2026-09-01 06:00:00")) { example.run }
       end
 
       it 'sends emails to users who want daily emails' do
@@ -86,12 +85,27 @@ RSpec.describe SendDailyReadingEmailsJob, type: :job do
         email = ActionMailer::Base.deliveries.last
         expect(email.subject).to match(/Bible Reading:/)
       end
+
+      context 'when challenge has 4 chapters scheduled today' do
+        let!(:reading2) { create(:reading, challenge: berlin_challenge, book_number: 40, chapter_number: 2, scheduled_date: Date.new(2026, 9, 1)) }
+        let!(:reading3) { create(:reading, challenge: berlin_challenge, book_number: 40, chapter_number: 3, scheduled_date: Date.new(2026, 9, 1)) }
+        let!(:reading4) { create(:reading, challenge: berlin_challenge, book_number: 40, chapter_number: 4, scheduled_date: Date.new(2026, 9, 1)) }
+
+        it 'sends exactly ONE email containing all 4 chapters' do
+          expect {
+            described_class.perform_now
+          }.to change { ActionMailer::Base.deliveries.count }.by(1)
+
+          email = ActionMailer::Base.deliveries.last
+          expect(email.subject).to include("Matthew 1, Matthew 2, Matthew 3, Matthew 4")
+          expect(email.body.encoded).to include("Matthew 1, Matthew 2, Matthew 3, Matthew 4")
+        end
+      end
     end
 
     context 'when it is not 6am in the challenge timezone' do
       around do |example|
-        berlin_8am = Time.current.in_time_zone(berlin_timezone).change(hour: 8, min: 0)
-        travel_to(berlin_8am) { example.run }
+        travel_to(Time.find_zone!(berlin_timezone).parse("2026-09-01 08:00:00")) { example.run }
       end
 
       it 'does not send any emails' do
@@ -109,8 +123,7 @@ RSpec.describe SendDailyReadingEmailsJob, type: :job do
 
     context 'when there is no reading scheduled for today' do
       around do |example|
-        berlin_6am = Time.current.in_time_zone(berlin_timezone).change(hour: 6, min: 0)
-        travel_to(berlin_6am) { example.run }
+        travel_to(Time.find_zone!(berlin_timezone).parse("2026-09-01 06:00:00")) { example.run }
       end
 
       it 'does not send any emails' do
@@ -122,8 +135,7 @@ RSpec.describe SendDailyReadingEmailsJob, type: :job do
 
     context 'with completed challenges' do
       around do |example|
-        berlin_6am = Time.current.in_time_zone(berlin_timezone).change(hour: 6, min: 0)
-        travel_to(berlin_6am) { example.run }
+        travel_to(Time.find_zone!(berlin_timezone).parse("2026-09-01 06:00:00")) { example.run }
       end
 
       it 'does not send emails for completed challenges' do
@@ -134,11 +146,10 @@ RSpec.describe SendDailyReadingEmailsJob, type: :job do
     end
 
     context 'duplicate guard on re-run' do
-      let!(:berlin_reading) { create(:reading, challenge: berlin_challenge, scheduled_date: Date.current) }
+      let!(:berlin_reading) { create(:reading, challenge: berlin_challenge, scheduled_date: Date.new(2026, 9, 1)) }
 
       around do |example|
-        berlin_6am = Time.current.in_time_zone(berlin_timezone).change(hour: 6, min: 0)
-        travel_to(berlin_6am) { example.run }
+        travel_to(Time.find_zone!(berlin_timezone).parse("2026-09-01 06:00:00")) { example.run }
       end
 
       it 'does not send duplicate emails on re-run' do
@@ -164,11 +175,8 @@ RSpec.describe SendDailyReadingEmailsJob, type: :job do
 
     context 'different timezone challenges at different times' do
       it 'sends for Berlin challenge at 6am Berlin time but not Tokyo' do
-        # Freeze to 6am Berlin time, compute the Berlin date, then create the reading
-        berlin_6am = Time.current.in_time_zone(berlin_timezone).change(hour: 6, min: 0)
-
-        travel_to(berlin_6am) do
-          berlin_date = berlin_6am.to_date
+        travel_to(Time.find_zone!(berlin_timezone).parse("2026-09-01 06:00:00")) do
+          berlin_date = Date.new(2026, 9, 1)
           create(:reading, challenge: berlin_challenge, scheduled_date: berlin_date)
           create(:reading, challenge: tokyo_challenge, scheduled_date: berlin_date)
 
@@ -181,11 +189,8 @@ RSpec.describe SendDailyReadingEmailsJob, type: :job do
       end
 
       it 'sends for Tokyo challenge at 6am Tokyo time but not Berlin' do
-        # Freeze to 6am Tokyo time, compute the Tokyo date, then create the reading
-        tokyo_6am = Time.current.in_time_zone(tokyo_timezone).change(hour: 6, min: 0)
-
-        travel_to(tokyo_6am) do
-          tokyo_date = tokyo_6am.to_date
+        travel_to(Time.find_zone!(tokyo_timezone).parse("2026-09-01 06:00:00")) do
+          tokyo_date = Date.new(2026, 9, 1)
           create(:reading, challenge: berlin_challenge, scheduled_date: tokyo_date)
           create(:reading, challenge: tokyo_challenge, scheduled_date: tokyo_date)
 

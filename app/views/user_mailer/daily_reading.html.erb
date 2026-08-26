@@ -1,7 +1,7 @@
 <h1>Good morning, <%= @user.username %>!</h1>
 
 <p>
-  Click below to log in and read today's reading:
+  Click below to log in and read today's <%= (@readings&.size.to_i > 1) ? 'chapters' : 'reading' %>:
   <strong><%= @reading_title %></strong>.
 </p>
 
@@ -10,4 +10,4 @@
 </p>
 
 <p>Thanks,</p>
-<p>The And God Said Bible Challenge Team</p>
+<p>The And God Said Team</p>

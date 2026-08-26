@@ -1,0 +1,22 @@
+<%# 1. Seamlessly update Navigation Bar without reloading %>
+<%= turbo_stream.replace "main_nav_bar" do %>
+  <div id="main_nav_bar">
+    <% if active_challenge_for_nav %>
+      <%= render(NavBarComponent.new) %>
+    <% end %>
+  </div>
+<% end %>
+
+<%# 2. Update Home Page My Challenges cards in-place %>
+<% if @my_challenges.present? %>
+  <%= turbo_stream.replace "my_challenges_list" do %>
+    <%= render "home/my_challenges", my_challenges: @my_challenges %>
+  <% end %>
+<% end %>
+
+<%# 3. Append DaisyUI confirmation toast %>
+<%= turbo_stream.append "flash_messages" do %>
+  <% flash.each do |type, message| %>
+    <%= render "layouts/flash_message", type: type, message: message %>
+  <% end %>
+<% end %>

@@ -37,6 +37,36 @@
       </a>
     </div>
 
+    <% if @selected_readings.present? && @selected_readings.count > 1 %>
+      <% completed_count = @selected_readings.count { |r| current_user.user_readings.exists?(reading_id: r.id) } %>
+      <div class="mb-4 px-2 space-y-2">
+        <div class="flex items-center justify-between text-xs text-base-content/70 px-1">
+          <span class="font-semibold uppercase tracking-wider">Chapters for Today</span>
+          <span class="badge badge-sm <%= completed_count == @selected_readings.count ? 'badge-success text-success-content' : 'badge-ghost' %> font-medium">
+            <%= completed_count %> of <%= @selected_readings.count %> completed
+          </span>
+        </div>
+        
+        <div class="flex items-center gap-2 overflow-x-auto py-1 no-scrollbar">
+          <% @selected_readings.each do |reading| %>
+            <% is_current = (reading.id == @selected_reading.id) %>
+            <% is_read = current_user.user_readings.exists?(reading_id: reading.id) %>
+            <% title = "#{book_number_to_name(reading.book_number)} #{reading.chapter_number}" %>
+            
+            <%= link_to reading_path(date: @selected_date, reading_id: reading.id), 
+                        class: "btn btn-sm rounded-full gap-1.5 whitespace-nowrap transition-all #{is_current ? 'btn-primary shadow-sm font-bold' : 'btn-outline border-base-300 font-medium hover:btn-primary'}" do %>
+              <% if is_read %>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 <%= is_current ? 'text-primary-content' : 'text-success' %>" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+              <% end %>
+              <span><%= title %></span>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
     <% if @selected_reading %>
       <!-- Presence tracking with floating avatars -->
       <div data-controller="reading-presence" data-reading-presence-reading-id-value="<%= @selected_reading.id %>">
@@ -91,8 +121,19 @@
         <div class="mb-12"></div>
       <% end %>
     <% else %>
-      <div class="bg-base-100 shadow-sm rounded-lg p-3 flex flex-col items-center text-center">
-        <h2 class="text-sm font-medium mb-2"><%= t('reading.no_reading_scheduled') %></h2>
+      <div class="bg-base-100 border border-base-200 shadow-sm rounded-2xl p-8 my-6 flex flex-col items-center text-center space-y-3 max-w-md mx-auto">
+        <div class="p-3 bg-base-200 rounded-full text-base-content/60">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+          </svg>
+        </div>
+        <h2 class="text-lg font-bold font-serif text-neutral">Rest / Catch-up Day</h2>
+        <p class="text-xs text-base-content/70">No chapters are scheduled for today in this challenge. Use this time to catch up, reflect, or pray!</p>
+        <div class="pt-2">
+          <%= link_to reading_path(date: @selected_date + 1.day), class: "btn btn-outline btn-sm rounded-full" do %>
+            Next Day &rarr;
+          <% end %>
+        </div>
       </div>
     <% end %>
   <% end %>

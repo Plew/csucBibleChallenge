@@ -40,20 +40,74 @@
             </div>
           </div>
 
-          <div class="form-control w-full">
-            <%= form.label :start_date, t("challenge_form.start_date"), class: "label" %>
-            <%= form.date_field :start_date, class: "input input-bordered w-full", data: { "challenge-creator-target": "startDate", action: "change->challenge-creator#updateSchedule" } %>
-          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="form-control w-full">
+              <%= form.label :start_date, t("challenge_form.start_date"), class: "label" %>
+              <%= form.date_field :start_date, class: "input input-bordered w-full", data: { "challenge-creator-target": "startDate", action: "change->challenge-creator#updateSchedule" } %>
+            </div>
 
-          <div class="form-control w-full">
-            <%= form.label :timezone, t("challenge_form.timezone"), class: "label" %>
-            <%= form.select :timezone, options_for_select(timezone_options, default_timezone), {}, { class: "select select-bordered w-full" } %>
-            <div class="label">
-              <span class="label-text-alt text-xs"><%= t("challenge_form.timezone_help") %></span>
+            <div class="form-control w-full">
+              <%= form.label :chapters_per_day, "Chapters Per Day", class: "label font-medium" %>
+              <%= form.number_field :chapters_per_day, value: (challenge.chapters_per_day.presence || 1), min: 1, max: 20, class: "input input-bordered w-full", data: { "challenge-creator-target": "chaptersPerDay", action: "change->challenge-creator#updateSchedule input->challenge-creator#updateSchedule" } %>
+              <div class="label pt-1">
+                <span class="label-text-alt text-xs text-base-content/60">Number of chapters to read each scheduled day (default: 1)</span>
+              </div>
             </div>
           </div>
 
-          <div class="form-control">
+          <div class="form-control w-full mt-2">
+            <%= form.label :timezone, t("challenge_form.timezone"), class: "label" %>
+            <%= form.select :timezone, options_for_select(timezone_options, default_timezone || "Eastern Time (US & Canada)"), {}, { class: "select select-bordered w-full" } %>
+            <div class="label pt-1">
+              <span class="label-text-alt text-xs text-base-content/60"><%= t("challenge_form.timezone_help") %></span>
+            </div>
+          </div>
+
+          <!-- Days of the Week Schedule Options -->
+          <div class="form-control w-full mt-3 p-4 bg-base-200/50 rounded-2xl border border-base-200">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+              <div>
+                <label class="font-bold text-sm text-neutral">Reading Days of the Week</label>
+                <p class="text-xs text-base-content/60">Choose which days are scheduled for reading</p>
+              </div>
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <button type="button" class="btn btn-xs btn-outline rounded-lg" data-action="click->challenge-creator#setAllDays">All 7 Days</button>
+                <button type="button" class="btn btn-xs btn-outline rounded-lg" data-action="click->challenge-creator#setWeekdaysOnly">Mon - Fri Only</button>
+                <button type="button" class="btn btn-xs btn-outline rounded-lg" data-action="click->challenge-creator#setSkipSundays">Skip Sundays</button>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2">
+              <% [["Mon", 1], ["Tue", 2], ["Wed", 3], ["Thu", 4], ["Fri", 5], ["Sat", 6], ["Sun", 0]].each do |name, wday| %>
+                <% is_reading_day = challenge.reading_days_of_week_list.include?(wday) %>
+                <label class="flex items-center gap-2 p-2 bg-base-100 rounded-xl border border-base-200 cursor-pointer hover:border-primary/50 transition-colors">
+                  <input type="checkbox"
+                         name="challenge[reading_days][]"
+                         value="<%= wday %>"
+                         <%= 'checked' if is_reading_day %>
+                         class="checkbox checkbox-xs checkbox-primary"
+                         data-challenge-creator-target="readingDayCheckbox"
+                         data-wday="<%= wday %>"
+                         data-action="change->challenge-creator#updateSchedule">
+                  <span class="text-xs font-semibold"><%= name %></span>
+                </label>
+              <% end %>
+            </div>
+          </div>
+
+          <!-- Specific Dates to Skip (Holidays / Breaks) -->
+          <div class="form-control w-full mt-3 p-4 bg-base-200/50 rounded-2xl border border-base-200">
+            <label class="font-bold text-sm text-neutral mb-1">Skip Specific Dates (Holidays / Breaks)</label>
+            <p class="text-xs text-base-content/60 mb-2">Enter specific dates to exclude from the schedule (e.g., 2026-12-25, 2027-01-01), separated by commas or newlines</p>
+            <%= form.text_area :skip_dates_text,
+                               value: challenge.skip_dates_list.map(&:to_s).join(", "),
+                               placeholder: "2026-12-25, 2027-01-01",
+                               rows: 2,
+                               class: "textarea textarea-bordered w-full text-xs font-mono",
+                               data: { "challenge-creator-target": "skipDatesText", action: "input->challenge-creator#updateSchedule" } %>
+          </div>
+
+          <div class="form-control mt-2">
             <label class="label cursor-pointer justify-start gap-2">
               <%= form.check_box :hidden, class: "checkbox" %>
               <span class="label-text"><%= t("challenge_form.hide_challenge") %></span>
@@ -74,30 +128,62 @@
           <h2 class="card-title mb-4"><%= t("challenge_form.select_books") %></h2>
 
           <!-- Selection Buttons -->
-          <div class="flex flex-col sm:flex-row gap-2 sm:gap-4 mb-4 sm:mb-6">
-            <button type="button" class="btn btn-outline btn-sm sm:btn-md" data-action="click->challenge-creator#selectAllBooks">
-              <%= t("challenge_form.select_all") %>
+          <div class="flex flex-wrap gap-2 sm:gap-3 mb-4 sm:mb-6">
+            <button type="button" class="btn btn-outline btn-sm" data-action="click->challenge-creator#selectAllBooks">
+              <%= t("challenge_form.select_all", default: "All 66 Books") %>
             </button>
-            <button type="button" class="btn btn-outline btn-sm sm:btn-md" data-action="click->challenge-creator#clearAllBooks">
-              <%= t("challenge_form.clear_all") %>
+            <button type="button" class="btn btn-outline btn-sm" data-action="click->challenge-creator#selectOldTestament">
+              Old Testament (39)
             </button>
+            <button type="button" class="btn btn-outline btn-sm" data-action="click->challenge-creator#selectNewTestament">
+              New Testament (27)
+            </button>
+            <button type="button" class="btn btn-ghost btn-sm" data-action="click->challenge-creator#clearAllBooks">
+              <%= t("challenge_form.clear_all", default: "Clear All") %>
+            </button>
+          </div>
+
+          <!-- Old Testament Books -->
+          <div class="mb-6">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-lg font-semibold text-neutral"><%= t("challenge_form.old_testament", default: "Old Testament") %></h3>
+              <span class="text-xs text-base-content/50 font-medium"><%= old_testament_books.count %> books</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
+              <% old_testament_books.each do |book| %>
+                <label class="flex items-center cursor-pointer p-1.5 rounded-lg hover:bg-base-200/60 transition-colors">
+                  <input type="checkbox"
+                         name="selected_books[]"
+                         value="<%= book[:number] %>"
+                         class="checkbox checkbox-primary checkbox-sm mr-2"
+                         data-challenge-creator-target="bookCheckbox"
+                         data-action="change->challenge-creator#updateSchedule"
+                         data-testament="old"
+                         data-chapters="<%= book[:chapters] %>">
+                  <span class="text-sm"><%= book[:name] %> <span class="text-base-content/50 text-xs">(<%= book[:chapters] %>)</span></span>
+                </label>
+              <% end %>
+            </div>
           </div>
 
           <!-- New Testament Books -->
           <div class="mb-4 sm:mb-6">
-            <h3 class="text-lg font-semibold mb-3 sm:mb-4"><%= t("challenge_form.new_testament") %></h3>
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-lg font-semibold text-neutral"><%= t("challenge_form.new_testament", default: "New Testament") %></h3>
+              <span class="text-xs text-base-content/50 font-medium"><%= new_testament_books.count %> books</span>
+            </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
               <% new_testament_books.each do |book| %>
-                <label class="flex items-center cursor-pointer">
+                <label class="flex items-center cursor-pointer p-1.5 rounded-lg hover:bg-base-200/60 transition-colors">
                   <input type="checkbox"
                          name="selected_books[]"
                          value="<%= book[:number] %>"
-                         class="checkbox checkbox-primary mr-2"
+                         class="checkbox checkbox-primary checkbox-sm mr-2"
                          data-challenge-creator-target="bookCheckbox"
                          data-action="change->challenge-creator#updateSchedule"
                          data-testament="new"
                          data-chapters="<%= book[:chapters] %>">
-                  <span class="text-sm"><%= book[:name] %> (<%= book[:chapters] %>)</span>
+                  <span class="text-sm"><%= book[:name] %> <span class="text-base-content/50 text-xs">(<%= book[:chapters] %>)</span></span>
                 </label>
               <% end %>
             </div>

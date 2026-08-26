@@ -22,7 +22,7 @@ RSpec.describe EmailLoginController, type: :controller do
 
       it 'redirects to reading page' do
         get :show, params: { token: token.token }
-        expect(response).to redirect_to(reading_path)
+        expect(response).to redirect_to(reading_path(date: reading.scheduled_date))
       end
 
       it 'sets a success notice' do
@@ -41,7 +41,7 @@ RSpec.describe EmailLoginController, type: :controller do
 
       it 'redirects to reading page' do
         get :show, params: { token: token.token }
-        expect(response).to redirect_to(reading_path)
+        expect(response).to redirect_to(reading_path(date: reading.scheduled_date))
       end
 
       it 'does not overwrite the original clicked_at' do

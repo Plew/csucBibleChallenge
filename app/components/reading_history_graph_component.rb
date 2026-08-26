@@ -10,7 +10,7 @@ class ReadingHistoryGraphComponent < ViewComponent::Base
     @completed_days_map = completed_days.each_with_object({}) do |day_info, hash|
       hash[day_info[:day]] = day_info[:on_time]
     end
-    @start_date = start_date || Date.today
+    @start_date = start_date || Date.current
     @current_day = current_day
   end
 

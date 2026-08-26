@@ -38,21 +38,51 @@ class AddBooksToChallenge
       return false
     end
 
-    # Start scheduling the day after the last reading
-    next_date = last_reading.scheduled_date + 1.day
+    chapters_per_day = (challenge.chapters_per_day.presence || 1).to_i
+    chapters_per_day = 1 if chapters_per_day < 1
+    skip_days = challenge.skip_days_of_week_list
+    skip_dates = challenge.skip_dates_list
+
+    # Determine remaining capacity on last reading's date or move to next eligible day
+    last_date_readings_count = challenge.readings.where(scheduled_date: last_reading.scheduled_date).count
+    current_date = if last_date_readings_count < chapters_per_day && !skip_days.include?(last_reading.scheduled_date.wday) && !skip_dates.include?(last_reading.scheduled_date)
+                     last_reading.scheduled_date
+    else
+                     last_reading.scheduled_date + 1.day
+    end
+
+    # Build queue of chapters to add
+    chapters_to_add = []
+    book_numbers.sort.each do |book_number|
+      chapter_count = chapter_counts[book_number]
+      (1..chapter_count).each do |chapter_number|
+        chapters_to_add << { book_number: book_number, chapter_number: chapter_number }
+      end
+    end
 
     ActiveRecord::Base.transaction do
-      book_numbers.sort.each do |book_number|
-        chapter_count = chapter_counts[book_number]
-
-        (1..chapter_count).each do |chapter_number|
-          challenge.readings.create!(
-            book_number: book_number,
-            chapter_number: chapter_number,
-            scheduled_date: next_date
-          )
-          next_date += 1.day
+      until chapters_to_add.empty?
+        if skip_days.include?(current_date.wday) || skip_dates.include?(current_date)
+          current_date += 1.day
+          next
         end
+
+        # If on the last reading's date, only take remaining slot capacity
+        slot_capacity = if current_date == last_reading.scheduled_date
+                          [ chapters_per_day - last_date_readings_count, 1 ].max
+        else
+                          chapters_per_day
+        end
+
+        batch = chapters_to_add.shift(slot_capacity)
+        batch.each do |ch|
+          challenge.readings.create!(
+            book_number: ch[:book_number],
+            chapter_number: ch[:chapter_number],
+            scheduled_date: current_date
+          )
+        end
+        current_date += 1.day unless chapters_to_add.empty?
       end
 
       # Update challenge end_date to match the last scheduled reading
@@ -81,7 +111,41 @@ class AddBooksToChallenge
 
     total_chapters = book_numbers.sum { |book_number| chapter_counts[book_number] }
 
-    { total_chapters: total_chapters, new_end_date: last_reading.scheduled_date + total_chapters.days }
+    chapters_per_day = (challenge.chapters_per_day.presence || 1).to_i
+    chapters_per_day = 1 if chapters_per_day < 1
+    skip_days = challenge.skip_days_of_week_list
+    skip_dates = challenge.skip_dates_list
+
+    last_date_readings_count = challenge.readings.where(scheduled_date: last_reading.scheduled_date).count
+    current_date = if last_date_readings_count < chapters_per_day && !skip_days.include?(last_reading.scheduled_date.wday) && !skip_dates.include?(last_reading.scheduled_date)
+                     last_reading.scheduled_date
+    else
+                     last_reading.scheduled_date + 1.day
+    end
+
+    remaining = total_chapters
+    last_date = current_date
+    first_pass = true
+
+    while remaining > 0
+      if skip_days.include?(current_date.wday) || skip_dates.include?(current_date)
+        current_date += 1.day
+        next
+      end
+
+      slot = if first_pass && current_date == last_reading.scheduled_date
+               [ chapters_per_day - last_date_readings_count, 1 ].max
+      else
+               chapters_per_day
+      end
+      first_pass = false
+
+      remaining -= slot
+      last_date = current_date
+      current_date += 1.day if remaining > 0
+    end
+
+    { total_chapters: total_chapters, new_end_date: last_date }
   end
 
   private

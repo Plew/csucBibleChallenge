@@ -15,25 +15,19 @@ RSpec.describe HomeController, type: :controller do
 
     context 'when user is logged in' do
       let(:user) { create(:user) }
-      let(:challenge) { create(:challenge) }
+      let!(:challenge) { create(:challenge, end_date: 1.week.from_now) }
 
       before do
         session[:user_id] = user.id
         create(:user_challenge_enrollment, user: user, challenge: challenge)
       end
 
-      it 'redirects to reading path without date parameter' do
+      it 'shows the home dashboard with enrolled and available challenges' do
         get :index
 
-        expect(response).to redirect_to(reading_path)
-      end
-
-      it 'redirects to reading path preserving date parameter' do
-        target_date = '2025-09-15'
-
-        get :index, params: { date: target_date }
-
-        expect(response).to redirect_to(reading_path(date: target_date))
+        expect(response).to have_http_status(:success)
+        expect(assigns(:my_challenges)).to include(challenge)
+        expect(assigns(:challenges)).to include(challenge)
       end
     end
   end

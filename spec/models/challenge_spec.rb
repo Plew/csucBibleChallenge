@@ -40,6 +40,49 @@ RSpec.describe Challenge, type: :model do
         expect(challenge).to be_valid
       end
     end
+
+    describe 'schedule options validations' do
+      it 'validates chapters_per_day is greater than or equal to 1' do
+        challenge = FactoryBot.build(:challenge, chapters_per_day: 0)
+        expect(challenge).not_to be_valid
+        expect(challenge.errors[:chapters_per_day]).to be_present
+
+        challenge.chapters_per_day = 3
+        expect(challenge).to be_valid
+      end
+
+      it 'normalizes skip_days_of_week_list to integers and computes reading_days_of_week_list' do
+        challenge = FactoryBot.build(:challenge, skip_days_of_week: [ "0", "6" ])
+        expect(challenge.skip_days_of_week_list).to eq([ 0, 6 ])
+        expect(challenge.reading_days_of_week_list).to eq([ 1, 2, 3, 4, 5 ])
+      end
+
+      it 'normalizes skip_dates_list to Date objects' do
+        challenge = FactoryBot.build(:challenge, skip_dates: [ "2026-12-25", "2027-01-01" ])
+        expect(challenge.skip_dates_list).to eq([ Date.new(2026, 12, 25), Date.new(2027, 1, 1) ])
+      end
+
+      it 'accurately identifies reading days with reading_day?' do
+        challenge = FactoryBot.build(
+          :challenge,
+          start_date: Date.new(2026, 10, 1),
+          end_date: Date.new(2026, 10, 31),
+          skip_days_of_week: [ 0, 6 ], # Skip weekends
+          skip_dates: [ "2026-10-15" ]
+        )
+
+        # 2026-10-01 is a Thursday (reading day)
+        expect(challenge.reading_day?(Date.new(2026, 10, 1))).to be true
+        # 2026-10-03 is a Saturday (skipped by wday)
+        expect(challenge.reading_day?(Date.new(2026, 10, 3))).to be false
+        # 2026-10-04 is a Sunday (skipped by wday)
+        expect(challenge.reading_day?(Date.new(2026, 10, 4))).to be false
+        # 2026-10-15 is a Thursday (skipped by specific date)
+        expect(challenge.reading_day?(Date.new(2026, 10, 15))).to be false
+        # Outside range
+        expect(challenge.reading_day?(Date.new(2026, 9, 30))).to be false
+      end
+    end
   end
 
   describe '#create' do
@@ -238,6 +281,46 @@ RSpec.describe Challenge, type: :model do
 
     it 'does not destroy users when challenge is deleted' do
       expect { challenge.destroy }.not_to change(User, :count)
+    end
+  end
+
+  describe '#daily_reading_status' do
+    let(:user) { create(:user) }
+    let(:challenge) { create(:challenge, timezone: 'UTC', start_date: 1.week.ago, end_date: 1.week.from_now) }
+    let(:today) { Date.current }
+
+    it 'returns unread status when chapters are scheduled today and user has not read' do
+      reading = create(:reading, challenge: challenge, book_number: 40, chapter_number: 1, scheduled_date: today)
+      status = challenge.daily_reading_status(user)
+
+      expect(status[:has_reading]).to be true
+      expect(status[:read_today]).to be false
+      expect(status[:read_count]).to eq(0)
+      expect(status[:total_count]).to eq(1)
+      expect(status[:reading_title]).to eq("Matthew 1")
+    end
+
+    it 'returns read status when user completes all chapters today' do
+      reading1 = create(:reading, challenge: challenge, book_number: 40, chapter_number: 1, scheduled_date: today)
+      reading2 = create(:reading, challenge: challenge, book_number: 40, chapter_number: 2, scheduled_date: today)
+      create(:user_reading, user: user, reading: reading1)
+      create(:user_reading, user: user, reading: reading2)
+
+      status = challenge.daily_reading_status(user)
+
+      expect(status[:has_reading]).to be true
+      expect(status[:read_today]).to be true
+      expect(status[:read_count]).to eq(2)
+      expect(status[:total_count]).to eq(2)
+      expect(status[:reading_title]).to eq("2 chapters")
+    end
+
+    it 'returns rest day status when no readings are scheduled today' do
+      status = challenge.daily_reading_status(user)
+
+      expect(status[:has_reading]).to be false
+      expect(status[:read_today]).to be false
+      expect(status[:read_count]).to eq(0)
     end
   end
 end

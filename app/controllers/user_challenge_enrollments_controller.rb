@@ -10,22 +10,25 @@ class UserChallengeEnrollmentsController < ApplicationController
       return
     end
 
-    # Ensure user is not already in a challenge if we strictly enforce one challenge at a time via UI
-    if current_user.challenges.any?
-      redirect_to root_path, alert: "You are already enrolled in a challenge. Leave your current challenge to join a new one."
+    if current_user.challenges.include?(@challenge)
+      set_active_challenge(@challenge)
+      if @challenge.start_date <= Date.current && @challenge.end_date >= Date.current
+        redirect_to reading_path, notice: "You are already enrolled in #{@challenge.name}."
+      else
+        redirect_to challenge_path(@challenge), notice: "You are already enrolled in #{@challenge.name}."
+      end
       return
     end
 
     @enrollment = @challenge.user_challenge_enrollments.new(user: current_user)
-    # In the future, if a user can select a group upon joining:
-    # @enrollment.group_id = params[:group_id] # Ensure group_id is permitted and valid
 
     if @enrollment.save
+      set_active_challenge(@challenge)
       # Redirect to reading page if challenge has started, otherwise to challenge page
       if @challenge.start_date <= Date.current && @challenge.end_date >= Date.current
-        redirect_to reading_path
+        redirect_to reading_path, notice: "Joined #{@challenge.name}!"
       else
-        redirect_to challenge_path(@challenge)
+        redirect_to challenge_path(@challenge), notice: "Joined #{@challenge.name}!"
       end
     else
       # If coming from a dedicated join page, render :new might be appropriate
@@ -37,7 +40,12 @@ class UserChallengeEnrollmentsController < ApplicationController
   # DELETE /user_challenge_enrollments/:id
   def destroy
     if @enrollment.user == current_user
+      challenge_id = @enrollment.challenge_id
       @enrollment.destroy
+      if session[:active_challenge_id] == challenge_id
+        session.delete(:active_challenge_id)
+        @current_active_challenge = nil
+      end
       redirect_to challenges_path
     else
       # This case should ideally not be reachable if buttons are only shown to the correct user

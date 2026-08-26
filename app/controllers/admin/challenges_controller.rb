@@ -19,9 +19,15 @@ class Admin::ChallengesController < Admin::BaseController
     @bible_books = load_bible_books
 
     # Calculate end_date before saving
-    if params[:selected_books].present?
+    if params[:selected_books].present? && @challenge.start_date.present?
       total_chapters = calculate_total_chapters(params[:selected_books])
-      @challenge.end_date = @challenge.start_date + (total_chapters - 1).days
+      @challenge.end_date = calculate_schedule_end_date(
+        @challenge.start_date,
+        total_chapters,
+        chapters_per_day: @challenge.chapters_per_day,
+        skip_days_of_week: @challenge.skip_days_of_week,
+        skip_dates: @challenge.skip_dates
+      )
     else
       @challenge.end_date = @challenge.start_date # No books selected
     end

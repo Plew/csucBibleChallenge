@@ -20,10 +20,9 @@ class SessionsController < ApplicationController
         if group
           # Enroll in challenge if not already enrolled
           unless current_user.challenges.include?(group.challenge)
-            if current_user.challenges.empty?
-              challenge_enrollment = group.challenge.user_challenge_enrollments.new(user: current_user)
-              challenge_enrollment.save
-            end
+            challenge_enrollment = group.challenge.user_challenge_enrollments.new(user: current_user)
+            challenge_enrollment.save
+            set_active_challenge(group.challenge)
           end
 
           # Enroll in group if in the challenge
@@ -41,7 +40,7 @@ class SessionsController < ApplicationController
 
       # Redirect to reading page if user has an active challenge, otherwise to challenge show page
       if user.challenges.any?
-        first_challenge = user.active_challenge
+        first_challenge = current_active_challenge
         if first_challenge.start_date <= Date.current && first_challenge.end_date >= Date.current
           redirect_to reading_path
         else

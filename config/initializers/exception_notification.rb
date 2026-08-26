@@ -10,8 +10,8 @@ ExceptionNotification.configure do |config|
 
   if Rails.env.production?
     config.add_notifier(:email, {
-      email_prefix: "[And God Said Bible Challenge] ",
-      sender_address: %("And God Said Bible Challenge Errors" <noreply@andgodsaid.org>),
+      email_prefix: "[And God Said] ",
+      sender_address: %("And God Said Errors" <noreply@andgodsaid.org>),
       exception_recipients: %w[plewwatsono@gmail.com]
     })
   end

@@ -10,28 +10,30 @@ class SendDailyReadingEmailsJob < ApplicationJob
       # Only send emails when it's the 6am hour in the challenge's timezone
       next unless current_time_in_tz.hour == 6
 
-      # Get today's reading for this challenge (in the challenge's timezone)
+      # Get today's readings for this challenge (in the challenge's timezone)
       today = current_time_in_tz.to_date
-      reading = challenge.readings.find_by(scheduled_date: today)
+      readings = challenge.readings.where(scheduled_date: today).order(:book_number, :chapter_number).to_a
 
-      # Skip if there's no reading scheduled for today
-      next unless reading
+      # Skip if there are no readings scheduled for today
+      next if readings.empty?
+
+      first_reading = readings.first
 
       # Find all users enrolled in this challenge who want daily emails
       challenge.users.wants_daily_email.find_each do |user|
-        # Guard against duplicates: skip if a token already exists for this user+reading
-        next if EmailLoginToken.exists?(user: user, reading: reading)
+        # Guard against duplicates: skip if a token already exists for this user+reading today
+        next if EmailLoginToken.exists?(user: user, reading: first_reading)
 
         # Create a login token for this user/reading
         login_token = EmailLoginToken.create!(
           user: user,
           challenge: challenge,
-          reading: reading,
+          reading: first_reading,
           sent_at: Time.current
         )
 
-        # Send the email
-        UserMailer.daily_reading(user, reading, login_token).deliver_now
+        # Send the single combined email for all chapters today
+        UserMailer.daily_reading(user, readings, login_token).deliver_now
       end
     end
   end

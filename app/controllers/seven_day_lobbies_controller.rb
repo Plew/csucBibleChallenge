@@ -82,7 +82,17 @@ class SevenDayLobbiesController < ApplicationController
   private
 
   def set_challenge
-    @challenge = Challenge.find(params[:challenge_id])
+    @challenge = if params[:challenge_id].present?
+                   Challenge.find(params[:challenge_id])
+    else
+                   current_active_challenge
+    end
+
+    if @challenge.nil?
+      redirect_to challenges_path, alert: t("seven_day_lobby.must_be_enrolled")
+    end
+  rescue ActiveRecord::RecordNotFound
+    redirect_to challenges_path, alert: t("seven_day_lobby.must_be_enrolled")
   end
 
   def require_enrollment
