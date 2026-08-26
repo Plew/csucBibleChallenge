@@ -16,10 +16,12 @@ class EmailLoginController < ApplicationController
     # Mark the token as clicked
     @token.mark_as_clicked!
 
-    # Log the user in
+    # Log the user in and set active challenge
     log_in @token.user
+    set_active_challenge(@token.challenge) if @token.challenge.present?
 
-    # Redirect to reading page
-    redirect_to reading_path, notice: "You've been logged in successfully."
+    # Redirect to reading page for this reading's scheduled date
+    target_date = @token.reading&.scheduled_date
+    redirect_to reading_path(date: target_date), notice: "You've been logged in successfully."
   end
 end

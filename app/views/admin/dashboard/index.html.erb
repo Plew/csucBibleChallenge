@@ -14,20 +14,30 @@
   <div class="grid grid-cols-1 gap-4">
     <div class="card bg-base-100 shadow-xl">
       <div class="card-body p-4">
-        <h2 class="card-title"><%= t('admin.challenges_card') %></h2>
+        <h2 class="card-title"><%= t('admin.challenges_card', default: 'Challenges') %></h2>
         <p class="text-3xl font-bold text-primary"><%= @challenges_count %></p>
         <div class="card-actions justify-end">
-          <%= link_to t('admin.manage_challenges'), admin_challenges_path, class: "btn btn-primary btn-sm" %>
+          <%= link_to t('admin.manage_challenges', default: 'Manage Challenges'), admin_challenges_path, class: "btn btn-primary btn-sm" %>
         </div>
       </div>
     </div>
 
     <div class="card bg-base-100 shadow-xl">
       <div class="card-body p-4">
-        <h2 class="card-title"><%= t('admin.users_card') %></h2>
+        <h2 class="card-title"><%= t('admin.users_card', default: 'Users') %></h2>
         <p class="text-3xl font-bold text-secondary"><%= @users_count %></p>
         <div class="card-actions justify-end">
-          <%= link_to t('admin.manage_users'), admin_users_path, class: "btn btn-secondary btn-sm" %>
+          <%= link_to t('admin.manage_users', default: 'Manage Users'), admin_users_path, class: "btn btn-secondary btn-sm" %>
+        </div>
+      </div>
+    </div>
+
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body p-4">
+        <h2 class="card-title"><%= t('admin.feedbacks_card', default: 'Feedbacks') %></h2>
+        <p class="text-3xl font-bold text-accent"><%= @feedbacks_count || Feedback.count %></p>
+        <div class="card-actions justify-end">
+          <%= link_to t('admin.manage_feedbacks', default: 'Manage Feedbacks'), admin_feedbacks_path, class: "btn btn-accent btn-sm" %>
         </div>
       </div>
     </div>

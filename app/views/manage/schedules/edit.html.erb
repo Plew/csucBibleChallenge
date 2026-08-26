@@ -1,0 +1,169 @@
+<div class="px-2 py-4 max-w-3xl mx-auto space-y-6">
+  <div class="text-sm breadcrumbs mb-2">
+    <ul>
+      <li><%= link_to @challenge.title, challenge_manage_dashboard_path(@challenge), class: "link link-hover" %></li>
+      <li><%= t("manage.schedule.title") %></li>
+    </ul>
+  </div>
+
+  <div class="flex justify-between items-center">
+    <div>
+      <h1 class="text-2xl font-bold"><%= t("manage.schedule.title") %></h1>
+      <p class="text-xs text-base-content/60 mt-0.5">Configure chapters per day, reading days of the week, and skipped dates.</p>
+    </div>
+    <%= link_to t("common.back"), challenge_manage_dashboard_path(@challenge), class: "btn btn-sm btn-outline" %>
+  </div>
+
+  <!-- Current Schedule Overview Stats -->
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    <div class="bg-base-100 border border-base-200 rounded-2xl p-4 shadow-sm text-center">
+      <div class="text-xs text-base-content/60 font-medium">Total Chapters</div>
+      <div class="text-xl sm:text-2xl font-bold font-mono text-neutral mt-1"><%= @challenge.readings.count %></div>
+    </div>
+
+    <div class="bg-base-100 border border-base-200 rounded-2xl p-4 shadow-sm text-center">
+      <div class="text-xs text-base-content/60 font-medium">Pace</div>
+      <div class="text-xl sm:text-2xl font-bold font-mono text-primary mt-1"><%= @challenge.chapters_per_day || 1 %>/day</div>
+    </div>
+
+    <div class="bg-base-100 border border-base-200 rounded-2xl p-4 shadow-sm text-center">
+      <div class="text-xs text-base-content/60 font-medium">Reading Days</div>
+      <div class="text-xl sm:text-2xl font-bold font-mono text-neutral mt-1"><%= @challenge.readings.distinct.count(:scheduled_date) %></div>
+    </div>
+
+    <div class="bg-base-100 border border-base-200 rounded-2xl p-4 shadow-sm text-center">
+      <div class="text-xs text-base-content/60 font-medium">End Date</div>
+      <div class="text-sm sm:text-base font-bold text-neutral mt-2">
+        <%= @challenge.end_date.present? ? @challenge.end_date.strftime("%b %d, %Y") : "—" %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Schedule Edit Form -->
+  <div class="card bg-base-100 shadow-xl border border-base-200">
+    <div class="card-body p-5 sm:p-6">
+      <%= form_with(model: @challenge, url: challenge_manage_schedule_path(@challenge), method: :patch, local: true, data: { turbo: false, controller: "challenge-creator" }, class: "space-y-5") do |form| %>
+        <% if @challenge.errors.any? %>
+          <div class="alert alert-error">
+            <div>
+              <h3 class="font-bold"><%= t("admin.fix_errors") %></h3>
+              <ul class="list-disc list-inside text-sm">
+                <% @challenge.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+              </ul>
+            </div>
+          </div>
+        <% end %>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Start Date -->
+          <div class="form-control w-full">
+            <%= form.label :start_date, t("challenges.start_date"), class: "label font-semibold text-sm" %>
+            <%= form.date_field :start_date, class: "input input-bordered w-full", data: { "challenge-creator-target": "startDate", action: "change->challenge-creator#updateSchedule" } %>
+          </div>
+
+          <!-- Chapters Per Day -->
+          <div class="form-control w-full">
+            <%= form.label :chapters_per_day, "Chapters Per Day", class: "label font-semibold text-sm" %>
+            <%= form.number_field :chapters_per_day, value: (@challenge.chapters_per_day.presence || 1), min: 1, max: 20, class: "input input-bordered w-full", data: { "challenge-creator-target": "chaptersPerDay", action: "change->challenge-creator#updateSchedule input->challenge-creator#updateSchedule" } %>
+            <div class="label pt-1">
+              <span class="label-text-alt text-xs text-base-content/60">Number of chapters to read each scheduled day</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Days of the Week Schedule Options -->
+        <div class="form-control w-full p-4 bg-base-200/50 rounded-2xl border border-base-200">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+            <div>
+              <label class="font-bold text-sm text-neutral">Reading Days of the Week</label>
+              <p class="text-xs text-base-content/60">Choose which days are scheduled for reading</p>
+            </div>
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <button type="button" class="btn btn-xs btn-outline rounded-lg" data-action="click->challenge-creator#setAllDays">All 7 Days</button>
+              <button type="button" class="btn btn-xs btn-outline rounded-lg" data-action="click->challenge-creator#setWeekdaysOnly">Mon - Fri Only</button>
+              <button type="button" class="btn btn-xs btn-outline rounded-lg" data-action="click->challenge-creator#setSkipSundays">Skip Sundays</button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2">
+            <% [["Mon", 1], ["Tue", 2], ["Wed", 3], ["Thu", 4], ["Fri", 5], ["Sat", 6], ["Sun", 0]].each do |name, wday| %>
+              <% is_reading_day = @challenge.reading_days_of_week_list.include?(wday) %>
+              <label class="flex items-center gap-2 p-2.5 bg-base-100 rounded-xl border border-base-200 cursor-pointer hover:border-primary/50 transition-colors">
+                <input type="checkbox"
+                       name="challenge[reading_days][]"
+                       value="<%= wday %>"
+                       <%= 'checked' if is_reading_day %>
+                       class="checkbox checkbox-xs checkbox-primary"
+                       data-challenge-creator-target="readingDayCheckbox"
+                       data-wday="<%= wday %>"
+                       data-action="change->challenge-creator#updateSchedule">
+                <span class="text-xs font-semibold"><%= name %></span>
+              </label>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Specific Dates to Skip (Holidays / Breaks) -->
+        <div class="form-control w-full p-4 bg-base-200/50 rounded-2xl border border-base-200">
+          <label class="font-bold text-sm text-neutral mb-1">Skip Specific Dates (Holidays / Breaks)</label>
+          <p class="text-xs text-base-content/60 mb-2">Enter specific dates to exclude from the schedule (e.g., 2026-12-25, 2027-01-01), separated by commas or newlines</p>
+          <%= form.text_area :skip_dates_text,
+                             value: @challenge.skip_dates_list.map(&:to_s).join(", "),
+                             placeholder: "2026-12-25, 2027-01-01",
+                             rows: 2,
+                             class: "textarea textarea-bordered w-full text-xs font-mono",
+                             data: { "challenge-creator-target": "skipDatesText", action: "input->challenge-creator#updateSchedule" } %>
+        </div>
+
+        <!-- Rescheduling Notice Alert -->
+        <div class="alert alert-info bg-info/10 border-info/30 text-info-content text-xs rounded-xl flex items-start gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0 text-info mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0 1 18 0z"/>
+          </svg>
+          <div>
+            <strong>Automatic Rescheduling:</strong> Saving your changes will automatically recalculate the scheduled date for each chapter in this challenge starting from the start date, updating the challenge end date and preserving all existing reading history.
+          </div>
+        </div>
+
+        <div class="form-control pt-2">
+          <%= form.submit "Save & Update Schedule", class: "btn btn-primary w-full sm:w-auto" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Scheduled Chapters Preview -->
+  <% if @readings.present? && @readings.any? %>
+    <div class="card bg-base-100 shadow-xl border border-base-200">
+      <div class="card-body p-4 sm:p-5 space-y-3">
+        <div class="flex items-center justify-between">
+          <h2 class="font-bold text-base text-neutral">Current Schedule Preview</h2>
+          <%= link_to "View all #{@challenge.readings.count} chapters &rarr;".html_safe, challenge_manage_chapters_path(@challenge), class: "text-xs link link-primary font-medium" %>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="table table-zebra table-sm w-full text-xs sm:text-sm">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Day</th>
+                <th>Reading</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @readings.each do |reading| %>
+                <tr>
+                  <td class="font-mono text-base-content/80 whitespace-nowrap"><%= reading.scheduled_date.strftime("%b %d, %Y") %></td>
+                  <td class="text-base-content/60"><%= reading.scheduled_date.strftime("%a") %></td>
+                  <td class="font-medium text-neutral"><%= book_number_to_name(reading.book_number) %> <%= reading.chapter_number %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

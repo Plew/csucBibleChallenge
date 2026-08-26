@@ -10,6 +10,9 @@ export default class extends Controller {
 
     document.addEventListener("turbo:visit", this.boundShow)
     document.addEventListener("turbo:before-fetch-request", this.boundShow)
+    document.addEventListener("turbo:before-fetch-response", this.boundHide)
+    document.addEventListener("turbo:submit-end", this.boundHide)
+    document.addEventListener("turbo:fetch-request-error", this.boundHide)
     document.addEventListener("turbo:load", this.boundHide)
     document.addEventListener("turbo:render", this.boundHide)
     document.addEventListener("turbo:before-cache", this.boundHide)
@@ -18,6 +21,9 @@ export default class extends Controller {
   disconnect() {
     document.removeEventListener("turbo:visit", this.boundShow)
     document.removeEventListener("turbo:before-fetch-request", this.boundShow)
+    document.removeEventListener("turbo:before-fetch-response", this.boundHide)
+    document.removeEventListener("turbo:submit-end", this.boundHide)
+    document.removeEventListener("turbo:fetch-request-error", this.boundHide)
     document.removeEventListener("turbo:load", this.boundHide)
     document.removeEventListener("turbo:render", this.boundHide)
     document.removeEventListener("turbo:before-cache", this.boundHide)
@@ -26,6 +32,13 @@ export default class extends Controller {
 
   scheduleShow(event) {
     if (event && event.target && event.target.closest && event.target.closest("turbo-frame")) return
+    
+    // Do not show full-page overlay for Turbo Stream or partial updates
+    if (event && event.detail && event.detail.fetchOptions && event.detail.fetchOptions.headers) {
+      const accept = event.detail.fetchOptions.headers["Accept"] || event.detail.fetchOptions.headers["accept"] || ""
+      if (typeof accept === "string" && accept.includes("turbo-stream")) return
+    }
+
     this.clearTimer()
     this.showTimer = setTimeout(() => {
       this.overlayTarget.classList.remove("hidden")

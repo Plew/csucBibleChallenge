@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_25_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_25_170000) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -67,6 +67,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_25_120000) do
   create_table "challenges", force: :cascade do |t|
     t.string "api_key"
     t.boolean "auto_remove_inactive_from_groups", default: false, null: false
+    t.integer "chapters_per_day", default: 1, null: false
     t.datetime "created_at", null: false
     t.integer "creator_id", null: false
     t.text "description"
@@ -77,6 +78,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_25_120000) do
     t.boolean "locked", default: false, null: false
     t.text "message_of_the_day"
     t.string "name"
+    t.text "skip_dates", default: "[]"
+    t.text "skip_days_of_week", default: "[]"
     t.date "start_date"
     t.string "timezone"
     t.datetime "updated_at", null: false

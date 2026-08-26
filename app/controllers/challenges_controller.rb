@@ -48,9 +48,15 @@ class ChallengesController < ApplicationController
     @bible_books = load_bible_books
 
     # Calculate end_date before saving
-    if params[:selected_books].present?
+    if params[:selected_books].present? && @challenge.start_date.present?
       total_chapters = calculate_total_chapters(params[:selected_books])
-      @challenge.end_date = @challenge.start_date + (total_chapters - 1).days
+      @challenge.end_date = calculate_schedule_end_date(
+        @challenge.start_date,
+        total_chapters,
+        chapters_per_day: @challenge.chapters_per_day,
+        skip_days_of_week: @challenge.skip_days_of_week,
+        skip_dates: @challenge.skip_dates
+      )
     else
       @challenge.end_date = @challenge.start_date
     end
@@ -58,10 +64,25 @@ class ChallengesController < ApplicationController
     if @challenge.save
       create_readings_for_challenge(@challenge, params[:selected_books])
       @challenge.user_challenge_enrollments.create!(user: current_user, role: "organizer")
+      set_active_challenge(@challenge)
       redirect_to challenge_manage_dashboard_path(@challenge), notice: t("manage.challenge_created")
     else
       render :new, status: :unprocessable_content
     end
+  end
+
+  # GET /challenges/hub
+  def hub
+    unless logged_in?
+      redirect_to challenges_path
+      return
+    end
+
+    @active_challenge = current_active_challenge
+    @enrolled_challenges = current_user.challenges.order(end_date: :desc, name: :asc)
+    @public_challenges = Challenge.where("end_date >= ? AND hidden = ?", Date.current, false)
+                                  .where.not(id: @enrolled_challenges.pluck(:id))
+                                  .includes(:users, :groups, :readings)
   end
 
   # GET /challenges/:id/summary
@@ -72,13 +93,9 @@ class ChallengesController < ApplicationController
   private
 
   def require_challenge_creator
-    unless current_user
+    unless current_user&.can_create_challenges?
       redirect_to challenges_path, alert: t("challenges.not_permitted_to_create")
       return
-    end
-
-    if current_user.challenges.any?
-      redirect_to challenges_path, alert: t("challenges.already_enrolled_cannot_create")
     end
   end
 end

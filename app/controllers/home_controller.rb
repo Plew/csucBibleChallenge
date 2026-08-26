@@ -1,35 +1,35 @@
 class HomeController < ApplicationController
   # GET /
   def index
-    if logged_in?
-      user_challenge = current_user.active_challenge
-
-      # If user has a challenge that hasn't started yet, redirect to challenge show page
-      if user_challenge && Date.current < user_challenge.start_date
-        redirect_to challenge_path(user_challenge) and return
-      end
-
-      # Otherwise redirect to reading page, preserving date parameter
-      redirect_to reading_path(params.permit(:date)) and return
-    end
-
-    # Show welcome screen for logged-out users
+    # Load public challenges for everyone
     @challenges = Challenge.where("end_date >= ? AND hidden = ?", Date.current, false)
+
+    # Load enrolled challenges for logged-in users
+    if logged_in?
+      @my_challenges = current_user.challenges.where("end_date >= ?", Date.current)
+    end
   end
 
   # GET /reading
   def reading
-    # Allow both logged-in and logged-out users to access this page
     if !logged_in?
-      # For logged-out users, redirect to challenges page
       redirect_to challenges_path and return
     end
 
-    @user_challenge = current_user.active_challenge
+    # 1. Look for a specific challenge ID in the URL
+    if params[:challenge_id].present?
+      found = current_user.challenges.find_by(id: params[:challenge_id])
+      if found
+        set_active_challenge(found)
+        @user_challenge = found
+      end
+    end
 
-    # If user is not enrolled in any challenge, redirect to challenges page
+    # 2. Fallback to the active challenge
+    @user_challenge ||= current_active_challenge
+
     if !@user_challenge
-      redirect_to challenges_path and return
+      redirect_to root_path, notice: "Please join a challenge to start reading!" and return
     end
 
     if @user_challenge
@@ -46,8 +46,15 @@ class HomeController < ApplicationController
         @selected_date = today_in_challenge_tz
       end
 
-      @selected_reading = @user_challenge.readings.find_by(scheduled_date: @selected_date)
-      if @selected_reading
+      @selected_readings = @user_challenge.readings.where(scheduled_date: @selected_date).order(:book_number, :chapter_number)
+
+      if @selected_readings.any?
+        # Determine which chapter to display: explicit param, or first uncompleted, or first
+        if params[:reading_id].present?
+          @selected_reading = @selected_readings.find_by(id: params[:reading_id])
+        end
+        @selected_reading ||= @selected_readings.find { |r| !current_user.user_readings.exists?(reading_id: r.id) } || @selected_readings.first
+
         @selected_reading_title = helpers.book_number_to_name(@selected_reading.book_number) + " " + @selected_reading.chapter_number.to_s
         user_version = current_user.version || "KJV"
         @reading_is_completed = current_user.user_readings.exists?(reading_id: @selected_reading.id)
@@ -108,12 +115,14 @@ class HomeController < ApplicationController
   def generate_week_days(start_of_week, challenge, user)
     7.times.map do |i|
       date = start_of_week + i.days
-      reading = challenge.readings.find_by(scheduled_date: date)
-      completed = reading && user.user_readings.exists?(reading_id: reading.id)
+      day_readings = challenge.readings.where(scheduled_date: date)
+      has_reading = day_readings.exists?
+      completed = has_reading && day_readings.all? { |r| user.user_readings.exists?(reading_id: r.id) }
+      partial_completed = has_reading && !completed && day_readings.any? { |r| user.user_readings.exists?(reading_id: r.id) }
 
       # Calculate group completion percentage
       group_completion = 0
-      if reading
+      if has_reading
         user_group = user.groups.find_by(challenge_id: challenge.id)
         if user_group
           group_stats = GroupStatistics.new(user_group)
@@ -127,8 +136,10 @@ class HomeController < ApplicationController
         day_of_month: date.day.to_s,
         month_day: date.strftime("%b %-d"),
         completed: completed,
+        partial_completed: partial_completed,
         group_completion: group_completion,
-        has_reading: reading.present?
+        has_reading: has_reading,
+        readings_count: day_readings.count
       }
     end
   end

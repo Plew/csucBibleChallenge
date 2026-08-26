@@ -86,6 +86,22 @@ RSpec.describe SendDailyReadingEmailsJob, type: :job do
         email = ActionMailer::Base.deliveries.last
         expect(email.subject).to match(/Bible Reading:/)
       end
+
+      context 'when challenge has 4 chapters scheduled today' do
+        let!(:reading2) { create(:reading, challenge: berlin_challenge, book_number: 40, chapter_number: 2, scheduled_date: Date.current) }
+        let!(:reading3) { create(:reading, challenge: berlin_challenge, book_number: 40, chapter_number: 3, scheduled_date: Date.current) }
+        let!(:reading4) { create(:reading, challenge: berlin_challenge, book_number: 40, chapter_number: 4, scheduled_date: Date.current) }
+
+        it 'sends exactly ONE email containing all 4 chapters' do
+          expect {
+            described_class.perform_now
+          }.to change { ActionMailer::Base.deliveries.count }.by(1)
+
+          email = ActionMailer::Base.deliveries.last
+          expect(email.subject).to include("Matthew 1, Matthew 2, Matthew 3, Matthew 4")
+          expect(email.body.encoded).to include("Matthew 1, Matthew 2, Matthew 3, Matthew 4")
+        end
+      end
     end
 
     context 'when it is not 6am in the challenge timezone' do

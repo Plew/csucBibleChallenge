@@ -45,12 +45,50 @@ RSpec.describe "Challenges", type: :request do
     end
   end
 
-  describe "GET /challenges/:id/summary" do
-    let!(:challenge) { create(:challenge) }
+  describe "GET /challenges/new" do
+    let(:user) { create(:user, can_create_challenges: true) }
 
-    it "returns http success" do
-      get summary_challenge_path(challenge)
+    before do
+      post user_session_path, params: { session: { email: user.email, password: "password123" } }
+    end
+
+    it "renders both Old Testament and New Testament book options" do
+      get new_challenge_path
       expect(response).to have_http_status(:success)
+      expect(response.body).to include("Old Testament")
+      expect(response.body).to include("New Testament")
+      expect(response.body).to include("Genesis")
+      expect(response.body).to include("Psalms")
+      expect(response.body).to include("Matthew")
+    end
+  end
+
+  describe "POST /challenges with Old Testament books" do
+    let(:user) { create(:user, can_create_challenges: true) }
+
+    before do
+      post user_session_path, params: { session: { email: user.email, password: "password123" } }
+    end
+
+    it "creates readings for selected Old Testament books" do
+      expect {
+        post challenges_path, params: {
+          challenge: {
+            name: "Genesis Challenge",
+            description: "Read Genesis",
+            start_date: Date.current.to_s,
+            timezone: "Eastern Time (US & Canada)",
+            chapters_per_day: 1
+          },
+          selected_books: ["1"] # Genesis (book 1, 50 chapters)
+        }
+      }.to change(Challenge, :count).by(1)
+
+      challenge = Challenge.last
+      expect(challenge.readings.count).to eq(50)
+      expect(challenge.readings.first.book_number).to eq(1)
+      expect(challenge.readings.first.chapter_number).to eq(1)
+      expect(challenge.readings.last.chapter_number).to eq(50)
     end
   end
 end

@@ -27,10 +27,9 @@ class UsersController < ApplicationController
         if group
           # Enroll in challenge if not already enrolled
           unless current_user.challenges.include?(group.challenge)
-            if current_user.challenges.empty?
-              challenge_enrollment = group.challenge.user_challenge_enrollments.new(user: current_user)
-              challenge_enrollment.save
-            end
+            challenge_enrollment = group.challenge.user_challenge_enrollments.new(user: current_user)
+            challenge_enrollment.save
+            set_active_challenge(group.challenge)
           end
 
           # Enroll in group if in the challenge
@@ -49,9 +48,10 @@ class UsersController < ApplicationController
       # Check for challenge invitation token and auto-enroll
       if session[:challenge_invitation_token].present?
         challenge = Challenge.find_by(invitation_token: session[:challenge_invitation_token])
-        if challenge && !current_user.challenges.include?(challenge) && current_user.challenges.empty?
+        if challenge && !current_user.challenges.include?(challenge)
           enrollment = challenge.user_challenge_enrollments.new(user: current_user)
           if enrollment.save
+            set_active_challenge(challenge)
             session.delete(:challenge_invitation_token) # Clear the token
             session.delete(:pending_challenge_id) # Clear pending challenge if any
             # Redirect to reading page if challenge has started, otherwise to challenge page
@@ -69,9 +69,10 @@ class UsersController < ApplicationController
       # Check for pending challenge enrollment (from direct challenge page signup)
       if session[:pending_challenge_id].present?
         challenge = Challenge.find_by(id: session[:pending_challenge_id])
-        if challenge && !current_user.challenges.include?(challenge) && current_user.challenges.empty?
+        if challenge && !current_user.challenges.include?(challenge)
           enrollment = challenge.user_challenge_enrollments.new(user: current_user)
           if enrollment.save
+            set_active_challenge(challenge)
             session.delete(:pending_challenge_id) # Clear the pending challenge
             # Redirect to reading page if challenge has started, otherwise to challenge page
             if challenge.start_date <= Date.current && challenge.end_date >= Date.current

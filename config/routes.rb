@@ -48,6 +48,19 @@ Rails.application.routes.draw do
   # Group invitation links
   get "groups/:token/join", to: "group_invitations#show", as: :group_invitation
 
+  # Active challenge switcher
+  patch "active_challenge", to: "active_challenges#update", as: :switch_active_challenge
+  post "active_challenge", to: "active_challenges#update"
+
+  # Challenges hub (multi-challenge overview & switcher)
+  get "challenges/hub", to: "challenges#hub", as: :challenges_hub
+
+  # Active challenge shortcuts
+  get "catch_up", to: "catch_ups#show", as: :catch_up
+  get "posts", to: "blog_posts#index", as: :posts
+  get "blog", to: "blog_posts#index"
+  get "seven_day_win", to: "seven_day_lobbies#show", as: :seven_day_win
+
   # Challenges UI
   resources :challenges, only: [ :index, :show, :new, :create ] do # Challenge creation for logged-in users
     resources :user_challenge_enrollments, only: [ :create ], as: :enrollments # POST challenges/:challenge_id/enrollments
@@ -77,6 +90,7 @@ Rails.application.routes.draw do
       get "danger", to: "danger#show", as: :danger
       delete "danger", to: "danger#destroy"
       resource :settings, only: [ :edit, :update ], controller: "settings"
+      resource :schedule, only: [ :edit, :update ], controller: "schedules"
       resource :api_access, only: [ :show ], controller: "api_access" do
         post :regenerate
       end

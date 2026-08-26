@@ -76,25 +76,31 @@ RSpec.describe "Navigation Menu", type: :request do
 
     context "when user manages multiple challenges" do
       let(:creator) { build_creator }
-      let!(:challenge1) { create(:challenge, creator: creator) }
-      let!(:challenge2) { create(:challenge, creator: creator) }
+      let!(:challenge1) { create(:challenge, name: "Challenge One", creator: creator) }
+      let!(:challenge2) { create(:challenge, name: "Challenge Two", creator: creator) }
 
       before do
+        create(:user_challenge_enrollment, user: creator, challenge: challenge1)
+        create(:user_challenge_enrollment, user: creator, challenge: challenge2)
         log_in_as(creator)
+      end
+
+      it "links Manage challenge to the currently active challenge" do
+        patch switch_active_challenge_path, params: { challenge_id: challenge1.id }
         get about_path
+        expect(response.body).to include(challenge_manage_dashboard_path(challenge1))
+
+        patch switch_active_challenge_path, params: { challenge_id: challenge2.id }
+        get about_path
+        expect(response.body).to include(challenge_manage_dashboard_path(challenge2))
       end
 
-      it "shows Manage challenge link" do
-        expect(response.body).to include(I18n.t("navigation.manage_challenge"))
-      end
-
-      it "links to the chooser" do
-        expect(response.body).to include(manage_chooser_path)
-      end
-
-      it "does not link directly to either console" do
-        expect(response.body).not_to include(challenge_manage_dashboard_path(challenge1))
-        expect(response.body).not_to include(challenge_manage_dashboard_path(challenge2))
+      it "links Catch Up, Posts, and Weekly Winner to the currently active challenge" do
+        patch switch_active_challenge_path, params: { challenge_id: challenge2.id }
+        get about_path
+        expect(response.body).to include(challenge_catch_up_path(challenge2))
+        expect(response.body).to include(challenge_blog_posts_path(challenge2))
+        expect(response.body).to include(challenge_seven_day_lobby_path(challenge2))
       end
     end
 
@@ -112,7 +118,7 @@ RSpec.describe "Navigation Menu", type: :request do
         expect(response.body).to include(I18n.t("navigation.manage_challenge"))
       end
 
-      it "links directly to the challenge console" do
+      it "links directly to the active challenge console" do
         expect(response.body).to include(challenge_manage_dashboard_path(challenge))
       end
     end
@@ -194,9 +200,23 @@ RSpec.describe "Navigation Menu", type: :request do
     let!(:challenge1) { create(:challenge, name: "Alpha Challenge", creator: creator) }
     let!(:challenge2) { create(:challenge, name: "Beta Challenge", creator: creator) }
 
-    before { log_in_as(creator) }
+    before do
+      create(:user_challenge_enrollment, user: creator, challenge: challenge1)
+      create(:user_challenge_enrollment, user: creator, challenge: challenge2)
+      log_in_as(creator)
+    end
 
-    it "lists all managed challenges" do
+    it "redirects directly to active challenge dashboard if active challenge is managed" do
+      patch switch_active_challenge_path, params: { challenge_id: challenge2.id }
+      get manage_chooser_path
+      expect(response).to redirect_to(challenge_manage_dashboard_path(challenge2))
+    end
+
+    it "lists all managed challenges when active challenge is not managed" do
+      unmanaged = create(:challenge)
+      create(:user_challenge_enrollment, user: creator, challenge: unmanaged)
+      patch switch_active_challenge_path, params: { challenge_id: unmanaged.id }
+
       get manage_chooser_path
       expect(response.body).to include("Alpha Challenge")
       expect(response.body).to include("Beta Challenge")
@@ -213,6 +233,33 @@ RSpec.describe "Navigation Menu", type: :request do
       delete destroy_user_session_path
       get manage_chooser_path
       expect(response).to redirect_to(new_user_session_path)
+    end
+  end
+
+  describe "Bottom navigation bar" do
+    let(:user) { create(:user) }
+    let!(:challenge1) { create(:challenge, name: "Challenge One") }
+    let!(:challenge2) { create(:challenge, name: "Challenge Two") }
+
+    before do
+      create(:user_challenge_enrollment, user: user, challenge: challenge1)
+      create(:user_challenge_enrollment, user: user, challenge: challenge2)
+      log_in_as(user)
+    end
+
+    it "renders all 4 items: Reading, Group, Stats, Challenges" do
+      get reading_path
+      expect(response.body).to include(I18n.t("navigation.reading"))
+      expect(response.body).to include(I18n.t("navigation.group"))
+      expect(response.body).to include(I18n.t("navigation.stats"))
+      expect(response.body).to include(I18n.t("navigation.challenges"))
+    end
+
+    it "includes the challenge switcher dropdown with enrolled challenges" do
+      get reading_path
+      expect(response.body).to include("challenge-switcher-dropdown")
+      expect(response.body).to include("Challenge One")
+      expect(response.body).to include("Challenge Two")
     end
   end
 end

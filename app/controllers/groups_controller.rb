@@ -2,6 +2,8 @@ class GroupsController < ApplicationController
   before_action :require_login
   before_action :set_enrollment_and_challenge
 
+  rescue_from ActiveRecord::RecordNotFound, with: :handle_group_not_found
+
   # GET /groups
   def index
     @user_group = current_user.groups.where(challenge_id: @challenge.id).first
@@ -262,15 +264,24 @@ class GroupsController < ApplicationController
   private
 
   def set_enrollment_and_challenge
-    @enrollment = current_user.user_challenge_enrollments.last
-    unless @enrollment
+    if params[:challenge_id].present?
+      found = current_user.challenges.find_by(id: params[:challenge_id])
+      set_active_challenge(found) if found
+    end
+
+    @challenge = current_active_challenge
+    unless @challenge
       redirect_to root_path, alert: "You must be enrolled in a challenge to view groups."
       return
     end
-    @challenge = @enrollment.challenge
+    @enrollment = current_user.user_challenge_enrollments.find_by(challenge_id: @challenge.id)
   end
 
   def group_params
     params.require(:group).permit(:name, :closed_to_new_members, :motto, :country_code)
+  end
+
+  def handle_group_not_found
+    redirect_to groups_path
   end
 end

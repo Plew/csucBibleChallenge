@@ -22,7 +22,15 @@ class CatchUpsController < ApplicationController
   private
 
   def set_challenge
-    @challenge = Challenge.find(params[:challenge_id])
+    @challenge = if params[:challenge_id].present?
+                   Challenge.find_by(id: params[:challenge_id])
+                 else
+                   current_active_challenge
+                 end
+
+    if @challenge.nil?
+      redirect_to challenges_path, alert: t("catch_up.must_be_enrolled")
+    end
   end
 
   def require_enrollment

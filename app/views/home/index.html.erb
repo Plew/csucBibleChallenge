@@ -1,23 +1,104 @@
-<div class="min-h-screen flex flex-col justify-start items-center px-4 pt-16">
-  <div class="max-w-md w-full text-center">
-    <p class="text-lg text-base-content/80 mb-12 leading-relaxed">
-      <%= t('home.tagline') %>
-    </p>
+<!-- Master Content Container (With theme-aware ambient background) -->
+<div class="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
+  <%= render 'home/ambient_background' %>
 
-    <div class="space-y-4 mb-8">
-      <%= link_to t('navigation.log_in'), new_user_session_path, class: "btn btn-primary btn-lg w-full" %>
-      <%= link_to t('navigation.sign_up'), new_user_registration_path, class: "btn btn-outline btn-lg w-full" %>
+  <!-- SECTION 1: Hero Header (Left-aligned) -->
+  <section class="w-full space-y-8">
+    
+    <!-- Main Tagline -->
+    <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-serif text-neutral tracking-tight max-w-xl md:max-w-xl lg:max-w-2xl xl:max-w-3xl leading-tight">
+      <%= t('home.title') %>
+    </h1>
+
+    <!-- Scripture Quote Box (Using your secondary mustard color) -->
+    <div class="relative bg-secondary/10 border border-secondary/20 rounded-2xl p-6 md:p-8 max-w-lg md:max-w-xl lg:max-w-2xl shadow-sm overflow-hidden">
+      <!-- Subtle mustard accent line on the left -->
+      <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-secondary/40"></div>
+      
+      <blockquote class="text-xl md:text-2xl font-serif text-neutral/80 leading-relaxed pl-2 md:pl-4">
+        <span class="font-bold text-brand-dark not-italic"><%= t('home.verse_start') %></span>
+        <span class="italic"><%= t('home.verse_end') %></span>
+      </blockquote>
+      <p class="text-xs tracking-widest uppercase font-bold text-neutral/50 mt-4 pl-2 md:pl-4">&mdash; <%= t('home.verse_ref') %></p>
     </div>
 
-    <p class="text-sm text-base-content/60 text-center mb-12">
-      <%= t('home.or_create_your_own') %>
-    </p>
+    <!-- Main CTAs -->
+    <div class="flex flex-wrap items-center gap-6 pt-2">
+      <%= link_to t('home.sign_up_cta'), new_user_registration_path, class: "btn btn-primary rounded-full px-8 shadow-sm text-base border-none" %>
+      <%= link_to t('home.or_create', default: 'Or create your own challenge'), new_challenge_path, class: "text-sm font-medium text-neutral/60 hover:text-neutral transition-colors underline underline-offset-4" %>
+    </div>
+  </section>
 
-    <% if @challenges.present? %>
-      <div class="text-left">
-        <h2 class="text-base font-semibold mb-4 text-center"><%= t('home.active_challenges') %></h2>
+  <!-- SECTION 2: The Three Pillars -->
+  <section class="w-full mt-10">
+    <div class="bg-base-200 border border-base-300 rounded-3xl shadow-sm overflow-hidden">
+      <div class="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-base-300 w-full text-center">
+        
+        <!-- Community -->
+        <div class="flex flex-col items-center space-y-3 p-6 md:p-8">
+          <div class="p-3 bg-secondary/10 rounded-full text-secondary">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+            </svg>
+          </div>
+          <h3 class="font-bold text-lg text-neutral mb-1"><%= t('home.pillars.community_title') %></h3>
+          <p class="text-sm text-neutral/60 leading-relaxed"><%= t('home.pillars.community_desc') %></p>
+        </div>
+        
+        <!-- Consistency -->
+        <div class="flex flex-col items-center space-y-3 p-6 md:p-8">
+          <div class="p-3 bg-secondary/10 rounded-full text-secondary">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
+            </svg>
+          </div>
+          <h3 class="font-bold text-lg text-neutral mb-1"><%= t('home.pillars.consistency_title') %></h3>
+          <p class="text-sm text-neutral/60 leading-relaxed"><%= t('home.pillars.consistency_desc') %></p>
+        </div>
+        
+        <!-- Focus -->
+        <div class="flex flex-col items-center space-y-3 p-6 md:p-8">
+          <div class="p-3 bg-secondary/10 rounded-full text-secondary">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+            </svg>
+          </div>
+          <h3 class="font-bold text-lg text-neutral mb-1"><%= t('home.pillars.focus_title') %></h3>
+          <p class="text-sm text-neutral/60 leading-relaxed"><%= t('home.pillars.focus_desc') %></p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: My Enrolled Challenges -->
+  <% if logged_in? && @my_challenges.present? %>
+    <section class="w-full space-y-6 mt-10">
+      <div class="space-y-1">
+        <h2 class="text-2xl md:text-3xl font-bold font-serif text-neutral">My Challenges</h2>
+        <p class="text-xs uppercase tracking-widest text-neutral/50 font-semibold">
+          Continue your daily reading
+        </p>
+      </div>
+
+      <%= render 'home/my_challenges', my_challenges: @my_challenges %>
+    </section>
+  <% end %>
+
+  <!-- SECTION 4: Active Challenges -->
+  <% if @challenges.present? %>
+    <section class="w-full space-y-6 mt-10">
+      <div class="space-y-1">
+        <h2 class="text-2xl md:text-3xl font-bold font-serif text-neutral">Active Challenges</h2>
+        <p class="text-xs uppercase tracking-widest text-neutral/50 font-semibold">
+          <%= t('home.featured_subtitle', default: 'FEATURED BIBLE READING CHALLENGES') %>
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 gap-4">
         <%= render 'challenges/challenge_list', challenges: @challenges %>
       </div>
-    <% end %>
-  </div>
-</div> 
+    </section>
+  <% end %>
+
+</div>

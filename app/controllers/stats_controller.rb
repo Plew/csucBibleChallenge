@@ -6,7 +6,7 @@ class StatsController < ApplicationController
   CACHE_EXPIRATION = 30.seconds
 
   def index
-    current_challenge = current_user.active_challenge
+    current_challenge = resolve_challenge
     @challenge = current_challenge
 
     @challenge_summary_stats = cached_challenge_summary_stats(current_challenge)
@@ -28,13 +28,13 @@ class StatsController < ApplicationController
   end
 
   def challenge
-    current_challenge = current_user.active_challenge
+    current_challenge = resolve_challenge
     @top_readers_data = cached_top_readers(current_challenge)
     @participant_count = cached_participant_count(current_challenge)
   end
 
   def group
-    current_challenge = current_user.active_challenge
+    current_challenge = resolve_challenge
     @top_groups_data = cached_top_groups(current_challenge)
   end
 
@@ -42,11 +42,19 @@ class StatsController < ApplicationController
   end
 
   def seven_day_window
-    current_challenge = current_user.active_challenge
+    current_challenge = resolve_challenge
     @seven_day_leaderboard_data = cached_seven_day_window(current_challenge)
   end
 
   private
+
+  def resolve_challenge
+    if params[:challenge_id].present?
+      found = current_user.challenges.find_by(id: params[:challenge_id])
+      set_active_challenge(found) if found
+    end
+    current_active_challenge
+  end
 
   def cached_top_readers(challenge)
     return [] unless challenge

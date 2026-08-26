@@ -7,16 +7,23 @@ class UserMailer < ApplicationMailer
   def password_reset(user, token)
     @user = user
     @token = token
-    mail(to: user.email, subject: "Password Reset - And God Said Bible Challenge")
+    mail(to: user.email, subject: "Password Reset - And God Said")
   end
 
-  def daily_reading(user, reading, login_token)
+  def daily_reading(user, readings_or_reading, login_token)
     @user = user
-    @reading = reading
     @login_token = login_token
-    @book_name = ApplicationController.helpers.book_number_to_name(reading.book_number)
-    @chapter_number = reading.chapter_number
-    @reading_title = "#{@book_name} #{@chapter_number}"
+    @readings = Array(readings_or_reading)
+    @reading = @readings.first
+
+    titles = @readings.map do |r|
+      book_name = ApplicationController.helpers.book_number_to_name(r.book_number)
+      "#{book_name} #{r.chapter_number}"
+    end
+
+    @reading_title = titles.join(", ")
+    @book_name = ApplicationController.helpers.book_number_to_name(@reading.book_number) if @reading
+    @chapter_number = @reading.chapter_number if @reading
 
     mail(to: user.email, subject: "Bible Reading: #{@reading_title}")
   end

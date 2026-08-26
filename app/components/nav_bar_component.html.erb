@@ -1,31 +1,156 @@
-<nav class="bg-primary w-full p-2 text-primary-content">
-  <div class="container mx-auto flex justify-around items-center">
-    <% reading_active = request.path.start_with?('/reading') || current_page?(root_path) %>
-    <%= link_to root_path, class: "flex flex-col items-center gap-1 #{reading_active ? 'opacity-100' : 'opacity-80'}" do %>
-      <%= tag.svg class: "w-8 h-8 size-6", xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24", fill: "currentColor" do %>
+<nav class="bg-primary w-full p-2 text-primary-content fixed bottom-0 left-0 right-0 z-40 md:relative md:bottom-auto md:left-auto md:right-auto md:z-30 shadow-lg md:shadow-none">
+  <div class="container mx-auto grid grid-cols-4 items-center text-center">
+    
+    <%# 1. Challenges Switcher Dropdown (Reordered to Left) %>
+    <% challenges_active = request.path.start_with?('/challenges') %>
+    <div x-data="{ challengeDropdownOpen: false }" class="relative flex flex-col items-center justify-center">
+      <button type="button"
+              id="challenge-switcher-button"
+              @click="challengeDropdownOpen = !challengeDropdownOpen"
+              class="flex flex-col items-center justify-center gap-0.5 py-1 <%= challenges_active ? 'opacity-100 font-semibold' : 'opacity-75 hover:opacity-100' %> transition-opacity cursor-pointer w-full"
+              title="<%= active_challenge ? "Active: #{active_challenge.name}" : t('navigation.challenges') %>">
+        <div class="relative">
+          <%= tag.svg class: "w-5 h-5 md:w-6 md:h-6", xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24", fill: "currentColor" do %>
+            <path d="M11.644 1.59a.75.75 0 0 1 .712 0l9.75 5.25a.75.75 0 0 1 0 1.32l-9.75 5.25a.75.75 0 0 1-.712 0l-9.75-5.25a.75.75 0 0 1 0-1.32l9.75-5.25Z" />
+            <path d="M3.265 10.602l7.668 4.129a1.75 1.75 0 0 0 1.664 0l7.668-4.129 1.455.784a.75.75 0 0 1 0 1.32l-9.75 5.25a.75.75 0 0 1-.712 0l-9.75-5.25a.75.75 0 0 1 0-1.32l1.455-.784Z" />
+            <path d="M3.265 15.102l7.668 4.129a1.75 1.75 0 0 0 1.664 0l7.668-4.129 1.455.784a.75.75 0 0 1 0 1.32l-9.75 5.25a.75.75 0 0 1-.712 0l-9.75-5.25a.75.75 0 0 1 0-1.32l1.455-.784Z" />
+          <% end %>
+          <% if enrolled_challenges.count > 1 %>
+            <span class="badge badge-xs badge-secondary absolute -top-1 -right-2 text-[9px] px-1 font-mono">
+              <%= enrolled_challenges.count %>
+            </span>
+          <% end %>
+        </div>
+        <div class="flex flex-col items-center leading-tight max-w-[76px] sm:max-w-[120px] md:max-w-[160px]">
+          <span class="text-xs <%= 'border-b-2 border-primary-content' if challenges_active %>"><%= t('navigation.challenges') %></span>
+          <% if active_challenge %>
+            <span class="text-[9px] text-primary-content/80 font-normal truncate w-full">
+              <%= active_challenge.name %>
+            </span>
+          <% end %>
+        </div>
+      </button>
+
+      <%# Dropdown Menu Popover (Opens Upward on Mobile, Downward on Desktop/Laptop, Aligned Left) %>
+      <div x-show="challengeDropdownOpen"
+           @click.away="challengeDropdownOpen = false"
+           x-transition:enter="transition ease-out duration-150 transform"
+           x-transition:enter-start="opacity-0 translate-y-2 md:-translate-y-2 scale-95"
+           x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+           x-transition:leave="transition ease-in duration-100 transform"
+           x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+           x-transition:leave-end="opacity-0 translate-y-2 md:-translate-y-2 scale-95"
+           class="absolute bottom-full mb-3 md:bottom-auto md:top-full md:mb-0 md:mt-2 left-0 w-80 max-w-[calc(100vw-1.5rem)] bg-base-100 text-base-content rounded-2xl shadow-2xl border border-base-200 z-50 overflow-hidden text-left"
+           style="display: none;"
+           id="challenge-switcher-dropdown">
+
+        <%# List of Enrolled Challenges %>
+        <div class="p-2.5 space-y-2 max-h-80 overflow-y-auto">
+          <% if enrolled_challenges.any? %>
+            <% enrolled_challenges.each do |challenge| %>
+              <% is_active = (active_challenge&.id == challenge.id) %>
+              <% st = status_for(challenge) %>
+
+              <% if is_active %>
+                <%# Active Challenge Card %>
+                <div class="p-3 rounded-xl bg-primary/10 border-2 border-primary shadow-sm space-y-1.5">
+                  <div class="flex items-center justify-between gap-2">
+                    <span class="font-bold text-sm text-neutral truncate flex-1"><%= challenge.name %></span>
+                    <span class="badge badge-primary badge-xs py-1.5 px-2 text-[10px] font-semibold gap-1 shrink-0">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                      </svg>
+                      <%= t('challenges.currently_active') %>
+                    </span>
+                  </div>
+
+                  <div class="flex items-center justify-between gap-2 pt-0.5">
+                    <%# Daily Reading Status Badge %>
+                    <%= render(ReadingStatusBadgeComponent.new(challenge: challenge, status: st, variant: :compact)) %>
+
+                    <%= link_to reading_path, class: "btn btn-primary btn-xs rounded-lg px-2.5" do %>
+                      <%= t('challenges.start_reading', default: 'Read') %>
+                    <% end %>
+                  </div>
+                </div>
+              <% else %>
+                <%# Inactive Enrolled Challenge - Tap to Switch %>
+                <%= button_to switch_active_challenge_path(challenge_id: challenge.id, redirect_to: request.fullpath),
+                              method: :patch,
+                              class: "w-full text-left p-3 rounded-xl bg-base-100 hover:bg-base-200/80 border border-base-200 hover:border-base-300 transition-all block group cursor-pointer" do %>
+                  <div class="flex items-center justify-between gap-2">
+                    <span class="font-semibold text-sm text-neutral truncate flex-1 group-hover:text-primary transition-colors"><%= challenge.name %></span>
+                    <span class="text-xs text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+                      <%= t('challenges.switch_to') %> &rarr;
+                    </span>
+                  </div>
+
+                  <div class="flex items-center justify-between gap-2 mt-1.5">
+                    <%# Daily Reading Status Badge %>
+                    <%= render(ReadingStatusBadgeComponent.new(challenge: challenge, status: st, variant: :compact)) %>
+
+                    <span class="text-[10px] text-neutral/50">
+                      <%= challenge.start_date.strftime("%b %d") %> &ndash; <%= challenge.end_date.strftime("%b %d") %>
+                    </span>
+                  </div>
+                <% end %>
+              <% end %>
+            <% end %>
+          <% else %>
+            <div class="text-center py-4 text-neutral/60 text-xs">
+              <%= t('challenges.no_challenges_message') %>
+            </div>
+          <% end %>
+        </div>
+
+        <%# Footer Actions %>
+        <div class="px-3 py-2.5 border-t border-base-200 bg-base-200/50 flex items-center justify-between gap-2 text-xs">
+          <%= link_to challenges_path, class: "btn btn-ghost btn-xs text-neutral/70 hover:text-primary gap-1 font-medium whitespace-nowrap" do %>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5 shrink-0">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+            </svg>
+            <span><%= t('challenges.browse_all', default: 'Browse All') %></span>
+          <% end %>
+
+          <% if can_create_challenges? %>
+            <%= link_to new_challenge_path, class: "btn btn-ghost btn-xs text-primary font-semibold whitespace-nowrap" do %>
+              + <%= t('challenges.create_new', default: 'Create New') %>
+            <% end %>
+          <% end %>
+        </div>
+
+      </div>
+    </div>
+
+    <%# 2. Reading %>
+    <% reading_active = request.path.start_with?('/reading') || (current_page?(root_path) && !request.path.start_with?('/challenges') && !request.path.start_with?('/stats') && !request.path.start_with?('/groups')) %>
+    <%= link_to reading_path, class: "flex flex-col items-center justify-center gap-1 py-1 #{reading_active ? 'opacity-100 font-semibold' : 'opacity-75 hover:opacity-100'} transition-opacity" do %>
+      <%= tag.svg class: "w-5 h-5 md:w-6 md:h-6", xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24", fill: "currentColor" do %>
         <path d="M11.25 4.533A9.707 9.707 0 0 0 6 3a9.735 9.735 0 0 0-3.25.555.75.75 0 0 0-.5.707v14.25a.75.75 0 0 0 1 .707A8.237 8.237 0 0 1 6 18.75c1.995 0 3.823.707 5.25 1.886V4.533ZM12.75 20.636A8.214 8.214 0 0 1 18 18.75c.966 0 1.89.166 2.75.47a.75.75 0 0 0 1-.708V4.262a.75.75 0 0 0-.5-.707A9.735 9.735 0 0 0 18 3a9.707 9.707 0 0 0-5.25 1.533v16.103Z" />
       <% end %>
-      <span class="text-xs <%= 'border-b border-primary-content' if reading_active %>"><%= t('navigation.reading') %></span>
+      <span class="text-xs <%= 'border-b-2 border-primary-content' if reading_active %>"><%= t('navigation.reading') %></span>
     <% end %>
 
-    <div id="groups-link">
+    <%# 3. Group %>
+    <div id="groups-link" class="flex flex-col items-center justify-center">
       <% groups_active = request.path.start_with?('/groups') %>
-      <%= link_to groups_path, class: "flex flex-col items-center gap-1 #{groups_active ? 'opacity-100' : 'opacity-80'}" do %>
-        <%= tag.svg class: "w-8 h-8 size-6", xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24", fill: "currentColor" do %>
+      <%= link_to groups_path, class: "flex flex-col items-center justify-center gap-1 py-1 #{groups_active ? 'opacity-100 font-semibold' : 'opacity-75 hover:opacity-100'} transition-opacity" do %>
+        <%= tag.svg class: "w-5 h-5 md:w-6 md:h-6", xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24", fill: "currentColor" do %>
           <path fill-rule="evenodd" d="M8.25 6.75a3.75 3.75 0 1 1 7.5 0 3.75 3.75 0 0 1-7.5 0ZM15.75 9.75a3 3 0 1 1 6 0 3 3 0 0 1-6 0ZM2.25 9.75a3 3 0 1 1 6 0 3 3 0 0 1-6 0ZM6.31 15.117A6.745 6.745 0 0 1 12 12a6.745 6.745 0 0 1 6.709 7.498.75.75 0 0 1-.372.568A12.696 12.696 0 0 1 12 21.75c-2.305 0-4.47-.612-6.337-1.684a.75.75 0 0 1-.372-.568 6.787 6.787 0 0 1 1.019-4.38Z" clip-rule="evenodd" />
           <path d="M5.082 14.254a8.287 8.287 0 0 0-1.308 5.135 9.687 9.687 0 0 1-1.764-.44l-.115-.04a.563.563 0 0 1-.373-.487l-.01-.121a3.75 3.75 0 0 1 3.57-4.047ZM20.226 19.389a8.287 8.287 0 0 0-1.308-5.135 3.75 3.75 0 0 1 3.57 4.047l-.01.121a.563.563 0 0 1-.373.486l-.115.04c-.567.2-1.156.349-1.764.441Z" />
         <% end %>
-        <span class="text-xs <%= 'border-b border-primary-content' if groups_active %>"><%= t('navigation.group') %></span>
+        <span class="text-xs <%= 'border-b-2 border-primary-content' if groups_active %>"><%= t('navigation.group') %></span>
       <% end %>
     </div>
 
+    <%# 4. Stats %>
     <% stats_active = request.path.start_with?('/stats') %>
-    <%= link_to "/stats", class: "flex flex-col items-center gap-1 #{stats_active ? 'opacity-100' : 'opacity-80'}" do %>
-      <%= tag.svg class: "w-8 h-8 size-6", xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24", fill: "currentColor" do %>
+    <%= link_to "/stats", class: "flex flex-col items-center justify-center gap-1 py-1 #{stats_active ? 'opacity-100 font-semibold' : 'opacity-75 hover:opacity-100'} transition-opacity" do %>
+      <%= tag.svg class: "w-5 h-5 md:w-6 md:h-6", xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24", fill: "currentColor" do %>
         <path d="M18.375 2.25c-1.035 0-1.875.84-1.875 1.875v15.75c0 1.035.84 1.875 1.875 1.875h.75c1.035 0 1.875-.84 1.875-1.875V4.125c0-1.035-.84-1.875-1.875-1.875h-.75ZM9.75 8.625c0-1.036.84-1.875 1.875-1.875h.75c1.036 0 1.875.84 1.875 1.875v11.25c0 1.035-.84 1.875-1.875 1.875h-.75a1.875 1.875 0 0 1-1.875-1.875V8.625ZM3 13.125c0-1.036.84-1.875 1.875-1.875h.75c1.036 0 1.875.84 1.875 1.875v6.75c0 1.035-.84 1.875-1.875 1.875h-.75A1.875 1.875 0 0 1 3 19.875v-6.75Z" />
       <% end %>
-      <span class="text-xs <%= 'border-b border-primary-content' if stats_active %>"><%= t('navigation.stats') %></span>
+      <span class="text-xs <%= 'border-b-2 border-primary-content' if stats_active %>"><%= t('navigation.stats') %></span>
     <% end %>
 
   </div>
-</nav> 
+</nav>

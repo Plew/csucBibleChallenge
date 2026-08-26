@@ -8,7 +8,7 @@ class UserReadingsController < ApplicationController
 
     unless challenge&.timezone.present?
       flash[:alert] = "Challenge timezone not set for this reading."
-      redirect_to params[:date].present? ? root_path(date: params[:date]) : root_path
+      redirect_to params[:date].present? ? reading_path(date: params[:date]) : reading_path
       return
     end
 
@@ -26,9 +26,9 @@ class UserReadingsController < ApplicationController
     end
 
     # Preserve the selected date when redirecting
-    redirect_to params[:date].present? ? root_path(date: params[:date]) : root_path
+    redirect_to params[:date].present? ? reading_path(date: params[:date]) : reading_path
   rescue ReadingDateValidation::FutureReadingError => e
     flash[:alert] = e.message
-    redirect_to params[:date].present? ? root_path(date: params[:date]) : root_path
+    redirect_to params[:date].present? ? reading_path(date: params[:date]) : reading_path
   end
 end

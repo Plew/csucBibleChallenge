@@ -339,3 +339,24 @@
   border-radius: 50%;
   clip-path: polygon(100% 50%, 50% 50%, 65% 15%, 100% 0%, 100% 100%, 65% 85%);
 }
+
+/* ==========================================================================
+   Home Page Ambient Theme-Aware Background Styles (Lightweight & Static)
+   ========================================================================== */
+
+/* Theme visibility switching based on data-theme attribute */
+[data-theme="andgodsaid"] .ambient-light {
+  display: block !important;
+}
+[data-theme="andgodsaid"] .ambient-dark {
+  display: none !important;
+}
+[data-theme="andgodsaid-dark"] .ambient-light {
+  display: none !important;
+}
+[data-theme="andgodsaid-dark"] .ambient-dark {
+  display: block !important;
+}
+.text-brand-dark {
+  color: var(--brand-dark, #2B3824);
+}
