@@ -23,10 +23,11 @@ export default class extends Controller {
     // Listen for app installed event
     window.addEventListener("appinstalled", () => {
       this.deferredPrompt = null
+      localStorage.setItem("pwa_install_dismissed", "true")
+      localStorage.setItem("pwa_installed", "true")
       if (this.hasInstallBannerTarget) {
         this.installBannerTarget.classList.add("hidden")
       }
-      this.evaluateDisplay()
     })
 
     this.evaluateDisplay()
@@ -36,20 +37,24 @@ export default class extends Controller {
     const isStandalone = this.checkIsStandalone()
     const isIOS = this.checkIsIOS()
     const isMobile = this.checkIsMobile()
+    const isDismissed = localStorage.getItem("pwa_install_dismissed") === "true" || localStorage.getItem("pwa_installed") === "true"
 
     if (isStandalone) {
-      // Running inside installed PWA / standalone mode
+      // In standalone mode, hide install banner
       if (this.hasInstallBannerTarget) {
         this.installBannerTarget.classList.add("hidden")
       }
 
-      // Check if notifications need to be enabled
+      // Check if standalone notification prompt should show (only once, if not dismissed)
       this.checkStandaloneNotificationStatus()
-    } else if (isMobile) {
-      // Mobile browser (not yet installed)
-      const isDismissed = this.isInstallDismissed()
-      if (!isDismissed && this.hasInstallBannerTarget) {
+    } else if (isMobile && !isDismissed) {
+      // Show install banner only if never dismissed/installed
+      if (this.hasInstallBannerTarget) {
         this.installBannerTarget.classList.remove("hidden")
+      }
+    } else {
+      if (this.hasInstallBannerTarget) {
+        this.installBannerTarget.classList.add("hidden")
       }
     }
   }
@@ -70,50 +75,50 @@ export default class extends Controller {
     return this.checkIsIOS() || /Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
   }
 
-  isInstallDismissed() {
-    const dismissedAt = localStorage.getItem("pwa_install_dismissed_at")
-    if (!dismissedAt) return false
-    const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000
-    return Date.now() - parseInt(dismissedAt, 10) < sevenDaysInMs
-  }
-
   dismissInstall() {
-    localStorage.setItem("pwa_install_dismissed_at", Date.now().toString())
+    localStorage.setItem("pwa_install_dismissed", "true")
     if (this.hasInstallBannerTarget) {
       this.installBannerTarget.classList.add("hidden")
     }
   }
 
   promptInstall() {
+    // Hide and permanently dismiss banner so it never reappears in browser
+    this.dismissInstall()
+
     if (this.deferredPrompt) {
-      // Android / Chrome native prompt
+      // Android native prompt
       this.deferredPrompt.prompt()
       this.deferredPrompt.userChoice.then((choiceResult) => {
         if (choiceResult.outcome === "accepted") {
-          if (this.hasInstallBannerTarget) {
-            this.installBannerTarget.classList.add("hidden")
-          }
+          localStorage.setItem("pwa_installed", "true")
         }
         this.deferredPrompt = null
       })
-    } else if (this.checkIsIOS()) {
-      // Show iOS step-by-step modal guide
-      this.showIosModal()
     } else {
-      // Fallback for browsers without direct prompt
+      // iOS or browsers without direct prompt
       this.showIosModal()
     }
   }
 
   showIosModal() {
+    this.dismissInstall()
     if (this.hasIosModalTarget) {
       this.iosModalTarget.showModal()
     }
   }
 
   closeIosModal() {
+    this.dismissInstall()
     if (this.hasIosModalTarget) {
       this.iosModalTarget.close()
+    }
+  }
+
+  dismissStandaloneNotification() {
+    localStorage.setItem("pwa_standalone_notification_dismissed", "true")
+    if (this.hasStandaloneNotificationCardTarget) {
+      this.standaloneNotificationCardTarget.classList.add("hidden")
     }
   }
 
@@ -122,13 +127,14 @@ export default class extends Controller {
       return
     }
 
-    if (Notification.permission === "default") {
-      // User has not yet granted or denied notifications in standalone mode
+    const isNotificationDismissed = localStorage.getItem("pwa_standalone_notification_dismissed") === "true"
+
+    // Only show if user has never dismissed it AND permission is still default
+    if (!isNotificationDismissed && Notification.permission === "default") {
       if (this.hasStandaloneNotificationCardTarget) {
         this.standaloneNotificationCardTarget.classList.remove("hidden")
       }
-    } else if (Notification.permission === "granted") {
-      // Ensure subscription is synchronized
+    } else {
       if (this.hasStandaloneNotificationCardTarget) {
         this.standaloneNotificationCardTarget.classList.add("hidden")
       }
@@ -136,6 +142,9 @@ export default class extends Controller {
   }
 
   async enablePushNotifications() {
+    // Mark as dismissed so prompt never appears again
+    localStorage.setItem("pwa_standalone_notification_dismissed", "true")
+
     if (!("Notification" in window) || !("serviceWorker" in navigator) || !("PushManager" in window)) {
       alert("Push notifications are not supported on this browser.")
       return
@@ -144,7 +153,9 @@ export default class extends Controller {
     try {
       const permission = await Notification.requestPermission()
       if (permission !== "granted") {
-        alert("Notification permission was not granted. You can enable them in your device settings.")
+        if (this.hasStandaloneNotificationCardTarget) {
+          this.standaloneNotificationCardTarget.classList.add("hidden")
+        }
         return
       }
 
@@ -187,16 +198,17 @@ export default class extends Controller {
           this.notificationSuccessTarget.classList.remove("hidden")
         }
 
-        // Hide the card after 3 seconds of success feedback
         setTimeout(() => {
           if (this.hasStandaloneNotificationCardTarget) {
             this.standaloneNotificationCardTarget.classList.add("hidden")
           }
-        }, 3000)
+        }, 2500)
       }
     } catch (error) {
       console.error("Error enabling push notifications:", error)
-      alert("Could not enable notifications: " + error.message)
+      if (this.hasStandaloneNotificationCardTarget) {
+        this.standaloneNotificationCardTarget.classList.add("hidden")
+      }
     }
   }
 

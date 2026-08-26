@@ -1,4 +1,5 @@
 // Minimal service worker for PWA installability and Web Push notifications.
+// Version: 2.1.0
 // Uses network-first strategy — Turbo handles navigation caching.
 
 self.addEventListener("install", (event) => {
@@ -6,37 +7,36 @@ self.addEventListener("install", (event) => {
 })
 
 self.addEventListener("activate", (event) => {
-  event.waitUntil(clients.claim())
+  event.waitUntil(self.clients.claim())
 })
 
 // Listen for incoming Web Push notifications from Rails (WebPush gem)
 self.addEventListener("push", (event) => {
-  if (!event.data) return
-
   let title = "And God Said"
   let options = {
-    icon: "/icons/icon-192x192.png",
-    badge: "/icons/icon-48x48.png",
+    body: "You have a new update.",
+    icon: "/icons/icon-192x192.png?v=3",
+    badge: "/icons/icon-48x48.png?v=3",
     vibrate: [100, 50, 100],
     data: { path: "/reading" }
   }
 
-  try {
-    const payload = event.data.json()
-    if (payload.title) title = payload.title
-    if (payload.options) {
-      options = {
-        ...options,
-        ...payload.options,
-        icon: payload.options.icon || "/icons/icon-192x192.png",
-        badge: payload.options.badge || "/icons/icon-48x48.png",
-        data: {
-          path: payload.options.data?.path || "/reading"
+  if (event.data) {
+    try {
+      const payload = event.data.json()
+      if (payload && typeof payload === "object") {
+        if (payload.title) title = payload.title
+        if (payload.options) {
+          options = Object.assign({}, options, payload.options)
+        } else if (payload.body) {
+          options.body = payload.body
         }
       }
+    } catch (e) {
+      try {
+        options.body = event.data.text()
+      } catch (textErr) {}
     }
-  } catch (e) {
-    options.body = event.data.text()
   }
 
   event.waitUntil(self.registration.showNotification(title, options))
@@ -49,7 +49,7 @@ self.addEventListener("notificationclick", (event) => {
   const targetPath = event.notification.data?.path || "/reading"
 
   event.waitUntil(
-    clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientList) => {
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientList) => {
       // If a window is already open, focus it and navigate to target
       for (let i = 0; i < clientList.length; i++) {
         let client = clientList[i]
@@ -64,8 +64,8 @@ self.addEventListener("notificationclick", (event) => {
       }
 
       // Otherwise open a new standalone window/tab
-      if (clients.openWindow) {
-        return clients.openWindow(targetPath)
+      if (self.clients.openWindow) {
+        return self.clients.openWindow(targetPath)
       }
     })
   )

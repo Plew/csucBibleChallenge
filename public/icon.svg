@@ -1,3 +1,21 @@
-<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="256" cy="256" r="256" fill="red"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect width="512" height="512" rx="115" fill="#F8F4E9"/>
+  <!-- Open Bible Outline -->
+  <g transform="translate(106, 110)">
+    <!-- Book Base / Cover -->
+    <path d="M150 170 C100 155 40 160 10 175 L10 25 C40 10 100 15 150 30 C200 15 260 10 290 25 L290 175 C260 160 200 155 150 170 Z" fill="none" stroke="#2B2D26" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/>
+    <!-- Spine Center -->
+    <line x1="150" y1="30" x2="150" y2="170" stroke="#2B2D26" stroke-width="12" stroke-linecap="round"/>
+    
+    <!-- Left Page Gold Flame -->
+    <path d="M80 135 C60 135 48 118 48 98 C48 75 68 55 78 40 C80 58 92 68 98 78 C108 92 110 108 104 118 C98 128 90 135 80 135 Z" fill="#D4AF37"/>
+    
+    <!-- Right Page Lines -->
+    <line x1="185" y1="60" x2="250" y2="52" stroke="#2B2D26" stroke-width="9" stroke-linecap="round"/>
+    <line x1="185" y1="85" x2="250" y2="77" stroke="#2B2D26" stroke-width="9" stroke-linecap="round"/>
+    <line x1="185" y1="110" x2="250" y2="102" stroke="#2B2D26" stroke-width="9" stroke-linecap="round"/>
+    <line x1="185" y1="135" x2="230" y2="128" stroke="#2B2D26" stroke-width="9" stroke-linecap="round"/>
+  </g>
+  <!-- A.G.S. Text -->
+  <text x="256" y="410" font-family="'Playfair Display', Georgia, serif" font-size="52" font-weight="700" text-anchor="middle" fill="#2B2D26" letter-spacing="4">A.G.S.</text>
 </svg>
