@@ -12,11 +12,8 @@ Rails.application.configure do
   # Show full error reports.
   config.consider_all_requests_local = true
 
-  # Whitelist all GitHub.dev hosts
-  config.hosts << /.*\.app\.github\.dev/
-
-  # Allow access over Tailscale (dev VPS)
-  config.hosts << "phildev-hetzner.tail61490c.ts.net"
+  # Allow all hosts in development for tunnels, mobile testing, and local network
+  config.hosts.clear
 
   # Enable server timing.
   config.server_timing = true

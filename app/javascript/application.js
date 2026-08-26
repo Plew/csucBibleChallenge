@@ -20,7 +20,11 @@ import "Chart.bundle"
 import "chart.js"
 
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/service-worker", { scope: "/" })
+  navigator.serviceWorker.register("/service-worker", { scope: "/" }).then((registration) => {
+    registration.update()
+  }).catch((err) => {
+    console.warn("ServiceWorker registration error:", err)
+  })
 }
 
 document.addEventListener("turbo:before-stream-render", function(event) {

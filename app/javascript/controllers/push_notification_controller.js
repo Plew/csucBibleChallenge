@@ -20,6 +20,9 @@ export default class extends Controller {
       if (this.hasToggleTarget) {
         this.toggleTarget.disabled = true
       }
+      if (this.hasTestButtonTarget) {
+        this.testButtonTarget.classList.add("hidden")
+      }
       return
     }
 
@@ -27,17 +30,25 @@ export default class extends Controller {
       if (this.hasStatusMessageTarget) {
         this.statusMessageTarget.textContent = "Push notifications are not supported on this browser."
       }
+      if (this.hasToggleTarget) {
+        this.toggleTarget.disabled = true
+      }
       return
     }
 
-    const registration = await navigator.serviceWorker.ready
-    const subscription = await registration.pushManager.getSubscription()
+    try {
+      const registration = await navigator.serviceWorker.ready
+      const subscription = await registration.pushManager.getSubscription()
 
-    if (subscription) {
-      this.toggleTarget.checked = true
-      if (this.hasTestButtonTarget) {
-        this.testButtonTarget.classList.remove("hidden")
+      if (subscription) {
+        if (this.hasToggleTarget) {
+          this.toggleTarget.checked = true
+        }
+        // Auto-sync subscription to current logged-in user in Rails DB
+        await this.syncSubscription(subscription)
       }
+    } catch (e) {
+      console.warn("Could not check push subscription:", e)
     }
   }
 
@@ -49,36 +60,13 @@ export default class extends Controller {
     }
   }
 
-  async subscribe() {
+  async syncSubscription(subscription) {
     try {
-      const permission = await Notification.requestPermission()
-      if (permission !== "granted") {
-        this.toggleTarget.checked = false
-        if (this.hasStatusMessageTarget) {
-          this.statusMessageTarget.textContent = "Notification permission was not granted."
-        }
-        return
-      }
-
-      const registration = await navigator.serviceWorker.ready
-      const vapidMeta = document.querySelector('meta[name="vapid-public-key"]')
-      const vapidPublicKey = vapidMeta ? vapidMeta.content : ""
-
-      if (!vapidPublicKey) {
-        console.warn("VAPID public key not found in meta tag")
-        return
-      }
-
-      const subscription = await registration.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: this.urlBase64ToUint8Array(vapidPublicKey)
-      })
-
       const json = subscription.toJSON()
       const csrfMeta = document.querySelector('meta[name="csrf-token"]')
       const csrfToken = csrfMeta ? csrfMeta.content : ""
 
-      const response = await fetch("/push_subscriptions", {
+      await fetch("/push_subscriptions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -90,25 +78,62 @@ export default class extends Controller {
           auth_key: json.keys?.auth
         })
       })
+    } catch (e) {
+      console.warn("Failed to sync subscription with server:", e)
+    }
+  }
 
-      if (response.ok) {
-        this.toggleTarget.checked = true
-        if (this.hasTestButtonTarget) {
-          this.testButtonTarget.classList.remove("hidden")
-        }
-        if (this.hasStatusMessageTarget) {
-          this.statusMessageTarget.textContent = "Notifications enabled successfully!"
-          setTimeout(() => {
-            if (this.hasStatusMessageTarget) this.statusMessageTarget.textContent = ""
-          }, 4000)
-        }
+  async subscribe() {
+    try {
+      if (this.hasStatusMessageTarget) {
+        this.statusMessageTarget.textContent = "Requesting notification permission..."
       }
+
+      const permission = await Notification.requestPermission()
+      if (permission !== "granted") {
+        if (this.hasToggleTarget) this.toggleTarget.checked = false
+        if (this.hasStatusMessageTarget) {
+          this.statusMessageTarget.textContent = "Notification permission was denied in browser/device settings."
+        }
+        return null
+      }
+
+      const registration = await navigator.serviceWorker.ready
+      const vapidMeta = document.querySelector('meta[name="vapid-public-key"]')
+      const vapidPublicKey = vapidMeta ? vapidMeta.content : ""
+
+      if (!vapidPublicKey) {
+        throw new Error("VAPID public key not configured on server.")
+      }
+
+      let subscription = await registration.pushManager.getSubscription()
+      if (!subscription) {
+        subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: this.urlBase64ToUint8Array(vapidPublicKey)
+        })
+      }
+
+      await this.syncSubscription(subscription)
+
+      if (this.hasToggleTarget) this.toggleTarget.checked = true
+      if (this.hasStatusMessageTarget) {
+        this.statusMessageTarget.textContent = "Notifications enabled successfully!"
+        setTimeout(() => {
+          if (this.hasStatusMessageTarget && this.statusMessageTarget.textContent.includes("successfully")) {
+            this.statusMessageTarget.textContent = ""
+          }
+        }, 4000)
+      }
+
+      return subscription
     } catch (error) {
       console.error("Failed to subscribe to push notifications:", error)
-      this.toggleTarget.checked = false
+      if (this.hasToggleTarget) this.toggleTarget.checked = false
       if (this.hasStatusMessageTarget) {
         this.statusMessageTarget.textContent = "Error: " + error.message
       }
+      return null
     }
   }
 
@@ -134,14 +159,13 @@ export default class extends Controller {
         })
       }
 
-      this.toggleTarget.checked = false
-      if (this.hasTestButtonTarget) {
-        this.testButtonTarget.classList.add("hidden")
-      }
+      if (this.hasToggleTarget) this.toggleTarget.checked = false
       if (this.hasStatusMessageTarget) {
         this.statusMessageTarget.textContent = "Notifications disabled."
         setTimeout(() => {
-          if (this.hasStatusMessageTarget) this.statusMessageTarget.textContent = ""
+          if (this.hasStatusMessageTarget && this.statusMessageTarget.textContent.includes("disabled")) {
+            this.statusMessageTarget.textContent = ""
+          }
         }, 3000)
       }
     } catch (error) {
@@ -155,7 +179,24 @@ export default class extends Controller {
       this.testButtonTarget.textContent = "Sending test..."
     }
 
+    if (this.hasStatusMessageTarget) {
+      this.statusMessageTarget.textContent = "Verifying device subscription..."
+    }
+
     try {
+      const registration = await navigator.serviceWorker.ready
+      let subscription = await registration.pushManager.getSubscription()
+
+      // If not yet subscribed, automatically subscribe first
+      if (!subscription) {
+        subscription = await this.subscribe()
+        if (!subscription) {
+          throw new Error("Could not subscribe device for notifications.")
+        }
+      } else {
+        await this.syncSubscription(subscription)
+      }
+
       const csrfMeta = document.querySelector('meta[name="csrf-token"]')
       const csrfToken = csrfMeta ? csrfMeta.content : ""
 
@@ -171,17 +212,17 @@ export default class extends Controller {
 
       if (response.ok && data.success) {
         if (this.hasStatusMessageTarget) {
-          this.statusMessageTarget.textContent = "🔔 Test push notification sent! Check your notification center."
+          this.statusMessageTarget.textContent = "🔔 Test notification sent! Check your device notification bar."
         }
       } else {
         if (this.hasStatusMessageTarget) {
-          this.statusMessageTarget.textContent = data.error || "Failed to send test push."
+          this.statusMessageTarget.textContent = "⚠️ " + (data.error || "Failed to deliver test notification.")
         }
       }
     } catch (error) {
       console.error("Error sending test push:", error)
       if (this.hasStatusMessageTarget) {
-        this.statusMessageTarget.textContent = "Error sending test push: " + error.message
+        this.statusMessageTarget.textContent = "⚠️ " + error.message
       }
     } finally {
       if (this.hasTestButtonTarget) {
