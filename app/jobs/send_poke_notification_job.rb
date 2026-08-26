@@ -16,6 +16,7 @@ class SendPokeNotificationJob < ApplicationJob
     body = poke.challenge.title
 
     vapid = {
+      subject: Rails.application.config.webpush.vapid_subject || "mailto:admin@andgodsaid.org",
       public_key: Rails.application.config.webpush.vapid_public_key,
       private_key: Rails.application.config.webpush.vapid_private_key
     }

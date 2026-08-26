@@ -44,7 +44,6 @@ export default class extends Controller {
         if (this.hasToggleTarget) {
           this.toggleTarget.checked = true
         }
-        // Auto-sync subscription to current logged-in user in Rails DB
         await this.syncSubscription(subscription)
       }
     } catch (e) {
@@ -106,13 +105,20 @@ export default class extends Controller {
         throw new Error("VAPID public key not configured on server.")
       }
 
-      let subscription = await registration.pushManager.getSubscription()
-      if (!subscription) {
-        subscription = await registration.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: this.urlBase64ToUint8Array(vapidPublicKey)
-        })
+      // Unsubscribe any previous/stale subscription to guarantee key alignment
+      const existingSubscription = await registration.pushManager.getSubscription()
+      if (existingSubscription) {
+        try {
+          await existingSubscription.unsubscribe()
+        } catch (unsubErr) {
+          console.warn("Could not unsubscribe previous subscription:", unsubErr)
+        }
       }
+
+      const subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: this.urlBase64ToUint8Array(vapidPublicKey)
+      })
 
       await this.syncSubscription(subscription)
 
@@ -187,7 +193,7 @@ export default class extends Controller {
       const registration = await navigator.serviceWorker.ready
       let subscription = await registration.pushManager.getSubscription()
 
-      // If not yet subscribed, automatically subscribe first
+      // If not yet subscribed, subscribe fresh
       if (!subscription) {
         subscription = await this.subscribe()
         if (!subscription) {
@@ -215,6 +221,30 @@ export default class extends Controller {
           this.statusMessageTarget.textContent = "🔔 Test notification sent! Check your device notification bar."
         }
       } else {
+        // If FCM / WNS rejected stale keys (403 invalid JWT / 401 Unauthorized), auto-renew
+        const errText = data.error || ""
+        if (errText.includes("403") || errText.includes("401") || errText.includes("JWT") || errText.includes("re-subscribe") || errText.includes("expired")) {
+          if (this.hasStatusMessageTarget) {
+            this.statusMessageTarget.textContent = "Renewing subscription credentials with server..."
+          }
+          await this.subscribe()
+
+          const retryResp = await fetch("/push_subscriptions/test", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRF-Token": csrfToken
+            }
+          })
+          const retryData = await retryResp.json()
+          if (retryResp.ok && retryData.success) {
+            if (this.hasStatusMessageTarget) {
+              this.statusMessageTarget.textContent = "🔔 Test notification sent! Check your notification bar."
+            }
+            return
+          }
+        }
+
         if (this.hasStatusMessageTarget) {
           this.statusMessageTarget.textContent = "⚠️ " + (data.error || "Failed to deliver test notification.")
         }

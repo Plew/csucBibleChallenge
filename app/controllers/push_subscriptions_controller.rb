@@ -28,7 +28,7 @@ class PushSubscriptionsController < ApplicationController
   def test
     subscriptions = current_user.push_subscriptions
     if subscriptions.empty?
-      render json: { success: false, error: "No active push subscriptions found on this account. Please enable the toggle first." }, status: :unprocessable_entity
+      render json: { success: false, error: "No active push subscriptions found on this account. Please toggle notifications off and on to re-subscribe." }, status: :unprocessable_entity
       return
     end
 
@@ -61,9 +61,15 @@ class PushSubscriptionsController < ApplicationController
         sent_count += 1
       rescue WebPush::ExpiredSubscription
         subscription.destroy
-        errors << "Subscription expired on server"
+        errors << "Subscription expired"
       rescue WebPush::Error => e
-        Rails.logger.warn("Web push test failed for subscription #{subscription.id}: #{e.message}")
+        # Prune dead/invalid subscriptions (401 Unauthorized, 403 Forbidden, 404 Not Found, 410 Gone)
+        if e.message.include?("401") || e.message.include?("403") || e.message.include?("404") || e.message.include?("410")
+          subscription.destroy
+          Rails.logger.warn("Destroyed invalid push subscription #{subscription.id}: #{e.message}")
+        else
+          Rails.logger.warn("Web push test failed for subscription #{subscription.id}: #{e.message}")
+        end
         errors << e.message
       rescue => e
         Rails.logger.error("Web push unexpected error: #{e.message}")
@@ -74,7 +80,7 @@ class PushSubscriptionsController < ApplicationController
     if sent_count > 0
       render json: { success: true, sent_count: sent_count }
     else
-      render json: { success: false, error: errors.join(", ").presence || "Failed to deliver push notification." }, status: :unprocessable_entity
+      render json: { success: false, error: errors.join(", ").presence || "Failed to deliver push notification. Please toggle notifications off and on." }, status: :unprocessable_entity
     end
   end
 end
