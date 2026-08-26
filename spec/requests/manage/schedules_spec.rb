@@ -79,8 +79,8 @@ RSpec.describe "Manage::Schedules", type: :request do
       # 4 chapters @ 2/day = 2 reading days (Sept 1: Matt 1&2, Sept 2: Matt 3&4)
       readings_by_date = challenge.readings.reload.group_by(&:scheduled_date)
       expect(readings_by_date.keys.count).to eq(2)
-      expect(readings_by_date[start_date].map(&:chapter_number).sort).to eq([1, 2])
-      expect(readings_by_date[start_date + 1.day].map(&:chapter_number).sort).to eq([3, 4])
+      expect(readings_by_date[start_date].map(&:chapter_number).sort).to eq([ 1, 2 ])
+      expect(readings_by_date[start_date + 1.day].map(&:chapter_number).sort).to eq([ 3, 4 ])
       expect(challenge.end_date).to eq(start_date + 1.day)
     end
 
@@ -92,12 +92,12 @@ RSpec.describe "Manage::Schedules", type: :request do
         challenge: {
           start_date: friday,
           chapters_per_day: 1,
-          reading_days: ["1", "2", "3", "4", "5"] # Monday through Friday
+          reading_days: [ "1", "2", "3", "4", "5" ] # Monday through Friday
         }
       }
 
       challenge.reload
-      expect(challenge.skip_days_of_week_list).to eq([0, 6])
+      expect(challenge.skip_days_of_week_list).to eq([ 0, 6 ])
 
       scheduled_dates = challenge.readings.reload.order(:scheduled_date).pluck(:scheduled_date)
       expect(scheduled_dates).to eq([
@@ -117,12 +117,12 @@ RSpec.describe "Manage::Schedules", type: :request do
         challenge: {
           start_date: friday,
           chapters_per_day: 1,
-          skip_days_of_week: ["0", "6"] # Skip Sunday, Saturday
+          skip_days_of_week: [ "0", "6" ] # Skip Sunday, Saturday
         }
       }
 
       challenge.reload
-      expect(challenge.skip_days_of_week_list).to eq([0, 6])
+      expect(challenge.skip_days_of_week_list).to eq([ 0, 6 ])
 
       scheduled_dates = challenge.readings.reload.order(:scheduled_date).pluck(:scheduled_date)
       # Friday Sept 4 (Day 1)
@@ -150,7 +150,7 @@ RSpec.describe "Manage::Schedules", type: :request do
       }
 
       challenge.reload
-      expect(challenge.skip_dates_list).to eq([Date.new(2026, 9, 2)])
+      expect(challenge.skip_dates_list).to eq([ Date.new(2026, 9, 2) ])
 
       scheduled_dates = challenge.readings.reload.order(:scheduled_date).pluck(:scheduled_date)
       # Day 1: Sept 1

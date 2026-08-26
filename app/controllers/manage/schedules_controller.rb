@@ -24,14 +24,14 @@ class Manage::SchedulesController < Manage::BaseController
 
     if params[:challenge][:reading_days].present?
       reading_days = params[:challenge][:reading_days].reject(&:blank?).map(&:to_i)
-      all_days = [0, 1, 2, 3, 4, 5, 6]
+      all_days = [ 0, 1, 2, 3, 4, 5, 6 ]
       permitted[:skip_days_of_week] = all_days - reading_days
       permitted.delete(:reading_days)
     elsif permitted[:skip_days_of_week].present?
       permitted[:skip_days_of_week] = permitted[:skip_days_of_week].reject(&:blank?).map(&:to_i)
     elsif params[:challenge].key?(:reading_days)
       # All reading days unchecked means all days skipped
-      permitted[:skip_days_of_week] = [0, 1, 2, 3, 4, 5, 6]
+      permitted[:skip_days_of_week] = [ 0, 1, 2, 3, 4, 5, 6 ]
     else
       permitted[:skip_days_of_week] = []
     end

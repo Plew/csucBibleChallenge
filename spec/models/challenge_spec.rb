@@ -52,14 +52,14 @@ RSpec.describe Challenge, type: :model do
       end
 
       it 'normalizes skip_days_of_week_list to integers and computes reading_days_of_week_list' do
-        challenge = FactoryBot.build(:challenge, skip_days_of_week: ["0", "6"])
-        expect(challenge.skip_days_of_week_list).to eq([0, 6])
-        expect(challenge.reading_days_of_week_list).to eq([1, 2, 3, 4, 5])
+        challenge = FactoryBot.build(:challenge, skip_days_of_week: [ "0", "6" ])
+        expect(challenge.skip_days_of_week_list).to eq([ 0, 6 ])
+        expect(challenge.reading_days_of_week_list).to eq([ 1, 2, 3, 4, 5 ])
       end
 
       it 'normalizes skip_dates_list to Date objects' do
-        challenge = FactoryBot.build(:challenge, skip_dates: ["2026-12-25", "2027-01-01"])
-        expect(challenge.skip_dates_list).to eq([Date.new(2026, 12, 25), Date.new(2027, 1, 1)])
+        challenge = FactoryBot.build(:challenge, skip_dates: [ "2026-12-25", "2027-01-01" ])
+        expect(challenge.skip_dates_list).to eq([ Date.new(2026, 12, 25), Date.new(2027, 1, 1) ])
       end
 
       it 'accurately identifies reading days with reading_day?' do
@@ -67,8 +67,8 @@ RSpec.describe Challenge, type: :model do
           :challenge,
           start_date: Date.new(2026, 10, 1),
           end_date: Date.new(2026, 10, 31),
-          skip_days_of_week: [0, 6], # Skip weekends
-          skip_dates: ["2026-10-15"]
+          skip_days_of_week: [ 0, 6 ], # Skip weekends
+          skip_dates: [ "2026-10-15" ]
         )
 
         # 2026-10-01 is a Thursday (reading day)

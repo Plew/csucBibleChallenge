@@ -18,9 +18,9 @@ class BlogPostsController < ApplicationController
   def set_challenge
     @challenge = if params[:challenge_id].present?
                    Challenge.find(params[:challenge_id])
-                 else
+    else
                    current_active_challenge
-                 end
+    end
 
     if @challenge.nil?
       redirect_to root_path, alert: I18n.t("blog.not_enrolled")

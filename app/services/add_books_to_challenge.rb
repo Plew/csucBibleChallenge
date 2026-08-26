@@ -47,9 +47,9 @@ class AddBooksToChallenge
     last_date_readings_count = challenge.readings.where(scheduled_date: last_reading.scheduled_date).count
     current_date = if last_date_readings_count < chapters_per_day && !skip_days.include?(last_reading.scheduled_date.wday) && !skip_dates.include?(last_reading.scheduled_date)
                      last_reading.scheduled_date
-                   else
+    else
                      last_reading.scheduled_date + 1.day
-                   end
+    end
 
     # Build queue of chapters to add
     chapters_to_add = []
@@ -69,10 +69,10 @@ class AddBooksToChallenge
 
         # If on the last reading's date, only take remaining slot capacity
         slot_capacity = if current_date == last_reading.scheduled_date
-                          [chapters_per_day - last_date_readings_count, 1].max
-                        else
+                          [ chapters_per_day - last_date_readings_count, 1 ].max
+        else
                           chapters_per_day
-                        end
+        end
 
         batch = chapters_to_add.shift(slot_capacity)
         batch.each do |ch|
@@ -119,9 +119,9 @@ class AddBooksToChallenge
     last_date_readings_count = challenge.readings.where(scheduled_date: last_reading.scheduled_date).count
     current_date = if last_date_readings_count < chapters_per_day && !skip_days.include?(last_reading.scheduled_date.wday) && !skip_dates.include?(last_reading.scheduled_date)
                      last_reading.scheduled_date
-                   else
+    else
                      last_reading.scheduled_date + 1.day
-                   end
+    end
 
     remaining = total_chapters
     last_date = current_date
@@ -134,10 +134,10 @@ class AddBooksToChallenge
       end
 
       slot = if first_pass && current_date == last_reading.scheduled_date
-               [chapters_per_day - last_date_readings_count, 1].max
-             else
+               [ chapters_per_day - last_date_readings_count, 1 ].max
+      else
                chapters_per_day
-             end
+      end
       first_pass = false
 
       remaining -= slot

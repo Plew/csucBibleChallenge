@@ -124,7 +124,7 @@ module ChallengeCreation
 
     if params[:challenge][:reading_days].present?
       reading_days = params[:challenge][:reading_days].reject(&:blank?).map(&:to_i)
-      all_days = [0, 1, 2, 3, 4, 5, 6]
+      all_days = [ 0, 1, 2, 3, 4, 5, 6 ]
       permitted[:skip_days_of_week] = all_days - reading_days
       permitted.delete(:reading_days)
     elsif permitted[:skip_days_of_week].present?

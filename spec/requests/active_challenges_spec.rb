@@ -136,7 +136,6 @@ RSpec.describe "Active Challenges & Multi-Challenge Navigation", type: :request 
       get "/stats"
       expect(response).to have_http_status(:success)
     end
-  end
 
     it "safely redirects to the new challenge group when switching from a group detail page" do
       # User is on group1 (which belongs to challenge1) and switches to challenge2

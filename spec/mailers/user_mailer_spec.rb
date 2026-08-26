@@ -63,7 +63,7 @@ RSpec.describe UserMailer, type: :mailer do
       let(:reading2) { create(:reading, challenge: challenge, book_number: 45, chapter_number: 8) }
       let(:reading3) { create(:reading, challenge: challenge, book_number: 45, chapter_number: 9) }
       let(:reading4) { create(:reading, challenge: challenge, book_number: 45, chapter_number: 10) }
-      let(:mail_multi) { UserMailer.daily_reading(user, [reading, reading2, reading3, reading4], login_token) }
+      let(:mail_multi) { UserMailer.daily_reading(user, [ reading, reading2, reading3, reading4 ], login_token) }
 
       it "lists all 4 chapters in the subject" do
         expect(mail_multi.subject).to eq("Bible Reading: Romans 7, Romans 8, Romans 9, Romans 10")

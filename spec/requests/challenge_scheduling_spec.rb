@@ -24,7 +24,7 @@ RSpec.describe "Challenge Scheduling & Multi-Chapters Per Day", type: :request d
           timezone: "UTC",
           chapters_per_day: 2
         },
-        selected_books: ["40"] # Matthew (28 chapters)
+        selected_books: [ "40" ] # Matthew (28 chapters)
       }
 
       challenge = Challenge.find_by(name: "2 Chapters a Day Challenge")
@@ -39,11 +39,11 @@ RSpec.describe "Challenge Scheduling & Multi-Chapters Per Day", type: :request d
 
       # Day 1 should have Matthew 1 & 2
       day1_readings = readings_by_date[start_date]
-      expect(day1_readings.map(&:chapter_number).sort).to eq([1, 2])
+      expect(day1_readings.map(&:chapter_number).sort).to eq([ 1, 2 ])
 
       # Day 2 should have Matthew 3 & 4
       day2_readings = readings_by_date[start_date + 1.day]
-      expect(day2_readings.map(&:chapter_number).sort).to eq([3, 4])
+      expect(day2_readings.map(&:chapter_number).sort).to eq([ 3, 4 ])
     end
   end
 
@@ -58,14 +58,14 @@ RSpec.describe "Challenge Scheduling & Multi-Chapters Per Day", type: :request d
           start_date: start_date,
           timezone: "UTC",
           chapters_per_day: 1,
-          skip_days_of_week: ["0", "6"] # Sunday, Saturday
+          skip_days_of_week: [ "0", "6" ] # Sunday, Saturday
         },
-        selected_books: ["57"] # Philemon (1 chapter) + 2 John (1 chapter) + 3 John (1 chapter) + Jude (1 chapter) = 4 chapters
+        selected_books: [ "50" ] # Philippians (4 chapters: Phil 1..4)
       }
 
       challenge = Challenge.find_by(name: "Weekdays Only Challenge")
       expect(challenge).to be_present
-      expect(challenge.skip_days_of_week_list).to eq([0, 6])
+      expect(challenge.skip_days_of_week_list).to eq([ 0, 6 ])
 
       scheduled_dates = challenge.readings.order(:scheduled_date).pluck(:scheduled_date)
       # Friday Sept 4 (Day 1)
@@ -92,15 +92,15 @@ RSpec.describe "Challenge Scheduling & Multi-Chapters Per Day", type: :request d
           start_date: start_date,
           timezone: "UTC",
           chapters_per_day: 1,
-          reading_days: ["1", "2", "3", "4", "5"] # Mon through Fri
+          reading_days: [ "1", "2", "3", "4", "5" ] # Mon through Fri
         },
-        selected_books: ["57"]
+        selected_books: [ "57" ]
       }
 
       challenge = Challenge.find_by(name: "Mon-Fri Reading Days Challenge")
       expect(challenge).to be_present
-      expect(challenge.skip_days_of_week_list).to eq([0, 6])
-      expect(challenge.reading_days_of_week_list).to eq([1, 2, 3, 4, 5])
+      expect(challenge.skip_days_of_week_list).to eq([ 0, 6 ])
+      expect(challenge.reading_days_of_week_list).to eq([ 1, 2, 3, 4, 5 ])
     end
   end
 
@@ -116,12 +116,12 @@ RSpec.describe "Challenge Scheduling & Multi-Chapters Per Day", type: :request d
           chapters_per_day: 1,
           skip_dates_text: "2026-12-24, 2026-12-25"
         },
-        selected_books: ["57"] # Philemon (1 chapter)
+        selected_books: [ "57" ] # Philemon (1 chapter)
       }
 
       challenge = Challenge.find_by(name: "Holiday Skip Challenge")
       expect(challenge).to be_present
-      expect(challenge.skip_dates_list).to eq([Date.new(2026, 12, 24), Date.new(2026, 12, 25)])
+      expect(challenge.skip_dates_list).to eq([ Date.new(2026, 12, 24), Date.new(2026, 12, 25) ])
     end
   end
 
@@ -173,7 +173,7 @@ RSpec.describe "Challenge Scheduling & Multi-Chapters Per Day", type: :request d
              name: "Rest Day Challenge",
              start_date: Date.current - 2.days,
              end_date: Date.current + 5.days,
-             skip_days_of_week: [Date.current.wday]) # Today is a skipped day
+             skip_days_of_week: [ Date.current.wday ]) # Today is a skipped day
     end
 
     before do

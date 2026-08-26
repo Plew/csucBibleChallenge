@@ -339,12 +339,12 @@ module ApplicationHelper
   #   timezone_options_for_select
   #   # => [["Abu Dhabi", "Abu Dhabi"], ["America/New_York", "America/New_York"], ..., ["Munich", "Berlin"]]
   def timezone_options_for_select
-    us_zones = ActiveSupport::TimeZone.us_zones.map { |tz| [tz.name, tz.name] }
-    other_zones = (ActiveSupport::TimeZone.all - ActiveSupport::TimeZone.us_zones).map { |tz| [tz.name, tz.name] }
+    us_zones = ActiveSupport::TimeZone.us_zones.map { |tz| [ tz.name, tz.name ] }
+    other_zones = (ActiveSupport::TimeZone.all - ActiveSupport::TimeZone.us_zones).map { |tz| [ tz.name, tz.name ] }
 
     other_zones.sort_by!(&:first)
 
-    us_zones + [["-------------", ""]] + other_zones
+    us_zones + [ [ "-------------", "" ] ] + other_zones
   end
 
   # Converts URLs in text to clickable links

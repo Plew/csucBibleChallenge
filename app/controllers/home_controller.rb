@@ -29,7 +29,7 @@ class HomeController < ApplicationController
     @user_challenge ||= current_active_challenge
 
     if !@user_challenge
-      redirect_to root_path, notice: "Please join a challenge to start reading!" and return
+      redirect_to challenges_path, notice: "Please join a challenge to start reading!" and return
     end
 
     if @user_challenge

@@ -16,7 +16,7 @@ class Manage::ChooserController < ApplicationController
 
     if @manageable_challenges.empty?
       redirect_to root_path, alert: t("manage.access_denied", default: "You do not have permission to manage any challenges.")
-      return
+      nil
     end
   end
 end

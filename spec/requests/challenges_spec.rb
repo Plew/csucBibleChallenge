@@ -80,7 +80,7 @@ RSpec.describe "Challenges", type: :request do
             timezone: "Eastern Time (US & Canada)",
             chapters_per_day: 1
           },
-          selected_books: ["1"] # Genesis (book 1, 50 chapters)
+          selected_books: [ "1" ] # Genesis (book 1, 50 chapters)
         }
       }.to change(Challenge, :count).by(1)
 

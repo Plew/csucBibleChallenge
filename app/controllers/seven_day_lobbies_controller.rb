@@ -84,9 +84,9 @@ class SevenDayLobbiesController < ApplicationController
   def set_challenge
     @challenge = if params[:challenge_id].present?
                    Challenge.find(params[:challenge_id])
-                 else
+    else
                    current_active_challenge
-                 end
+    end
 
     if @challenge.nil?
       redirect_to challenges_path, alert: t("seven_day_lobby.must_be_enrolled")

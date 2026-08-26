@@ -32,7 +32,7 @@ class Challenge < ApplicationRecord
   end
 
   def reading_days_of_week_list
-    all_days = [1, 2, 3, 4, 5, 6, 0] # Mon(1)..Sat(6), Sun(0)
+    all_days = [ 1, 2, 3, 4, 5, 6, 0 ] # Mon(1)..Sat(6), Sun(0)
     all_days - skip_days_of_week_list
   end
 
@@ -50,9 +50,9 @@ class Challenge < ApplicationRecord
       book_name = ApplicationController.helpers.book_number_to_name(first_reading.book_number)
       reading_name = if today_readings.size == 1
                        "#{book_name} #{first_reading.chapter_number}"
-                     else
+      else
                        "#{today_readings.size} chapters"
-                     end
+      end
 
       {
         has_reading: true,
