@@ -28,6 +28,58 @@ export default class extends Controller {
     this.setupStepObserver()
   }
 
+  openCalendar() {
+    if (this.hasStartDateTarget) {
+      const container = this.startDateTarget.closest('[data-controller~="date-picker"]')
+      if (container) {
+        const controller = this.application.getControllerForElementAndIdentifier(container, "date-picker")
+        if (controller) {
+          controller.open()
+          return
+        }
+      }
+      this.startDateTarget.focus()
+    }
+  }
+
+  incrementChapters(event) {
+    if (event) event.preventDefault()
+    if (this.hasChaptersPerDayTarget) {
+      const current = parseInt(this.chaptersPerDayTarget.value) || 1
+      const max = parseInt(this.chaptersPerDayTarget.max) || 20
+      if (current < max) {
+        this.chaptersPerDayTarget.value = current + 1
+        this.chaptersPerDayTarget.dispatchEvent(new Event("input", { bubbles: true }))
+        this.chaptersPerDayTarget.dispatchEvent(new Event("change", { bubbles: true }))
+        this.updateSchedule()
+      }
+    }
+  }
+
+  decrementChapters(event) {
+    if (event) event.preventDefault()
+    if (this.hasChaptersPerDayTarget) {
+      const current = parseInt(this.chaptersPerDayTarget.value) || 1
+      const min = parseInt(this.chaptersPerDayTarget.min) || 1
+      if (current > min) {
+        this.chaptersPerDayTarget.value = current - 1
+        this.chaptersPerDayTarget.dispatchEvent(new Event("input", { bubbles: true }))
+        this.chaptersPerDayTarget.dispatchEvent(new Event("change", { bubbles: true }))
+        this.updateSchedule()
+      }
+    }
+  }
+
+  setStartDatePreset(event) {
+    const date = event.currentTarget.dataset.date
+    if (date && this.hasStartDateTarget) {
+      this.startDateTarget.value = date
+      this.startDateTarget.dispatchEvent(new Event("input", { bubbles: true }))
+      this.startDateTarget.dispatchEvent(new Event("change", { bubbles: true }))
+      this.updateSchedule()
+    }
+  }
+
   selectPreset(event) {
     const presetName = event.currentTarget.dataset.preset
     const bookNumbers = this.constructor.presets[presetName]

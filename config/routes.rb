@@ -44,9 +44,11 @@ Rails.application.routes.draw do
 
   # Challenge invitation links
   get "challenges/:token/join", to: "challenge_invitations#show", as: :challenge_invitation
+  post "challenges/:token/accept", to: "challenge_invitations#accept", as: :accept_challenge_invitation
 
   # Group invitation links
   get "groups/:token/join", to: "group_invitations#show", as: :group_invitation
+  post "groups/:token/accept", to: "group_invitations#accept", as: :accept_group_invitation
 
   # Active challenge switcher
   patch "active_challenge", to: "active_challenges#update", as: :switch_active_challenge

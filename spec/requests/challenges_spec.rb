@@ -90,5 +90,39 @@ RSpec.describe "Challenges", type: :request do
       expect(challenge.readings.first.chapter_number).to eq(1)
       expect(challenge.readings.last.chapter_number).to eq(50)
     end
+
+    it "creates a visible challenge when hidden is false" do
+      post challenges_path, params: {
+        challenge: {
+          name: "Visible Public Challenge",
+          start_date: Date.current.to_s,
+          timezone: "UTC",
+          chapters_per_day: 1,
+          hidden: "0"
+        },
+        selected_books: [ "57" ] # Philemon (1 chapter)
+      }
+
+      challenge = Challenge.find_by(name: "Visible Public Challenge")
+      expect(challenge).to be_present
+      expect(challenge.hidden).to be(false)
+    end
+
+    it "creates a hidden challenge when hidden is true" do
+      post challenges_path, params: {
+        challenge: {
+          name: "Private Hidden Challenge",
+          start_date: Date.current.to_s,
+          timezone: "UTC",
+          chapters_per_day: 1,
+          hidden: "1"
+        },
+        selected_books: [ "57" ]
+      }
+
+      challenge = Challenge.find_by(name: "Private Hidden Challenge")
+      expect(challenge).to be_present
+      expect(challenge.hidden).to be(true)
+    end
   end
 end

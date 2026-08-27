@@ -12,30 +12,47 @@ class SessionsController < ApplicationController
 
     if user && user.authenticate(params[:session][:password])
       log_in user
-      # TODO: Implement remember me functionality if params[:session][:remember_me] == '1'
 
       # Check for group invitation token and auto-enroll
       if session[:group_invitation_token].present?
         group = Group.find_by(token: session[:group_invitation_token])
         if group
-          # Enroll in challenge if not already enrolled
           unless current_user.challenges.include?(group.challenge)
             challenge_enrollment = group.challenge.user_challenge_enrollments.new(user: current_user)
             challenge_enrollment.save
-            set_active_challenge(group.challenge)
           end
+          set_active_challenge(group.challenge)
 
-          # Enroll in group if in the challenge
           if current_user.challenges.include?(group.challenge) && !current_user.groups.include?(group)
             group_enrollment = group.user_group_enrollments.new(user: current_user)
             if group_enrollment.save
               session.delete(:group_invitation_token)
-              redirect_to group_path(group), notice: "Joined!"
+              redirect_to group_path(group), notice: "Joined #{group.name}!"
               return
             end
           end
         end
         session.delete(:group_invitation_token)
+      end
+
+      # Check for challenge invitation token and auto-enroll
+      if session[:challenge_invitation_token].present?
+        challenge = Challenge.find_by(invitation_token: session[:challenge_invitation_token])
+        if challenge
+          unless current_user.challenges.include?(challenge)
+            enrollment = challenge.user_challenge_enrollments.new(user: current_user)
+            enrollment.save
+          end
+          set_active_challenge(challenge)
+          session.delete(:challenge_invitation_token)
+          if challenge.start_date <= Date.current && challenge.end_date >= Date.current
+            redirect_to reading_path, notice: "Joined #{challenge.name}!"
+          else
+            redirect_to challenge_path(challenge), notice: "Joined #{challenge.name}!"
+          end
+          return
+        end
+        session.delete(:challenge_invitation_token)
       end
 
       # Redirect to reading page if user has an active challenge, otherwise to challenge show page

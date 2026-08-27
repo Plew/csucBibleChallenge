@@ -38,6 +38,7 @@ export default class extends Controller {
 
   applyTheme(theme) {
     document.documentElement.setAttribute("data-theme", theme)
+    document.documentElement.style.colorScheme = (theme === "andgodsaid-dark") ? "dark" : "light"
     // Keep the sun/moon UI checkbox in sync with the theme
     if (this.hasCheckboxTarget) {
       this.checkboxTarget.checked = theme === "andgodsaid-dark"

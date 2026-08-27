@@ -1,0 +1,91 @@
+<div class="min-h-[75vh] flex items-center justify-center px-4 py-8">
+  <div class="w-full max-w-md bg-base-100 border border-base-200 shadow-xl rounded-3xl p-6 sm:p-8 space-y-6 text-center animate-fade-in relative overflow-hidden">
+    
+    <!-- Decorative Ambient Header Glow -->
+    <div class="absolute -top-12 -right-12 w-32 h-32 bg-primary/15 rounded-full blur-2xl pointer-events-none" aria-hidden="true"></div>
+    <div class="absolute -bottom-12 -left-12 w-32 h-32 bg-secondary/15 rounded-full blur-2xl pointer-events-none" aria-hidden="true"></div>
+
+    <!-- Badge Header -->
+    <div class="flex justify-center">
+      <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-primary bg-primary/10 px-3.5 py-1.5 rounded-full border border-primary/20">
+        ✨ Challenge Invitation
+      </span>
+    </div>
+
+    <!-- Title & Dates -->
+    <div class="space-y-2">
+      <h1 class="text-2xl sm:text-3xl font-bold font-serif text-neutral leading-tight">
+        <%= @challenge.name %>
+      </h1>
+      <p class="text-xs sm:text-sm text-neutral/60 font-medium">
+        <%= @challenge.start_date.strftime("%B %-d, %Y") %> &mdash; <%= @challenge.end_date.strftime("%B %-d, %Y") %>
+      </p>
+    </div>
+
+    <!-- Description (if present) -->
+    <% if @challenge.description.present? %>
+      <div class="text-xs sm:text-sm text-neutral/70 bg-base-200/50 p-3.5 rounded-2xl border border-base-200 text-left line-clamp-4">
+        <%= markdown(@challenge.description) %>
+      </div>
+    <% end %>
+
+    <!-- Schedule & Overview Stats -->
+    <div class="grid grid-cols-2 gap-2.5 text-left">
+      <div class="bg-base-200/60 p-3 rounded-2xl border border-base-200 flex flex-col justify-center">
+        <span class="text-[11px] uppercase tracking-wider text-neutral/50 font-semibold">Reading Pace</span>
+        <span class="text-sm font-bold text-neutral">
+          <%= @challenge.chapters_per_day %> <%= "chapter".pluralize(@challenge.chapters_per_day) %>/day
+        </span>
+      </div>
+
+      <div class="bg-base-200/60 p-3 rounded-2xl border border-base-200 flex flex-col justify-center">
+        <span class="text-[11px] uppercase tracking-wider text-neutral/50 font-semibold">Total Scope</span>
+        <span class="text-sm font-bold text-neutral">
+          <%= @total_chapters %> <%= "chapter".pluralize(@total_chapters) %>
+        </span>
+      </div>
+
+      <div class="bg-base-200/60 p-3 rounded-2xl border border-base-200 flex flex-col justify-center">
+        <span class="text-[11px] uppercase tracking-wider text-neutral/50 font-semibold">Duration</span>
+        <span class="text-sm font-bold text-neutral">
+          <%= (@challenge.end_date - @challenge.start_date).to_i + 1 %> days
+        </span>
+      </div>
+
+      <div class="bg-base-200/60 p-3 rounded-2xl border border-base-200 flex flex-col justify-center">
+        <span class="text-[11px] uppercase tracking-wider text-neutral/50 font-semibold">Community</span>
+        <span class="text-sm font-bold text-neutral">
+          <%= @user_count %> <%= "reader".pluralize(@user_count) %>
+        </span>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="space-y-3 pt-2">
+      <% if @is_enrolled %>
+        <div class="text-xs font-semibold text-success bg-success/15 py-2 px-3 rounded-xl">
+          ✓ You are already participating in this challenge!
+        </div>
+        <%= link_to reading_path, class: "btn btn-primary w-full rounded-full shadow-md text-sm font-semibold" do %>
+          Go to Today's Reading &rarr;
+        <% end %>
+      <% elsif logged_in? %>
+        <%= button_to accept_challenge_invitation_path(@challenge.invitation_token), method: :post, class: "btn btn-primary w-full rounded-full shadow-lg hover:shadow-xl transition-all text-sm font-semibold" do %>
+          Accept Invitation &amp; Join
+        <% end %>
+      <% else %>
+        <%= link_to new_user_session_path, class: "btn btn-primary w-full rounded-full shadow-lg hover:shadow-xl transition-all text-sm font-semibold" do %>
+          Sign In to Accept &amp; Join
+        <% end %>
+        <p class="text-[11px] text-neutral/50">
+          Don't have an account? <%= link_to "Sign up here", new_user_registration_path, class: "text-primary underline font-medium" %>
+        </p>
+      <% end %>
+
+      <div>
+        <%= link_to "View Full Challenge Details", challenge_path(@challenge), class: "text-xs text-neutral/50 hover:text-primary transition-colors underline" %>
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -360,3 +360,72 @@
 .text-brand-dark {
   color: var(--brand-dark, #2B3824);
 }
+
+/* ==========================================================================
+   Form Input Styling (DaisyUI Theme Matching)
+   ========================================================================== */
+
+/* Hide browser native number input spinners (removes default black arrow controls) */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* Hide native WebKit date picker calendar icon when using custom DaisyUI popover */
+[data-controller~="date-picker"] input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  display: none;
+  -webkit-appearance: none;
+}
+
+/* Ensure theme color-schemes and select options are explicitly declared to prevent black flashes */
+html,
+select {
+  color-scheme: light;
+}
+
+[data-theme="andgodsaid"],
+[data-theme="andgodsaid"] select,
+[data-theme="andgodsaid"] select option,
+[data-theme="andgodsaid"] input,
+[data-theme="andgodsaid"] textarea {
+  color-scheme: light;
+}
+
+[data-theme="andgodsaid"] select option {
+  background-color: #FBF8F2;
+  color: #2F2C28;
+}
+
+[data-theme="andgodsaid-dark"],
+[data-theme="andgodsaid-dark"] select,
+[data-theme="andgodsaid-dark"] select option,
+[data-theme="andgodsaid-dark"] input,
+[data-theme="andgodsaid-dark"] textarea {
+  color-scheme: dark;
+}
+
+[data-theme="andgodsaid-dark"] select option {
+  background-color: #1C1A17;
+  color: #FBF8F2;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.15s ease-out forwards;
+}

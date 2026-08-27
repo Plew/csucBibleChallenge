@@ -45,15 +45,17 @@
           <%= form.text_area :message_of_the_day, class: "textarea textarea-bordered h-24", rows: 3, placeholder: t("manage.settings.message_of_the_day_placeholder") %>
         </div>
 
-        <div class="form-control">
-          <%= form.label :start_date, t("challenges.start_date"), class: "label" %>
-          <%= form.date_field :start_date, class: "input input-bordered w-full" %>
-        </div>
+        <%= render DatePickerComponent.new(
+              form: form,
+              attribute: :start_date,
+              label: t("challenges.start_date"),
+              presets: true
+            ) %>
 
         <div class="form-control">
           <%= form.label :timezone, t("challenges.timezone"), class: "label" %>
           <%= form.select :timezone,
-                options_for_select(timezone_options_for_select, @challenge.timezone),
+                options_for_select(timezone_options_for_select, @challenge.timezone.presence || "Eastern Time (US & Canada)"),
                 { prompt: t("challenges.select_timezone") },
                 { class: "select select-bordered w-full" } %>
         </div>

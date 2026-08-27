@@ -36,7 +36,7 @@ class ChallengesController < ApplicationController
 
   # GET /challenges/new
   def new
-    @challenge = Challenge.new(hidden: true, start_date: Date.tomorrow)
+    @challenge = Challenge.new(hidden: false, start_date: Date.tomorrow)
     @bible_books = load_bible_books
   end
 
@@ -44,7 +44,6 @@ class ChallengesController < ApplicationController
   def create
     @challenge = Challenge.new(challenge_params)
     @challenge.creator = current_user
-    @challenge.hidden = true
     @bible_books = load_bible_books
 
     # Calculate end_date before saving

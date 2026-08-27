@@ -20,6 +20,7 @@ class Challenge < ApplicationRecord
   validate :end_date_after_start_date
 
   before_create :generate_invitation_token
+  after_initialize :set_default_timezone, if: :new_record?
 
   def skip_days_of_week_list
     Array(skip_days_of_week).map(&:to_i)
@@ -152,5 +153,9 @@ class Challenge < ApplicationRecord
     if end_date < start_date
       errors.add(:end_date, "must be on or after the start date")
     end
+  end
+
+  def set_default_timezone
+    self.timezone ||= "Eastern Time (US & Canada)"
   end
 end

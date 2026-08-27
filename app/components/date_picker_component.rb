@@ -3,12 +3,77 @@
 class DatePickerComponent < ViewComponent::Base
   include ApplicationHelper
 
-  def initialize(selected_date:, challenge:, user:)
+  def initialize(
+    # Calendar/Reading mode args:
+    selected_date: nil,
+    challenge: nil,
+    user: nil,
+    # Form/Field mode args:
+    form: nil,
+    attribute: :start_date,
+    label: nil,
+    target: nil,
+    change_action: nil,
+    presets: true,
+    input_class: nil
+  )
     @selected_date = selected_date
     @challenge = challenge
     @user = user
-    @display_month = selected_date.beginning_of_month
+    @display_month = (selected_date || Date.current).beginning_of_month
+
+    @form = form
+    @attribute = attribute
+    @label = label
+    @target = target
+    @change_action = change_action
+    @presets = presets
+    @input_class = input_class
   end
+
+  def form_mode?
+    @form.present?
+  end
+
+  # ================= Form Field Helpers =================
+
+  def label_text
+    @label || @form.object&.class&.human_attribute_name(@attribute) || @attribute.to_s.humanize
+  end
+
+  def show_presets?
+    @presets
+  end
+
+  def today_date
+    Date.current.to_s
+  end
+
+  def tomorrow_date
+    Date.tomorrow.to_s
+  end
+
+  def next_monday_date
+    Date.current.next_occurring(:monday).to_s
+  end
+
+  def data_attributes
+    data = {}
+    data["challenge-creator-target"] = @target if @target.present?
+    data["date-picker-target"] = "input"
+
+    actions = ["click->date-picker#open", "focus->date-picker#open"]
+    actions << "change->#{@change_action}" if @change_action.present?
+    actions << "input->#{@change_action}" if @change_action.present?
+    data["action"] = actions.join(" ")
+    data
+  end
+
+  def input_classes
+    "input input-bordered w-full pr-10 cursor-pointer bg-base-100 font-medium text-neutral focus:outline-primary #{@input_class}".strip
+  end
+
+  # ================= Calendar Grid Helpers =================
 
   private
 
@@ -27,16 +92,12 @@ class DatePickerComponent < ViewComponent::Base
   end
 
   def calendar_weeks
-    # Get the first day of the month and pad to start from Monday
     first_of_month = display_month.beginning_of_month
     last_of_month = display_month.end_of_month
 
-    # Start from the Monday of the week containing the first day
     calendar_start = first_of_month.beginning_of_week(:monday)
-    # End on Sunday of the week containing the last day
     calendar_end = last_of_month.end_of_week(:monday)
 
-    # Build weeks array
     weeks = []
     current_date = calendar_start
 
@@ -54,10 +115,10 @@ class DatePickerComponent < ViewComponent::Base
 
   def build_day_data(date)
     in_month = date.month == display_month.month
-    day_readings = in_month ? challenge.readings.where(scheduled_date: date) : []
+    day_readings = (in_month && challenge) ? challenge.readings.where(scheduled_date: date) : []
     has_reading = day_readings.any?
-    completed = has_reading && day_readings.all? { |r| user.user_readings.exists?(reading_id: r.id) }
-    partial_completed = has_reading && !completed && day_readings.any? { |r| user.user_readings.exists?(reading_id: r.id) }
+    completed = has_reading && user && day_readings.all? { |r| user.user_readings.exists?(reading_id: r.id) }
+    partial_completed = has_reading && !completed && user && day_readings.any? { |r| user.user_readings.exists?(reading_id: r.id) }
     is_selected = date == selected_date
 
     {
@@ -77,20 +138,16 @@ class DatePickerComponent < ViewComponent::Base
     return "#{base} text-base-300" unless day[:in_month]
 
     if day[:completed]
-      # Completed: green background
       "#{base} bg-success text-success-content cursor-pointer hover:opacity-80"
     elsif day[:partial_completed]
-      # Partially completed: warning background
       "#{base} bg-warning text-warning-content cursor-pointer hover:opacity-80"
     elsif day[:has_reading]
-      # Has reading but not completed: show date number, clickable
       if day[:is_selected]
         "#{base} bg-primary text-primary-content cursor-pointer"
       else
         "#{base} bg-base-200 text-base-content cursor-pointer hover:bg-base-300"
       end
     else
-      # No reading scheduled
       "#{base} text-base-content/30"
     end
   end
@@ -99,10 +156,8 @@ class DatePickerComponent < ViewComponent::Base
     return "" unless day[:in_month]
 
     if day[:completed]
-      # Show checkmark for completed
       ""
     else
-      # Show day number for incomplete or no reading
       day[:day].to_s
     end
   end

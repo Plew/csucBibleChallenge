@@ -57,16 +57,44 @@
         <% end %>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- Start Date -->
-          <div class="form-control w-full">
-            <%= form.label :start_date, t("challenges.start_date"), class: "label font-semibold text-sm" %>
-            <%= form.date_field :start_date, class: "input input-bordered w-full", data: { "challenge-creator-target": "startDate", action: "change->challenge-creator#updateSchedule" } %>
-          </div>
+          <%= render DatePickerComponent.new(
+                form: form,
+                attribute: :start_date,
+                label: t("challenges.start_date"),
+                target: "startDate",
+                change_action: "challenge-creator#updateSchedule"
+              ) %>
 
           <!-- Chapters Per Day -->
           <div class="form-control w-full">
             <%= form.label :chapters_per_day, "Chapters Per Day", class: "label font-semibold text-sm" %>
-            <%= form.number_field :chapters_per_day, value: (@challenge.chapters_per_day.presence || 1), min: 1, max: 20, class: "input input-bordered w-full", data: { "challenge-creator-target": "chaptersPerDay", action: "change->challenge-creator#updateSchedule input->challenge-creator#updateSchedule" } %>
+            <div class="join w-full">
+              <button type="button"
+                      class="btn btn-outline border-base-300 join-item px-3.5 hover:bg-primary hover:border-primary hover:text-primary-content transition-colors"
+                      data-action="click->challenge-creator#decrementChapters"
+                      title="Decrease chapters">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4" />
+                </svg>
+              </button>
+              <%= form.number_field :chapters_per_day,
+                                    value: (@challenge.chapters_per_day.presence || 1),
+                                    min: 1,
+                                    max: 20,
+                                    class: "input input-bordered join-item w-full text-center font-semibold text-neutral bg-base-100 focus:outline-primary",
+                                    data: {
+                                      "challenge-creator-target": "chaptersPerDay",
+                                      action: "change->challenge-creator#updateSchedule input->challenge-creator#updateSchedule"
+                                    } %>
+              <button type="button"
+                      class="btn btn-outline border-base-300 join-item px-3.5 hover:bg-primary hover:border-primary hover:text-primary-content transition-colors"
+                      data-action="click->challenge-creator#incrementChapters"
+                      title="Increase chapters">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
+              </button>
+            </div>
             <div class="label pt-1">
               <span class="label-text-alt text-xs text-base-content/60">Number of chapters to read each scheduled day</span>
             </div>

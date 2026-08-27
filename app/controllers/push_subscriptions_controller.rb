@@ -46,8 +46,8 @@ class PushSubscriptionsController < ApplicationController
             title: "And God Said — Notifications Active! 🔔",
             options: {
               body: "Push notifications are working on your device. You'll receive daily reading reminders and group alerts!",
-              icon: "/icons/icon-192x192.png",
-              badge: "/icons/icon-48x48.png",
+              icon: "/icons/icon-192x192.png?v=3",
+              badge: "/icons/icon-48x48.png?v=3",
               data: { path: "/reading" }
             }
           }.to_json,

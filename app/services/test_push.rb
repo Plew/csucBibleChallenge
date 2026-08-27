@@ -22,7 +22,7 @@ class TestPush
     results = []
     subscriptions.each do |subscription|
       WebPush.payload_send(
-        message: { title: title, options: { body: body, icon: "/icons/icon-192x192.png", data: { path: "/" } } }.to_json,
+        message: { title: title, options: { body: body, icon: "/icons/icon-192x192.png?v=3", badge: "/icons/icon-48x48.png?v=3", data: { path: "/" } } }.to_json,
         endpoint: subscription.endpoint,
         p256dh: subscription.p256dh_key,
         auth: subscription.auth_key,

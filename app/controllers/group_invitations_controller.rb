@@ -3,40 +3,46 @@ class GroupInvitationsController < ApplicationController
 
   # GET /groups/:token/join
   def show
-    if logged_in?
-      # Check if user is already enrolled in the challenge
-      unless current_user.challenges.include?(@group.challenge)
-        # Check if user is in any other challenge (one challenge at a time rule)
-        if current_user.challenges.any?
-          redirect_to root_path, alert: "You are already enrolled in a different challenge. Leave your current challenge to join this one."
-          return
-        end
+    session[:group_invitation_token] = @group.token
+    @challenge = @group.challenge
+    @is_enrolled_in_group = logged_in? && current_user.groups.include?(@group)
+    @is_enrolled_in_challenge = logged_in? && current_user.challenges.include?(@challenge)
+    @member_count = @group.users.count
+    @total_chapters = @challenge.readings.count
+  end
 
-        # Enroll the user in the challenge first
-        challenge_enrollment = @group.challenge.user_challenge_enrollments.new(user: current_user)
-        unless challenge_enrollment.save
-          redirect_to root_path, alert: "Could not join challenge: #{challenge_enrollment.errors.full_messages.to_sentence}"
-          return
-        end
-      end
+  # POST /groups/:token/accept
+  def accept
+    unless logged_in?
+      session[:group_invitation_token] = @group.token
+      redirect_to new_user_session_path, notice: "Please sign in to join #{@group.name}."
+      return
+    end
 
-      # Check if user is already in this group
-      if current_user.groups.include?(@group)
-        redirect_to group_path(@group), notice: "You are already a member of #{@group.name}!"
+    # Auto-enroll in challenge if not yet enrolled
+    unless current_user.challenges.include?(@group.challenge)
+      challenge_enrollment = @group.challenge.user_challenge_enrollments.new(user: current_user)
+      unless challenge_enrollment.save
+        redirect_to group_invitation_path(@group.token), alert: "Could not join challenge: #{challenge_enrollment.errors.full_messages.to_sentence}"
         return
       end
+    end
 
-      # Enroll the user in the group
-      group_enrollment = @group.user_group_enrollments.new(user: current_user)
-      if group_enrollment.save
-        redirect_to group_path(@group), notice: "Successfully joined #{@group.name}!"
-      else
-        redirect_to root_path, alert: "Could not join group: #{group_enrollment.errors.full_messages.to_sentence}"
-      end
+    set_active_challenge(@group.challenge)
+
+    # Check if already in this group
+    if current_user.groups.include?(@group)
+      redirect_to group_path(@group), notice: "You are already a member of #{@group.name}!"
+      return
+    end
+
+    # Enroll in group
+    group_enrollment = @group.user_group_enrollments.new(user: current_user)
+    if group_enrollment.save
+      session.delete(:group_invitation_token)
+      redirect_to group_path(@group), notice: "Successfully joined #{@group.name}!"
     else
-      # Store token and redirect to group show page for non-logged-in users
-      session[:group_invitation_token] = @group.token
-      redirect_to group_path(@group)
+      redirect_to group_invitation_path(@group.token), alert: "Could not join group: #{group_enrollment.errors.full_messages.to_sentence}"
     end
   end
 

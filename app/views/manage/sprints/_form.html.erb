@@ -19,18 +19,26 @@
       </div>
 
       <div class="form-control">
-        <%= form.label :begin_date, t("admin.sprints.begin_date"), class: "label" %>
-        <%= form.date_field :begin_date, class: "input input-bordered w-full", min: @challenge.start_date, max: @challenge.end_date %>
-        <label class="label">
-          <span class="label-text-alt"><%= t("admin.sprints.begin_date_hint", start_date: @challenge.start_date.strftime("%B %d, %Y")) %></span>
+        <%= render DatePickerComponent.new(
+              form: form,
+              attribute: :begin_date,
+              label: t("admin.sprints.begin_date"),
+              presets: false
+            ) %>
+        <label class="label pt-1">
+          <span class="label-text-alt text-xs text-base-content/60"><%= t("admin.sprints.begin_date_hint", start_date: @challenge.start_date.strftime("%B %d, %Y")) %></span>
         </label>
       </div>
 
       <div class="form-control">
-        <%= form.label :end_date, t("admin.sprints.end_date"), class: "label" %>
-        <%= form.date_field :end_date, class: "input input-bordered w-full", min: @challenge.start_date, max: @challenge.end_date %>
-        <label class="label">
-          <span class="label-text-alt"><%= t("admin.sprints.end_date_hint", end_date: @challenge.end_date.strftime("%B %d, %Y")) %></span>
+        <%= render DatePickerComponent.new(
+              form: form,
+              attribute: :end_date,
+              label: t("admin.sprints.end_date"),
+              presets: false
+            ) %>
+        <label class="label pt-1">
+          <span class="label-text-alt text-xs text-base-content/60"><%= t("admin.sprints.end_date_hint", end_date: @challenge.end_date.strftime("%B %d, %Y")) %></span>
         </label>
       </div>
 
