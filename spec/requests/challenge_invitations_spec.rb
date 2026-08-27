@@ -6,28 +6,23 @@ RSpec.describe "Challenge Invitations", type: :request do
 
   describe "GET /challenges/:token/join" do
     context "with valid invitation token" do
-      it "stores token in session and redirects to challenge show page for non-logged-in users" do
+      it "stores token in session and renders invitation landing page for non-logged-in users" do
         get challenge_invitation_path(challenge.invitation_token)
 
-        expect(response).to redirect_to(challenge_path(challenge))
+        expect(response).to have_http_status(:success)
         expect(session[:challenge_invitation_token]).to eq(challenge.invitation_token)
-
-        # Follow redirect and verify challenge name appears
-        follow_redirect!
         expect(response.body).to include(challenge.name)
+        expect(response.body).to include("Challenge Invitation")
       end
 
       context "when user is logged in" do
-        before { log_in_user(user) }
+        before { login_via_session(user) }
 
-        it "auto-enrolls user and redirects to reading page" do
-          expect {
-            get challenge_invitation_path(challenge.invitation_token)
-          }.to change(UserChallengeEnrollment, :count).by(1)
+        it "renders invitation landing page with accept button" do
+          get challenge_invitation_path(challenge.invitation_token)
 
-          expect(response).to redirect_to(reading_path)
-          follow_redirect!
-          expect(response.body).to include("Successfully joined #{challenge.name}")
+          expect(response).to have_http_status(:success)
+          expect(response.body).to include("Accept Invitation &amp; Join")
         end
       end
     end
@@ -43,11 +38,19 @@ RSpec.describe "Challenge Invitations", type: :request do
     end
   end
 
-  private
+  describe "POST /challenges/:token/accept" do
+    context "when user is logged in" do
+      before { login_via_session(user) }
 
-  def log_in_user(user)
-    post user_session_path, params: {
-      session: { email: user.email, password: user.password }
-    }
+      it "enrolls user and redirects to reading page" do
+        expect {
+          post accept_challenge_invitation_path(challenge.invitation_token)
+        }.to change(UserChallengeEnrollment, :count).by(1)
+
+        expect(response).to redirect_to(reading_path)
+        follow_redirect!
+        expect(response.body).to include("Successfully joined #{challenge.name}")
+      end
+    end
   end
 end

@@ -1136,7 +1136,7 @@ en:
   # Date Picker
   date_picker:
     completed: "Completed"
-    not_read: "Not read"
+    not_read: "Not Read"
     jump_to_date: "Jump to Date"
 
   # Badges

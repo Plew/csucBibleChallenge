@@ -51,6 +51,7 @@ class Admin::ChallengesController < Admin::BaseController
       return
     end
 
+    session.delete(:active_challenge_id) if session[:active_challenge_id] == @challenge.id
     @challenge.destroy
     redirect_to root_path, notice: "Challenge deleted successfully."
   end

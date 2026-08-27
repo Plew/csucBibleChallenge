@@ -7,6 +7,9 @@ class Challenge < ApplicationRecord
   has_many :sprints, dependent: :destroy
   has_many :blog_posts, dependent: :destroy
   has_many :user_badges, dependent: :destroy
+  has_many :email_login_tokens, dependent: :destroy
+  has_many :pokes, dependent: :destroy
+  has_many :seven_day_lobbies, dependent: :destroy
 
   serialize :skip_days_of_week, coder: JSON
   serialize :skip_dates, coder: JSON

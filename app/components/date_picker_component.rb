@@ -62,7 +62,7 @@ class DatePickerComponent < ViewComponent::Base
     data["challenge-creator-target"] = @target if @target.present?
     data["date-picker-target"] = "input"
 
-    actions = ["click->date-picker#open", "focus->date-picker#open"]
+    actions = [ "click->date-picker#open", "focus->date-picker#open" ]
     actions << "change->#{@change_action}" if @change_action.present?
     actions << "input->#{@change_action}" if @change_action.present?
     data["action"] = actions.join(" ")

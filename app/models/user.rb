@@ -36,6 +36,8 @@ class User < ApplicationRecord
 
   attr_accessor :current_password, :skip_current_password_validation
 
+  after_initialize :set_default_version, if: :new_record?
+
   validates :username, presence: true, uniqueness: true
   validates :email, presence: true, uniqueness: { case_sensitive: false }, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :password, presence: true, length: { minimum: 6 }, if: -> { new_record? || !password.nil? }
@@ -43,6 +45,10 @@ class User < ApplicationRecord
   validate :avatar_content_type_allowed
   validates :current_password, presence: true, if: :password_being_updated_and_not_resetting?
   validate :current_password_correct, if: :password_being_updated_and_not_resetting?
+
+  def set_default_version
+    self.version ||= "ESV"
+  end
 
   scope :wants_daily_email, -> { where(daily_email: true) }
 

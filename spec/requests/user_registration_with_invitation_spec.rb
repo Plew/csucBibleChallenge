@@ -5,9 +5,10 @@ RSpec.describe "User Registration with Challenge Invitation", type: :request do
 
   describe "complete invitation flow" do
     it "handles full user journey: invitation link → signup → auto-join → reading page" do
-      # Step 1: User clicks invitation link (redirects to challenge show page)
+      # Step 1: User clicks invitation link (renders invitation landing page)
       get challenge_invitation_path(challenge.invitation_token)
-      expect(response).to redirect_to(challenge_path(challenge))
+      expect(response).to have_http_status(:success)
+      expect(response.body).to include(challenge.name)
       expect(session[:challenge_invitation_token]).to eq(challenge.invitation_token)
 
       # Step 2: User goes to signup page
