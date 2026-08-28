@@ -72,12 +72,12 @@ Rails.application.configure do
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 
-  # Configure Action Mailer for Amazon SES
-  # Only configure SES if credentials are available (not during asset precompilation)
-  if Rails.application.credentials.aws&.dig(:ses)
-    config.action_mailer.delivery_method = :smtp
-    config.action_mailer.perform_deliveries = true
-    config.action_mailer.smtp_settings = {
+  # Configure Action Mailer with automatic fallback
+  config.action_mailer.perform_deliveries = true
+  config.action_mailer.default_url_options = { host: "www.andgodsaid.org" }
+
+  ses_settings = if Rails.application.credentials.aws&.dig(:ses, :smtp_username).present?
+    {
       address: "email-smtp.#{Rails.application.credentials.aws[:ses][:region]}.amazonaws.com",
       port: 587,
       user_name: Rails.application.credentials.aws[:ses][:smtp_username],
@@ -85,6 +85,31 @@ Rails.application.configure do
       authentication: :login,
       enable_starttls_auto: true
     }
-    config.action_mailer.default_url_options = { host: "www.andgodsaid.org" }
+  end
+
+  resend_settings = if Rails.application.credentials.dig(:resend, :api_key).present?
+    {
+      address: "smtp.resend.com",
+      port: 587,
+      user_name: "resend",
+      password: Rails.application.credentials.dig(:resend, :api_key),
+      authentication: :plain,
+      enable_starttls_auto: true
+    }
+  end
+
+  if ses_settings && resend_settings
+    # Both credentials present: Use SES with automatic fallback to Resend
+    config.action_mailer.delivery_method = :fallback
+    config.action_mailer.fallback_settings = {
+      primary: ses_settings,
+      secondary: resend_settings
+    }
+  elsif ses_settings
+    config.action_mailer.delivery_method = :smtp
+    config.action_mailer.smtp_settings = ses_settings
+  elsif resend_settings
+    config.action_mailer.delivery_method = :smtp
+    config.action_mailer.smtp_settings = resend_settings
   end
 end

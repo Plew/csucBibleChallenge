@@ -37,11 +37,26 @@ export default class extends Controller {
   }
 
   applyTheme(theme) {
+    this.theme = theme
     document.documentElement.setAttribute("data-theme", theme)
-    document.documentElement.style.colorScheme = (theme === "andgodsaid-dark") ? "dark" : "light"
+    // Use 'only light' / 'only dark' to prevent Android Edge / Chrome auto-dark mode from inverting light theme
+    document.documentElement.style.colorScheme = (theme === "andgodsaid-dark") ? "only dark" : "only light"
+
+    // Update meta color-scheme
+    const metaColorScheme = document.querySelector('meta[name="color-scheme"]')
+    if (metaColorScheme) {
+      metaColorScheme.setAttribute("content", theme === "andgodsaid-dark" ? "dark" : "light")
+    }
+
+    // Update meta theme-color for browser navigation bar
+    const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+    if (metaThemeColor) {
+      metaThemeColor.setAttribute("content", theme === "andgodsaid-dark" ? "#1C1A17" : "#6B7558")
+    }
+
     // Keep the sun/moon UI checkbox in sync with the theme
     if (this.hasCheckboxTarget) {
-      this.checkboxTarget.checked = theme === "andgodsaid-dark"
+      this.checkboxTarget.checked = (theme === "andgodsaid-dark")
     }
   }
 }

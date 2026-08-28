@@ -383,18 +383,21 @@ input[type="number"] {
   -webkit-appearance: none;
 }
 
-/* Ensure theme color-schemes and select options are explicitly declared to prevent black flashes */
+/* Ensure theme color-schemes and select options are explicitly declared to prevent black flashes
+   and prevent Edge/Chrome Android Auto-Dark Mode from inverting light theme */
 html,
 select {
-  color-scheme: light;
+  color-scheme: light dark;
 }
 
+:root[data-theme="andgodsaid"],
+html[data-theme="andgodsaid"],
 [data-theme="andgodsaid"],
 [data-theme="andgodsaid"] select,
 [data-theme="andgodsaid"] select option,
 [data-theme="andgodsaid"] input,
 [data-theme="andgodsaid"] textarea {
-  color-scheme: light;
+  color-scheme: only light;
 }
 
 [data-theme="andgodsaid"] select option {
@@ -402,12 +405,14 @@ select {
   color: #2F2C28;
 }
 
+:root[data-theme="andgodsaid-dark"],
+html[data-theme="andgodsaid-dark"],
 [data-theme="andgodsaid-dark"],
 [data-theme="andgodsaid-dark"] select,
 [data-theme="andgodsaid-dark"] select option,
 [data-theme="andgodsaid-dark"] input,
 [data-theme="andgodsaid-dark"] textarea {
-  color-scheme: dark;
+  color-scheme: only dark;
 }
 
 [data-theme="andgodsaid-dark"] select option {
