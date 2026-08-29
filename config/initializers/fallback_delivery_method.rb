@@ -11,7 +11,7 @@ class FallbackDeliveryMethod
 
   def deliver!(mail)
     # 1. Primary: Amazon SES (HTTPS API - Port 443)
-    aws_config = settings[:aws_ses]
+    aws_config = settings[:aws_ses] || fetch_aws_ses_config
     if aws_config.present? && aws_config[:access_key_id].present? && aws_config[:secret_access_key].present?
       begin
         deliver_via_aws_ses_api!(mail, aws_config)
@@ -28,11 +28,28 @@ class FallbackDeliveryMethod
       deliver_via_resend_api!(mail, resend_key)
       Rails.logger.info "[ActionMailer] Successfully sent via Secondary (Resend HTTPS API) to: #{mail.destinations.join(', ')}"
     else
-      raise "No email delivery method succeeded. Please check AWS SES and Resend credentials."
+      raise "No email delivery method succeeded. Please check AWS SES and Resend credentials in Rails credentials."
     end
   end
 
   private
+
+  def fetch_aws_ses_config
+    creds = Rails.application.credentials
+    if creds.aws&.dig(:ses, :access_key_id).present?
+      {
+        region: creds.aws&.dig(:ses, :region) || "us-east-1",
+        access_key_id: creds.aws&.dig(:ses, :access_key_id),
+        secret_access_key: creds.aws&.dig(:ses, :secret_access_key)
+      }
+    elsif creds.dig(:aws, :access_key_id).present?
+      {
+        region: creds.dig(:aws, :region) || "us-east-1",
+        access_key_id: creds.dig(:aws, :access_key_id),
+        secret_access_key: creds.dig(:aws, :secret_access_key)
+      }
+    end
+  end
 
   def deliver_via_aws_ses_api!(mail, aws_config)
     require "aws-sdk-sesv2" unless defined?(Aws::SESV2)

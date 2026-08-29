@@ -76,19 +76,4 @@ Rails.application.configure do
   config.action_mailer.perform_deliveries = true
   config.action_mailer.default_url_options = { host: "www.andgodsaid.org" }
   config.action_mailer.delivery_method = :fallback
-
-  aws_ses_config = if Rails.application.credentials.aws&.dig(:ses, :access_key_id).present? || Rails.application.credentials.dig(:aws, :access_key_id).present?
-    {
-      region: Rails.application.credentials.aws&.dig(:ses, :region) || Rails.application.credentials.dig(:aws, :region) || "us-east-1",
-      access_key_id: Rails.application.credentials.aws&.dig(:ses, :access_key_id) || Rails.application.credentials.dig(:aws, :access_key_id),
-      secret_access_key: Rails.application.credentials.aws&.dig(:ses, :secret_access_key) || Rails.application.credentials.dig(:aws, :secret_access_key)
-    }
-  end
-
-  resend_api_key = Rails.application.credentials.dig(:resend, :api_key)
-
-  config.action_mailer.fallback_settings = {
-    aws_ses: aws_ses_config,
-    resend_api_key: resend_api_key
-  }
 end
