@@ -1,8 +1,23 @@
 Good morning, <%= @user.username %>!
 
-Click below to log in and read today's <%= (@readings&.size.to_i > 1) ? 'chapters' : 'reading' %>: <%= @reading_title %>.
+Here is your daily Scripture reading for today:
 
+<% @chapters.each do |chapter_data| %>
+============================================================
+<%= chapter_data[:title] %> (<%= chapter_data[:version] %>)
+============================================================
+
+<% if chapter_data[:verses].present? && chapter_data[:verses].any? %>
+<% chapter_data[:verses].each do |verse| %>
+[<%= verse.verse_number %>] <%= verse.verse_text %>
+
+<% end %>
+<% end %>
+<% end %>
+------------------------------------------------------------
+Click below to log in, mark reading complete, and discuss:
 <%= email_login_url(@login_token.token) %>
 
 Thanks,
 The And God Said Team
+https://andgodsaid.org

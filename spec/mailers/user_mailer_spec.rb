@@ -22,9 +22,10 @@ RSpec.describe UserMailer, type: :mailer do
   end
 
   describe "daily_reading" do
-    let(:user) { create(:user, email: "reader@example.org", username: "TestReader") }
+    let(:user) { create(:user, email: "reader@example.org", username: "TestReader", version: "ESV") }
     let(:challenge) { create(:challenge, timezone: 'Berlin') }
     let(:reading) { create(:reading, challenge: challenge, book_number: 45, chapter_number: 7) }
+    let!(:verse1) { create(:verse, version: "ESV", book_number: 45, chapter_number: 7, verse_number: 1, verse_text: "Know ye not, brethren...") }
     let(:login_token) { create(:email_login_token, user: user, challenge: challenge, reading: reading) }
     let(:mail) { UserMailer.daily_reading(user, reading, login_token) }
 
@@ -46,32 +47,35 @@ RSpec.describe UserMailer, type: :mailer do
       expect(mail.body.encoded).to match(login_token.token)
     end
 
-    it "includes 'Read Now' call to action" do
-      expect(mail.body.encoded).to match("Read Now")
-    end
-
     it "includes 'Good morning' greeting" do
       expect(mail.body.encoded).to match("Good morning")
     end
 
-    it "does not include the verse text" do
-      # Verify that the actual Bible text is not in the email
-      expect(mail.body.encoded).not_to match(/verse_text/)
+    it "includes the chapter verse text in the email" do
+      expect(mail.body.encoded).to match("Know ye not, brethren...")
+    end
+
+    it "includes the branded header" do
+      expect(mail.body.encoded).to match("And God Said")
     end
 
     context "when multiple chapters are scheduled for today" do
       let(:reading2) { create(:reading, challenge: challenge, book_number: 45, chapter_number: 8) }
       let(:reading3) { create(:reading, challenge: challenge, book_number: 45, chapter_number: 9) }
       let(:reading4) { create(:reading, challenge: challenge, book_number: 45, chapter_number: 10) }
+      let!(:verse_ch8) { create(:verse, version: "ESV", book_number: 45, chapter_number: 8, verse_number: 1, verse_text: "There is therefore now no condemnation...") }
       let(:mail_multi) { UserMailer.daily_reading(user, [ reading, reading2, reading3, reading4 ], login_token) }
 
       it "lists all 4 chapters in the subject" do
         expect(mail_multi.subject).to eq("Bible Reading: Romans 7, Romans 8, Romans 9, Romans 10")
       end
 
-      it "includes all chapters in the body with plural phrasing" do
-        expect(mail_multi.body.encoded).to match("Romans 7, Romans 8, Romans 9, Romans 10")
-        expect(mail_multi.body.encoded).to match("today's chapters")
+      it "includes all chapters in the body" do
+        expect(mail_multi.body.encoded).to match("Romans 7")
+        expect(mail_multi.body.encoded).to match("Romans 8")
+        expect(mail_multi.body.encoded).to match("Romans 9")
+        expect(mail_multi.body.encoded).to match("Romans 10")
+        expect(mail_multi.body.encoded).to match("There is therefore now no condemnation...")
       end
     end
   end

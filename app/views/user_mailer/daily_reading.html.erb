@@ -1,13 +1,60 @@
-<h1>Good morning, <%= @user.username %>!</h1>
+<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <!-- Greeting -->
+  <h1 style="margin: 0 0 12px 0; font-size: 24px; font-weight: 700; color: #2B3824; font-family: Georgia, Cambria, 'Times New Roman', serif; line-height: 1.3;">
+    Good morning, <%= @user.username %>!
+  </h1>
 
-<p>
-  Click below to log in and read today's <%= (@readings&.size.to_i > 1) ? 'chapters' : 'reading' %>:
-  <strong><%= @reading_title %></strong>.
-</p>
+  <p style="margin: 0 0 24px 0; font-size: 15px; line-height: 1.6; color: #55524B;">
+    Here is your daily Scripture reading for today:
+  </p>
 
-<p style="text-align: center; margin: 30px 0;">
-  <%= link_to "Read Now", email_login_url(@login_token.token), class: "btn btn-primary", style: "background-color: #4F46E5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold;" %>
-</p>
+  <!-- Chapters with full text -->
+  <% @chapters.each_with_index do |chapter_data, idx| %>
+    <div style="margin-bottom: 28px; background-color: #F8F6F0; border: 1px solid #EBE5D8; border-radius: 10px; padding: 24px 20px;">
+      
+      <!-- Chapter Header Banner -->
+      <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" style="border-bottom: 2px solid #E4DDCD; padding-bottom: 12px; margin-bottom: 18px;">
+        <tr>
+          <td align="left" style="vertical-align: middle;">
+            <h2 style="margin: 0; font-size: 20px; font-weight: 700; color: #2B3824; font-family: Georgia, Cambria, 'Times New Roman', serif;">
+              <%= chapter_data[:title] %>
+            </h2>
+          </td>
+          <% if chapter_data[:version].present? %>
+            <td align="right" style="vertical-align: middle;">
+              <span style="font-size: 11px; font-weight: 700; color: #6B7558; background-color: #E8EDE0; border: 1px solid #D5DEC7; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px;">
+                <%= chapter_data[:version] %>
+              </span>
+            </td>
+          <% end %>
+        </tr>
+      </table>
 
-<p>Thanks,</p>
-<p>The And God Said Team</p>
+      <!-- Chapter Verses -->
+      <div style="font-family: Georgia, Cambria, 'Times New Roman', serif; font-size: 16px; line-height: 1.85; color: #2F2C28;">
+        <% if chapter_data[:verses].present? && chapter_data[:verses].any? %>
+          <% chapter_data[:verses].each do |verse| %>
+            <p style="margin: 0 0 14px 0; text-align: left;">
+              <sup style="font-size: 11px; font-weight: bold; color: #6B7558; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin-right: 4px; line-height: 0;"><%= verse.verse_number %></sup><%= verse.verse_text %>
+            </p>
+          <% end %>
+        <% else %>
+          <p style="margin: 0; color: #8F8B82; font-style: italic;">
+            Your reading text is available on the website.
+          </p>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Call to Action Button -->
+  <div style="text-align: center; margin: 32px 0 12px 0;">
+    <a href="<%= email_login_url(@login_token.token) %>"
+       style="background-color: #6B7558; color: #FFFFFF; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 36px; border-radius: 9999px; display: inline-block; box-shadow: 0 3px 8px rgba(107, 117, 88, 0.3);">
+      Check In & Discuss on Website &rarr;
+    </a>
+    <p style="margin: 14px 0 0 0; font-size: 13px; color: #8F8B82; line-height: 1.5;">
+      Click to instantly sign in, mark today's reading complete, and chat with your group.
+    </p>
+  </div>
+</div>

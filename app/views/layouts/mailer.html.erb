@@ -1,5 +1,85 @@
-<html>
-  <body>
-    <%= yield %>
-  </body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title><%= message.subject %></title>
+  <!--[if mso]>
+  <style type="text/css">
+    body, table, td, p, a, span { font-family: Arial, sans-serif !important; }
+  </style>
+  <![endif]-->
+</head>
+<body style="margin: 0; padding: 0; background-color: #FBF8F2; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #2F2C28; -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: 100%;">
+  <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color: #FBF8F2; width: 100%;">
+    <tr>
+      <td align="center" style="padding: 28px 12px 48px 12px;">
+        <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width: 620px; width: 100%;">
+          
+          <!-- Header / Brand -->
+          <tr>
+            <td align="center" style="padding-bottom: 24px;">
+              <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center" style="vertical-align: middle;">
+                    <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="background-color: #E8EDE0; width: 38px; height: 38px; border-radius: 10px; text-align: center; vertical-align: middle; padding: 0;">
+                          <!-- Open Bible Icon SVG (Olive / Sage Theme) -->
+                          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#6B7558" style="vertical-align: middle; display: inline-block;">
+                            <path d="M11.25 4.533A9.707 9.707 0 0 0 6 3a9.735 9.735 0 0 0-3.25.555.75.75 0 0 0-.5.707v14.25a.75.75 0 0 0 1 .707A8.237 8.237 0 0 1 6 18.75c1.995 0 3.823.707 5.25 1.886V4.533ZM12.75 20.636A8.214 8.214 0 0 1 18 18.75c.966 0 1.89.166 2.75.47a.75.75 0 0 0 1-.708V4.262a.75.75 0 0 0-.5-.707A9.735 9.735 0 0 0 18 3a9.707 9.707 0 0 0-5.25 1.533v16.103Z" />
+                          </svg>
+                        </td>
+                        <td style="padding-left: 12px; vertical-align: middle;">
+                          <span style="font-family: Georgia, Cambria, 'Times New Roman', serif; font-size: 24px; font-weight: bold; color: #2B3824; letter-spacing: -0.5px; line-height: 1;">
+                            And God Said
+                          </span>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Main Card -->
+          <tr>
+            <td>
+              <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color: #FFFFFF; border-radius: 14px; border: 1px solid #EBE5D8; overflow: hidden; box-shadow: 0 4px 16px rgba(43, 56, 36, 0.05);">
+                <tr>
+                  <td style="padding: 36px 32px;">
+                    <%= yield %>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td align="center" style="padding-top: 28px; color: #8F8B82; font-size: 13px; line-height: 1.6;">
+              <p style="margin: 0 0 8px 0; color: #6B7558; font-weight: 600; font-size: 13px;">
+                And God Said &bull; Walk together through the Scriptures
+              </p>
+              <% if defined?(@user) && @user.present? %>
+                <p style="margin: 0 0 12px 0;">
+                  <% if defined?(@login_token) && @login_token.present? %>
+                    <a href="<%= email_login_url(@login_token.token) %>" style="color: #6B7558; text-decoration: underline; margin: 0 6px; font-weight: 500;">Check In Today</a> &bull;
+                  <% end %>
+                  <a href="<%= unsubscribe_url_for(@user) rescue root_url %>" style="color: #8F8B82; text-decoration: underline; margin: 0 6px;">Manage Email Preferences</a>
+                </p>
+              <% end %>
+              <p style="margin: 0; font-size: 11px; color: #A8A49C;">
+                &copy; <%= Time.current.year %> And God Said &bull; <a href="https://andgodsaid.org" style="color: #A8A49C; text-decoration: none;">andgodsaid.org</a>
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
 </html>
