@@ -986,6 +986,8 @@ en:
     email_prefs_title: "Email Preferences"
     daily_notifications: "Daily email notifications"
     daily_notifications_help: "Receive daily reading reminders and encouragement via email"
+    delivery_time: "Preferred delivery time"
+    delivery_time_help: "Choose what time of day (in your challenge's time zone) to receive your daily reading email"
     save_preferences: "Save Preferences"
     current_challenges: "Current Challenges"
     past_challenges: "Past Challenges"

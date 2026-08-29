@@ -74,7 +74,7 @@ cmd_console() {
 
 cmd_test() {
   echo -e "${GREEN}Running RSpec tests...${NC}"
-  docker compose -f $COMPOSE_FILE exec app bundle exec rspec "$@"
+  docker compose -f $COMPOSE_FILE exec -e RAILS_ENV=test app bundle exec rspec "$@"
 }
 
 cmd_setup() {

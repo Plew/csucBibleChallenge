@@ -49,6 +49,12 @@ RSpec.describe Profile::EmailPreferencesController, type: :controller do
           expect(user.daily_email).to be_truthy
         end
 
+        it 'updates the user daily_email_hour preference' do
+          patch :update, params: { user: { daily_email: true, daily_email_hour: 8 } }
+          user.reload
+          expect(user.daily_email_hour).to eq(8)
+        end
+
         it 'redirects to edit page with success notice' do
           patch :update, params: { user: { daily_email: false } }
           expect(response).to redirect_to(edit_profile_email_preferences_path)

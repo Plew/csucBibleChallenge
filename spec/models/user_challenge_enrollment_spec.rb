@@ -42,4 +42,36 @@ RSpec.describe UserChallengeEnrollment, type: :model do
     expect(enrollment).not_to be_valid
     expect(enrollment.errors[:challenge]).to include("must exist") # Default error for belongs_to
   end
+
+  describe 'initial daily reading email on enrollment' do
+    include ActiveJob::TestHelper
+
+    let(:user) { create(:user, daily_email: true) }
+    let(:challenge) { create(:challenge, start_date: Date.current - 1.day, end_date: Date.current + 10.days, timezone: "UTC") }
+    let!(:today_reading) { create(:reading, challenge: challenge, scheduled_date: Date.current, book_number: 40, chapter_number: 1) }
+
+    it 'enqueues daily reading email for active challenge with readings today' do
+      expect {
+        create(:user_challenge_enrollment, user: user, challenge: challenge)
+      }.to have_enqueued_mail(UserMailer, :daily_reading)
+
+      expect(EmailLoginToken.where(user: user, reading: today_reading).exists?).to be true
+    end
+
+    it 'does not send email if user has daily_email disabled' do
+      user_no_email = create(:user, daily_email: false)
+
+      expect {
+        create(:user_challenge_enrollment, user: user_no_email, challenge: challenge)
+      }.not_to have_enqueued_mail(UserMailer, :daily_reading)
+    end
+
+    it 'does not send email if challenge has not started yet' do
+      future_challenge = create(:challenge, start_date: Date.current + 5.days, end_date: Date.current + 15.days, timezone: "UTC")
+
+      expect {
+        create(:user_challenge_enrollment, user: user, challenge: future_challenge)
+      }.not_to have_enqueued_mail(UserMailer, :daily_reading)
+    end
+  end
 end

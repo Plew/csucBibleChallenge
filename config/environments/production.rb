@@ -72,44 +72,23 @@ Rails.application.configure do
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 
-  # Configure Action Mailer with automatic fallback
+  # Configure Action Mailer with automatic fallback (Pure HTTPS APIs, zero SMTP)
   config.action_mailer.perform_deliveries = true
   config.action_mailer.default_url_options = { host: "www.andgodsaid.org" }
+  config.action_mailer.delivery_method = :fallback
 
-  ses_settings = if Rails.application.credentials.aws&.dig(:ses, :smtp_username).present?
+  aws_ses_config = if Rails.application.credentials.aws&.dig(:ses, :access_key_id).present? || Rails.application.credentials.dig(:aws, :access_key_id).present?
     {
-      address: "email-smtp.#{Rails.application.credentials.aws[:ses][:region]}.amazonaws.com",
-      port: 587,
-      user_name: Rails.application.credentials.aws[:ses][:smtp_username],
-      password: Rails.application.credentials.aws[:ses][:smtp_password],
-      authentication: :login,
-      enable_starttls_auto: true
+      region: Rails.application.credentials.aws&.dig(:ses, :region) || Rails.application.credentials.dig(:aws, :region) || "us-east-1",
+      access_key_id: Rails.application.credentials.aws&.dig(:ses, :access_key_id) || Rails.application.credentials.dig(:aws, :access_key_id),
+      secret_access_key: Rails.application.credentials.aws&.dig(:ses, :secret_access_key) || Rails.application.credentials.dig(:aws, :secret_access_key)
     }
   end
 
-  resend_settings = if Rails.application.credentials.dig(:resend, :api_key).present?
-    {
-      address: "smtp.resend.com",
-      port: 587,
-      user_name: "resend",
-      password: Rails.application.credentials.dig(:resend, :api_key),
-      authentication: :plain,
-      enable_starttls_auto: true
-    }
-  end
+  resend_api_key = Rails.application.credentials.dig(:resend, :api_key)
 
-  if ses_settings && resend_settings
-    # Both credentials present: Use SES with automatic fallback to Resend
-    config.action_mailer.delivery_method = :fallback
-    config.action_mailer.fallback_settings = {
-      primary: ses_settings,
-      secondary: resend_settings
-    }
-  elsif ses_settings
-    config.action_mailer.delivery_method = :smtp
-    config.action_mailer.smtp_settings = ses_settings
-  elsif resend_settings
-    config.action_mailer.delivery_method = :smtp
-    config.action_mailer.smtp_settings = resend_settings
-  end
+  config.action_mailer.fallback_settings = {
+    aws_ses: aws_ses_config,
+    resend_api_key: resend_api_key
+  }
 end

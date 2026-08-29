@@ -42,6 +42,7 @@ RSpec.describe SendDailyReadingEmailsJob, type: :job do
       create(:user_challenge_enrollment, user: user_with_email, challenge: tokyo_challenge)
 
       ActionMailer::Base.deliveries.clear
+      EmailLoginToken.delete_all
     end
 
     context 'when it is 6am in the challenge timezone' do
@@ -103,12 +104,43 @@ RSpec.describe SendDailyReadingEmailsJob, type: :job do
       end
     end
 
+    context 'when user has custom delivery hour' do
+      let!(:user_with_8am_email) { create(:user, daily_email: true, daily_email_hour: 8) }
+      let!(:berlin_reading) { create(:reading, challenge: berlin_challenge, book_number: 40, chapter_number: 1, scheduled_date: Date.new(2026, 9, 1)) }
+
+      before do
+        create(:user_challenge_enrollment, user: user_with_8am_email, challenge: berlin_challenge)
+        ActionMailer::Base.deliveries.clear
+        EmailLoginToken.delete_all
+      end
+
+      it 'sends to the 8am user when it is 8am in challenge timezone' do
+        travel_to(Time.find_zone!(berlin_timezone).parse("2026-09-01 08:00:00")) do
+          expect {
+            described_class.perform_now
+          }.to change { ActionMailer::Base.deliveries.count }.by(1)
+
+          email = ActionMailer::Base.deliveries.last
+          expect(email.to).to include(user_with_8am_email.email)
+        end
+      end
+
+      it 'does not send to the 8am user when it is 6am in challenge timezone' do
+        travel_to(Time.find_zone!(berlin_timezone).parse("2026-09-01 06:00:00")) do
+          described_class.perform_now
+          recipient_emails = ActionMailer::Base.deliveries.map(&:to).flatten
+          expect(recipient_emails).to include(user_with_email.email)
+          expect(recipient_emails).not_to include(user_with_8am_email.email)
+        end
+      end
+    end
+
     context 'when it is not 6am in the challenge timezone' do
       around do |example|
         travel_to(Time.find_zone!(berlin_timezone).parse("2026-09-01 08:00:00")) { example.run }
       end
 
-      it 'does not send any emails' do
+      it 'does not send any emails to default 6am users' do
         expect {
           described_class.perform_now
         }.not_to change { ActionMailer::Base.deliveries.count }

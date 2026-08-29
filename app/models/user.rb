@@ -42,12 +42,14 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: { case_sensitive: false }, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :password, presence: true, length: { minimum: 6 }, if: -> { new_record? || !password.nil? }
   validates :version, inclusion: { in: VALID_VERSIONS, message: "must be a valid Bible version" }
+  validates :daily_email_hour, inclusion: { in: 0..23, message: "must be between 0 and 23" }, allow_nil: true
   validate :avatar_content_type_allowed
   validates :current_password, presence: true, if: :password_being_updated_and_not_resetting?
   validate :current_password_correct, if: :password_being_updated_and_not_resetting?
 
   def set_default_version
     self.version ||= "ESV"
+    self.daily_email_hour ||= 6
   end
 
   scope :wants_daily_email, -> { where(daily_email: true) }

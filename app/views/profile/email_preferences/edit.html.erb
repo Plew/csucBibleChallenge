@@ -6,15 +6,32 @@
   <div class="max-w-2xl mx-auto">
     <div class="card bg-base-100 shadow-xl">
       <div class="card-body">
-        <h2 class="card-title"><%= t('profile.email_prefs_title') %></h2>
+        <h2 class="card-title mb-4"><%= t('profile.email_prefs_title') %></h2>
         <%= form_with(model: @user, url: profile_email_preferences_path, method: :patch, local: true) do |f| %>
           <div class="form-control">
             <label class="label cursor-pointer justify-start gap-4">
               <%= f.check_box :daily_email, class: "checkbox checkbox-primary" %>
               <div class="flex flex-col">
-                <span class="label-text"><%= t('profile.daily_notifications') %></span>
+                <span class="label-text font-medium"><%= t('profile.daily_notifications') %></span>
                 <span class="label-text-alt text-base-content/70"><%= t('profile.daily_notifications_help') %></span>
               </div>
+            </label>
+          </div>
+
+          <div class="form-control mt-6">
+            <label class="label" for="user_daily_email_hour">
+              <span class="label-text font-medium"><%= t('profile.delivery_time') %></span>
+            </label>
+            <%= f.select :daily_email_hour,
+                (0..23).map { |h|
+                  time_str = Time.zone.parse("#{h}:00").strftime("%l:%M %p").strip
+                  label = h == 6 ? "#{time_str} (Default)" : time_str
+                  [label, h]
+                },
+                { selected: @user.daily_email_hour || 6 },
+                class: "select select-bordered w-full max-w-xs" %>
+            <label class="label">
+              <span class="label-text-alt text-base-content/70"><%= t('profile.delivery_time_help') %></span>
             </label>
           </div>
 

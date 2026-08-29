@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_25_170000) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_29_133000) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -404,6 +404,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_25_170000) do
     t.boolean "can_create_challenges", default: false, null: false
     t.datetime "created_at", null: false
     t.boolean "daily_email", default: true
+    t.integer "daily_email_hour", default: 6, null: false
     t.string "email"
     t.string "password_digest"
     t.datetime "password_reset_sent_at"

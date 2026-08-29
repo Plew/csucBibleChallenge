@@ -63,6 +63,9 @@ gem "exception_notification"
 # Web Push notifications for PWA
 gem "web-push"
 
+# Amazon SES HTTPS API (Port 443)
+gem "aws-sdk-sesv2", "~> 1", require: false
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", "~> 1.11.1", platforms: %i[ mri windows ], require: "debug/prelude"

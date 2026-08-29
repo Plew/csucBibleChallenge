@@ -19,10 +19,10 @@ class Profile::EmailPreferencesController < Profile::BaseController
 
   def email_preferences_params
     if params[:user].present?
-      params.require(:user).permit(:daily_email)
+      params.require(:user).permit(:daily_email, :daily_email_hour)
     else
-      # When checkbox is unchecked, no user params are sent, so set daily_email to false
-      ActionController::Parameters.new({ daily_email: false }).permit(:daily_email)
+      # When checkbox is unchecked and no user params sent, set daily_email to false
+      ActionController::Parameters.new({ daily_email: false }).permit(:daily_email, :daily_email_hour)
     end
   end
 end

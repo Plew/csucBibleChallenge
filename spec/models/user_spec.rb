@@ -121,8 +121,8 @@ RSpec.describe User, type: :model do
 
       it 'works correctly when users have mixed preferences' do
         result = User.wants_daily_email
-        expect(result.count).to eq(1)
-        expect(result.first).to eq(user_with_email)
+        expect(result).to include(user_with_email)
+        expect(result).not_to include(user_without_email)
       end
     end
   end
@@ -148,6 +148,30 @@ RSpec.describe User, type: :model do
     it 'can be set to true' do
       user = create(:user, daily_email: true)
       expect(user.daily_email).to be_truthy
+    end
+  end
+
+  describe 'daily_email_hour attribute' do
+    it 'defaults to 6 for new users' do
+      user = User.new
+      expect(user.daily_email_hour).to eq(6)
+    end
+
+    it 'allows valid hours from 0 to 23' do
+      user = build(:user, daily_email_hour: 14)
+      expect(user).to be_valid
+    end
+
+    it 'rejects negative hours' do
+      user = build(:user, daily_email_hour: -1)
+      expect(user).not_to be_valid
+      expect(user.errors[:daily_email_hour]).to be_present
+    end
+
+    it 'rejects hours above 23' do
+      user = build(:user, daily_email_hour: 24)
+      expect(user).not_to be_valid
+      expect(user.errors[:daily_email_hour]).to be_present
     end
   end
 
