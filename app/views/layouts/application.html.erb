@@ -2,7 +2,7 @@
 <html data-theme="andgodsaid" lang="<%= I18n.locale %>">
 <%= render 'layouts/head' %>
 
-<body class="overflow-x-hidden">
+<body class="min-h-screen flex flex-col overflow-x-hidden">
   <div class="navbar bg-base-100 shadow-lg" x-data="{ mobileMenuIsOpen: false }">
     <div class="navbar-start flex items-center min-w-0">
       <%= link_to root_path, class: "btn btn-ghost normal-case flex items-center gap-2.5 px-1 hover:bg-transparent group" do %>
@@ -116,14 +116,20 @@
             <% end %>
             <%= link_to t('navigation.about'), about_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
             <%= link_to t('navigation.faq'), faq_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
+            <%= link_to t('navigation.privacy', default: 'Privacy Policy'), privacy_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
+            <%= link_to t('navigation.terms', default: 'Terms of Service'), terms_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
+            <%= link_to t('navigation.contact', default: 'Contact Us'), contact_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
             <%= link_to t('navigation.settings'), account_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
             <%= link_to t('navigation.send_feedback'), new_feedback_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
             <%= link_to t('navigation.log_out'), destroy_user_session_path, data: { turbo_method: :delete }, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
           <% else %>
             <%= link_to t('navigation.log_in', default: 'Log In'), new_user_session_path, class: "block px-4 py-2 text-sm text-primary font-semibold hover:bg-base-200 hover:text-primary", role: "menuitem", tabindex: "-1" %>
             <%= link_to t('navigation.about'), about_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
-            <%= link_to t('navigation.send_feedback'), new_feedback_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
             <%= link_to t('navigation.faq'), faq_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
+            <%= link_to t('navigation.privacy', default: 'Privacy Policy'), privacy_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
+            <%= link_to t('navigation.terms', default: 'Terms of Service'), terms_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
+            <%= link_to t('navigation.contact', default: 'Contact Us'), contact_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
+            <%= link_to t('navigation.send_feedback'), new_feedback_path, class: "block px-4 py-2 text-sm text-base-content hover:bg-base-200 hover:text-base-content", role: "menuitem", tabindex: "-1" %>
           <% end %>
         </div>
       </div>
@@ -150,9 +156,11 @@
     <%= render "shared/pwa_prompts" %>
   <% end %>
 
-  <main class="container mx-auto mt-1 pb-24 md:pb-6">
+  <main class="container mx-auto mt-1 flex-1 pb-24 md:pb-6">
     <%= content_for?(:content) ? yield(:content) : yield %>
   </main>
+
+  <%= render "layouts/footer" %>
 
   <div data-controller="loading-overlay"
        data-loading-overlay-target="overlay"

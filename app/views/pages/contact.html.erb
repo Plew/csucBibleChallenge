@@ -1,0 +1,64 @@
+<div class="px-4 py-8 max-w-3xl mx-auto space-y-8">
+  <!-- Header -->
+  <div class="space-y-2 border-b border-base-300 pb-6">
+    <h1 class="text-3xl sm:text-4xl font-serif font-bold text-neutral tracking-tight">
+      <%= t('contact.title', default: 'Contact Us') %>
+    </h1>
+    <p class="text-sm text-base-content/70">
+      <%= t('contact.subtitle', default: 'We would love to hear from you. Reach out with questions, suggestions, or support requests.') %>
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Email Support Card -->
+    <div class="bg-base-200/60 border border-base-300 rounded-2xl p-6 space-y-4 shadow-sm">
+      <div class="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center text-primary">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+          <path d="M1.5 8.67v8.58a3 3 0 0 0 3 3h15a3 3 0 0 0 3-3V8.67l-8.928 5.493a3 3 0 0 1-3.144 0L1.5 8.67Z" />
+          <path d="M22.5 6.908V6.75a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3v.158l9.714 5.978a1.5 1.5 0 0 0 1.572 0L22.5 6.908Z" />
+        </svg>
+      </div>
+      <div>
+        <h2 class="text-lg font-bold font-serif text-neutral">Direct Email</h2>
+        <p class="text-xs text-base-content/70 mt-1">General inquiries, technical assistance, and account questions.</p>
+      </div>
+      <p class="text-sm font-semibold">
+        <a href="mailto:support@andgodsaid.org" class="text-primary hover:underline flex items-center gap-1.5">
+          support@andgodsaid.org
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+          </svg>
+        </a>
+      </p>
+    </div>
+
+    <!-- Feedback Form Card -->
+    <div class="bg-base-200/60 border border-base-300 rounded-2xl p-6 space-y-4 shadow-sm">
+      <div class="w-10 h-10 rounded-xl bg-secondary/15 flex items-center justify-center text-secondary">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+          <path d="M4.913 2.658c2.075-.27 4.19-.408 6.337-.408 2.147 0 4.262.139 6.337.408 1.922.25 3.291 1.861 3.405 3.727a4.403 4.403 0 0 0-1.032-.211 50.89 50.89 0 0 0-8.42 0c-2.358.196-4.04 2.19-4.04 4.434v4.286a4.47 4.47 0 0 0 2.46 3.97v3.018a.75.75 0 0 0 1.218.59l3.056-2.445c.42.03.844.053 1.272.069.346.013.698.016 1.054.016a49.197 49.197 0 0 0 4.31-.225 3.323 3.323 0 0 0 2.92-3.155c.125-1.637.19-3.294.19-4.964 0-.104-.002-.208-.005-.312a2.25 2.25 0 0 1 2.25-2.188h.75a.75.75 0 0 1 .75.75v10.5a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1-.75-.75v-1.125a51.626 51.626 0 0 1-5.74.34c-.45 0-.898-.008-1.343-.024l-4.148 3.318A1.5 1.5 0 0 1 6 21.75V18.66a4.992 4.992 0 0 1-3.642-4.81v-4.286c0-2.928 2.213-5.503 5.342-5.797.403-.038.81-.074 1.213-.109Z" />
+        </svg>
+      </div>
+      <div>
+        <h2 class="text-lg font-bold font-serif text-neutral">In-App Feedback</h2>
+        <p class="text-xs text-base-content/70 mt-1">Submit suggestions, report bugs, or share feature requests directly.</p>
+      </div>
+      <p class="text-sm font-semibold">
+        <%= link_to new_feedback_path, class: "text-secondary hover:underline flex items-center gap-1.5" do %>
+          Open Feedback Form
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+          </svg>
+        <% end %>
+      </p>
+    </div>
+  </div>
+
+  <!-- Additional Help & Links -->
+  <div class="bg-base-200/40 border border-base-300/70 rounded-2xl p-6 sm:p-8 space-y-4">
+    <h3 class="text-lg font-bold font-serif text-neutral">Frequently Asked Questions</h3>
+    <p class="text-sm text-base-content/80 leading-relaxed">
+      Looking for immediate answers on how challenges, daily reading emails, groups, or statistics work? Check out our <%= link_to "FAQ page", faq_path, class: "text-primary font-semibold underline" %> or learn more on our <%= link_to "About page", about_path, class: "text-primary font-semibold underline" %>.
+    </p>
+  </div>
+</div>

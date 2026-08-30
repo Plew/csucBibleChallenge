@@ -173,6 +173,9 @@ en:
     groups: "Groups"
     about: "About"
     faq: "FAQ"
+    privacy: "Privacy Policy"
+    terms: "Terms of Service"
+    contact: "Contact Us"
     statistics_update: "Statistics Update"
     language: "Language"
     english: "English"
@@ -1134,6 +1137,21 @@ en:
     sprints_description: "Sprints are time-bounded periods within a challenge — for example, a month or a quarter. They let you focus on shorter goals and compare group performance across different stretches."
     seven_day_win_title: "Weekly Winner"
     seven_day_win_description: "Every participant who completes 100% of readings in the last 7 days is entered into a drawing. A winner is selected live with a fun animation. It is a weekly incentive to stay consistent."
+
+  # Privacy Policy
+  privacy:
+    title: "Privacy Policy"
+    last_updated: "Last updated: August 2026"
+
+  # Terms of Service
+  terms:
+    title: "Terms of Service"
+    last_updated: "Last updated: August 2026"
+
+  # Contact Us
+  contact:
+    title: "Contact Us"
+    subtitle: "We would love to hear from you. Reach out with questions, suggestions, or support requests."
 
   # Date Picker
   date_picker:
