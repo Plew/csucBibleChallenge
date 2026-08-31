@@ -8,11 +8,12 @@ class Import
     Rails.root.join("db", "texts", "schlachter_2000.csv"),
     Rails.root.join("db", "texts", "esv_ot.csv"),
     Rails.root.join("db", "texts", "nasb_ot.csv"),
-    Rails.root.join("db", "texts", "asv_ot.csv")
+    Rails.root.join("db", "texts", "asv_ot.csv"),
+    Rails.root.join("db", "texts", "KJV.csv")
   ]
 
   # Map book names to book numbers based on ApplicationHelper.book_number_to_name
-  # Includes both "First/Second" and "1/2" naming formats from CSV
+  # Includes "First/Second", "1/2", and Roman numeral "I/II" naming formats from CSVs
   BOOK_NAME_TO_NUMBER = {
     "Genesis" => 1, "Exodus" => 2, "Leviticus" => 3, "Numbers" => 4, "Deuteronomy" => 5,
     "Joshua" => 6, "Judges" => 7, "Ruth" => 8, "First Samuel" => 9, "Second Samuel" => 10,
@@ -41,7 +42,18 @@ class Import
     "1 Thessalonians" => 52, "2 Thessalonians" => 53,
     "1 Timothy" => 54, "2 Timothy" => 55,
     "1 Peter" => 60, "2 Peter" => 61,
-    "1 John" => 62, "2 John" => 63, "3 John" => 64
+    "1 John" => 62, "2 John" => 63, "3 John" => 64,
+
+    # Roman numeral format (from KJV.csv)
+    "I Samuel" => 9, "II Samuel" => 10,
+    "I Kings" => 11, "II Kings" => 12,
+    "I Chronicles" => 13, "II Chronicles" => 14,
+    "I Corinthians" => 46, "II Corinthians" => 47,
+    "I Thessalonians" => 52, "II Thessalonians" => 53,
+    "I Timothy" => 54, "II Timothy" => 55,
+    "I Peter" => 60, "II Peter" => 61,
+    "I John" => 62, "II John" => 63, "III John" => 64,
+    "Revelation of John" => 66
   }.freeze
 
   def self.call(file_paths = FILE_PATHS)
@@ -58,47 +70,60 @@ class Import
 
       line_count = 0
       skipped_count = 0
+      is_kjv_csv = file_path.to_s.end_with?("KJV.csv")
+      col_sep = is_kjv_csv ? "," : ";"
 
       Rails.logger.info "Starting import from #{file_path}"
 
-      CSV.foreach(file_path, headers: true, col_sep: ";", liberal_parsing: true, encoding: "UTF-8:UTF-8", invalid: :replace, undef: :replace, replace: "") do |row|
-      line_count += 1
+      CSV.foreach(file_path, headers: true, col_sep: col_sep, liberal_parsing: true, encoding: "UTF-8:UTF-8", invalid: :replace, undef: :replace, replace: "") do |row|
+        line_count += 1
 
-      # Parse CSV columns: TextID, Version, NT_Book, NT_Chapter, NT_Verse, VerseBreak, VerseText
-      text_id = row[0]&.strip&.tr('"', "")
-      version = row[1]&.strip&.tr('"', "")
-      book_name = row[2]&.strip&.tr('"', "")
-      chapter_number = row[3]&.strip&.tr('"', "")&.to_i
-      verse_number = row[4]&.strip&.tr('"', "")&.to_i
-      verse_break = row[5]&.strip&.tr('"', "")
-      verse_text = row[6]&.strip&.tr('"', "")
+        if is_kjv_csv
+          # Parse KJV.csv columns: Book, Chapter, Verse, Text
+          book_name = row["Book"]&.strip&.tr('"', "")
+          chapter_number = row["Chapter"]&.strip&.tr('"', "")&.to_i
+          verse_number = row["Verse"]&.strip&.tr('"', "")&.to_i
+          verse_text = row["Text"]&.strip&.tr('"', "")
+          version = "KJV"
+        else
+          # Parse standard CSV columns: TextID, Version, NT_Book, NT_Chapter, NT_Verse, VerseBreak, VerseText
+          text_id = row[0]&.strip&.tr('"', "")
+          version = row[1]&.strip&.tr('"', "")
+          book_name = row[2]&.strip&.tr('"', "")
+          chapter_number = row[3]&.strip&.tr('"', "")&.to_i
+          verse_number = row[4]&.strip&.tr('"', "")&.to_i
+          verse_break = row[5]&.strip&.tr('"', "")
+          verse_text = row[6]&.strip&.tr('"', "")
 
-      # Skip header row or invalid rows
-      next if text_id == "TextID" || version.blank? || book_name.blank? || verse_text.blank?
+          next if text_id == "TextID"
+        end
 
-      # Get book number from mapping
-      book_number = BOOK_NAME_TO_NUMBER[book_name]
-      unless book_number
-        Rails.logger.warn "Unknown book name: #{book_name} (line #{line_count})"
-        skipped_count += 1
-        next
-      end
+        # Skip header row or invalid rows
+        next if version.blank? || book_name.blank? || verse_text.blank?
 
-      # Decode HTML entities in verse text
-      cleaned_verse_text = decode_html_entities(verse_text)
+        # Get book number from mapping
+        book_number = BOOK_NAME_TO_NUMBER[book_name]
+        unless book_number
+          Rails.logger.warn "Unknown book name: #{book_name} (line #{line_count})"
+          skipped_count += 1
+          next
+        end
 
-      # Normalize version names to match user profile codes
-      normalized_version = normalize_version(version)
+        # Decode HTML entities in verse text
+        cleaned_verse_text = decode_html_entities(verse_text)
 
-      verses << {
-        version: normalized_version,
-        book_number: book_number,
-        chapter_number: chapter_number,
-        verse_number: verse_number,
-        verse_text: cleaned_verse_text,
-        created_at: Time.current,
-        updated_at: Time.current
-      }
+        # Normalize version names to match user profile codes
+        normalized_version = normalize_version(version)
+
+        verses << {
+          version: normalized_version,
+          book_number: book_number,
+          chapter_number: chapter_number,
+          verse_number: verse_number,
+          verse_text: cleaned_verse_text,
+          created_at: Time.current,
+          updated_at: Time.current
+        }
 
         # Process in batches to avoid memory issues
         if verses.size >= 1000

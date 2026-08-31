@@ -21,21 +21,20 @@ class UserMailer < ApplicationMailer
       book_name = ApplicationController.helpers.book_number_to_name(r.book_number)
       title = "#{book_name} #{r.chapter_number}"
 
-      # Attempt to fetch verses in preferred version, with fallback
-      verses = r.verses(version: @version).to_a
-      verses = r.verses(version: "ESV").to_a if verses.empty?
-      verses = r.verses(version: "KJV").to_a if verses.empty?
-      verses = Verse.where(book_number: r.book_number, chapter_number: r.chapter_number).order(:verse_number).to_a if verses.empty?
-
-      actual_version = verses.first&.version || @version
+      # Fetch verses using centralized, language-aware VerseFetcher
+      result = VerseFetcher.fetch_with_version(
+        version: @version,
+        book_number: r.book_number,
+        chapter_number: r.chapter_number
+      )
 
       {
         reading: r,
         title: title,
         book_name: book_name,
         chapter_number: r.chapter_number,
-        version: actual_version,
-        verses: verses
+        version: result[:version] || @version,
+        verses: result[:verses]
       }
     end
 

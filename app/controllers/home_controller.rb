@@ -56,7 +56,7 @@ class HomeController < ApplicationController
         @selected_reading ||= @selected_readings.find { |r| !current_user.user_readings.exists?(reading_id: r.id) } || @selected_readings.first
 
         @selected_reading_title = helpers.book_number_to_name(@selected_reading.book_number) + " " + @selected_reading.chapter_number.to_s
-        user_version = current_user.version || "KJV"
+        user_version = current_user.version || "ESV"
         @reading_is_completed = current_user.user_readings.exists?(reading_id: @selected_reading.id)
 
         # Prepare verses with reading_id and message counts for interactive display

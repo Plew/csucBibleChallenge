@@ -78,5 +78,48 @@ RSpec.describe UserMailer, type: :mailer do
         expect(mail_multi.body.encoded).to match("There is therefore now no condemnation...")
       end
     end
+
+    context "when reading is an Old Testament chapter" do
+      let(:ot_reading) { create(:reading, challenge: challenge, book_number: 1, chapter_number: 17) }
+      let!(:esv_ot_verse) { create(:verse, version: "ESV", book_number: 1, chapter_number: 17, verse_number: 1, verse_text: "When Abram was ninety-nine years old the LORD appeared to Abram") }
+      let!(:german_ot_verse) { create(:verse, version: "ELB2006", book_number: 1, chapter_number: 17, verse_number: 1, verse_text: "Als nun Abram neunundneunzig Jahre alt war, erschien der HERR dem Abram") }
+      let(:ot_login_token) { create(:email_login_token, user: user, challenge: challenge, reading: ot_reading) }
+
+      it "sends English verses to an ESV user even when German verses exist" do
+        mail = UserMailer.daily_reading(user, ot_reading, ot_login_token)
+        expect(mail.body.encoded).to match("When Abram was ninety-nine years old")
+        expect(mail.body.encoded).not_to match("neunundneunzig Jahre alt")
+      end
+
+      it "sends English verses to an RCV user for Old Testament readings if API is unavailable" do
+        rcv_user = create(:user, email: "rcv_reader@example.org", username: "RcvReader", version: "RCV")
+        rcv_token = create(:email_login_token, user: rcv_user, challenge: challenge, reading: ot_reading)
+        allow_any_instance_of(RecoveryVersionClient).to receive(:fetch_chapter).and_return(nil)
+
+        mail = UserMailer.daily_reading(rcv_user, ot_reading, rcv_token)
+        expect(mail.body.encoded).to match("When Abram was ninety-nine years old")
+        expect(mail.body.encoded).not_to match("neunundneunzig Jahre alt")
+      end
+
+      it "sends RCV verses to an RCV user when LSM API succeeds" do
+        rcv_user = create(:user, email: "rcv_reader2@example.org", username: "RcvReader2", version: "RCV")
+        rcv_token = create(:email_login_token, user: rcv_user, challenge: challenge, reading: ot_reading)
+        allow_any_instance_of(RecoveryVersionClient).to receive(:fetch_chapter).and_return([
+          OpenStruct.new(verse_number: 1, verse_text: "And when Abram was ninety-nine years old, Jehovah appeared to Abram")
+        ])
+
+        mail = UserMailer.daily_reading(rcv_user, ot_reading, rcv_token)
+        expect(mail.body.encoded).to match("Jehovah appeared to Abram")
+        expect(mail.body.encoded).to match("RCV")
+      end
+
+      it "sends German verses to a user who explicitly selected German (ELB2006)" do
+        german_user = create(:user, email: "german_reader@example.org", username: "GermanReader", version: "ELB2006")
+        german_token = create(:email_login_token, user: german_user, challenge: challenge, reading: ot_reading)
+
+        mail = UserMailer.daily_reading(german_user, ot_reading, german_token)
+        expect(mail.body.encoded).to match("Als nun Abram neunundneunzig Jahre alt war")
+      end
+    end
   end
 end
