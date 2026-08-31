@@ -1,11 +1,15 @@
 class EnsureOldTestamentVersesImported < ActiveRecord::Migration[8.1]
   def up
-    # If ESV or KJV Old Testament verses (e.g. Genesis 1) are missing in the database, import them
-    needs_esv_ot = !Verse.exists?(version: "ESV", book_number: 1, chapter_number: 1)
-    needs_kjv_ot = !Verse.exists?(version: "KJV", book_number: 1, chapter_number: 1)
+    files_to_import = []
 
-    if needs_esv_ot || needs_kjv_ot
-      Import.call
+    # Check which specific files are missing verses in the database
+    files_to_import << Rails.root.join("db", "texts", "esv_ot.csv") unless Verse.exists?(version: "ESV", book_number: 1, chapter_number: 1)
+    files_to_import << Rails.root.join("db", "texts", "nasb_ot.csv") unless Verse.exists?(version: "NASB", book_number: 1, chapter_number: 1)
+    files_to_import << Rails.root.join("db", "texts", "asv_ot.csv") unless Verse.exists?(version: "ASV", book_number: 1, chapter_number: 1)
+    files_to_import << Rails.root.join("db", "texts", "KJV.csv") unless Verse.exists?(version: "KJV", book_number: 1, chapter_number: 1)
+
+    if files_to_import.any?
+      Import.call(files_to_import)
     end
   end
 
