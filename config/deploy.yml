@@ -22,12 +22,10 @@ proxy:
     - andgodsaid.org
   # kamal-proxy connects to your container over port 80, use `app_port` to specify a different port.
   app_port: 3000
-  response_timeout: 120
   healthcheck:
     path: /up
     interval: 3
-    timeout: 10
-    max_attempts: 30
+    timeout: 120
 
 # Credentials for your image host.
 registry:
