@@ -128,15 +128,17 @@ class Manage::UsersController < Manage::BaseController
   # completion cutoff date — i.e. 100% complete through that date.
   def fully_caught_up_user_ids
     cutoff = completion_cutoff_date
-    effective_start = @challenge.effective_stats_start_date
-    return [] if cutoff < effective_start
-
-    eval_range = effective_start..cutoff
-    due_count = @challenge.readings.where(scheduled_date: eval_range).count
+    readings = @challenge.readings.where("scheduled_date <= ?", cutoff)
+    readings = readings.where("scheduled_date >= ?", @challenge.stats_start_date) if @challenge.stats_start_date.present?
+    due_count = readings.count
     return [] if due_count.zero?
 
-    UserReading.joins(:reading)
-      .where(readings: { challenge_id: @challenge.id, scheduled_date: eval_range })
+    user_readings = UserReading.joins(:reading)
+      .where(readings: { challenge_id: @challenge.id })
+      .where("readings.scheduled_date <= ?", cutoff)
+    user_readings = user_readings.where("readings.scheduled_date >= ?", @challenge.stats_start_date) if @challenge.stats_start_date.present?
+
+    user_readings
       .group(:user_id)
       .having("COUNT(DISTINCT user_readings.reading_id) = ?", due_count)
       .pluck(:user_id)
@@ -158,9 +160,11 @@ class Manage::UsersController < Manage::BaseController
     require "csv"
 
     user_ids = users.map(&:id)
-    completed_counts = UserReading.joins(:reading)
-      .where(readings: { challenge_id: @challenge.id, scheduled_date: @challenge.stats_date_range }, user_id: user_ids)
-      .group(:user_id).count
+    user_readings = UserReading.joins(:reading)
+      .where(readings: { challenge_id: @challenge.id }, user_id: user_ids)
+    user_readings = user_readings.where("readings.scheduled_date >= ?", @challenge.stats_start_date) if @challenge.stats_start_date.present?
+    user_readings = user_readings.where("readings.scheduled_date <= ?", @challenge.stats_end_date) if @challenge.stats_end_date.present?
+    completed_counts = user_readings.group(:user_id).count
 
     CSV.generate(headers: true) do |csv|
       csv << [ "Username", "Email", "Readings Completed" ]

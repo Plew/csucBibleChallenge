@@ -15,8 +15,8 @@ class SevenDayWindowStatistics
 
     current_date_in_tz = Time.current.in_time_zone(@challenge.timezone).to_date
     seven_days_ago = current_date_in_tz - 6.days
-    window_start = [ seven_days_ago, @challenge.effective_stats_start_date ].max
-    window_end = [ current_date_in_tz, @challenge.effective_stats_end_date ].min
+    window_start = @challenge.stats_start_date.present? ? [ seven_days_ago, @challenge.stats_start_date ].max : seven_days_ago
+    window_end = @challenge.stats_end_date.present? ? [ current_date_in_tz, @challenge.stats_end_date ].min : current_date_in_tz
     return { completion_percentage: 0, on_schedule_percentage: 0, completed_days: 0, total_days: 0 } if window_end < window_start
 
     reading_ids = @challenge.readings.where(scheduled_date: window_start..window_end).pluck(:id)
@@ -40,8 +40,8 @@ class SevenDayWindowStatistics
 
     current_date_in_tz = Time.current.in_time_zone(@challenge.timezone).to_date
     seven_days_ago = current_date_in_tz - 6.days
-    window_start = [ seven_days_ago, @challenge.effective_stats_start_date ].max
-    window_end = [ current_date_in_tz, @challenge.effective_stats_end_date ].min
+    window_start = @challenge.stats_start_date.present? ? [ seven_days_ago, @challenge.stats_start_date ].max : seven_days_ago
+    window_end = @challenge.stats_end_date.present? ? [ current_date_in_tz, @challenge.stats_end_date ].min : current_date_in_tz
     return [] if window_end < window_start
 
     # Single query: reading IDs in the 7-day window

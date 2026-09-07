@@ -33,7 +33,10 @@ class GroupStatistics
   def longest_group_streak
     challenge = group.challenge
     group_user_ids = group.users.pluck(:id)
-    dates = challenge.readings.where(scheduled_date: challenge.stats_date_range).order(:scheduled_date).pluck(:scheduled_date).uniq
+    dates_query = challenge.readings
+    dates_query = dates_query.where("scheduled_date >= ?", challenge.stats_start_date) if challenge.stats_start_date.present?
+    dates_query = dates_query.where("scheduled_date <= ?", challenge.stats_end_date) if challenge.stats_end_date.present?
+    dates = dates_query.order(:scheduled_date).pluck(:scheduled_date).uniq
     max_streak = 0
     current_streak = 0
     dates.each do |date|
@@ -52,9 +55,10 @@ class GroupStatistics
 
   def total_chapters_read
     group_user_ids = group.users.pluck(:id)
-    UserReading.joins(:reading)
-      .where(user_id: group_user_ids, readings: { challenge_id: group.challenge_id, scheduled_date: group.challenge.stats_date_range })
-      .count
+    query = UserReading.joins(:reading).where(user_id: group_user_ids, readings: { challenge_id: group.challenge_id })
+    query = query.where("readings.scheduled_date >= ?", group.challenge.stats_start_date) if group.challenge.stats_start_date.present?
+    query = query.where("readings.scheduled_date <= ?", group.challenge.stats_end_date) if group.challenge.stats_end_date.present?
+    query.count
   end
 
   def completion_percentage
@@ -62,19 +66,20 @@ class GroupStatistics
     challenge = group.challenge
     return 0 if group_user_ids.empty?
 
-    effective_end = [ challenge.effective_stats_end_date, Date.current ].min
-    return 0 if effective_end < challenge.effective_stats_start_date
+    effective_end = challenge.stats_end_date.present? ? [ challenge.stats_end_date, Date.current ].min : Date.current
+    return 0 if challenge.stats_start_date.present? && effective_end < challenge.stats_start_date
 
-    stats_range = challenge.effective_stats_start_date..effective_end
-
-    readings_query = challenge.readings.where(scheduled_date: stats_range)
+    readings_query = challenge.readings.where("scheduled_date <= ?", effective_end)
+    readings_query = readings_query.where("scheduled_date >= ?", challenge.stats_start_date) if challenge.stats_start_date.present?
     readings_query = readings_query.where(scheduled_date: date_range) if date_range
     total_readings = readings_query.count
     return 0 if total_readings.zero?
 
     percentages = group_user_ids.map do |user_id|
       completed_query = UserReading.where(user_id: user_id).joins(:reading)
-        .where(readings: { challenge_id: challenge.id, scheduled_date: stats_range })
+        .where(readings: { challenge_id: challenge.id })
+        .where("readings.scheduled_date <= ?", effective_end)
+      completed_query = completed_query.where("readings.scheduled_date >= ?", challenge.stats_start_date) if challenge.stats_start_date.present?
       completed_query = completed_query.where(readings: { scheduled_date: date_range }) if date_range
       completed = completed_query.count
       (completed.to_f / total_readings * 100)

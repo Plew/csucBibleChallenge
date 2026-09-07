@@ -73,10 +73,12 @@ class BadgeAwarder
   end
 
   def chapters_completed
-    @chapters_completed ||= user.user_readings
-      .joins(:reading)
-      .where(readings: { challenge_id: challenge.id, scheduled_date: challenge.stats_date_range })
-      .count
+    @chapters_completed ||= begin
+      query = user.user_readings.joins(:reading).where(readings: { challenge_id: challenge.id })
+      query = query.where("readings.scheduled_date >= ?", challenge.stats_start_date) if challenge.stats_start_date.present?
+      query = query.where("readings.scheduled_date <= ?", challenge.stats_end_date) if challenge.stats_end_date.present?
+      query.count
+    end
   end
 
   def longest_streak
@@ -93,7 +95,10 @@ class BadgeAwarder
 
   def verse_like_count
     @verse_like_count ||= begin
-      reading_ids = challenge.readings.where(scheduled_date: challenge.stats_date_range).pluck(:id)
+      query = challenge.readings
+      query = query.where("scheduled_date >= ?", challenge.stats_start_date) if challenge.stats_start_date.present?
+      query = query.where("scheduled_date <= ?", challenge.stats_end_date) if challenge.stats_end_date.present?
+      reading_ids = query.pluck(:id)
       user.verse_likes.where(reading_id: reading_ids).count
     end
   end
@@ -103,11 +108,12 @@ class BadgeAwarder
   end
 
   def reading_timestamps_in_tz
-    @reading_timestamps_in_tz ||= user.user_readings
-      .joins(:reading)
-      .where(readings: { challenge_id: challenge.id, scheduled_date: challenge.stats_date_range })
-      .pluck("user_readings.created_at")
-      .map { |t| t.in_time_zone(challenge_tz) }
+    @reading_timestamps_in_tz ||= begin
+      query = user.user_readings.joins(:reading).where(readings: { challenge_id: challenge.id })
+      query = query.where("readings.scheduled_date >= ?", challenge.stats_start_date) if challenge.stats_start_date.present?
+      query = query.where("readings.scheduled_date <= ?", challenge.stats_end_date) if challenge.stats_end_date.present?
+      query.pluck("user_readings.created_at").map { |t| t.in_time_zone(challenge_tz) }
+    end
   end
 
   def early_reading_count
@@ -154,22 +160,26 @@ class BadgeAwarder
   end
 
   def late_reading_count_by_date
-    @late_reading_count_by_date ||= user.user_readings
-      .joins(:reading)
-      .where(readings: { challenge_id: challenge.id, scheduled_date: challenge.stats_date_range })
-      .where("DATE(user_readings.completed_on) > readings.scheduled_date")
-      .count
+    @late_reading_count_by_date ||= begin
+      query = user.user_readings.joins(:reading).where(readings: { challenge_id: challenge.id })
+      query = query.where("readings.scheduled_date >= ?", challenge.stats_start_date) if challenge.stats_start_date.present?
+      query = query.where("readings.scheduled_date <= ?", challenge.stats_end_date) if challenge.stats_end_date.present?
+      query.where("DATE(user_readings.completed_on) > readings.scheduled_date").count
+    end
   end
 
   def completion_percentage
     @completion_percentage ||= begin
       current_date = Time.current.in_time_zone(challenge.timezone).to_date
-      effective_end = [ challenge.effective_stats_end_date, current_date ].min
-      return 0 if effective_end < challenge.effective_stats_start_date
-
-      scheduled = challenge.readings.where(scheduled_date: challenge.effective_stats_start_date..effective_end).count
-      return 0 if scheduled.zero?
-      (chapters_completed.to_f / scheduled * 100).floor
+      effective_end = challenge.stats_end_date.present? ? [ challenge.stats_end_date, current_date ].min : current_date
+      if challenge.stats_start_date.present? && effective_end < challenge.stats_start_date
+        0
+      else
+        query = challenge.readings.where("scheduled_date <= ?", effective_end)
+        query = query.where("scheduled_date >= ?", challenge.stats_start_date) if challenge.stats_start_date.present?
+        scheduled = query.count
+        scheduled.zero? ? 0 : (chapters_completed.to_f / scheduled * 100).floor
+      end
     end
   end
 
@@ -183,7 +193,10 @@ class BadgeAwarder
 
   def max_messages_on_one_reading
     @max_messages_on_one_reading ||= begin
-      reading_ids = challenge.readings.where(scheduled_date: challenge.stats_date_range).pluck(:id)
+      query = challenge.readings
+      query = query.where("scheduled_date >= ?", challenge.stats_start_date) if challenge.stats_start_date.present?
+      query = query.where("scheduled_date <= ?", challenge.stats_end_date) if challenge.stats_end_date.present?
+      reading_ids = query.pluck(:id)
       counts = VerseMessage.where(user: user, reading_id: reading_ids)
         .group(:reading_id).count
       counts.values.max || 0
@@ -192,7 +205,10 @@ class BadgeAwarder
 
   def readings_with_exactly_one_like
     @readings_with_exactly_one_like ||= begin
-      reading_ids = challenge.readings.where(scheduled_date: challenge.stats_date_range).pluck(:id)
+      query = challenge.readings
+      query = query.where("scheduled_date >= ?", challenge.stats_start_date) if challenge.stats_start_date.present?
+      query = query.where("scheduled_date <= ?", challenge.stats_end_date) if challenge.stats_end_date.present?
+      reading_ids = query.pluck(:id)
       counts = user.verse_likes.where(reading_id: reading_ids)
         .group(:reading_id).count
       counts.values.count { |c| c == 1 }
@@ -201,7 +217,10 @@ class BadgeAwarder
 
   def readings_with_many_likes
     @readings_with_many_likes ||= begin
-      reading_ids = challenge.readings.where(scheduled_date: challenge.stats_date_range).pluck(:id)
+      query = challenge.readings
+      query = query.where("scheduled_date >= ?", challenge.stats_start_date) if challenge.stats_start_date.present?
+      query = query.where("scheduled_date <= ?", challenge.stats_end_date) if challenge.stats_end_date.present?
+      reading_ids = query.pluck(:id)
       counts = user.verse_likes.where(reading_id: reading_ids)
         .group(:reading_id).count
       counts.values.count { |c| c > 10 }
@@ -210,7 +229,10 @@ class BadgeAwarder
 
   def started_conversations_with_replies
     @started_conversations_with_replies ||= begin
-      reading_ids = challenge.readings.where(scheduled_date: challenge.stats_date_range).pluck(:id)
+      query = challenge.readings
+      query = query.where("scheduled_date >= ?", challenge.stats_start_date) if challenge.stats_start_date.present?
+      query = query.where("scheduled_date <= ?", challenge.stats_end_date) if challenge.stats_end_date.present?
+      reading_ids = query.pluck(:id)
       # Find verses where this user left a message
       user_verse_keys = VerseMessage.where(user: user, reading_id: reading_ids)
         .pluck(:reading_id, :verse_number)
@@ -226,9 +248,10 @@ class BadgeAwarder
 
   def calculate_longest_on_time_streak
     # Get dates where reading was completed on its scheduled date, sorted
-    on_time_dates = user.user_readings
-      .joins(:reading)
-      .where(readings: { challenge_id: challenge.id, scheduled_date: challenge.stats_date_range })
+    query = user.user_readings.joins(:reading).where(readings: { challenge_id: challenge.id })
+    query = query.where("readings.scheduled_date >= ?", challenge.stats_start_date) if challenge.stats_start_date.present?
+    query = query.where("readings.scheduled_date <= ?", challenge.stats_end_date) if challenge.stats_end_date.present?
+    on_time_dates = query
       .where("DATE(user_readings.completed_on) = readings.scheduled_date")
       .pluck("readings.scheduled_date")
       .uniq
@@ -240,17 +263,17 @@ class BadgeAwarder
   def calculate_perfect_record_days
     # Longest consecutive span of days where ALL readings were completed on time
     current_date = Time.current.in_time_zone(challenge.timezone).to_date
-    effective_end = [ challenge.effective_stats_end_date, current_date ].min
-    return 0 if effective_end < challenge.effective_stats_start_date
+    effective_end = challenge.stats_end_date.present? ? [ challenge.stats_end_date, current_date ].min : current_date
+    return 0 if challenge.stats_start_date.present? && effective_end < challenge.stats_start_date
 
-    readings_by_date = challenge.readings
-      .where(scheduled_date: challenge.effective_stats_start_date..effective_end)
-      .order(:scheduled_date)
-      .group_by(&:scheduled_date)
+    readings_query = challenge.readings.where("scheduled_date <= ?", effective_end)
+    readings_query = readings_query.where("scheduled_date >= ?", challenge.stats_start_date) if challenge.stats_start_date.present?
+    readings_by_date = readings_query.order(:scheduled_date).group_by(&:scheduled_date)
 
-    completed_reading_ids = user.user_readings
-      .joins(:reading)
-      .where(readings: { challenge_id: challenge.id, scheduled_date: challenge.stats_date_range })
+    query = user.user_readings.joins(:reading).where(readings: { challenge_id: challenge.id })
+    query = query.where("readings.scheduled_date >= ?", challenge.stats_start_date) if challenge.stats_start_date.present?
+    query = query.where("readings.scheduled_date <= ?", challenge.stats_end_date) if challenge.stats_end_date.present?
+    completed_reading_ids = query
       .where("DATE(user_readings.completed_on) = readings.scheduled_date")
       .pluck(:reading_id)
       .to_set
