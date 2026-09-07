@@ -11,7 +11,7 @@ class UserLeaderboard
     return [] if total_readings.zero?
 
     sql = <<~SQL
-      SELECT users.*,#{' '}
+      SELECT users.*, 
              COALESCE(completions.count, 0) as completed_count,
              ROUND(COALESCE(completions.count, 0) * 100.0 / #{total_readings}, 1) as completion_percentage
       FROM users
@@ -19,7 +19,10 @@ class UserLeaderboard
       LEFT JOIN (
         SELECT ur.user_id, COUNT(*) as count
         FROM user_readings ur
-        INNER JOIN readings r ON r.id = ur.reading_id AND r.challenge_id = #{challenge.id}
+        INNER JOIN readings r ON r.id = ur.reading_id
+          AND r.challenge_id = #{challenge.id}
+          AND r.scheduled_date >= '#{challenge.effective_stats_start_date}'
+          AND r.scheduled_date <= '#{challenge.effective_stats_end_date}'
         GROUP BY ur.user_id
       ) completions ON completions.user_id = users.id
       ORDER BY completion_percentage DESC, users.username ASC
@@ -37,8 +40,9 @@ class UserLeaderboard
   def by_on_track_percentage
     return [] if readings_to_date.zero?
 
+    effective_end = [ challenge.effective_stats_end_date, current_date_in_challenge_timezone ].min
     sql = <<~SQL
-      SELECT users.*,#{' '}
+      SELECT users.*, 
              COALESCE(completions.count, 0) as completed_to_date_count,
              ROUND(COALESCE(completions.count, 0) * 100.0 / #{readings_to_date}, 1) as on_track_percentage
       FROM users
@@ -46,7 +50,10 @@ class UserLeaderboard
       LEFT JOIN (
         SELECT ur.user_id, COUNT(*) as count
         FROM user_readings ur
-        INNER JOIN readings r ON r.id = ur.reading_id AND r.challenge_id = #{challenge.id} AND r.scheduled_date <= '#{current_date_in_challenge_timezone}'
+        INNER JOIN readings r ON r.id = ur.reading_id
+          AND r.challenge_id = #{challenge.id}
+          AND r.scheduled_date >= '#{challenge.effective_stats_start_date}'
+          AND r.scheduled_date <= '#{effective_end}'
         GROUP BY ur.user_id
       ) completions ON completions.user_id = users.id
       ORDER BY on_track_percentage DESC, users.username ASC
@@ -63,14 +70,17 @@ class UserLeaderboard
   # Returns users ordered by total reading count (highest first)
   def by_total_readings
     sql = <<~SQL
-      SELECT users.*,#{' '}
+      SELECT users.*, 
              COALESCE(completions.count, 0) as total_completed
       FROM users
       INNER JOIN user_challenge_enrollments uce ON uce.user_id = users.id AND uce.challenge_id = #{challenge.id}
       LEFT JOIN (
         SELECT ur.user_id, COUNT(*) as count
         FROM user_readings ur
-        INNER JOIN readings r ON r.id = ur.reading_id AND r.challenge_id = #{challenge.id}
+        INNER JOIN readings r ON r.id = ur.reading_id
+          AND r.challenge_id = #{challenge.id}
+          AND r.scheduled_date >= '#{challenge.effective_stats_start_date}'
+          AND r.scheduled_date <= '#{challenge.effective_stats_end_date}'
         GROUP BY ur.user_id
       ) completions ON completions.user_id = users.id
       ORDER BY total_completed DESC, users.username ASC
@@ -86,16 +96,19 @@ class UserLeaderboard
   # Returns users ordered by current reading streak (highest first)
   # Note: This calculates consecutive days from today backwards using a single SQL query
   def by_current_streak
+    effective_end = [ challenge.effective_stats_end_date, current_date_in_challenge_timezone ].min
+    return [] if effective_end < challenge.effective_stats_start_date
+
     sql = <<~SQL
       WITH RECURSIVE streak_calc AS (
         -- Base case: Start from current date for each user
-        SELECT#{' '}
+        SELECT 
           users.id as user_id,
           users.username,
-          '#{current_date_in_challenge_timezone}' as check_date,
-          CASE#{' '}
-            WHEN completed_readings.reading_date = '#{current_date_in_challenge_timezone}' THEN 1#{' '}
-            ELSE 0#{' '}
+          '#{effective_end}' as check_date,
+          CASE 
+            WHEN completed_readings.reading_date = '#{effective_end}' THEN 1 
+            ELSE 0 
           END as current_streak,
           0 as iteration
         FROM users
@@ -103,21 +116,22 @@ class UserLeaderboard
         LEFT JOIN (
           SELECT ur.user_id, r.scheduled_date as reading_date
           FROM user_readings ur
-          INNER JOIN readings r ON r.id = ur.reading_id#{' '}
-          WHERE r.challenge_id = #{challenge.id}#{' '}
-            AND r.scheduled_date <= '#{current_date_in_challenge_timezone}'
-        ) completed_readings ON completed_readings.user_id = users.id#{' '}
-                              AND completed_readings.reading_date = '#{current_date_in_challenge_timezone}'
-      #{'  '}
+          INNER JOIN readings r ON r.id = ur.reading_id 
+          WHERE r.challenge_id = #{challenge.id} 
+            AND r.scheduled_date >= '#{challenge.effective_stats_start_date}'
+            AND r.scheduled_date <= '#{effective_end}'
+        ) completed_readings ON completed_readings.user_id = users.id 
+                              AND completed_readings.reading_date = '#{effective_end}'
+        
         UNION ALL
-      #{'  '}
+        
         -- Recursive case: Check previous days
-        SELECT#{' '}
+        SELECT 
           sc.user_id,
           u.username,
           date(sc.check_date, '-1 day'),
-          CASE#{' '}
-            WHEN cr.reading_date = date(sc.check_date, '-1 day') AND sc.current_streak > 0#{' '}
+          CASE 
+            WHEN cr.reading_date = date(sc.check_date, '-1 day') AND sc.current_streak > 0 
             THEN sc.current_streak + 1
             ELSE 0
           END,
@@ -127,20 +141,21 @@ class UserLeaderboard
         LEFT JOIN (
           SELECT ur.user_id, r.scheduled_date as reading_date
           FROM user_readings ur
-          INNER JOIN readings r ON r.id = ur.reading_id#{' '}
+          INNER JOIN readings r ON r.id = ur.reading_id 
           WHERE r.challenge_id = #{challenge.id}
-            AND r.scheduled_date <= '#{current_date_in_challenge_timezone}'
+            AND r.scheduled_date >= '#{challenge.effective_stats_start_date}'
+            AND r.scheduled_date <= '#{effective_end}'
         ) cr ON cr.user_id = sc.user_id AND cr.reading_date = date(sc.check_date, '-1 day')
-        WHERE sc.current_streak > 0#{' '}
-          AND date(sc.check_date, '-1 day') >= '#{challenge.start_date}'
+        WHERE sc.current_streak > 0 
+          AND date(sc.check_date, '-1 day') >= '#{challenge.effective_stats_start_date}'
           AND sc.iteration < 365  -- Prevent infinite recursion
       ),
       user_max_streaks AS (
-        SELECT#{' '}
+        SELECT 
           user_id,
           username,
           MAX(current_streak) as current_streak
-        FROM streak_calc#{' '}
+        FROM streak_calc 
         GROUP BY user_id, username
       )
       SELECT users.*, COALESCE(ums.current_streak, 0) as current_streak
@@ -161,7 +176,7 @@ class UserLeaderboard
   def by_recent_activity
     enrolled_users
       .joins(user_readings: :reading)
-      .where(readings: { challenge_id: challenge.id })
+      .where(readings: { challenge_id: challenge.id, scheduled_date: challenge.stats_date_range })
       .group("users.id")
       .select("users.*",
               "MAX(user_readings.completed_on) as last_reading_date",
@@ -178,13 +193,18 @@ class UserLeaderboard
   end
 
   def total_readings
-    @total_readings ||= challenge.readings.count
+    @total_readings ||= challenge.readings.where(scheduled_date: challenge.stats_date_range).count
   end
 
   def readings_to_date
-    @readings_to_date ||= challenge.readings
-                                  .where("scheduled_date <= ?", current_date_in_challenge_timezone)
-                                  .count
+    @readings_to_date ||= begin
+      effective_end = [ challenge.effective_stats_end_date, current_date_in_challenge_timezone ].min
+      return 0 if effective_end < challenge.effective_stats_start_date
+
+      challenge.readings
+        .where(scheduled_date: challenge.effective_stats_start_date..effective_end)
+        .count
+    end
   end
 
   def current_date_in_challenge_timezone

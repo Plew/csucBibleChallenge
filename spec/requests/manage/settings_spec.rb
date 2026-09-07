@@ -31,6 +31,18 @@ RSpec.describe "Manage::Settings", type: :request do
         challenge.reload
         expect(challenge.auto_remove_inactive_from_groups).to be true
       end
+
+      it "updates stats_start_date and stats_end_date" do
+        new_stats_start = challenge.start_date + 5.days
+        new_stats_end = challenge.end_date - 2.days
+
+        patch challenge_manage_settings_path(challenge), params: {
+          challenge: { stats_start_date: new_stats_start.to_s, stats_end_date: new_stats_end.to_s }
+        }
+        challenge.reload
+        expect(challenge.stats_start_date).to eq(new_stats_start)
+        expect(challenge.stats_end_date).to eq(new_stats_end)
+      end
     end
 
     context "with invalid parameters" do

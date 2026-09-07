@@ -22,30 +22,59 @@ class UserChallengeStats
   def on_track_percentage
     return 0.0 if readings_to_date.zero?
 
-    completed = completed_readings_count
-    scheduled = readings_to_date
-    return 100 if completed == scheduled
+    completed = completed_readings_to_date_count
+    return 100 if completed >= readings_to_date
 
-    (completed.to_f / scheduled * 100).floor
+    (completed.to_f / readings_to_date * 100).floor
   end
 
   private
 
   def total_readings
-    @total_readings ||= challenge.readings.count
+    @total_readings ||= begin
+      query = challenge.readings
+      query = query.where("scheduled_date >= ?", challenge.stats_start_date) if challenge.stats_start_date.present?
+      query = query.where("scheduled_date <= ?", challenge.stats_end_date) if challenge.stats_end_date.present?
+      query.count
+    end
   end
 
   def completed_readings_count
-    @completed_readings_count ||= user.user_readings
-      .joins(:reading)
-      .where(readings: { challenge_id: challenge.id })
-      .count
+    @completed_readings_count ||= begin
+      query = user.user_readings.joins(:reading).where(readings: { challenge_id: challenge.id })
+      query = query.where("readings.scheduled_date >= ?", challenge.stats_start_date) if challenge.stats_start_date.present?
+      query = query.where("readings.scheduled_date <= ?", challenge.stats_end_date) if challenge.stats_end_date.present?
+      query.count
+    end
   end
 
   def readings_to_date
-    @readings_to_date ||= challenge.readings
-      .where("scheduled_date <= ?", current_date_in_challenge_timezone)
-      .count
+    @readings_to_date ||= begin
+      effective_today = current_date_in_challenge_timezone
+      effective_end = challenge.stats_end_date.present? ? [ challenge.stats_end_date, effective_today ].min : effective_today
+      if challenge.stats_start_date.present? && effective_end < challenge.stats_start_date
+        0
+      else
+        query = challenge.readings.where("scheduled_date <= ?", effective_end)
+        query = query.where("scheduled_date >= ?", challenge.stats_start_date) if challenge.stats_start_date.present?
+        query.count
+      end
+    end
+  end
+
+  def completed_readings_to_date_count
+    @completed_readings_to_date_count ||= begin
+      effective_today = current_date_in_challenge_timezone
+      effective_end = challenge.stats_end_date.present? ? [ challenge.stats_end_date, effective_today ].min : effective_today
+      if challenge.stats_start_date.present? && effective_end < challenge.stats_start_date
+        0
+      else
+        query = user.user_readings.joins(:reading).where(readings: { challenge_id: challenge.id })
+        query = query.where("readings.scheduled_date <= ?", effective_end)
+        query = query.where("readings.scheduled_date >= ?", challenge.stats_start_date) if challenge.stats_start_date.present?
+        query.count
+      end
+    end
   end
 
   def current_date_in_challenge_timezone

@@ -44,13 +44,7 @@ class VerseFetcher
       end
     end
 
-    # Absolute fallback to whatever single version exists in the database for this chapter
-    single_version = Verse.where(book_number: book_number, chapter_number: chapter_number).distinct.pick(:version)
-    if single_version
-      verses = Verse.where(version: single_version, book_number: book_number, chapter_number: chapter_number).order(:verse_number).to_a
-      return { verses: verses, version: single_version }
-    end
-
+    # If no verses found in the requested language family, return empty
     { verses: [], version: requested_version }
   end
 end

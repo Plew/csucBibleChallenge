@@ -8,11 +8,18 @@ class UserStatistics
     @challenge = challenge
   end
 
-  # Percentage of readings completed by the user up to the current date
+  # Percentage of readings completed by the user up to the current date (within stats date range)
   def completion_rate
-    total_readings = challenge.readings.where("scheduled_date <= ?", Date.current).count
+    effective_end = [ challenge.effective_stats_end_date, Date.current ].min
+    return 0 if effective_end < challenge.effective_stats_start_date
+
+    eval_range = challenge.effective_stats_start_date..effective_end
+    total_readings = challenge.readings.where(scheduled_date: eval_range).count
     return 0 if total_readings.zero?
-    completed = user.user_readings.joins(:reading).where(readings: { challenge_id: challenge.id }).where("readings.scheduled_date <= ?", Date.current).count
+
+    completed = user.user_readings.joins(:reading)
+                    .where(readings: { challenge_id: challenge.id, scheduled_date: eval_range })
+                    .count
     return 100 if completed == total_readings
 
     (completed.to_f / total_readings * 100).floor
@@ -20,7 +27,9 @@ class UserStatistics
 
   # Longest streak of consecutive days with completed readings
   def longest_streak
-    dates = user.user_readings.joins(:reading).where(readings: { challenge_id: challenge.id }).pluck(:completed_on).uniq.sort
+    dates = user.user_readings.joins(:reading)
+                .where(readings: { challenge_id: challenge.id, scheduled_date: challenge.stats_date_range })
+                .pluck(:completed_on).uniq.sort
     max_streak = 0
     current_streak = 0
     prev_date = nil
@@ -46,7 +55,9 @@ class UserStatistics
   end
 
   def last_check_in_date
-    user.user_readings.joins(:reading).where(readings: { challenge_id: challenge.id }).maximum(:completed_on)
+    user.user_readings.joins(:reading)
+        .where(readings: { challenge_id: challenge.id, scheduled_date: challenge.stats_date_range })
+        .maximum(:completed_on)
   end
 
   def last_login_date

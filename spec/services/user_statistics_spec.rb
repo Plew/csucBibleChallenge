@@ -31,6 +31,35 @@ RSpec.describe UserStatistics, type: :service do
       end
       expect(subject.completion_rate).to eq(50)
     end
+
+    context 'with stats_start_date and stats_end_date' do
+      it 'excludes readings before stats_start_date from completion rate' do
+        # readings dates are Date.current - 9 .. Date.current (10 readings)
+        # Set stats_start_date to Date.current - 4 (the last 5 readings: indices 5..9)
+        challenge.update!(stats_start_date: Date.current - 4)
+
+        # User completed the first 5 readings (trial period: indices 0..4) and 1 reading in official window (index 5)
+        readings.first(6).each do |reading|
+          create(:user_reading, user: user, reading: reading, completed_on: reading.scheduled_date)
+        end
+
+        # In stats window: 5 scheduled readings (indices 5..9), 1 completed (index 5) -> 1/5 = 20%
+        expect(subject.completion_rate).to eq(20)
+      end
+
+      it 'excludes readings after stats_end_date from completion rate' do
+        # Window from Date.current - 9 to Date.current - 5 (first 5 readings)
+        challenge.update!(stats_start_date: Date.current - 9, stats_end_date: Date.current - 5)
+
+        # Complete all 5 readings in window plus 2 readings after window
+        readings.first(7).each do |reading|
+          create(:user_reading, user: user, reading: reading, completed_on: reading.scheduled_date)
+        end
+
+        # In stats window: 5 scheduled, all 5 completed -> 100%
+        expect(subject.completion_rate).to eq(100)
+      end
+    end
   end
 
   describe '#longest_streak' do
@@ -49,6 +78,19 @@ RSpec.describe UserStatistics, type: :service do
       create(:user_reading, user: user, reading: readings[0], completed_on: readings[0].scheduled_date)
       create(:user_reading, user: user, reading: readings[2], completed_on: readings[2].scheduled_date)
       create(:user_reading, user: user, reading: readings[3], completed_on: readings[3].scheduled_date)
+      expect(subject.longest_streak).to eq(2)
+    end
+
+    it 'only counts streak from readings within the stats date range' do
+      # Readings 0..3 are consecutive (streak of 4)
+      readings.first(4).each do |reading|
+        create(:user_reading, user: user, reading: reading, completed_on: reading.scheduled_date)
+      end
+
+      # Exclude readings 0 and 1 by setting stats_start_date to readings[2].scheduled_date
+      challenge.update!(stats_start_date: readings[2].scheduled_date)
+
+      # Only readings 2 and 3 count -> streak of 2
       expect(subject.longest_streak).to eq(2)
     end
   end

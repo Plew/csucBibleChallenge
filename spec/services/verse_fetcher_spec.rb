@@ -73,9 +73,9 @@ RSpec.describe VerseFetcher do
         Verse.create!(version: 'ELB2006', book_number: 2, chapter_number: 1, verse_number: 1, verse_text: "Dies sind die Namen")
       end
 
-      it "falls back gracefully without crashing" do
+      it "does NOT return German verses to an English user" do
         result = described_class.fetch_with_version(version: "ESV", book_number: 2, chapter_number: 1)
-        expect(result[:verses]).to be_present
+        expect(result[:verses]).to be_empty
       end
     end
   end

@@ -75,7 +75,7 @@ class BadgeAwarder
   def chapters_completed
     @chapters_completed ||= user.user_readings
       .joins(:reading)
-      .where(readings: { challenge_id: challenge.id })
+      .where(readings: { challenge_id: challenge.id, scheduled_date: challenge.stats_date_range })
       .count
   end
 
@@ -93,7 +93,7 @@ class BadgeAwarder
 
   def verse_like_count
     @verse_like_count ||= begin
-      reading_ids = challenge.readings.pluck(:id)
+      reading_ids = challenge.readings.where(scheduled_date: challenge.stats_date_range).pluck(:id)
       user.verse_likes.where(reading_id: reading_ids).count
     end
   end
@@ -105,7 +105,7 @@ class BadgeAwarder
   def reading_timestamps_in_tz
     @reading_timestamps_in_tz ||= user.user_readings
       .joins(:reading)
-      .where(readings: { challenge_id: challenge.id })
+      .where(readings: { challenge_id: challenge.id, scheduled_date: challenge.stats_date_range })
       .pluck("user_readings.created_at")
       .map { |t| t.in_time_zone(challenge_tz) }
   end
@@ -156,7 +156,7 @@ class BadgeAwarder
   def late_reading_count_by_date
     @late_reading_count_by_date ||= user.user_readings
       .joins(:reading)
-      .where(readings: { challenge_id: challenge.id })
+      .where(readings: { challenge_id: challenge.id, scheduled_date: challenge.stats_date_range })
       .where("DATE(user_readings.completed_on) > readings.scheduled_date")
       .count
   end
@@ -164,7 +164,10 @@ class BadgeAwarder
   def completion_percentage
     @completion_percentage ||= begin
       current_date = Time.current.in_time_zone(challenge.timezone).to_date
-      scheduled = challenge.readings.where("scheduled_date <= ?", current_date).count
+      effective_end = [ challenge.effective_stats_end_date, current_date ].min
+      return 0 if effective_end < challenge.effective_stats_start_date
+
+      scheduled = challenge.readings.where(scheduled_date: challenge.effective_stats_start_date..effective_end).count
       return 0 if scheduled.zero?
       (chapters_completed.to_f / scheduled * 100).floor
     end
@@ -180,7 +183,7 @@ class BadgeAwarder
 
   def max_messages_on_one_reading
     @max_messages_on_one_reading ||= begin
-      reading_ids = challenge.readings.pluck(:id)
+      reading_ids = challenge.readings.where(scheduled_date: challenge.stats_date_range).pluck(:id)
       counts = VerseMessage.where(user: user, reading_id: reading_ids)
         .group(:reading_id).count
       counts.values.max || 0
@@ -189,7 +192,7 @@ class BadgeAwarder
 
   def readings_with_exactly_one_like
     @readings_with_exactly_one_like ||= begin
-      reading_ids = challenge.readings.pluck(:id)
+      reading_ids = challenge.readings.where(scheduled_date: challenge.stats_date_range).pluck(:id)
       counts = user.verse_likes.where(reading_id: reading_ids)
         .group(:reading_id).count
       counts.values.count { |c| c == 1 }
@@ -198,7 +201,7 @@ class BadgeAwarder
 
   def readings_with_many_likes
     @readings_with_many_likes ||= begin
-      reading_ids = challenge.readings.pluck(:id)
+      reading_ids = challenge.readings.where(scheduled_date: challenge.stats_date_range).pluck(:id)
       counts = user.verse_likes.where(reading_id: reading_ids)
         .group(:reading_id).count
       counts.values.count { |c| c > 10 }
@@ -207,7 +210,7 @@ class BadgeAwarder
 
   def started_conversations_with_replies
     @started_conversations_with_replies ||= begin
-      reading_ids = challenge.readings.pluck(:id)
+      reading_ids = challenge.readings.where(scheduled_date: challenge.stats_date_range).pluck(:id)
       # Find verses where this user left a message
       user_verse_keys = VerseMessage.where(user: user, reading_id: reading_ids)
         .pluck(:reading_id, :verse_number)
@@ -225,7 +228,7 @@ class BadgeAwarder
     # Get dates where reading was completed on its scheduled date, sorted
     on_time_dates = user.user_readings
       .joins(:reading)
-      .where(readings: { challenge_id: challenge.id })
+      .where(readings: { challenge_id: challenge.id, scheduled_date: challenge.stats_date_range })
       .where("DATE(user_readings.completed_on) = readings.scheduled_date")
       .pluck("readings.scheduled_date")
       .uniq
@@ -237,14 +240,17 @@ class BadgeAwarder
   def calculate_perfect_record_days
     # Longest consecutive span of days where ALL readings were completed on time
     current_date = Time.current.in_time_zone(challenge.timezone).to_date
+    effective_end = [ challenge.effective_stats_end_date, current_date ].min
+    return 0 if effective_end < challenge.effective_stats_start_date
+
     readings_by_date = challenge.readings
-      .where("scheduled_date <= ?", current_date)
+      .where(scheduled_date: challenge.effective_stats_start_date..effective_end)
       .order(:scheduled_date)
       .group_by(&:scheduled_date)
 
     completed_reading_ids = user.user_readings
       .joins(:reading)
-      .where(readings: { challenge_id: challenge.id })
+      .where(readings: { challenge_id: challenge.id, scheduled_date: challenge.stats_date_range })
       .where("DATE(user_readings.completed_on) = readings.scheduled_date")
       .pluck(:reading_id)
       .to_set

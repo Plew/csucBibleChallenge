@@ -186,7 +186,7 @@ class Import
   def upsert_verses(verses)
     return if verses.empty?
 
-    Verse.insert_all(verses, on_duplicate: :skip)
+    Verse.upsert_all(verses, unique_by: %i[version book_number chapter_number verse_number])
   end
 
   def get_imported_books

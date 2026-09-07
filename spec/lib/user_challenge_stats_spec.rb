@@ -174,5 +174,37 @@ RSpec.describe UserChallengeStats do
         expect(stats.completion_percentage).to eq(100)
       end
     end
+
+    context 'with stats_start_date and stats_end_date' do
+      let(:dates) { (Date.current - 10..Date.current + 10).to_a }
+      let!(:readings) do
+        dates.map.with_index do |d, i|
+          create(:reading, challenge: challenge, scheduled_date: d, book_number: 1, chapter_number: i + 1)
+        end
+      end
+
+      before do
+        # Complete all 10 trial readings (days -10..-1) and 2 readings in window (day 0 and +1)
+        readings.first(12).each do |r|
+          create(:user_reading, user: user, reading: r, completed_on: r.scheduled_date)
+        end
+      end
+
+      it 'calculates completion_percentage based only on readings within the stats window' do
+        # Stats window covers Date.current .. Date.current + 5 (6 readings total: indices 10..15)
+        challenge.update!(stats_start_date: Date.current, stats_end_date: Date.current + 5.days)
+
+        # In window: 6 readings. User completed readings at index 10 and 11 (2 readings) -> 2/6 = 33%
+        expect(stats.completion_percentage).to eq(33)
+      end
+
+      it 'calculates on_track_percentage based only on readings up to current date within stats window' do
+        # Stats window covers Date.current .. Date.current + 5.
+        challenge.update!(stats_start_date: Date.current, stats_end_date: Date.current + 5.days)
+
+        # Readings to date within window: only Date.current (1 reading: index 10). User completed it -> 100%
+        expect(stats.on_track_percentage).to eq(100)
+      end
+    end
   end
 end

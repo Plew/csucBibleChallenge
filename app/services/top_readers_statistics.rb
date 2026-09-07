@@ -15,9 +15,13 @@ class TopReadersStatistics
     return [] unless @challenge
 
     current_date_in_tz = Time.current.in_time_zone(@challenge.timezone).to_date
+    effective_end = [ @challenge.effective_stats_end_date, current_date_in_tz ].min
+    return [] if effective_end < @challenge.effective_stats_start_date
+
+    stats_range = @challenge.effective_stats_start_date..effective_end
 
     # Single query: get scheduled count (same for all users)
-    scheduled_query = @challenge.readings.where("scheduled_date <= ?", current_date_in_tz)
+    scheduled_query = @challenge.readings.where(scheduled_date: stats_range)
     scheduled_query = scheduled_query.where(scheduled_date: @date_range) if @date_range
     scheduled_count = scheduled_query.count
     return [] if scheduled_count.zero?

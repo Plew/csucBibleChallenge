@@ -20,10 +20,9 @@
 
     <!-- Bottom Row: Meta Data -->
     <div class="text-xs md:text-sm font-medium text-neutral/60 space-y-1">
-      <% if challenge.readings.any? %>
+      <% if challenge.reading_range.present? %>
         <p class="text-neutral/80 mb-1.5">
-          <%= book_number_to_name(challenge.readings.minimum(:book_number)) %> <%= challenge.readings.minimum(:chapter_number) %> &mdash;
-          <%= book_number_to_name(challenge.readings.maximum(:book_number)) %> <%= challenge.readings.maximum(:chapter_number) %>
+          <%= challenge.reading_range %>
         </p>
       <% end %>
       

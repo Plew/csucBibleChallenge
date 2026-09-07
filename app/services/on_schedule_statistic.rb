@@ -15,10 +15,13 @@ class OnScheduleStatistic
     return {} if user_ids.empty?
 
     current_date = Time.current.in_time_zone(challenge.timezone).to_date
+    effective_start = challenge.effective_stats_start_date
+    effective_end = [ challenge.effective_stats_end_date, current_date ].min
+    return user_ids.index_with { 0 } if effective_end < effective_start
 
     # Get total scheduled readings (same for all users)
     total_scheduled = challenge.readings
-                              .where("scheduled_date <= ?", current_date)
+                              .where(scheduled_date: effective_start..effective_end)
                               .count
 
     return user_ids.index_with { 0 } if total_scheduled.zero?
@@ -28,7 +31,8 @@ class OnScheduleStatistic
                   .joins("LEFT JOIN readings ON readings.id = user_readings.reading_id
                           AND readings.challenge_id = #{challenge.id}
                           AND DATE(user_readings.completed_on) = readings.scheduled_date
-                          AND readings.scheduled_date <= '#{current_date}'")
+                          AND readings.scheduled_date >= '#{effective_start}'
+                          AND readings.scheduled_date <= '#{effective_end}'")
                   .where(id: user_ids)
                   .group("users.id")
                   .select("users.id", "COUNT(DISTINCT readings.id) as on_schedule_count")
@@ -67,10 +71,12 @@ class OnScheduleStatistic
 
   # Count of readings completed on their scheduled date (only for readings scheduled up to current date)
   def on_schedule_count
+    return 0 if effective_stats_end < challenge.effective_stats_start_date
+
     query = user_readings_for_challenge
       .joins(:reading)
       .where("DATE(user_readings.completed_on) = readings.scheduled_date")
-      .where("readings.scheduled_date <= ?", current_date_in_challenge_timezone)
+      .where(readings: { scheduled_date: challenge.effective_stats_start_date..effective_stats_end })
     query = query.where(readings: { scheduled_date: date_range }) if date_range
     query.count
   end
@@ -82,12 +88,18 @@ class OnScheduleStatistic
 
   # Count of readings scheduled up to the current date (in challenge timezone)
   def scheduled_readings_to_date
-    query = challenge.readings.where("scheduled_date <= ?", current_date_in_challenge_timezone)
+    return 0 if effective_stats_end < challenge.effective_stats_start_date
+
+    query = challenge.readings.where(scheduled_date: challenge.effective_stats_start_date..effective_stats_end)
     query = query.where(scheduled_date: date_range) if date_range
     query.count
   end
 
   private
+
+  def effective_stats_end
+    @effective_stats_end ||= [ challenge.effective_stats_end_date, current_date_in_challenge_timezone ].min
+  end
 
   def user_readings_for_challenge
     user.user_readings

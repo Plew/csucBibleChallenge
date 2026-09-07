@@ -52,6 +52,35 @@
               presets: true
             ) %>
 
+        <div class="divider text-xs text-base-content/50 uppercase tracking-wider"><%= t("manage.settings.stats_window_heading", default: "Statistics Window (Optional)") %></div>
+        <p class="text-xs text-base-content/70 -mt-2 mb-2">
+          <%= t("manage.settings.stats_window_explanation", default: "Customize which date range counts towards completion percentages, streaks, badges, and leaderboards. Any chapters completed outside this window still remain checked off in users' reading history.") %>
+        </p>
+
+        <%= render DatePickerComponent.new(
+              form: form,
+              attribute: :stats_start_date,
+              label: t("manage.settings.stats_start_date", default: "Stats Start Date"),
+              presets: true
+            ) %>
+        <div class="label -mt-3 mb-2">
+          <span class="label-text-alt text-xs text-base-content/60">
+            <%= t("manage.settings.stats_start_date_help", default: "Leave blank to start tracking stats from the challenge start date. Readings scheduled before this date are excluded from stats (e.g. for a trial period).") %>
+          </span>
+        </div>
+
+        <%= render DatePickerComponent.new(
+              form: form,
+              attribute: :stats_end_date,
+              label: t("manage.settings.stats_end_date", default: "Stats End Date"),
+              presets: true
+            ) %>
+        <div class="label -mt-3 mb-2">
+          <span class="label-text-alt text-xs text-base-content/60">
+            <%= t("manage.settings.stats_end_date_help", default: "Leave blank to track stats through the challenge end date. Readings scheduled after this date are excluded from completion requirements and leaderboards.") %>
+          </span>
+        </div>
+
         <div class="form-control">
           <%= form.label :timezone, t("challenges.timezone"), class: "label" %>
           <%= form.select :timezone,

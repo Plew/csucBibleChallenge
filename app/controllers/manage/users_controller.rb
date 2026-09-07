@@ -128,12 +128,15 @@ class Manage::UsersController < Manage::BaseController
   # completion cutoff date — i.e. 100% complete through that date.
   def fully_caught_up_user_ids
     cutoff = completion_cutoff_date
-    due_count = @challenge.readings.where("scheduled_date <= ?", cutoff).count
+    effective_start = @challenge.effective_stats_start_date
+    return [] if cutoff < effective_start
+
+    eval_range = effective_start..cutoff
+    due_count = @challenge.readings.where(scheduled_date: eval_range).count
     return [] if due_count.zero?
 
     UserReading.joins(:reading)
-      .where(readings: { challenge_id: @challenge.id })
-      .where("readings.scheduled_date <= ?", cutoff)
+      .where(readings: { challenge_id: @challenge.id, scheduled_date: eval_range })
       .group(:user_id)
       .having("COUNT(DISTINCT user_readings.reading_id) = ?", due_count)
       .pluck(:user_id)
@@ -141,11 +144,12 @@ class Manage::UsersController < Manage::BaseController
 
   # Challenge #9 is pinned to the end of its original schedule (2026-07-03,
   # the same rule as the banquet qualification), so readings added after that
-  # date never change who counts as 100% complete. Other challenges use
-  # yesterday in the challenge's timezone — today is excluded because it is
-  # still in progress (mirrors PerfectRecordStatistics).
+  # date never change who counts as 100% complete. If stats_end_date is configured,
+  # it is used as the cutoff date. Other challenges use yesterday in the challenge's
+  # timezone — today is excluded because it is still in progress (mirrors PerfectRecordStatistics).
   def completion_cutoff_date
     return User::BANQUET_CUTOFF_DATE if @challenge.id == User::BANQUET_CHALLENGE_ID
+    return @challenge.stats_end_date if @challenge.stats_end_date.present?
 
     Time.current.in_time_zone(@challenge.timezone).to_date - 1
   end
@@ -155,7 +159,7 @@ class Manage::UsersController < Manage::BaseController
 
     user_ids = users.map(&:id)
     completed_counts = UserReading.joins(:reading)
-      .where(readings: { challenge_id: @challenge.id }, user_id: user_ids)
+      .where(readings: { challenge_id: @challenge.id, scheduled_date: @challenge.stats_date_range }, user_id: user_ids)
       .group(:user_id).count
 
     CSV.generate(headers: true) do |csv|

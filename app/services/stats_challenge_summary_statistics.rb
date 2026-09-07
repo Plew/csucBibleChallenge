@@ -8,7 +8,9 @@ class StatsChallengeSummaryStatistics
   end
 
   def total_chapters_read
-    UserReading.joins(:reading).where(readings: { challenge_id: challenge.id }).count
+    UserReading.joins(:reading)
+               .where(readings: { challenge_id: challenge.id, scheduled_date: challenge.stats_date_range })
+               .count
   end
 
   def number_of_participants

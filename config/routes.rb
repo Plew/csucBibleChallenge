@@ -21,6 +21,7 @@ Rails.application.routes.draw do
   get "date_picker", to: "date_picker#show", as: :date_picker
 
   # User Authentication UI routes
+  get "auth/sso", to: "sso#authorize", as: :auth_sso
   get "users/sign_up", to: "users#new", as: :new_user_registration
   resources :users, only: [ :create ] # For handling registration form submission
   get "users/sign_in", to: "sessions#new", as: :new_user_session

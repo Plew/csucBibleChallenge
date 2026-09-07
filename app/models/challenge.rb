@@ -21,9 +21,27 @@ class Challenge < ApplicationRecord
   validates :invitation_token, uniqueness: true, allow_nil: true
   validates :chapters_per_day, numericality: { only_integer: true, greater_than_or_equal_to: 1, less_than_or_equal_to: 50 }, allow_nil: true
   validate :end_date_after_start_date
+  validate :stats_dates_range
 
   before_create :generate_invitation_token
   after_initialize :set_default_timezone, if: :new_record?
+  after_save :clear_stats_cache, if: :stats_dates_changed?
+
+  def effective_stats_start_date
+    stats_start_date.presence || start_date
+  end
+
+  def effective_stats_end_date
+    stats_end_date.presence || end_date
+  end
+
+  def stats_date_range
+    effective_stats_start_date..effective_stats_end_date
+  end
+
+  def stats_readings
+    readings.where(scheduled_date: stats_date_range)
+  end
 
   def skip_days_of_week_list
     Array(skip_days_of_week).map(&:to_i)
@@ -38,6 +56,23 @@ class Challenge < ApplicationRecord
   def reading_days_of_week_list
     all_days = [ 1, 2, 3, 4, 5, 6, 0 ] # Mon(1)..Sat(6), Sun(0)
     all_days - skip_days_of_week_list
+  end
+
+  def reading_range
+    return nil unless readings.any?
+
+    first_r = readings.order(:book_number, :chapter_number).first
+    last_r = readings.order(:book_number, :chapter_number).last
+    return nil unless first_r && last_r
+
+    first_str = "#{ApplicationController.helpers.book_number_to_name(first_r.book_number)} #{first_r.chapter_number}"
+    last_str = "#{ApplicationController.helpers.book_number_to_name(last_r.book_number)} #{last_r.chapter_number}"
+
+    if first_r.book_number == last_r.book_number && first_r.chapter_number == last_r.chapter_number
+      first_str
+    else
+      "#{first_str} — #{last_str}"
+    end
   end
 
   def daily_reading_status(user)
@@ -156,6 +191,44 @@ class Challenge < ApplicationRecord
     if end_date < start_date
       errors.add(:end_date, "must be on or after the start date")
     end
+  end
+
+  def stats_dates_range
+    return if start_date.blank? || end_date.blank?
+
+    if stats_start_date.present?
+      if stats_start_date < start_date
+        errors.add(:stats_start_date, "must be on or after the challenge start date")
+      elsif stats_start_date > end_date
+        errors.add(:stats_start_date, "must be on or before the challenge end date")
+      end
+    end
+
+    if stats_end_date.present?
+      if stats_end_date < start_date
+        errors.add(:stats_end_date, "must be on or after the challenge start date")
+      elsif stats_end_date > end_date
+        errors.add(:stats_end_date, "must be on or before the challenge end date")
+      end
+    end
+
+    if stats_start_date.present? && stats_end_date.present? && stats_end_date < stats_start_date
+      errors.add(:stats_end_date, "must be on or after the stats start date")
+    end
+  end
+
+  def stats_dates_changed?
+    saved_change_to_stats_start_date? || saved_change_to_stats_end_date?
+  end
+
+  def clear_stats_cache
+    Rails.cache.delete("stats/perfect_record/#{id}")
+    Rails.cache.delete("stats/top_readers/#{id}")
+    Rails.cache.delete("stats/top_groups/#{id}")
+    Rails.cache.delete("stats/seven_day_window/#{id}")
+    Rails.cache.delete("stats/participant_count/#{id}")
+    Rails.cache.delete("stats/challenge_summary/#{id}")
+    Rails.cache.delete("stats/challenge_graph/#{id}")
   end
 
   def set_default_timezone

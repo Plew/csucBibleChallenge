@@ -313,4 +313,38 @@ RSpec.describe UserLeaderboard do
       end
     end
   end
+
+  describe 'stats dates filtering' do
+    let!(:user_a) { create(:user, username: 'user_a') }
+    let!(:user_b) { create(:user, username: 'user_b') }
+    let!(:readings) do
+      (1..10).map do |i|
+        create(:reading, challenge: challenge, scheduled_date: Date.current - 10.days + i.days, book_number: 1, chapter_number: i)
+      end
+    end
+
+    before do
+      create(:user_challenge_enrollment, user: user_a, challenge: challenge)
+      create(:user_challenge_enrollment, user: user_b, challenge: challenge)
+
+      # user_a completed readings 0..3 (trial period)
+      readings[0..3].each { |r| create(:user_reading, user: user_a, reading: r, completed_on: r.scheduled_date) }
+
+      # user_b completed readings 4..6 (official period)
+      readings[4..6].each { |r| create(:user_reading, user: user_b, reading: r, completed_on: r.scheduled_date) }
+    end
+
+    it 'excludes trial readings before stats_start_date from leaderboard' do
+      # Set stats_start_date to readings[4].scheduled_date
+      challenge.update!(stats_start_date: readings[4].scheduled_date)
+
+      results = described_class.new(challenge, limit: 10).by_total_readings
+      # user_b has 3 completions in stats range, user_a has 0
+      user_b_result = results.find { |u| u.id == user_b.id }
+      user_a_result = results.find { |u| u.id == user_a.id }
+
+      expect(user_b_result.total_completed).to eq(3)
+      expect(user_a_result.total_completed).to eq(0)
+    end
+  end
 end

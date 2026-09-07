@@ -313,6 +313,12 @@ en:
       message_of_the_day_placeholder: "Optional message to display to all challenge members..."
       auto_remove_inactive: "Auto-remove inactive users from groups"
       auto_remove_inactive_help: "Users with no reading activity for 10 days will be automatically removed from their group (not from the challenge)"
+      stats_window_heading: "Statistics Window (Optional)"
+      stats_window_explanation: "Customize which date range counts towards completion percentages, streaks, badges, and leaderboards. Any chapters completed outside this window still remain checked off in users' reading history."
+      stats_start_date: "Stats Start Date"
+      stats_start_date_help: "Leave blank to start tracking stats from the challenge start date. Readings scheduled before this date are excluded from stats (e.g. for a trial period)."
+      stats_end_date: "Stats End Date"
+      stats_end_date_help: "Leave blank to track stats through the challenge end date. Readings scheduled after this date are excluded from completion requirements and leaderboards."
     groups:
       title: "Groups"
       rename: "Rename"

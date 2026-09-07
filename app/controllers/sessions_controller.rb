@@ -13,6 +13,13 @@ class SessionsController < ApplicationController
     if user && user.authenticate(params[:session][:password])
       log_in user
 
+      # Check for pending SSO return
+      if session[:sso_return_to].present?
+        return_to = session.delete(:sso_return_to)
+        redirect_to auth_sso_path(return_to: return_to)
+        return
+      end
+
       # Check for group invitation token and auto-enroll
       if session[:group_invitation_token].present?
         group = Group.find_by(token: session[:group_invitation_token])

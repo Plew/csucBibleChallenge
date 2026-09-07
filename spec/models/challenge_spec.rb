@@ -323,4 +323,116 @@ RSpec.describe Challenge, type: :model do
       expect(status[:read_count]).to eq(0)
     end
   end
+
+  describe '#reading_range' do
+    let(:challenge) { create(:challenge) }
+
+    it 'returns nil when challenge has no readings' do
+      expect(challenge.reading_range).to be_nil
+    end
+
+    it 'returns single chapter string when challenge has only one chapter' do
+      create(:reading, challenge: challenge, book_number: 1, chapter_number: 1)
+      expect(challenge.reading_range).to eq("Genesis 1")
+    end
+
+    it 'returns correct range for full Old Testament (Genesis 1 to Malachi 4, not Malachi 150)' do
+      create(:reading, challenge: challenge, book_number: 1, chapter_number: 1)
+      create(:reading, challenge: challenge, book_number: 19, chapter_number: 150) # Psalms 150
+      create(:reading, challenge: challenge, book_number: 39, chapter_number: 4)   # Malachi 4
+
+      expect(challenge.reading_range).to eq("Genesis 1 — Malachi 4")
+    end
+  end
+
+  describe 'stats dates' do
+    let(:start_date) { Date.current }
+    let(:end_date) { Date.current + 30.days }
+    let(:challenge) { build(:challenge, start_date: start_date, end_date: end_date) }
+
+    describe 'validations' do
+      it 'is valid when stats dates are blank' do
+        expect(challenge).to be_valid
+      end
+
+      it 'is valid when stats_start_date and stats_end_date are within challenge dates' do
+        challenge.stats_start_date = start_date + 7.days
+        challenge.stats_end_date = end_date - 7.days
+        expect(challenge).to be_valid
+      end
+
+      it 'is invalid when stats_start_date is before start_date' do
+        challenge.stats_start_date = start_date - 1.day
+        expect(challenge).not_to be_valid
+        expect(challenge.errors[:stats_start_date]).to include("must be on or after the challenge start date")
+      end
+
+      it 'is invalid when stats_start_date is after end_date' do
+        challenge.stats_start_date = end_date + 1.day
+        expect(challenge).not_to be_valid
+        expect(challenge.errors[:stats_start_date]).to include("must be on or before the challenge end date")
+      end
+
+      it 'is invalid when stats_end_date is before start_date' do
+        challenge.stats_end_date = start_date - 1.day
+        expect(challenge).not_to be_valid
+        expect(challenge.errors[:stats_end_date]).to include("must be on or after the challenge start date")
+      end
+
+      it 'is invalid when stats_end_date is after end_date' do
+        challenge.stats_end_date = end_date + 1.day
+        expect(challenge).not_to be_valid
+        expect(challenge.errors[:stats_end_date]).to include("must be on or before the challenge end date")
+      end
+
+      it 'is invalid when stats_end_date is before stats_start_date' do
+        challenge.stats_start_date = start_date + 10.days
+        challenge.stats_end_date = start_date + 5.days
+        expect(challenge).not_to be_valid
+        expect(challenge.errors[:stats_end_date]).to include("must be on or after the stats start date")
+      end
+    end
+
+    describe 'helper methods' do
+      it 'defaults effective_stats_start_date to start_date when stats_start_date is nil' do
+        expect(challenge.effective_stats_start_date).to eq(start_date)
+      end
+
+      it 'returns stats_start_date for effective_stats_start_date when present' do
+        challenge.stats_start_date = start_date + 14.days
+        expect(challenge.effective_stats_start_date).to eq(start_date + 14.days)
+      end
+
+      it 'defaults effective_stats_end_date to end_date when stats_end_date is nil' do
+        expect(challenge.effective_stats_end_date).to eq(end_date)
+      end
+
+      it 'returns stats_end_date for effective_stats_end_date when present' do
+        challenge.stats_end_date = end_date - 5.days
+        expect(challenge.effective_stats_end_date).to eq(end_date - 5.days)
+      end
+
+      it 'returns stats_date_range spanning effective start to effective end' do
+        challenge.stats_start_date = start_date + 7.days
+        challenge.stats_end_date = end_date - 7.days
+        expect(challenge.stats_date_range).to eq((start_date + 7.days)..(end_date - 7.days))
+      end
+    end
+
+    describe 'cache clearing' do
+      let(:saved_challenge) { create(:challenge, start_date: start_date, end_date: end_date) }
+
+      it 'clears cache keys when stats dates are updated' do
+        expect(Rails.cache).to receive(:delete).with("stats/perfect_record/#{saved_challenge.id}")
+        expect(Rails.cache).to receive(:delete).with("stats/top_readers/#{saved_challenge.id}")
+        expect(Rails.cache).to receive(:delete).with("stats/top_groups/#{saved_challenge.id}")
+        expect(Rails.cache).to receive(:delete).with("stats/seven_day_window/#{saved_challenge.id}")
+        expect(Rails.cache).to receive(:delete).with("stats/participant_count/#{saved_challenge.id}")
+        expect(Rails.cache).to receive(:delete).with("stats/challenge_summary/#{saved_challenge.id}")
+        expect(Rails.cache).to receive(:delete).with("stats/challenge_graph/#{saved_challenge.id}")
+
+        saved_challenge.update!(stats_start_date: start_date + 7.days)
+      end
+    end
+  end
 end
