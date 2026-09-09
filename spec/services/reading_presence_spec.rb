@@ -82,4 +82,25 @@ RSpec.describe ReadingPresence do
       expect(described_class.active?(user1.id, reading.id)).to be true
     end
   end
+
+  describe ".active_users_data" do
+    it "returns user data including avatar urls for active users" do
+      described_class.heartbeat(user1.id, reading.id)
+
+      data = described_class.active_users_data(reading.id)
+      expect(data.length).to eq(1)
+      expect(data.first[:id]).to eq(user1.id)
+      expect(data.first[:username]).to eq(user1.username)
+      expect(data.first[:avatar_url]).to start_with("data:image/svg+xml;base64,")
+    end
+
+    it "assigns colors from the palette to usernames" do
+      color1 = described_class.color_for_username("Sarah")
+      color2 = described_class.color_for_username("Bob")
+
+      expect(described_class::AVATAR_PALETTE).to include(color1)
+      expect(described_class::AVATAR_PALETTE).to include(color2)
+      expect(color1).not_to eq(color2)
+    end
+  end
 end

@@ -1,7 +1,14 @@
 class ApplicationController < ActionController::Base
   before_action :set_locale
   before_action :check_badge_notifications
-  helper_method :current_user, :logged_in?, :current_active_challenge
+  helper_method :current_user, :logged_in?, :current_active_challenge, :embedded?
+
+  def embedded?
+    if params[:embed].present?
+      session[:embedded] = [ "true", "1" ].include?(params[:embed].to_s.downcase)
+    end
+    !!session[:embedded]
+  end
 
   def current_active_challenge
     return nil unless logged_in?
@@ -63,9 +70,11 @@ class ApplicationController < ActionController::Base
 
   def require_login
     unless logged_in?
-      redirect_to new_user_session_path
+      session[:user_return_to] = request.fullpath if request.get?
+      redirect_to new_user_session_path, notice: "Please sign in to continue."
     end
   end
+  alias_method :authenticate_user!, :require_login
 
   def check_badge_notifications
     return unless current_user

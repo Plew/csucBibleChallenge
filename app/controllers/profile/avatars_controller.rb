@@ -15,6 +15,13 @@ class Profile::AvatarsController < Profile::BaseController
     end
   end
 
+  # DELETE /profile/avatar
+  def destroy
+    @user = current_user
+    @user.avatar.purge if @user.avatar.attached?
+    redirect_to edit_profile_avatar_path, notice: t("profile.avatar_removed", default: "Avatar removed successfully.")
+  end
+
   private
 
   def avatar_params

@@ -227,14 +227,24 @@ class StatsController < ApplicationController
 
   def calculate_personal_stats(user, challenge)
     current_date_in_tz = Time.current.in_time_zone(challenge.timezone).to_date
+    effective_start = challenge.effective_stats_start_date
+    effective_end = [ challenge.effective_stats_end_date, current_date_in_tz ].min
 
-    scheduled_query = challenge.readings.where("scheduled_date <= ?", current_date_in_tz)
+    return {
+      chapters_completed: 0,
+      chapters_scheduled: 0,
+      completion_percentage: 0,
+      on_schedule_percentage: 0
+    } if effective_end < effective_start
+
+    eval_range = effective_start..effective_end
+
+    scheduled_query = challenge.readings.where(scheduled_date: eval_range)
     scheduled_count = scheduled_query.count
 
     completed_query = user.user_readings
                          .joins(:reading)
-                         .where(readings: { challenge_id: challenge.id })
-                         .where("readings.scheduled_date <= ?", current_date_in_tz)
+                         .where(readings: { challenge_id: challenge.id, scheduled_date: eval_range })
     completed_count = completed_query.count
 
     if scheduled_count.zero?
@@ -246,13 +256,8 @@ class StatsController < ApplicationController
     end
 
     # Calculate on-schedule percentage
-    completed_readings = user.user_readings
-                            .joins(:reading)
-                            .where(readings: { challenge_id: challenge.id })
-                            .where("readings.scheduled_date <= ?", current_date_in_tz)
-
-    on_schedule_count = completed_readings
-                       .where("date(user_readings.created_at) <= readings.scheduled_date")
+    on_schedule_count = completed_query
+                       .where("DATE(user_readings.completed_on) = readings.scheduled_date")
                        .count
 
     if completed_count.zero?

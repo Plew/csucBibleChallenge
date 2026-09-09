@@ -68,13 +68,6 @@
     <% end %>
 
     <% if @selected_reading %>
-      <!-- Presence tracking with floating avatars -->
-      <div data-controller="reading-presence" data-reading-presence-reading-id-value="<%= @selected_reading.id %>">
-        <!-- Floating avatar container - fixed position bottom left, horizontal -->
-        <div data-reading-presence-target="avatars"
-             class="fixed bottom-2 left-2 z-50 flex flex-row gap-1 hidden">
-        </div>
-      </div>
       <% reading_is_completed = current_user.user_readings.exists?(reading_id: @selected_reading.id) %>
 
       <!-- Top "marked as read" button - only show if reading is completed -->
@@ -93,7 +86,8 @@
         title: @selected_reading_title,
         verses: @selected_reading_verses,
         current_user: current_user,
-        is_completed: reading_is_completed
+        is_completed: reading_is_completed,
+        reading_id: @selected_reading.id
       ) %>
 
       <div class="flex justify-center mt-4 mb-4">

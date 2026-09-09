@@ -5,6 +5,24 @@
 # Users are considered "active" only while sending heartbeats.
 class ReadingPresence
   HEARTBEAT_EXPIRY = 30.seconds
+  AVATAR_PALETTE = [
+    "#6B7558", # Muted Olive (Theme Primary)
+    "#C79C46", # Mustard Gold (Theme Secondary / Warning)
+    "#4A6B82", # Muted Slate Blue (Theme Info)
+    "#B05858", # Terracotta Rust (Theme Error)
+    "#556E3F", # Forest Green (Theme Success)
+    "#4F5D95", # Dusty Indigo
+    "#8B5A7E", # Warm Plum
+    "#2E7977", # Deep Teal
+    "#BD5A38", # Rust Orange
+    "#3D7896", # Soft Ocean Blue
+    "#87533E", # Warm Cedar
+    "#A8536E", # Dusty Rose
+    "#8A6B3D", # Rich Bronze
+    "#3E6953", # Forest Pine
+    "#38526F", # Slate Navy
+    "#7A4B6B"  # Warm Mulberry
+  ].freeze
 
   class << self
     # Record a heartbeat from a user viewing a reading
@@ -46,6 +64,11 @@ class ReadingPresence
       end
     end
 
+    def color_for_username(username)
+      hash = username.to_s.each_byte.reduce(5381) { |h, b| ((h << 5) + h + b) & 0xFFFFFFFF }
+      AVATAR_PALETTE[hash % AVATAR_PALETTE.length]
+    end
+
     private
 
     def avatar_url_for(user)
@@ -62,14 +85,12 @@ class ReadingPresence
 
     def generate_placeholder_avatar(username)
       initial = username.to_s[0]&.upcase || "?"
-      # Generate a consistent color from username
-      hue = username.to_s.bytes.sum % 360
-      color = "hsl(#{hue}, 65%, 45%)"
+      color = color_for_username(username)
 
       svg = <<~SVG
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
           <rect width="32" height="32" fill="#{color}" rx="16"/>
-          <text x="16" y="21" text-anchor="middle" fill="white" font-family="system-ui, sans-serif" font-size="14" font-weight="500">#{initial}</text>
+          <text x="16" y="21" text-anchor="middle" fill="white" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="600">#{initial}</text>
         </svg>
       SVG
 

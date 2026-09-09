@@ -170,5 +170,88 @@ RSpec.describe BadgeAwarder do
         expect(result).not_to include("lone_wolf")
       end
     end
+
+    context "halfway_there badge" do
+      let(:ten_chapter_challenge) do
+        create(:challenge, start_date: 5.days.ago.to_date, end_date: 5.days.from_now.to_date)
+      end
+
+      before do
+        create(:user_challenge_enrollment, user: user, challenge: ten_chapter_challenge)
+        # 10 readings total across 10 days (5 past, today, 4 future)
+        10.times do |i|
+          create(:reading,
+                 challenge: ten_chapter_challenge,
+                 scheduled_date: (5 - i).days.ago.to_date,
+                 book_number: 1,
+                 chapter_number: i + 1)
+        end
+      end
+
+      it "does not award halfway_there when user completed 50% of readings up to today, but not 50% of the entire challenge" do
+        # 5 readings scheduled up to today. User reads 3. That's 60% of readings so far, but only 30% of total (3/10).
+        past_readings = ten_chapter_challenge.readings.order(:scheduled_date).limit(3)
+        past_readings.each do |r|
+          create(:user_reading, user: user, reading: r, completed_on: r.scheduled_date)
+        end
+
+        result = BadgeAwarder.new(user, ten_chapter_challenge).call
+        expect(result).not_to include("halfway_there")
+        expect(user.user_badges.where(badge_key: "halfway_there")).to be_empty
+      end
+
+      it "awards halfway_there when user completes at least 50% of all scheduled readings in the challenge" do
+        # User reads 5 out of 10 total scheduled readings (50%)
+        readings = ten_chapter_challenge.readings.order(:scheduled_date).limit(5)
+        readings.each do |r|
+          create(:user_reading, user: user, reading: r, completed_on: r.scheduled_date)
+        end
+
+        result = BadgeAwarder.new(user, ten_chapter_challenge).call
+        expect(result).to include("halfway_there")
+        expect(user.user_badges.where(badge_key: "halfway_there").exists?).to be true
+      end
+    end
+  end
+
+  describe ".revoke_unearned_halfway_badges!" do
+    let(:challenge) { create(:challenge, start_date: 10.days.ago.to_date, end_date: 10.days.from_now.to_date) }
+    let(:user_not_halfway) { create(:user) }
+    let(:user_is_halfway) { create(:user) }
+
+    before do
+      create(:user_challenge_enrollment, user: user_not_halfway, challenge: challenge)
+      create(:user_challenge_enrollment, user: user_is_halfway, challenge: challenge)
+
+      10.times do |i|
+        create(:reading,
+               challenge: challenge,
+               scheduled_date: (10 - i).days.ago.to_date,
+               book_number: 1,
+               chapter_number: i + 1)
+      end
+
+      # user_not_halfway completed only 2 out of 10 (20%)
+      challenge.readings.order(:scheduled_date).limit(2).each do |r|
+        create(:user_reading, user: user_not_halfway, reading: r, completed_on: r.scheduled_date)
+      end
+      # user_is_halfway completed 5 out of 10 (50%)
+      challenge.readings.order(:scheduled_date).limit(5).each do |r|
+        create(:user_reading, user: user_is_halfway, reading: r, completed_on: r.scheduled_date)
+      end
+
+      # Erroneously give both users the badge
+      create(:user_badge, user: user_not_halfway, challenge: challenge, badge_key: "halfway_there")
+      create(:user_badge, user: user_is_halfway, challenge: challenge, badge_key: "halfway_there")
+    end
+
+    it "revokes the badge for users who have not actually completed 50% of challenge readings" do
+      expect {
+        BadgeAwarder.revoke_unearned_halfway_badges!
+      }.to change { UserBadge.where(badge_key: "halfway_there").count }.from(2).to(1)
+
+      expect(user_not_halfway.user_badges.where(badge_key: "halfway_there")).to be_empty
+      expect(user_is_halfway.user_badges.where(badge_key: "halfway_there").exists?).to be true
+    end
   end
 end

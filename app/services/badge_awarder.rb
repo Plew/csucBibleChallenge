@@ -8,6 +8,19 @@ class BadgeAwarder
     @challenge = challenge
   end
 
+  def self.revoke_unearned_halfway_badges!
+    revoked_count = 0
+    UserBadge.where(badge_key: "halfway_there").includes(:user, :challenge).find_each do |ub|
+      awarder = new(ub.user, ub.challenge)
+      unless awarder.send(:earned?, BadgeCatalog.find("halfway_there"))
+        ub.destroy!
+        Rails.cache.delete("stats/user_badges/#{ub.user_id}/#{ub.challenge_id}")
+        revoked_count += 1
+      end
+    end
+    revoked_count
+  end
+
   def call
     already_earned = user.user_badges.where(challenge: challenge).pluck(:badge_key)
     newly_awarded = []
@@ -170,16 +183,11 @@ class BadgeAwarder
 
   def completion_percentage
     @completion_percentage ||= begin
-      current_date = Time.current.in_time_zone(challenge.timezone).to_date
-      effective_end = challenge.stats_end_date.present? ? [ challenge.stats_end_date, current_date ].min : current_date
-      if challenge.stats_start_date.present? && effective_end < challenge.stats_start_date
-        0
-      else
-        query = challenge.readings.where("scheduled_date <= ?", effective_end)
-        query = query.where("scheduled_date >= ?", challenge.stats_start_date) if challenge.stats_start_date.present?
-        scheduled = query.count
-        scheduled.zero? ? 0 : (chapters_completed.to_f / scheduled * 100).floor
-      end
+      query = challenge.readings
+      query = query.where("scheduled_date >= ?", challenge.stats_start_date) if challenge.stats_start_date.present?
+      query = query.where("scheduled_date <= ?", challenge.stats_end_date) if challenge.stats_end_date.present?
+      total_scheduled = query.count
+      total_scheduled.zero? ? 0 : (chapters_completed.to_f / total_scheduled * 100).floor
     end
   end
 

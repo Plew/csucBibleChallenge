@@ -35,4 +35,14 @@ class Group < ApplicationRecord
   def country
     ISO3166::Country[country_code] if country_code.present?
   end
+
+  def transfer_ownership_to_first_joined!(excluding: nil)
+    candidates = user_group_enrollments
+    candidates = candidates.where.not(user_id: excluding.id) if excluding.present?
+    next_creator = candidates.order(:created_at, :id).first&.user
+    if next_creator
+      update!(creator: next_creator)
+    end
+    next_creator
+  end
 end

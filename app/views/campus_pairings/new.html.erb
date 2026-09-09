@@ -1,0 +1,91 @@
+<div class="max-w-xl mx-auto px-4 py-8">
+  <div class="card bg-base-100 shadow-xl border border-base-200">
+    <div class="card-body">
+      <%# Header %>
+      <div class="flex items-center gap-3 mb-2">
+        <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="card-title text-xl font-bold">Connect Campus Hub</h1>
+          <p class="text-xs text-base-content/60">Authorize Single Sign-On & Challenge Integration</p>
+        </div>
+      </div>
+
+      <%# Campus Info Callout %>
+      <div class="bg-base-200/60 rounded-lg p-4 space-y-2 mt-2">
+        <div class="flex justify-between items-center text-sm">
+          <span class="text-base-content/60 font-medium">Campus / Club:</span>
+          <span class="font-semibold text-base-content"><%= @campus_name.presence || "Campus Hub" %></span>
+        </div>
+        <div class="flex justify-between items-center text-sm">
+          <span class="text-base-content/60 font-medium">Hub URL:</span>
+          <code class="text-xs font-mono bg-base-100 px-2 py-1 rounded text-primary"><%= @hub_url %></code>
+        </div>
+        <div class="flex justify-between items-center text-sm">
+          <span class="text-base-content/60 font-medium">Authorizing Officer:</span>
+          <span class="text-sm font-medium"><%= current_user.name %> (<%= current_user.email %>)</span>
+        </div>
+      </div>
+
+      <% if @existing_connection %>
+        <div class="alert alert-info text-xs py-2 mt-3">
+          <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-4 w-4" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          <span>This campus was previously connected. Authorizing will update the connection secret and active challenge.</span>
+        </div>
+      <% end %>
+
+      <%= form_with url: campus_pairings_path, method: :post, local: true, class: "space-y-5 mt-4" do |f| %>
+        <%= f.hidden_field :campus_name, value: @campus_name %>
+        <%= f.hidden_field :hub_url, value: @hub_url %>
+        <%= f.hidden_field :secret, value: @secret %>
+        <%= f.hidden_field :nonce, value: @nonce %>
+        <%= f.hidden_field :callback_url, value: @callback_url %>
+
+        <%# Challenge Selector %>
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text font-semibold text-sm">Select Reading Challenge for this Campus</span>
+          </label>
+          <% if @challenges.any? %>
+            <select name="challenge_id" class="select select-bordered w-full" id="challenge_id">
+              <% @challenges.each do |challenge| %>
+                <option value="<%= challenge.id %>" <%= 'selected' if @existing_connection&.challenge_id == challenge.id || challenge == current_active_challenge %>>
+                  <%= challenge.name %> (<%= challenge.start_date.strftime("%b %d") %> - <%= challenge.end_date.strftime("%b %d, %Y") %>)
+                </option>
+              <% end %>
+            </select>
+            <label class="label">
+              <span class="label-text-alt text-base-content/60">Students logging in from this Campus Hub will automatically join this challenge.</span>
+            </label>
+          <% else %>
+            <div class="alert alert-warning text-sm">
+              <span>You have not joined or created any challenges yet.</span>
+            </div>
+            <%= link_to "Create a Challenge First", new_challenge_path, class: "btn btn-outline btn-sm mt-2" %>
+          <% end %>
+        </div>
+
+        <%# Actions %>
+        <div class="card-actions justify-end gap-2 pt-2 border-t border-base-200">
+          <% if @callback_url.present? %>
+            <% cancel_url = URI.parse(@callback_url) rescue nil %>
+            <% if cancel_url %>
+              <% query = URI.decode_www_form(cancel_url.query || "") << ["status", "cancelled"] << ["nonce", @nonce.to_s] %>
+              <% cancel_url.query = URI.encode_www_form(query) %>
+              <%= link_to "Cancel", cancel_url.to_s, class: "btn btn-ghost btn-sm", allow_other_host: true %>
+            <% else %>
+              <%= link_to "Cancel", root_path, class: "btn btn-ghost btn-sm" %>
+            <% end %>
+          <% else %>
+            <%= link_to "Cancel", root_path, class: "btn btn-ghost btn-sm" %>
+          <% end %>
+
+          <%= f.submit "Authorize & Connect", class: "btn btn-primary btn-sm px-6" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

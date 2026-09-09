@@ -83,5 +83,33 @@ RSpec.describe "Stats", type: :request do
         expect(response.body).to include('Challenge Summary')
       end
     end
+
+    context "when stats_start_date is set" do
+      let(:today) { Date.current }
+      let(:challenge) { FactoryBot.create(:challenge, start_date: today - 20.days, end_date: today + 20.days, stats_start_date: today - 5.days) }
+
+      before do
+        # 10 readings before stats_start_date (trial period)
+        10.times do |i|
+          r = FactoryBot.create(:reading, challenge: challenge, scheduled_date: today - 15.days + i.days, book_number: 1, chapter_number: i + 1)
+          FactoryBot.create(:user_reading, user: user, reading: r, completed_on: r.scheduled_date)
+        end
+        # 5 readings within stats window up to today (user completed 5)
+        5.times do |i|
+          r = FactoryBot.create(:reading, challenge: challenge, scheduled_date: today - 5.days + i.days, book_number: 1, chapter_number: 11 + i)
+          FactoryBot.create(:user_reading, user: user, reading: r, completed_on: r.scheduled_date)
+        end
+      end
+
+      it "calculates personal stats scoped to the stats start date" do
+        get stats_path
+        expect(response).to have_http_status(:success)
+        # Personal stats assign should reflect readings within the stats window
+        personal_stats = controller.send(:calculate_personal_stats, user, challenge)
+        expect(personal_stats[:chapters_completed]).to eq(5)
+        expect(personal_stats[:chapters_scheduled]).to eq(5)
+        expect(personal_stats[:completion_percentage]).to eq(100)
+      end
+    end
   end
 end

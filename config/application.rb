@@ -50,9 +50,12 @@ module Irmbi
     # Add preview paths to autoload for development
     config.autoload_paths << "#{Rails.root}/spec/components/previews"
 
-    # Allow iframe embedding for Campus Hub PWA
+    # Allow iframe embedding for Campus Hub PWA and embedded contexts
+    # Modern browsers use Content-Security-Policy frame-ancestors instead of obsolete X-Frame-Options
+    allowed_ancestors = ENV.fetch("SSO_FRAME_ANCESTORS", "*")
     config.action_dispatch.default_headers = {
-      "X-Frame-Options" => "ALLOWALL"
+      "X-Frame-Options" => "",
+      "Content-Security-Policy" => "frame-ancestors #{allowed_ancestors};"
     }
   end
 end

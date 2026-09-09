@@ -847,6 +847,7 @@ en:
     no_verses: "No verses found for this reading."
     unread: "unread"
     active_readers: "reading now"
+    reading_now: "Reading now:"
 
   # Verse likes
   verse_likes:
@@ -974,12 +975,15 @@ en:
     date: "Date"
     reading: "Reading"
     name_label: "Name"
-    email_label: "Email (cannot be changed here)"
+    email_label: "Email"
     change_avatar_title: "Change Your Avatar"
     current_avatar: "Current avatar"
     default_avatar: "Default avatar"
     choose_new_image: "Choose a new image to update your avatar"
     update_avatar: "Update Avatar"
+    remove_avatar: "Remove Avatar"
+    remove_avatar_confirm: "Are you sure you want to remove your profile picture and revert to the default avatar?"
+    avatar_removed: "Profile picture removed successfully."
     update_password_title: "Update Your Password"
     current_password: "Current Password"
     new_password: "New Password"

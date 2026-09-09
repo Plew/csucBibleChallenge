@@ -22,6 +22,14 @@ Rails.application.routes.draw do
 
   # User Authentication UI routes
   get "auth/sso", to: "sso#authorize", as: :auth_sso
+  get "auth/sso/authorize", to: "sso#authorize"
+  get "auth/sso/login", to: "sso#login", as: :sso_login
+  post "auth/sso/login", to: "sso#login"
+
+  # Campus Hub 1-Click Pairing routes
+  get  "/campus/pair", to: "campus_pairings#new", as: :new_campus_pairing
+  post "/campus/pair", to: "campus_pairings#create", as: :campus_pairings
+
   get "users/sign_up", to: "users#new", as: :new_user_registration
   resources :users, only: [ :create ] # For handling registration form submission
   get "users/sign_in", to: "sessions#new", as: :new_user_session
@@ -138,7 +146,7 @@ Rails.application.routes.draw do
   namespace :profile do
     resource :details, only: [ :edit, :update ], controller: "details"
     resource :password, only: [ :edit, :update ], controller: "passwords"
-    resource :avatar, only: [ :edit, :update ], controller: "avatars"
+    resource :avatar, only: [ :edit, :update, :destroy ], controller: "avatars"
     resource :version, only: [ :edit, :update ], controller: "versions"
     resource :email_preferences, only: [ :edit, :update ], controller: "email_preferences"
     resources :enrollments, only: [ :index, :show, :destroy ], controller: "enrollments" do

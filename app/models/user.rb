@@ -33,6 +33,7 @@ class User < ApplicationRecord
   has_many :user_badges, dependent: :destroy
   has_many :sent_pokes, class_name: "Poke", foreign_key: :poker_id, dependent: :destroy
   has_many :received_pokes, class_name: "Poke", foreign_key: :pokee_id, dependent: :destroy
+  has_many :campus_connections, dependent: :destroy
 
   attr_accessor :current_password, :skip_current_password_validation
 

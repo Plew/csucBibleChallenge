@@ -6,29 +6,44 @@
   <div class="max-w-2xl mx-auto">
     <div class="card bg-base-100 shadow-xl">
       <div class="card-body">
-        <h2 class="card-title"><%= t('profile.change_avatar_title') %></h2>
+        <h2 class="card-title text-xl mb-4"><%= t('profile.change_avatar_title') %></h2>
+
+        <!-- Current Avatar Preview & Actions -->
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6 p-4 rounded-xl bg-base-200/50 mb-6">
+          <div class="avatar">
+            <div class="w-24 h-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2 overflow-hidden bg-base-200 flex items-center justify-center">
+              <%= avatar_image_tag(@user, :xxlarge, class: "w-full h-full object-cover") %>
+            </div>
+          </div>
+
+          <div class="flex-1">
+            <% if @user.avatar.attached? %>
+              <div class="badge badge-primary badge-outline mb-1"><%= t('profile.current_avatar') %></div>
+              <p class="text-sm text-base-content/70 mb-3"><%= t('profile.avatar_desc') %></p>
+              <%= button_to profile_avatar_path, method: :delete, data: { turbo_confirm: t('profile.remove_avatar_confirm') }, class: "btn btn-error btn-outline btn-sm gap-2" do %>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                <%= t('profile.remove_avatar') %>
+              <% end %>
+            <% else %>
+              <div class="badge badge-neutral badge-outline mb-1"><%= t('profile.default_avatar') %></div>
+              <p class="text-sm text-base-content/70"><%= t('profile.choose_new_image') %></p>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Upload New Avatar Form -->
         <%= form_with(model: @user, url: profile_avatar_path, method: :patch, local: true) do |f| %>
-          <div class="form-control mt-2">
-            <%= f.label :avatar, class: "label" do %>
+          <div class="form-control">
+            <%= f.label :avatar, class: "label font-medium" do %>
               <span class="label-text"><%= t('profile.avatar') %></span>
             <% end %>
 
-            <% if @user.avatar.attached? %>
-              <div class="avatar mb-2">
-                <div class="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                  <%= image_tag @user.avatar.variant(:xlarge).processed %>
-                </div>
-              </div>
-              <p class="text-sm text-base-content/70 mb-2"><%= t('profile.current_avatar') %></p>
-            <% else %>
-              <%= avatar_image_tag(current_user, :tiny) %>
-              <p class="text-sm text-base-content/70 mb-2"><%= t('profile.default_avatar') %></p>
-            <% end %>
-
-            <%= f.file_field :avatar, class: "file-input file-input-bordered w-full" %>
-            <div class="label">
-              <span class="label-text-alt"><%= t('profile.choose_new_image') %></span>
-            </div>
+            <%= f.file_field :avatar, class: "file-input file-input-bordered w-full", accept: "image/png,image/jpeg,image/gif,image/webp" %>
+            <label class="label">
+              <span class="label-text-alt text-base-content/60"><%= t('profile.choose_new_image') %></span>
+            </label>
           </div>
 
           <div class="form-control mt-6">

@@ -74,4 +74,52 @@ RSpec.describe UserChallengeEnrollment, type: :model do
       }.not_to have_enqueued_mail(UserMailer, :daily_reading)
     end
   end
+
+  describe '#cleanup_challenge_groups on destroy' do
+    let(:challenge) { create(:challenge) }
+    let(:user) { create(:user) }
+    let!(:enrollment) { create(:user_challenge_enrollment, user: user, challenge: challenge) }
+    let(:group) { create(:group, challenge: challenge, creator: user) }
+    let(:other_member) { create(:user) }
+
+    before do
+      create(:user_group_enrollment, user: user, group: group, created_at: 5.days.ago)
+      create(:user_group_enrollment, user: other_member, group: group, created_at: 2.days.ago)
+    end
+
+    it 'removes the user from groups in the challenge when they leave the challenge' do
+      expect {
+        enrollment.destroy
+      }.to change { group.users.count }.by(-1)
+
+      expect(group.users).not_to include(user)
+      expect(group.users).to include(other_member)
+    end
+
+    it 'transfers ownership to the earliest joined member if the leaving user was group creator' do
+      enrollment.destroy
+      expect(group.reload.creator).to eq(other_member)
+    end
+
+    it 'destroys the group if the leaving user was the only member' do
+      solo_group = create(:group, challenge: challenge, creator: user)
+      create(:user_group_enrollment, user: user, group: solo_group)
+      group.destroy # remove the multi-member group for this test
+
+      expect {
+        enrollment.destroy
+      }.to change(Group, :count).by(-1)
+    end
+
+    it 'does not remove the user from groups in other challenges' do
+      other_challenge = create(:challenge)
+      other_group = create(:group, challenge: other_challenge, creator: user)
+      create(:user_challenge_enrollment, user: user, challenge: other_challenge)
+      other_group_enrollment = create(:user_group_enrollment, user: user, group: other_group)
+
+      enrollment.destroy
+
+      expect(UserGroupEnrollment.exists?(id: other_group_enrollment.id)).to be true
+    end
+  end
 end

@@ -97,6 +97,34 @@ RSpec.describe Profile::DetailsController, type: :controller do
         end
       end
 
+      context 'with email update' do
+        it 'updates user email when valid' do
+          patch :update, params: { user: { username: user.username, email: 'new_email@example.com' } }
+          user.reload
+          expect(user.email).to eq('new_email@example.com')
+          expect(response).to redirect_to(edit_profile_details_path)
+          expect(flash[:notice]).to eq('Profile details updated successfully.')
+        end
+
+        it 'does not update email when invalid format' do
+          old_email = user.email
+          patch :update, params: { user: { username: user.username, email: 'invalid_format' } }
+          user.reload
+          expect(user.email).to eq(old_email)
+          expect(response).to render_template(:edit)
+          expect(response).to have_http_status(:unprocessable_content)
+        end
+
+        it 'does not update email when already taken' do
+          old_email = user.email
+          patch :update, params: { user: { username: user.username, email: other_user.email } }
+          user.reload
+          expect(user.email).to eq(old_email)
+          expect(response).to render_template(:edit)
+          expect(response).to have_http_status(:unprocessable_content)
+        end
+      end
+
       context 'with avatar upload' do
         let(:avatar_file) { fixture_file_upload('test_avatar.png', 'image/png') }
 
@@ -112,16 +140,16 @@ RSpec.describe Profile::DetailsController, type: :controller do
           patch :update, params: {
             user: {
               username: 'allowed',
+              email: 'allowed_email@example.com',
               version: 'ESV',
               avatar: nil,
-              email: 'not_allowed@example.com', # Should be filtered out
               admin: true # Should be filtered out
             }
           }
           user.reload
           expect(user.username).to eq('allowed')
+          expect(user.email).to eq('allowed_email@example.com')
           expect(user.version).to eq('ESV')
-          expect(user.email).not_to eq('not_allowed@example.com')
           expect(user.admin).to be_falsey
         end
       end

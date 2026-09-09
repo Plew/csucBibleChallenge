@@ -66,7 +66,8 @@ class GroupStatistics
     challenge = group.challenge
     return 0 if group_user_ids.empty?
 
-    effective_end = challenge.stats_end_date.present? ? [ challenge.stats_end_date, Date.current ].min : Date.current
+    current_date = Time.current.in_time_zone(challenge.timezone).to_date
+    effective_end = challenge.stats_end_date.present? ? [ challenge.stats_end_date, current_date ].min : current_date
     return 0 if challenge.stats_start_date.present? && effective_end < challenge.stats_start_date
 
     readings_query = challenge.readings.where("scheduled_date <= ?", effective_end)

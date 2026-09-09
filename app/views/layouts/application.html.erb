@@ -2,7 +2,8 @@
 <html data-theme="andgodsaid" lang="<%= I18n.locale %>">
 <%= render 'layouts/head' %>
 
-<body class="min-h-screen flex flex-col overflow-x-hidden">
+<body class="min-h-screen flex flex-col overflow-x-hidden <%= 'is-embedded' if embedded? %>">
+  <% unless embedded? %>
   <div class="navbar bg-base-100 shadow-lg" x-data="{ mobileMenuIsOpen: false }">
     <div class="navbar-start flex items-center min-w-0">
       <%= link_to root_path, class: "btn btn-ghost normal-case flex items-center gap-2.5 px-1 hover:bg-transparent group" do %>
@@ -39,35 +40,6 @@
         </label>
       </div>
 
-      <%# Language Selector - Temporarily Disabled %>
-      <% if false %>
-        <div data-controller="language-selector"
-             data-action="click@window->language-selector#closeMenu"
-             class="relative">
-          <button data-action="click->language-selector#toggleMenu"
-                  class="btn btn-ghost btn-circle text-2xl">
-            <span data-language-selector-target="currentFlag">🇬🇧</span>
-          </button>
-          <div data-language-selector-target="menu"
-               class="hidden absolute right-0 mt-2 w-32 bg-base-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-50">
-            <div class="py-1">
-              <button data-action="click->language-selector#selectLanguage"
-                      data-language="en"
-                      class="flex items-center gap-2 w-full px-4 py-2 text-sm text-base-content hover:bg-base-200">
-                <span class="text-xl">🇬🇧</span>
-                <span><%= t('navigation.english') %></span>
-              </button>
-              <button data-action="click->language-selector#selectLanguage"
-                      data-language="de"
-                      class="flex items-center gap-2 w-full px-4 py-2 text-sm text-base-content hover:bg-base-200">
-                <span class="text-xl">🇩🇪</span>
-                <span><%= t('navigation.german') %></span>
-              </button>
-            </div>
-          </div>
-        </div>
-      <% end %>
-
       <%# Mobile Menu Button %>
       <button @click="mobileMenuIsOpen = !mobileMenuIsOpen" class="btn btn-ghost btn-circle">
         <span class="sr-only"><%= t('navigation.open_main_menu') %></span>
@@ -81,7 +53,7 @@
         </svg>
       </button>
       
-      <%# Mobile Menu Dropdown - Positioned absolutely, controlled by AlpineJS %>
+      <%# Mobile Menu Dropdown %>
       <div x-show="mobileMenuIsOpen" 
           @click.away="mobileMenuIsOpen = false"
           x-transition:enter="transition ease-out duration-100 transform"
@@ -134,8 +106,8 @@
         </div>
       </div>
     </div>
-
   </div>
+  <% end %>
 
   <% if logged_in? && !controller.class.name.start_with?('Admin::') %>
     <div id="main_nav_bar">
@@ -152,15 +124,17 @@
     <% end %>
   </div>
 
-  <% if logged_in? %>
+  <% if logged_in? && !embedded? %>
     <%= render "shared/pwa_prompts" %>
   <% end %>
 
-  <main class="container mx-auto mt-1 flex-1 pb-24 md:pb-6">
+  <main class="container mx-auto mt-1 flex-1 <%= embedded? ? 'pb-16 px-2' : 'pb-24 md:pb-6' %>">
     <%= content_for?(:content) ? yield(:content) : yield %>
   </main>
 
-  <%= render "layouts/footer" %>
+  <% unless embedded? %>
+    <%= render "layouts/footer" %>
+  <% end %>
 
   <div data-controller="loading-overlay"
        data-loading-overlay-target="overlay"

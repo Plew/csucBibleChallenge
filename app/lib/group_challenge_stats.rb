@@ -31,31 +31,41 @@ class GroupChallengeStats
   private
 
   def total_readings
-    @total_readings ||= challenge.readings.count
+    query = challenge.readings
+    query = query.where("scheduled_date >= ?", challenge.stats_start_date) if challenge.stats_start_date.present?
+    query = query.where("scheduled_date <= ?", challenge.stats_end_date) if challenge.stats_end_date.present?
+    @total_readings ||= query.count
   end
 
   def completed_readings_count
-    @completed_readings_count ||= UserReading
+    query = UserReading
       .joins(:reading)
       .joins("JOIN user_group_enrollments uge ON uge.user_id = user_readings.user_id")
       .where(readings: { challenge_id: challenge.id })
       .where(uge: { group_id: group.id })
-      .count
+    query = query.where("readings.scheduled_date >= ?", challenge.stats_start_date) if challenge.stats_start_date.present?
+    query = query.where("readings.scheduled_date <= ?", challenge.stats_end_date) if challenge.stats_end_date.present?
+    @completed_readings_count ||= query.count
   end
 
   def readings_to_date
-    @readings_to_date ||= challenge.readings
-      .where("scheduled_date <= ?", current_date_in_challenge_timezone)
-      .count
+    query = challenge.readings.where("scheduled_date <= ?", effective_end_date)
+    query = query.where("scheduled_date >= ?", challenge.stats_start_date) if challenge.stats_start_date.present?
+    @readings_to_date ||= query.count
   end
 
   def completed_readings_to_date_count
-    @completed_readings_to_date_count ||= UserReading
+    query = UserReading
       .joins(:reading)
       .joins("JOIN user_group_enrollments uge ON uge.user_id = user_readings.user_id")
-      .where(readings: { challenge_id: challenge.id, scheduled_date: ..current_date_in_challenge_timezone })
+      .where(readings: { challenge_id: challenge.id, scheduled_date: ..effective_end_date })
       .where(uge: { group_id: group.id })
-      .count
+    query = query.where("readings.scheduled_date >= ?", challenge.stats_start_date) if challenge.stats_start_date.present?
+    @completed_readings_to_date_count ||= query.count
+  end
+
+  def effective_end_date
+    challenge.stats_end_date.present? ? [ challenge.stats_end_date, current_date_in_challenge_timezone ].min : current_date_in_challenge_timezone
   end
 
   def current_date_in_challenge_timezone

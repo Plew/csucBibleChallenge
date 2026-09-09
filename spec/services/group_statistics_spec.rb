@@ -99,6 +99,16 @@ RSpec.describe GroupStatistics, type: :service do
       end
       expect(subject.completion_percentage).to eq(40)
     end
+
+    context 'with stats_start_date configured' do
+      it 'ignores completions that happened before stats_start_date' do
+        readings.first(2).each do |reading|
+          users.each { |user| create(:user_reading, user: user, reading: reading, completed_on: reading.scheduled_date) }
+        end
+        challenge.update!(stats_start_date: Date.current - 2)
+        expect(subject.completion_percentage).to eq(0)
+      end
+    end
   end
 
   describe '#on_schedule_percentage' do
@@ -153,6 +163,16 @@ RSpec.describe GroupStatistics, type: :service do
       ).and_call_original
 
       subject.on_schedule_percentage
+    end
+
+    context 'with stats_start_date configured' do
+      it 'ignores on-schedule readings from before stats_start_date' do
+        readings.first(2).each do |reading|
+          users.each { |user| create(:user_reading, user: user, reading: reading, completed_on: reading.scheduled_date) }
+        end
+        challenge.update!(stats_start_date: Date.current - 2)
+        expect(subject.on_schedule_percentage).to eq(0)
+      end
     end
   end
 end

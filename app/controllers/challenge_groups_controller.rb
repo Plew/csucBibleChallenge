@@ -65,16 +65,14 @@ class ChallengeGroupsController < ApplicationController
       return
     end
 
-    # If user is the creator and there are other members, handle differently
+    # If user is the creator and there are other members, transfer ownership to whoever first joined
     if group.creator == current_user
-      other_members = group.user_group_enrollments.where.not(user_id: current_user.id)
-      if other_members.exists?
-        # Delete the entire group
-        group.destroy
-        redirect_to challenge_path(@challenge), notice: "Group deleted and all members removed."
+      next_creator = group.transfer_ownership_to_first_joined!(excluding: current_user)
+      if next_creator
+        enrollment.destroy
+        redirect_to challenge_path(@challenge), notice: "You have left the group. Group ownership has been transferred to #{next_creator.username}."
         return
       else
-        # Just delete the group (only member is the creator)
         group.destroy
         redirect_to challenge_path(@challenge), notice: "Group deleted."
         return

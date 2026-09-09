@@ -64,18 +64,19 @@ class GroupsController < ApplicationController
     end
     group = @user_group
     if group.creator == current_user
-      other_members = group.user_group_enrollments.where.not(user_id: current_user.id)
-      if other_members.exists?
-        redirect_to confirm_destroy_group_path(group)
+      next_creator = group.transfer_ownership_to_first_joined!(excluding: current_user)
+      if next_creator
+        UserGroupEnrollment.find_by(user: current_user, group: group)&.destroy
+        redirect_to groups_path, notice: "You have left the group. Group ownership has been transferred to #{next_creator.username}."
         return
       else
         group.destroy
-        redirect_to groups_path
+        redirect_to groups_path, notice: "You have left the group and it has been deleted."
         return
       end
     end
     UserGroupEnrollment.find_by(user: current_user, group: group)&.destroy
-    redirect_to groups_path
+    redirect_to groups_path, notice: "You have left the group."
   end
 
   # POST /groups/:id/join
@@ -119,25 +120,30 @@ class GroupsController < ApplicationController
     group_stats = GroupStatistics.new(@group)
     group_user_ids = @group.users.pluck(:id)
     current_date = Time.current.in_time_zone(@challenge.timezone).to_date
+    effective_end = @challenge.stats_end_date.present? ? [ @challenge.stats_end_date, current_date ].min : current_date
 
-    # Total possible chapters = number of scheduled readings × number of members
-    total_scheduled = @challenge.readings.where("scheduled_date <= ?", current_date).count
+    # Total possible chapters = number of scheduled readings in stats window × number of members
+    readings_query = @challenge.readings.where("scheduled_date <= ?", effective_end)
+    readings_query = readings_query.where("scheduled_date >= ?", @challenge.stats_start_date) if @challenge.stats_start_date.present?
+    total_scheduled = readings_query.count
     total_possible = total_scheduled * group_user_ids.count
 
-    # Total completed chapters across all group members
-    total_completed = UserReading.where(user_id: group_user_ids)
+    # Total completed chapters across all group members in stats window
+    completed_query = UserReading.where(user_id: group_user_ids)
                                   .joins(:reading)
                                   .where(readings: { challenge_id: @challenge.id })
-                                  .where("readings.scheduled_date <= ?", current_date)
-                                  .count
+                                  .where("readings.scheduled_date <= ?", effective_end)
+    completed_query = completed_query.where("readings.scheduled_date >= ?", @challenge.stats_start_date) if @challenge.stats_start_date.present?
+    total_completed = completed_query.count
 
-    # Total on-time chapters across all group members
-    total_on_time = UserReading.where(user_id: group_user_ids)
+    # Total on-time chapters across all group members in stats window
+    on_time_query = UserReading.where(user_id: group_user_ids)
                                 .joins(:reading)
                                 .where(readings: { challenge_id: @challenge.id })
-                                .where("readings.scheduled_date <= ?", current_date)
+                                .where("readings.scheduled_date <= ?", effective_end)
                                 .where("DATE(user_readings.completed_on) = readings.scheduled_date")
-                                .count
+    on_time_query = on_time_query.where("readings.scheduled_date >= ?", @challenge.stats_start_date) if @challenge.stats_start_date.present?
+    total_on_time = on_time_query.count
 
     @group_stats = {
       completion_percentage: group_stats.completion_percentage,

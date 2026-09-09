@@ -1,4 +1,8 @@
-<div class="bg-base-100 shadow-xl w-full rounded-none">
+<div class="bg-base-100 shadow-xl w-full rounded-none"
+     <% if reading_id.present? %>
+       data-controller="reading-presence"
+       data-reading-presence-reading-id-value="<%= reading_id %>"
+     <% end %>>
   <div>
     <h2 class="text-lg font-bold mb-2 text-center">
       <%= title.presence || 'Untitled Reading' %>
@@ -6,6 +10,21 @@
         <span class="text-primary font-semibold">(<%= t('reading.unread') %>)</span>
       <% end %>
     </h2>
+
+    <% if reading_id.present? %>
+      <!-- Active readers indicator near chapter title -->
+      <div data-reading-presence-target="container"
+           class="hidden flex items-center justify-center gap-2 py-1 px-3 mb-3 bg-base-200/80 rounded-full w-fit mx-auto border border-base-300/60 shadow-xs text-xs text-base-content/70">
+        <span class="flex h-2 w-2 relative">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+        </span>
+        <span class="font-medium text-xs"><%= t('reading.reading_now', default: 'Reading now:') %></span>
+        <div data-reading-presence-target="avatars" class="flex items-center -space-x-1.5">
+        </div>
+      </div>
+    <% end %>
+
     <div class="prose max-w-none bg-base-200 p-4 px-3 rounded-md">
       <% if verses.any? %>
         <% verses.each do |verse| %>

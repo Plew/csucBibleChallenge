@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_07_100000) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_09_164000) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -62,6 +62,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_07_100000) do
     t.index ["challenge_id"], name: "index_blog_posts_on_challenge_id"
     t.index ["user_id"], name: "index_blog_posts_on_user_id"
     t.index ["visible"], name: "index_blog_posts_on_visible"
+  end
+
+  create_table "campus_connections", force: :cascade do |t|
+    t.string "campus_name", null: false
+    t.integer "challenge_id"
+    t.datetime "created_at", null: false
+    t.string "hub_url", null: false
+    t.string "sso_secret", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["challenge_id"], name: "index_campus_connections_on_challenge_id"
+    t.index ["hub_url"], name: "index_campus_connections_on_hub_url", unique: true
+    t.index ["user_id"], name: "index_campus_connections_on_user_id"
   end
 
   create_table "challenges", force: :cascade do |t|
@@ -465,6 +478,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_07_100000) do
   add_foreign_key "blog_comments", "users"
   add_foreign_key "blog_posts", "challenges"
   add_foreign_key "blog_posts", "users"
+  add_foreign_key "campus_connections", "challenges"
+  add_foreign_key "campus_connections", "users"
   add_foreign_key "challenges", "users", column: "creator_id"
   add_foreign_key "email_login_tokens", "challenges"
   add_foreign_key "email_login_tokens", "readings"

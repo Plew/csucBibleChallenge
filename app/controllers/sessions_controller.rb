@@ -20,6 +20,13 @@ class SessionsController < ApplicationController
         return
       end
 
+      # Check for saved return_to path (e.g. campus pairing)
+      if session[:user_return_to].present?
+        return_to = session.delete(:user_return_to)
+        redirect_to return_to
+        return
+      end
+
       # Check for group invitation token and auto-enroll
       if session[:group_invitation_token].present?
         group = Group.find_by(token: session[:group_invitation_token])

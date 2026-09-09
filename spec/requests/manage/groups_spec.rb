@@ -113,6 +113,18 @@ RSpec.describe "Manage::Groups", type: :request do
       expect(member.user_challenge_enrollments.where(challenge: challenge)).to exist
     end
 
+    it "successfully removes a member who already left the challenge" do
+      # Simulate an orphaned group enrollment where user_challenge_enrollment is gone
+      member.user_challenge_enrollments.where(challenge: challenge).delete_all
+
+      expect {
+        delete remove_member_challenge_manage_group_path(challenge, group), params: { user_id: member.id }
+      }.to change(UserGroupEnrollment, :count).by(-1)
+
+      expect(response).to redirect_to(challenge_manage_groups_path(challenge))
+      expect(flash[:notice]).to include(member.username)
+    end
+
     context "as an unauthorized user" do
       let(:outsider) { create(:user) }
       before { login_as outsider }

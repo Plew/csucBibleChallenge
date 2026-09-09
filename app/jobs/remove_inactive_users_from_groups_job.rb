@@ -24,6 +24,9 @@ class RemoveInactiveUsersFromGroupsJob < ApplicationJob
 
         unless has_recent_activity
           UserGroupEnrollment.where(user: user, group: group).delete_all
+          if group.creator_id == user.id
+            group.transfer_ownership_to_first_joined!
+          end
           Rails.logger.info "[RemoveInactiveUsersFromGroupsJob] Removed #{user.username} (ID: #{user.id}) from group '#{group.name}' in challenge '#{challenge.name}' due to #{INACTIVE_DAYS} days of inactivity"
         end
       end

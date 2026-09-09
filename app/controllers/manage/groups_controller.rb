@@ -20,10 +20,13 @@ class Manage::GroupsController < Manage::BaseController
   end
 
   def remove_member
-    user = @challenge.users.find(params[:user_id])
-    enrollment = user.user_group_enrollments.find_by(group: @group)
+    enrollment = @group.user_group_enrollments.find_by(user_id: params[:user_id])
     if enrollment
+      user = enrollment.user
       enrollment.destroy
+      if @group.creator_id == user.id
+        @group.transfer_ownership_to_first_joined!
+      end
       redirect_to challenge_manage_groups_path(@challenge), notice: t("manage.groups.member_removed", username: user.username)
     else
       redirect_to challenge_manage_groups_path(@challenge), alert: t("manage.groups.member_not_in_group")
@@ -31,15 +34,22 @@ class Manage::GroupsController < Manage::BaseController
   end
 
   def move_member
-    user = @challenge.users.find(params[:user_id])
+    enrollment = @group.user_group_enrollments.find_by(user_id: params[:user_id])
     target_group = @challenge.groups.find(params[:target_group_id])
 
-    ActiveRecord::Base.transaction do
-      user.user_group_enrollments.joins(:group).where(groups: { challenge_id: @challenge.id }).delete_all
-      user.user_group_enrollments.create!(group: target_group)
+    if enrollment
+      user = enrollment.user
+      ActiveRecord::Base.transaction do
+        enrollment.destroy
+        user.user_group_enrollments.create!(group: target_group)
+        if @group.creator_id == user.id
+          @group.transfer_ownership_to_first_joined!
+        end
+      end
+      redirect_to challenge_manage_groups_path(@challenge), notice: t("manage.groups.member_moved", username: user.username, group: target_group.name)
+    else
+      redirect_to challenge_manage_groups_path(@challenge), alert: t("manage.groups.member_not_in_group")
     end
-
-    redirect_to challenge_manage_groups_path(@challenge), notice: t("manage.groups.member_moved", username: user.username, group: target_group.name)
   end
 
   private

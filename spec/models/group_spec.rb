@@ -59,6 +59,34 @@ RSpec.describe Group, type: :model do
     end
   end
 
+  describe '#transfer_ownership_to_first_joined!' do
+    let(:creator) { create(:user) }
+    let(:group) { create(:group, creator: creator) }
+    let(:member1) { create(:user) }
+    let(:member2) { create(:user) }
+
+    before do
+      create(:user_group_enrollment, user: creator, group: group, created_at: 10.days.ago)
+      create(:user_group_enrollment, user: member1, group: group, created_at: 5.days.ago)
+      create(:user_group_enrollment, user: member2, group: group, created_at: 2.days.ago)
+    end
+
+    it 'transfers ownership to the member who joined earliest' do
+      new_owner = group.transfer_ownership_to_first_joined!(excluding: creator)
+      expect(new_owner).to eq(member1)
+      expect(group.reload.creator).to eq(member1)
+    end
+
+    it 'returns nil and does not change creator if no other members exist' do
+      only_creator_group = create(:group, creator: creator)
+      create(:user_group_enrollment, user: creator, group: only_creator_group)
+
+      new_owner = only_creator_group.transfer_ownership_to_first_joined!(excluding: creator)
+      expect(new_owner).to be_nil
+      expect(only_creator_group.reload.creator).to eq(creator)
+    end
+  end
+
   it 'is valid with valid attributes' do
     expect(FactoryBot.build(:group)).to be_valid
   end
