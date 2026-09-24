@@ -51,10 +51,12 @@ RSpec.describe SessionsController, type: :controller do
     end
 
     context 'with valid credentials' do
-      it 'logs in the user' do
+      it 'logs in the user and clears stale embedded mode' do
         user # Force creation of user before the request
+        session[:embedded] = true
         post :create, params: valid_credentials
         expect(session[:user_id]).to eq(user.id)
+        expect(session[:embedded]).to be_nil
       end
 
       it 'redirects to challenges path' do
@@ -205,6 +207,12 @@ RSpec.describe SessionsController, type: :controller do
       it 'sets a notice message' do
         delete :destroy
         expect(flash[:notice]).to eq('Logged out!')
+      end
+
+      it 'clears session[:embedded]' do
+        session[:embedded] = true
+        delete :destroy
+        expect(session[:embedded]).to be_nil
       end
     end
 

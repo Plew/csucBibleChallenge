@@ -24,9 +24,51 @@ RSpec.describe "Manage::Groups", type: :request do
       expect(response.body).to include(member.username)
     end
 
+    it "displays group performance statistics overview" do
+      create(:user_group_enrollment, user: member, group: group)
+      get challenge_manage_groups_path(challenge)
+      expect(response.body).to include("Group Performance Overview")
+      expect(response.body).to include("On Target %")
+      expect(response.body).to include("Completion %")
+      expect(response.body).to include("Export CSV")
+    end
+
+    it "exports group stats as CSV" do
+      create(:user_group_enrollment, user: member, group: group)
+      get challenge_manage_groups_path(challenge, format: :csv)
+      expect(response).to have_http_status(:success)
+      expect(response.media_type).to eq("text/csv")
+      expect(response.headers["Content-Disposition"]).to include("group-stats")
+      expect(response.body).to include("Rank,Group Name,Members,On Target %,Completion %")
+      expect(response.body).to include(group.name)
+    end
+
+    it "escapes spreadsheet formulas while preserving CSV quoting" do
+      group.update!(name: '=SUM(1,2) "test"')
+      get challenge_manage_groups_path(challenge, format: :csv)
+      rows = CSV.parse(response.body, headers: true)
+      expect(rows.first["Group Name"]).to eq("'" + group.name)
+      expect(rows.first["Members"]).to eq("0")
+      expect(rows.first["Completion %"]).to eq("0")
+    end
+
+    it "exports only groups in the managed challenge" do
+      group
+      other = create(:group, name: "Other challenge group")
+      get challenge_manage_groups_path(challenge, format: :csv)
+      names = CSV.parse(response.body, headers: true).map { |row| row["Group Name"] }
+      expect(names).to eq([group.name])
+      expect(names).not_to include(other.name)
+    end
+
     context "as an unauthorized user" do
       let(:outsider) { create(:user) }
       before { login_as outsider }
+
+      it "denies CSV access" do
+        get challenge_manage_groups_path(challenge, format: :csv)
+        expect(response).to redirect_to(root_path)
+      end
 
       it "redirects away" do
         get challenge_manage_groups_path(challenge)
@@ -39,6 +81,11 @@ RSpec.describe "Manage::Groups", type: :request do
       before do
         create(:user_challenge_enrollment, :organizer, user: organizer, challenge: challenge)
         login_as organizer
+      end
+
+      it "allows CSV access" do
+        get challenge_manage_groups_path(challenge, format: :csv)
+        expect(response.media_type).to eq("text/csv")
       end
 
       it "returns success" do

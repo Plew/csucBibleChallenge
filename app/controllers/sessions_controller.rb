@@ -12,6 +12,7 @@ class SessionsController < ApplicationController
 
     if user && user.authenticate(params[:session][:password])
       log_in user
+      session.delete(:embedded) unless session[:sso_return_to].present? || params[:embed].present?
 
       # Check for pending SSO return
       if session[:sso_return_to].present?

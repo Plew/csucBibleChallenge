@@ -41,6 +41,14 @@
     </div>
   </div>
 
+  <div class="text-sm text-base-content/70 mb-4 space-y-2">
+    <p>As of <%= @statistics.today %> (<%= @challenge.timezone %>). Statistics through <%= @statistics.through_date %><% if @challenge.stats_start_date %>, starting <%= @challenge.stats_start_date %><% end %>. <%= @statistics.scheduled_count %> readings due per person.</p>
+    <p>On Target % counts readings completed on their scheduled date. Completion % includes catch-up reading for readings due through today. Missing readings includes today. Activity reflects completion dates for readings in this challenge’s reporting period; the activity strip shows the last 15 calendar days. No readings due means 0%.</p>
+    <% if params[:completion] == "100" %>
+      <p>The 100% filter checks readings through <%= @completion_filter_cutoff %>. Displayed statistics include readings through <%= @statistics.through_date %>.</p>
+    <% end %>
+  </div>
+
   <%= form_with url: bulk_remove_from_groups_challenge_manage_users_path(@challenge), method: :post, local: true, data: { controller: "admin-users" } do |form| %>
     <div class="flex justify-between items-center mb-2">
       <p class="text-sm text-base-content/60"><%= @users.count %> <%= t("manage.users.participants") %></p>
@@ -65,6 +73,8 @@
                   <input type="checkbox" class="checkbox checkbox-sm" data-action="change->admin-users#toggleAll" data-admin-users-target="selectAll" />
                 </th>
                 <th><%= t("manage.users.username") %></th>
+                <th>Group</th>
+                <%= render "manage/shared/participant_stat_headers" %>
                 <th><%= t("manage.users.last_15_days") %></th>
                 <th><%= t("common.actions") %></th>
               </tr>
@@ -79,16 +89,18 @@
                     <div class="flex items-center gap-2">
                       <%= avatar_image_tag(user, :tiny, class: 'rounded-full') %>
                       <%= user.username %>
-                      <% if user.user_challenge_enrollments.find_by(challenge: @challenge)&.organizer? %>
+                      <% if user.user_challenge_enrollments.find { |enrollment| enrollment.challenge_id == @challenge.id }&.organizer? %>
                         <span class="badge badge-sm badge-primary"><%= t('manage.users.admin_badge') %></span>
                       <% end %>
                     </div>
                   </td>
+                  <td><%= user.groups.find { |group| group.challenge_id == @challenge.id }&.name || "—" %></td>
+                  <%= render "manage/shared/participant_stat_cells", stats: @participant_stats.fetch(user.id) %>
                   <td>
                     <div class="flex gap-px items-center" title="<%= t('manage.users.last_15_days') %>">
-                      <% last_15_days_activity(user).each_with_index do |active, i| %>
+                      <% @participant_stats.fetch(user.id)[:activity_days].each_with_index do |active, i| %>
                         <div class="w-2.5 h-2.5 rounded-sm <%= active ? 'bg-success' : 'bg-base-300' %>"
-                             title="<%= (Date.current - (14 - i).days).strftime('%b %d') %>"></div>
+                             title="<%= (@statistics.today - (14 - i).days).strftime('%b %d') %>"></div>
                       <% end %>
                     </div>
                   </td>

@@ -6,6 +6,8 @@ class ApplicationController < ActionController::Base
   def embedded?
     if params[:embed].present?
       session[:embedded] = [ "true", "1" ].include?(params[:embed].to_s.downcase)
+    elsif request.headers["Sec-Fetch-Dest"] == "document"
+      session.delete(:embedded)
     end
     !!session[:embedded]
   end
@@ -64,6 +66,7 @@ class ApplicationController < ActionController::Base
   def log_out
     session.delete(:user_id)
     session.delete(:active_challenge_id)
+    session.delete(:embedded)
     @current_user = nil
     @current_active_challenge = nil
   end

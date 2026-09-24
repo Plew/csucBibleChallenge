@@ -4,12 +4,15 @@ class Manage::UsersController < Manage::BaseController
 
   def index
     @users = filtered_users
+    @statistics = ManageParticipantStatistics.new(@challenge, @users.map(&:id))
+    @participant_stats = @statistics.by_user_id
+    @completion_filter_cutoff = completion_cutoff_date if params[:completion] == "100"
 
     respond_to do |format|
       format.html
       format.csv do
         send_data generate_csv(@users),
-                  filename: "challenge-#{@challenge.id}-users-#{Date.current}.csv",
+                  filename: "challenge-#{@challenge.id}-users-#{@statistics.today}.csv",
                   type: "text/csv"
       end
     end
@@ -159,17 +162,18 @@ class Manage::UsersController < Manage::BaseController
   def generate_csv(users)
     require "csv"
 
-    user_ids = users.map(&:id)
-    user_readings = UserReading.joins(:reading)
-      .where(readings: { challenge_id: @challenge.id }, user_id: user_ids)
-    user_readings = user_readings.where("readings.scheduled_date >= ?", @challenge.stats_start_date) if @challenge.stats_start_date.present?
-    user_readings = user_readings.where("readings.scheduled_date <= ?", @challenge.stats_end_date) if @challenge.stats_end_date.present?
-    completed_counts = user_readings.group(:user_id).count
-
     CSV.generate(headers: true) do |csv|
-      csv << [ "Username", "Email", "Readings Completed" ]
+      csv << [ "Username", "Email", "Readings Completed", "Group", "On Target %", "Completion %",
+               "Missing Readings", "Caught Up", "Active (Last 7 Days)", "Last Activity",
+               "Readings Due", "As Of", "Timezone", "Stats Start", "Stats Through" ]
       users.each do |user|
-        csv << [ user.username, user.email, completed_counts[user.id] || 0 ]
+        stats = @participant_stats.fetch(user.id)
+        group = user.groups.find { |group| group.challenge_id == @challenge.id }
+        csv << [ SpreadsheetCsv.safe_text(user.username), SpreadsheetCsv.safe_text(user.email),
+                 stats[:completed_readings], SpreadsheetCsv.safe_text(group&.name),
+                 stats[:on_schedule_percentage], stats[:completion_percentage], stats[:missing_readings],
+                 stats[:caught_up], stats[:active], stats[:last_activity], @statistics.scheduled_count,
+                 @statistics.today, @challenge.timezone, @challenge.stats_start_date, @statistics.through_date ]
       end
     end
   end

@@ -21,6 +21,40 @@ RSpec.describe "Manage::Users", type: :request do
       expect(response.body).to include("testparticipant")
     end
 
+    it "shows the same individual statistics in users, rosters and the CSV" do
+      challenge.update!(start_date: Date.current - 5, stats_start_date: Date.current - 5)
+      group = create(:group, challenge: challenge)
+      create(:user_group_enrollment, user: enrolled_user, group: group)
+      first = create(:reading, challenge: challenge, scheduled_date: Date.current - 2)
+      create(:reading, challenge: challenge, scheduled_date: Date.current - 1)
+      create(:user_reading, user: enrolled_user, reading: first, completed_on: first.scheduled_date)
+      other_reading = create(:reading)
+      create(:user_reading, user: enrolled_user, reading: other_reading, completed_on: Date.current)
+
+      [challenge_manage_users_path(challenge), challenge_manage_groups_path(challenge)].each do |path|
+        get path
+        expect(response).to have_http_status(:success)
+        document = Nokogiri::HTML(response.body)
+        row = document.css('tbody tr').find { |tr| tr.text.include?(enrolled_user.username) }
+        expect(row.css('td').map { |cell| cell.text.strip }).to include('50%', '1', 'Yes', first.scheduled_date.to_s)
+        expect(row.text.scan('50%').size).to eq(2)
+      end
+
+      get challenge_manage_users_path(challenge, format: :csv)
+      row = CSV.parse(response.body, headers: true).find { |entry| entry['Username'] == enrolled_user.username }
+      expect(row.to_h).to include('Group' => group.name, 'On Target %' => '50', 'Completion %' => '50',
+                                 'Readings Completed' => '1', 'Missing Readings' => '1',
+                                 'Last Activity' => first.scheduled_date.to_s)
+    end
+
+    it "does not count another challenge's activity in the activity strip" do
+      reading = create(:reading)
+      create(:user_reading, user: enrolled_user, reading: reading, completed_on: Date.current)
+      get challenge_manage_users_path(challenge)
+      row = Nokogiri::HTML(response.body).css('tbody tr').find { |tr| tr.text.include?(enrolled_user.username) }
+      expect(row.css('div.bg-success')).to be_empty
+    end
+
     it "filters users by search" do
       get challenge_manage_users_path(challenge, search: "testparticipant")
       expect(response.body).to include("testparticipant")
@@ -346,6 +380,11 @@ RSpec.describe "Manage::Users", type: :request do
 
     it "denies access to user list" do
       get challenge_manage_users_path(challenge)
+      expect(response).to redirect_to(root_path)
+    end
+
+    it "denies access to individual CSV statistics" do
+      get challenge_manage_users_path(challenge, format: :csv)
       expect(response).to redirect_to(root_path)
     end
 

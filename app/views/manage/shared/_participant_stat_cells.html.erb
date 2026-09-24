@@ -1,0 +1,6 @@
+<td class="text-center font-mono"><%= stats[:on_schedule_percentage] %>%</td>
+<td class="text-center font-mono"><%= stats[:completion_percentage] %>%</td>
+<td class="text-center font-mono"><%= stats[:completed_readings] %></td>
+<td class="text-center font-mono"><%= stats[:missing_readings] %></td>
+<td class="text-center"><%= stats[:active] ? "Yes" : "No" %></td>
+<td class="text-center whitespace-nowrap"><%= stats[:last_activity] || "—" %></td>
