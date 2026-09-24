@@ -31,7 +31,7 @@ RSpec.describe "Manage::Users", type: :request do
       other_reading = create(:reading)
       create(:user_reading, user: enrolled_user, reading: other_reading, completed_on: Date.current)
 
-      [challenge_manage_users_path(challenge), challenge_manage_groups_path(challenge)].each do |path|
+      [ challenge_manage_users_path(challenge), challenge_manage_groups_path(challenge) ].each do |path|
         get path
         expect(response).to have_http_status(:success)
         document = Nokogiri::HTML(response.body)

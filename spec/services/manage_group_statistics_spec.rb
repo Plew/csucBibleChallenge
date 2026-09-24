@@ -12,7 +12,7 @@ RSpec.describe ManageGroupStatistics do
   let(:report) { described_class.new(challenge, challenge.groups.includes(:users)) }
 
   before do
-    [reader, idle].each { |user| create(:user_group_enrollment, group: group, user: user) }
+    [ reader, idle ].each { |user| create(:user_group_enrollment, group: group, user: user) }
   end
 
   it 'matches existing percentages and includes missing, catch-up and recent participation counts' do
@@ -22,9 +22,9 @@ RSpec.describe ManageGroupStatistics do
     create(:user_reading, user: reader, reading: second, completed_on: Date.new(2026, 9, 23))
     # Exclude readings before the configured window, tomorrow in the challenge's
     # timezone, and readings belonging to another challenge.
-    [create(:reading, challenge: challenge, scheduled_date: Date.new(2026, 9, 19)),
+    [ create(:reading, challenge: challenge, scheduled_date: Date.new(2026, 9, 19)),
      create(:reading, challenge: challenge, scheduled_date: Date.new(2026, 9, 24)),
-     create(:reading)].each do |reading|
+     create(:reading) ].each do |reading|
       create(:user_reading, user: idle, reading: reading, completed_on: Date.new(2026, 9, 23))
     end
 
@@ -81,5 +81,4 @@ RSpec.describe ManageGroupStatistics do
     end
     expect(count_queries.call).to eq(original_count)
   end
-
 end

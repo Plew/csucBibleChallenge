@@ -57,7 +57,7 @@ RSpec.describe "Manage::Groups", type: :request do
       other = create(:group, name: "Other challenge group")
       get challenge_manage_groups_path(challenge, format: :csv)
       names = CSV.parse(response.body, headers: true).map { |row| row["Group Name"] }
-      expect(names).to eq([group.name])
+      expect(names).to eq([ group.name ])
       expect(names).not_to include(other.name)
     end
 
