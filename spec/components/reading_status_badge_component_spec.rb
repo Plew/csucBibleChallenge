@@ -1,6 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe ReadingStatusBadgeComponent, type: :component do
+  # These examples schedule readings using Date.current for UTC challenges.
+  around { |example| Time.use_zone("UTC") { example.run } }
+
   let(:user) { create(:user) }
   let(:challenge) { create(:challenge, timezone: 'UTC', start_date: 1.week.ago, end_date: 1.week.from_now) }
   let(:today) { Date.current }

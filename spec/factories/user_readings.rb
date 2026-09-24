@@ -2,6 +2,6 @@ FactoryBot.define do
   factory :user_reading do
     user
     reading
-    completed_on { Date.today }
+    completed_on { Date.current }
   end
 end

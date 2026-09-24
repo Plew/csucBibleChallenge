@@ -1,6 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe UserLeaderboard do
+  # These examples schedule readings using Date.current for UTC challenges.
+  around { |example| Time.use_zone("UTC") { example.run } }
+
   let(:challenge) { create(:challenge, start_date: Date.current - 10.days, end_date: Date.current + 20.days, timezone: 'UTC') }
   let(:leaderboard) { described_class.new(challenge, limit: 5) }
 

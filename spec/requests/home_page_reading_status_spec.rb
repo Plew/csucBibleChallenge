@@ -1,6 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe "Home Page Reading Statuses", type: :request do
+  # These examples schedule readings using Date.current for UTC challenges.
+  around { |example| Time.use_zone("UTC") { example.run } }
+
   def log_in_as(user)
     post user_session_path, params: { session: { email: user.email, password: "password123" } }
   end

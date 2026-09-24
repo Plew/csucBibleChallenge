@@ -44,6 +44,8 @@ RSpec.describe UserChallengeEnrollment, type: :model do
   end
 
   describe 'initial daily reading email on enrollment' do
+    around { |example| Time.use_zone("UTC") { example.run } }
+
     include ActiveJob::TestHelper
 
     let(:user) { create(:user, daily_email: true) }

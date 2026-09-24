@@ -285,6 +285,8 @@ RSpec.describe Challenge, type: :model do
   end
 
   describe '#daily_reading_status' do
+    around { |example| Time.use_zone("UTC") { example.run } }
+
     let(:user) { create(:user) }
     let(:challenge) { create(:challenge, timezone: 'UTC', start_date: 1.week.ago, end_date: 1.week.from_now) }
     let(:today) { Date.current }

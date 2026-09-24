@@ -1,6 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe PerfectRecordStatistics do
+  # These examples schedule readings using Date.current for UTC challenges.
+  around { |example| Time.use_zone("UTC") { example.run } }
+
   let(:owner) { create(:user) }
   let(:challenge) { create(:challenge, creator: owner, timezone: "UTC", start_date: 10.days.ago.to_date) }
 

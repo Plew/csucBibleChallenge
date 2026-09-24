@@ -3,6 +3,9 @@
 require 'rails_helper'
 
 RSpec.describe 'CatchUp', type: :request do
+  # These examples schedule readings using Date.current for UTC challenges.
+  around { |example| Time.use_zone("UTC") { example.run } }
+
   let(:challenge) { create(:challenge, timezone: 'UTC', start_date: Date.current - 30.days) }
   let(:user) { create(:user) }
 

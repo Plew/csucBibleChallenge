@@ -1,6 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe UserChallengeStats do
+  # These examples schedule readings using Date.current for UTC challenges.
+  around { |example| Time.use_zone("UTC") { example.run } }
+
   let(:user) { create(:user) }
   let(:challenge) { create(:challenge, start_date: Date.current, end_date: Date.current + 30.days, timezone: 'UTC') }
   let(:stats) { described_class.new(user, challenge) }
